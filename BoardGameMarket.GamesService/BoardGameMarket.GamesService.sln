@@ -1,0 +1,53 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3CDBA8B1-9136-404A-8573-781C8C1E0530}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameMarket.GamesService.API", "src\BoardGameMarket.GamesService.API\BoardGameMarket.GamesService.API.csproj", "{169BEE89-2751-2E2D-0C72-80568CA3227C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameMarket.GamesService.Core", "src\BoardGameMarket.GamesService.Core\BoardGameMarket.GamesService.Core.csproj", "{B3E7ACB5-4D1B-412C-B00D-135AE2B44596}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameMarket.ServiceUnitTests", "tests\BoardGameMarket.ServiceUnitTests\BoardGameMarket.ServiceUnitTests.csproj", "{85979977-37CC-417C-ABCC-136E5B0B00EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameMarket.GamesService.Infrastructure", "src\BoardGameMarket.GamesService.Infrastructure\BoardGameMarket.GamesService.Infrastructure.csproj", "{2073EFDF-26B1-4D4F-B5F1-CCDC26163F4F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{169BEE89-2751-2E2D-0C72-80568CA3227C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{169BEE89-2751-2E2D-0C72-80568CA3227C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{169BEE89-2751-2E2D-0C72-80568CA3227C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{169BEE89-2751-2E2D-0C72-80568CA3227C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3E7ACB5-4D1B-412C-B00D-135AE2B44596}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3E7ACB5-4D1B-412C-B00D-135AE2B44596}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3E7ACB5-4D1B-412C-B00D-135AE2B44596}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3E7ACB5-4D1B-412C-B00D-135AE2B44596}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85979977-37CC-417C-ABCC-136E5B0B00EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85979977-37CC-417C-ABCC-136E5B0B00EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85979977-37CC-417C-ABCC-136E5B0B00EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85979977-37CC-417C-ABCC-136E5B0B00EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2073EFDF-26B1-4D4F-B5F1-CCDC26163F4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2073EFDF-26B1-4D4F-B5F1-CCDC26163F4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2073EFDF-26B1-4D4F-B5F1-CCDC26163F4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2073EFDF-26B1-4D4F-B5F1-CCDC26163F4F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{169BEE89-2751-2E2D-0C72-80568CA3227C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{B3E7ACB5-4D1B-412C-B00D-135AE2B44596} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{85979977-37CC-417C-ABCC-136E5B0B00EE} = {3CDBA8B1-9136-404A-8573-781C8C1E0530}
+		{2073EFDF-26B1-4D4F-B5F1-CCDC26163F4F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {01B3D38B-0135-40F3-BC28-17535B9BDFAC}
+	EndGlobalSection
+EndGlobal
