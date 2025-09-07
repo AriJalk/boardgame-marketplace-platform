@@ -6,5 +6,11 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingGroups
 {
-	public record ListingGroupAddRequest(Guid SellerUserId, string? Details, string PickupOptions, string Location) { }
+	public class ListingGroupAddRequest
+	{
+		public Guid SellerUserId { get; set; }
+		public string? Details { get; set; }
+		public string PickupOptions { get; set; } = string.Empty;
+		public string Location { get; set; } = string.Empty;
+	}
 }

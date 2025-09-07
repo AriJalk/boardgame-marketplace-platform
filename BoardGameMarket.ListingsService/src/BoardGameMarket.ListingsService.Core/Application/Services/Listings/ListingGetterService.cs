@@ -1,5 +1,7 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
+using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,29 +12,27 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Listings
 {
 	public class ListingGetterService : IListingGetterService
 	{
-		public Task<Listing?> GetListingByIdAsync(Guid listingId)
+		private readonly IListingRepository _listingRepository;
+		private readonly ILogger<ListingGetterService> _logger;
+
+		public ListingGetterService(IListingRepository listingRepository, ILogger<ListingGetterService> logger)
 		{
-			throw new NotImplementedException();
+			_listingRepository = listingRepository;
+			_logger = logger;
 		}
 
-		public Task<IEnumerable<Listing>> GetListingsByListingGroupIdAsync(Guid groupId)
+		public async Task<Listing?> GetListingByIdAsync(Guid listingId)
 		{
-			throw new NotImplementedException();
+			_logger.LogInformation($"{nameof(ListingGetterService)}:{nameof(GetListingByIdAsync)}- get listing {listingId}");
+
+			return await _listingRepository.GetListingByIdAsync(listingId);
 		}
 
-		public Task<IEnumerable<Listing>> GetListingsSoldByBuyerUserIdAsync(Guid buyerUserId)
+		public async Task<IEnumerable<Listing>> GetListingsByListingGroupIdAsync(Guid groupId)
 		{
-			throw new NotImplementedException();
-		}
+			_logger.LogInformation($"{nameof(ListingGetterService)}:{nameof(GetListingsByListingGroupIdAsync)}- get listing by group {groupId}");
 
-		public Task<IEnumerable<Listing>> GetListingsSoldByDateRange(DateTime startDate, DateTime endDate)
-		{
-			throw new NotImplementedException();
-		}
-
-		public Task<IEnumerable<Listing>> GetListingsSoldBySellerUserIdAsync(Guid sellerUserId)
-		{
-			throw new NotImplementedException();
+			return await _listingRepository.GetListingsByGroupIdAsync(groupId);
 		}
 	}
 }

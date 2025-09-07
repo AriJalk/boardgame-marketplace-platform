@@ -10,6 +10,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.List
 {
 	public interface IListingUpdaterService
 	{
-		Task<Listing?> UpdateListing(ListingUpdateRequest? listingUpdateRequest);
+		Task<Listing?> UpdateListingAsync(ListingUpdateRequest? listingUpdateRequest);
 	}
 }

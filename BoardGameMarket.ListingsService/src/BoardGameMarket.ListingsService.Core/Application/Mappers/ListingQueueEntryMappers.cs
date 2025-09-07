@@ -1,4 +1,5 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
+﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingQueueEntries;
+using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,16 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 				BuyerUserId = listingQueueEntry.BuyerUserId,
 				CreatedAt = listingQueueEntry.CreatedAt,
 				Status = listingQueueEntry.Status,
+			};
+		}
+
+		public static ListingQueueEntry ToListingQueueEntry(this ListingQueueEntryAddRequest listingQueueEntryAddRequest)
+		{
+			return new ListingQueueEntry()
+			{
+				ListingId = listingQueueEntryAddRequest.ListingId,
+				BuyerUserId = listingQueueEntryAddRequest.BuyerUserId,
+				Status = listingQueueEntryAddRequest.Status,
 			};
 		}
 	}

@@ -1,4 +1,5 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
+﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingGroups;
+using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,17 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 				PickupOptions = listingGroup.PickupOptions,
 				Details = listingGroup.Details,
 				Location = listingGroup.Location,
+			};
+		}
+
+		public static ListingGroup ToListingGroup(this ListingGroupAddRequest listingGroupAddRequest)
+		{
+			return new ListingGroup()
+			{
+				SellerUserId = listingGroupAddRequest.SellerUserId,
+				Details = listingGroupAddRequest.Details,
+				Location = listingGroupAddRequest.Location,
+				PickupOptions = listingGroupAddRequest.PickupOptions,
 			};
 		}
 	}

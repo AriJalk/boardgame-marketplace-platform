@@ -7,5 +7,11 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingQueueEntries
 {
-	public record ListingQueueEntryUpdateRequest(Guid Id, Guid ListingId, QueueStatus Status, Guid BuyerUserId) { }
+	public class ListingQueueEntryUpdateRequest
+	{
+		public Guid Id { get; set; }
+		public Guid ListingId { get; set; }
+		public QueueStatus Status { get; set; }
+		public Guid BuyerUserId { get; set; }
+	}
 }

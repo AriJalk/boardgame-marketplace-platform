@@ -1,4 +1,5 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
+﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.Listings;
+using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,17 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 				ModifiedAt = listing.ModifiedAt,
 				Price = listing.Price,
 				Details = listing.Details,
+			};
+		}
+
+		public static Listing ToListing(this ListingAddRequest listingAddRequest)
+		{
+			return new Listing()
+			{
+				ListingGroupId = listingAddRequest.ListingGroupId,
+				Price = listingAddRequest.Price,
+				Details = listingAddRequest.Details,
+				Status = listingAddRequest.Status,
 			};
 		}
 	}

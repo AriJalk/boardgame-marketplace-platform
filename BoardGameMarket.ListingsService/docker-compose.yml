@@ -1,0 +1,14 @@
+services:
+  boardgamemarket.listingsservice.api:
+    image: ${DOCKER_REGISTRY-}boardgamemarketlistingsserviceapi
+    build:
+      context: .
+      dockerfile: src/BoardGameMarket.ListingsService.API/Dockerfile
+  listings-postgres:
+    image: postgres:16.10
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: listings
+    ports:
+      - "5432:5432"

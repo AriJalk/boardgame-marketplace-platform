@@ -15,7 +15,12 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 			throw new NotImplementedException();
 		}
 
-		public Task<bool?> DeleteListing(Guid listingId)
+		public Task<IEnumerable<Listing>> AddListingsAsync(IEnumerable<Listing> listings)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<bool> DeleteListing(Guid listingId)
 		{
 			throw new NotImplementedException();
 		}
@@ -26,6 +31,11 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 		}
 
 		public Task<IEnumerable<Listing>> GetListingsByGroupIdAsync(Guid groupId)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<Listing?> UpdateListingAsync(Listing listing)
 		{
 			throw new NotImplementedException();
 		}

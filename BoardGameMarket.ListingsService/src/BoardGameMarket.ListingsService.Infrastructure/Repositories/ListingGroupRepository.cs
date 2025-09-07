@@ -1,21 +1,16 @@
 ﻿using BoardGameMarket.ListingsService.Core.Domain.Entities;
-using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;	
 
 namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 {
 	internal class ListingGroupRepository : IListingGroupRepository
 	{
-		public Task<ListingGroup> AddListingGroupAsync(ListingGroup listingGroup)
+		public Task<ListingGroup?> AddListingGroupAsync(ListingGroup listingGroup)
 		{
 			throw new NotImplementedException();
 		}
 
-		public Task<bool?> DeleteListingGroup(Guid listingGroupId)
+		public Task<bool> DeleteListingGroup(Guid listingGroupId)
 		{
 			throw new NotImplementedException();
 		}
@@ -31,6 +26,11 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 		}
 
 		public Task<ListingGroup?> GetListingsGroupByListingIdAsync(Guid listingId)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<ListingGroup?> UpdateListingGroupAsync(ListingGroup listingGroup)
 		{
 			throw new NotImplementedException();
 		}
