@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{83FED967
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameMarket.UsersService.ServiceUnitTests", "tests\BoardGameMarket.UsersService.ServiceUnitTests\BoardGameMarket.UsersService.ServiceUnitTests.csproj", "{0153D562-027E-4D55-AD54-D79F330F4689}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameMarket.UsersService.Infrastructure", "src\BoardGameMarket.UsersService.Infrastructure\BoardGameMarket.UsersService.Infrastructure.csproj", "{CA9985B2-DDCB-40E2-A248-40514FE4BD02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,10 @@ Global
 		{0153D562-027E-4D55-AD54-D79F330F4689}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0153D562-027E-4D55-AD54-D79F330F4689}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0153D562-027E-4D55-AD54-D79F330F4689}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA9985B2-DDCB-40E2-A248-40514FE4BD02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA9985B2-DDCB-40E2-A248-40514FE4BD02}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA9985B2-DDCB-40E2-A248-40514FE4BD02}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA9985B2-DDCB-40E2-A248-40514FE4BD02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +45,7 @@ Global
 		{E607F448-8FCB-5A7B-BE4B-82A7FD38F195} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{BFFCFD32-B6DB-3F05-4BD6-4E154550A63B} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{0153D562-027E-4D55-AD54-D79F330F4689} = {83FED967-3776-4931-AD62-F8470EEDDCA6}
+		{CA9985B2-DDCB-40E2-A248-40514FE4BD02} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1615935C-0425-41C4-A078-B7E44A94470D}

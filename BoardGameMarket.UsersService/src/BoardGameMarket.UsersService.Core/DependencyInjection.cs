@@ -1,6 +1,5 @@
-﻿using BoardGameMarket.UsersMicroservice.Core.Application.ServiceContracts;
-using BoardGameMarket.UsersService.Core.Application.ServiceContracts;
-using BoardGameMarket.UsersService.Core.Application.Services;
+﻿using BoardGameMarket.UsersService.Core.Application.ServiceContracts.ApplicationUsers;
+using BoardGameMarket.UsersService.Core.Application.Services.ApplicationUsers;
 using Microsoft.Extensions.DependencyInjection;
 
 

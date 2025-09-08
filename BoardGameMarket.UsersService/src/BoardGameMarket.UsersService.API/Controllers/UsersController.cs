@@ -1,7 +1,7 @@
-﻿using BoardGameMarket.UsersMicroservice.Core.Application.ServiceContracts;
-using BoardGameMarket.UsersMicroservice.Core.Domain.Entities;
-using BoardGameMarket.UsersService.Core.Application.DTOs;
+﻿using BoardGameMarket.UsersService.Core.Application.DTOs;
 using BoardGameMarket.UsersService.Core.Application.Mappers;
+using BoardGameMarket.UsersService.Core.Application.ServiceContracts.ApplicationUsers;
+using BoardGameMarket.UsersService.Core.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.UsersService.API.Controllers

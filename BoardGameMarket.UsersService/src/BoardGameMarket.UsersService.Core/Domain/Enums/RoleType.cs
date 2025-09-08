@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BoardGameMarket.UsersMicroservice.Core.Domain.Enums
+namespace BoardGameMarket.UsersService.Core.Domain.Enums
 {
-	public enum UserRole
+	public enum RoleType
 	{
-		NormalUser,
-		Moderator,
-		Admin
+		Admin = 1,
+		Moderator = 2,
+		User = 3,
 	}
 }

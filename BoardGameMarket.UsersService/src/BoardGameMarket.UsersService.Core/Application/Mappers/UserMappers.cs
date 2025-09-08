@@ -1,5 +1,7 @@
-﻿using BoardGameMarket.UsersMicroservice.Core.Domain.Entities;
+﻿
 using BoardGameMarket.UsersService.Core.Application.DTOs;
+using BoardGameMarket.UsersService.Core.Domain.Entities;
+using Microsoft.Graph.Models;
 
 namespace BoardGameMarket.UsersService.Core.Application.Mappers
 {
@@ -7,12 +9,25 @@ namespace BoardGameMarket.UsersService.Core.Application.Mappers
 	{
 		public static UserDTO ToDTO(this ApplicationUser user)
 		{
-			return new UserDTO(user.UserId, user.Role, user.FirstName, user.LastName, user.DisplayName);
+			IEnumerable<string> roles = user.UserRoles.Select(r => r.Role.Name);
+			return new UserDTO(user.UserId, roles, user.FirstName, user.LastName, user.DisplayName);
 		}
 
-		public static ApplicationUser ToApplicationUser(this UserDTO user)
+		public static ApplicationUser ToApplicationUser(this User user)
 		{
-			return new ApplicationUser() { UserId = user.UserId, Role = user.Role, FirstName = user.FirstName, LastName = user.LastName, DisplayName = user.DisplayName };
+
+			if (!Guid.TryParse(user.Id, out Guid entraId))
+			{
+				throw new InvalidOperationException($"Invalid Entra user ID: {user.Id}");
+			}
+
+			return new ApplicationUser
+			{
+				UserId = entraId,
+				DisplayName = user.DisplayName,
+				FirstName = user.GivenName,
+				LastName = user.Surname
+			};
 		}
 	}
 }

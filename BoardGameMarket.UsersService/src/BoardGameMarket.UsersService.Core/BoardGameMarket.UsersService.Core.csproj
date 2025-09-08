@@ -12,8 +12,4 @@
     <PackageReference Include="Microsoft.Graph" Version="5.91.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Application\UseCases\" />
-  </ItemGroup>
-
 </Project>

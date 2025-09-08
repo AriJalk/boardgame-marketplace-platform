@@ -1,4 +1,4 @@
-﻿using BoardGameMarket.UsersMicroservice.Core.Domain.Enums;
+﻿using BoardGameMarket.UsersService.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.UsersService.Core.Application.DTOs
 {
-	public record UserDTO(Guid UserId, UserRole Role, string? FirstName, string? LastName, string? DisplayName) { };
+	public record UserDTO(Guid UserId, IEnumerable<string> Roles, string? FirstName, string? LastName, string? DisplayName) { };
 }
