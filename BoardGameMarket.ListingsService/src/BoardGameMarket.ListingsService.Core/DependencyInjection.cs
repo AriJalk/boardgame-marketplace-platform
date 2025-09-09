@@ -3,6 +3,7 @@ using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingI
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingsSold;
+using BoardGameMarket.ListingsService.Core.Application.Services.Assemblers.DTOs;
 using BoardGameMarket.ListingsService.Core.Application.Services.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.Services.ListingItems;
 using BoardGameMarket.ListingsService.Core.Application.Services.ListingQueueEntries;
@@ -43,6 +44,12 @@ namespace BoardGameMarket.ListingsService.Core
 			services.AddTransient<IListingSoldAdderService, ListingSoldAdderService>();
 			services.AddTransient<IListingSoldGetterService, ListingSoldGetterService>();
 			services.AddTransient<IListingSoldDeleterService, ListingSoldDeleterService>();
+
+			// Dto Composers
+			services.AddTransient<ListingDtoComposer>();
+			services.AddTransient<ListingItemDtoComposer>();
+			services.AddTransient<ListingQueueEntryDtoComposer>();
+			services.AddTransient<ListingGroupDtoComposer>();
 
 			return services;
 		}

@@ -28,15 +28,12 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingQueue
 			return await _listingQueueEntryRepository.GetListingQueueEntriesByBuyerUserId(buyerUserId);
 		}
 
-		public async Task<Queue<ListingQueueEntry>?> GetListingQueueEntriesByListingIdAsync(Guid listingId)
+		public async Task<Queue<ListingQueueEntry>> GetListingQueueEntriesByListingIdAsync(Guid listingId)
 		{
 			_logger.LogInformation($"{nameof(ListingQueueEntryGetterService)}:{nameof(GetListingQueueEntriesByListingIdAsync)}- Get listing queues by listing {listingId}");
 
-			IEnumerable<ListingQueueEntry>? queueEntries = await _listingQueueEntryRepository.GetListingQueueEntriesByListingIdAsync(listingId);
-			if (queueEntries == null)
-			{
-				return null;
-			}
+			IEnumerable<ListingQueueEntry> queueEntries = await _listingQueueEntryRepository.GetListingQueueEntriesByListingIdAsync(listingId);
+
 			return new Queue<ListingQueueEntry>(queueEntries.OrderBy(e => e.CreatedAt));
 		}
 

@@ -2,30 +2,29 @@
 using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
-using BoardGameMarket.ListingsService.Core.Application.UseCases.Listings;
+using BoardGameMarket.ListingsService.Core.Application.UseCases.External.Listings;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using Microsoft.Extensions.Logging;
 
-namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingsGroups
+namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.ListingGroups
 {
 	public class AddCompleteListingGroupUseCase
 	{
+		private readonly ILogger<AddCompleteListingGroupUseCase> _logger;
 		private readonly IListingGroupAdderService _listingGroupAdderService;
 		private readonly AddCompleteListingsUseCase _addCompleteListingsUseCase;
-		private readonly ILogger<AddCompleteListingGroupUseCase> _logger;
 
-		public AddCompleteListingGroupUseCase(IListingGroupAdderService listingGroupAdderService, AddCompleteListingsUseCase addCompleteListingsUseCase, ILogger<AddCompleteListingGroupUseCase> logger)
+		public AddCompleteListingGroupUseCase(ILogger<AddCompleteListingGroupUseCase> logger, IListingGroupAdderService listingGroupAdderService, AddCompleteListingsUseCase addCompleteListingsUseCase)
 		{
+			_logger = logger;
 			_listingGroupAdderService = listingGroupAdderService;
 			_addCompleteListingsUseCase = addCompleteListingsUseCase;
-			_logger = logger;
 		}
-
 
 		public async Task<ListingGroupResponseDto?> ExecuteAsync(ListingGroupWithListingsRequest listingGroupWithListingsRequestDto)
 		{
 			ListingGroup? listingGroup = await _listingGroupAdderService.AddListingGroup(listingGroupWithListingsRequestDto.ListingGroupAddRequest);
-			_logger.LogInformation($"{nameof(AddCompleteListingGroupUseCase)}:{nameof(ExecuteAsync)}- Creating listing group for seller {listingGroupWithListingsRequestDto.ListingGroupAddRequest.SellerUserId}");
+			_logger.LogInformation($"{nameof(AddCompleteListingGroupUseCase)}:{nameof(ExecuteAsync)} - Creating listing group for seller {listingGroupWithListingsRequestDto.ListingGroupAddRequest.SellerUserId}");
 			if (listingGroup == null)
 			{
 				throw new InvalidOperationException("Can't create listing group");

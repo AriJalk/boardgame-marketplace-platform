@@ -2,10 +2,10 @@
 using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
-using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingItems;
+using BoardGameMarket.ListingsService.Core.Application.UseCases.External.ListingItems;
 using Microsoft.Extensions.Logging;
 
-namespace BoardGameMarket.ListingsService.Core.Application.UseCases.Listings
+namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Listings
 {
 	public class AddCompleteListingsUseCase
 	{

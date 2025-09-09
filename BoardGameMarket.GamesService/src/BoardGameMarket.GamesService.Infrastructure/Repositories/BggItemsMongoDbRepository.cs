@@ -1,6 +1,7 @@
 ﻿using BoardGameMarket.GamesService.Core.Domain.Entities;
 using BoardGameMarket.GamesService.Core.Domain.RepositoryContracts;
 using BoardGameMarket.GamesService.Infrastructure.Configuration;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
 namespace BoardGameMarket.GamesService.Infrastructure.Repositories
@@ -9,9 +10,9 @@ namespace BoardGameMarket.GamesService.Infrastructure.Repositories
 	{
 		private readonly IMongoCollection<BggItem> _items;
 
-		public BggItemsMongoDbRepository(IMongoClient mongoClient, MongoDbConfiguration mongoDbConfiguration)
+		public BggItemsMongoDbRepository(IMongoClient mongoClient, IOptions<MongoDbConfiguration> mongoDbConfiguration)
 		{
-			_items = mongoClient.GetDatabase(mongoDbConfiguration.DatabaseName).GetCollection<BggItem>(mongoDbConfiguration.CollectionName);
+			_items = mongoClient.GetDatabase(mongoDbConfiguration.Value.DatabaseName).GetCollection<BggItem>(mongoDbConfiguration.Value.CollectionName);
 		}
 		public async Task<BggItem?> GetItemByDatabaseIdAsync(Guid id)
 		{

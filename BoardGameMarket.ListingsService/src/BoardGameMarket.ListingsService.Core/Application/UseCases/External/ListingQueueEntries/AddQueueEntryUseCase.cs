@@ -8,7 +8,7 @@ using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.Enums;
 using Microsoft.Extensions.Logging;
 
-namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueueEntries
+namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.ListingQueueEntries
 {
 	public class AddQueueEntryUseCase
 	{

@@ -26,18 +26,19 @@ namespace BoardGameMarket.ListingService.ServiceUnitTests.ListingItemTests
 
 
 		[Fact]
-		public async Task AddListingItem_NullAddRequest_ReturnsNull()
+		public async Task AddListingItem_NullAddRequest_ThrowsArgumentNullException()
 		{
 			// Arrange
 			ListingItemAddRequest? addRequest = null;
 
 			// Act
-
-			ListingItem? response = await _listingItemAdderService.AddListingItemAsync(addRequest);
-
+			Func<Task> task = async () =>
+			{
+				await _listingItemAdderService.AddListingItemAsync(addRequest);
+			};
 
 			// Assert
-			response.Should().BeNull();
+			await task.Should().ThrowAsync<ArgumentNullException>();
 		}
 
 		//[Fact]

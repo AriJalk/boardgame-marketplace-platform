@@ -24,6 +24,20 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingsSold
 			return await _listingSoldRepository.GetListingSoldByIdAsync(listingSoldId);
 		}
 
+		public async Task<ListingSold?> GetListingSoldByListingId(Guid listingId)
+		{
+			_logger.LogInformation($"{nameof(ListingSoldGetterService)}:{nameof(GetListingSoldByListingId)}- Get listing sold by listing id {listingId}");
+
+			return await _listingSoldRepository.GetListingSoldByListingIdAsync(listingId);
+		}
+
+		public async Task<ListingSold?> GetListingSoldByQueueEntryId(Guid queueEntryId)
+		{
+			_logger.LogInformation($"{nameof(ListingSoldGetterService)}:{nameof(GetListingSoldByQueueEntryId)}- Get listing sold by queue entry id {queueEntryId}");
+
+			return await _listingSoldRepository.GetListingSoldByListingQueueEntryIdAsync(queueEntryId);
+		}
+
 		public async Task<IEnumerable<ListingSold>> GetListingsSoldByBuyerUserIdAsync(Guid buyerUserId)
 		{
 			_logger.LogInformation($"{nameof(ListingSoldGetterService)}:{nameof(GetListingsSoldByBuyerUserIdAsync)}- Get listings sold by buyer id {buyerUserId}");

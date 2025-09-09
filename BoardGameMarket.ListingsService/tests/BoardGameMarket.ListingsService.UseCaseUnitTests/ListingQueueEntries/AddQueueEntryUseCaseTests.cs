@@ -1,8 +1,7 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
-using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueueEntries;
-using Castle.Core.Logging;
+using BoardGameMarket.ListingsService.Core.Application.UseCases.External.ListingQueueEntries;
 using Microsoft.Extensions.Logging;
 using Moq;
 

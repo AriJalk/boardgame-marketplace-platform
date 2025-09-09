@@ -4,13 +4,8 @@ using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingItems;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingItems
+namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.ListingItems
 {
 	public class AddListingItemsUseCase
 	{
