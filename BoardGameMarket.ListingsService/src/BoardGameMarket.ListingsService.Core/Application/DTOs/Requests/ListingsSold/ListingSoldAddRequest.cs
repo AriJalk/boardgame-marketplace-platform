@@ -10,8 +10,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.Listing
 	{
 		public Guid ListingId { get; set; }
 		public Guid ListingQueueEntryId { get; set; }
-		public DateTime CompletedAt { get; set; }
-		public Guid SellerId { get; set; }
-		public Guid BuyerId { get; set; }
+		public Guid SellerId { get; set; } // Duplication for fast lookup
+		public Guid BuyerId { get; set; } // Duplication for fast lookup
 	}
 }

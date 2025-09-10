@@ -10,6 +10,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.List
 	internal interface IListingQueuePriorityEntryGetterService
 	{
 		Task<ListingQueuePriorityEntry?> GetListingQueuePriorityEntryAsync(Guid listingQueueEntryId);
-		Task<Queue<ListingQueuePriorityEntry>> GetListingQueuePriorityEntriesAsync(IEnumerable<Guid> listingQueueEntryIds);
+		Task<IEnumerable<ListingQueuePriorityEntry>> GetListingQueuePriorityEntriesAsync(IEnumerable<Guid> listingQueueEntryIds);
 	}
 }

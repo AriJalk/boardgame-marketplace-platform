@@ -45,7 +45,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 				throw new InvalidOperationException($"Buyer Id can't be the same as SellerId");
 			}
 
-			Queue<ListingQueueEntry> queue = await _listingQueueEntryGetterService.GetListingQueueEntriesByListingIdAsync(listing.Id);
+			Queue<ListingQueueEntry> queue = new Queue<ListingQueueEntry>(await _listingQueueEntryGetterService.GetListingQueueEntriesByListingIdAsync(listing.Id));
 			if (queue.Select(q => q.BuyerUserId).Contains(listingQueueEntryAddRequest.BuyerUserId))
 			{
 				throw new InvalidOperationException("Buyer can't queue more than once");
@@ -53,7 +53,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 			ListingQueueEntry? queueEntry = await _listingQueueEntryAdderService.AddListingQueueEntryAsync(listingQueueEntryAddRequest);
 			if (queueEntry == null)
 			{
-				throw new ArgumentNullException("Can't create queue entry");
+				throw new InvalidOperationException("Can't create queue entry");
 			}
 
 			_logger.LogInformation($"{nameof(AddQueueEntryUseCase)}:{nameof(ExecuteAsync)}- Enqueue successfully");

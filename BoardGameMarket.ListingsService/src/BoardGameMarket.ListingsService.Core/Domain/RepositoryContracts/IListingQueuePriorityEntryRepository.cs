@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts
 {
-	public interface IListingQueuePriorityEntry
+	public interface IListingQueuePriorityEntryRepository
 	{
 		Task<ListingQueuePriorityEntry?> GetListingQueuePriorityEntryAsync(Guid listingQueueEntryId);
 

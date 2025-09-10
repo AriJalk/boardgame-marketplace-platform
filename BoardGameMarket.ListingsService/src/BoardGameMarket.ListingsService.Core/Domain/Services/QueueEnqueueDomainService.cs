@@ -1,15 +1,14 @@
 ﻿using BoardGameMarket.ListingsService.Core.Domain.Common;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
-using BoardGameMarket.ListingsService.Core.Domain.ServiceContracts;
 
 namespace BoardGameMarket.ListingsService.Core.Domain.Services
 {
-	internal class QueueDomainService : IQueueDomainService
+	internal class QueueEnqueueDomainService
 	{
-		public Result CanEnqueue(Listing listing, ListingGroup listingGroup, Guid buyerUserId, IEnumerable<ListingQueueEntry> queueEntries)
+		public Result CanEnqueue(Guid sellerUserId, Guid buyerUserId, IEnumerable<ListingQueueEntry> queueEntries)
 		{
 			List<string> errors = new List<string>();
-			if (buyerUserId == listingGroup.SellerUserId)
+			if (buyerUserId == sellerUserId)
 			{
 				errors.Add("BuyerUserId can't be same as SellerUserId");
 			}

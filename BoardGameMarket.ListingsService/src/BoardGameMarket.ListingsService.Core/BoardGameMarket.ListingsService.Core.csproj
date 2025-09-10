@@ -12,7 +12,8 @@
 
   <ItemGroup>
     <Folder Include="Application\Services\Assemblers\Entities\" />
-    <Folder Include="Application\UseCases\Internal\ListingQueueEntries\" />
+    <Folder Include="Application\UseCases\Internal\" />
+    <Folder Include="Domain\ServiceContracts\" />
   </ItemGroup>
 
 </Project>

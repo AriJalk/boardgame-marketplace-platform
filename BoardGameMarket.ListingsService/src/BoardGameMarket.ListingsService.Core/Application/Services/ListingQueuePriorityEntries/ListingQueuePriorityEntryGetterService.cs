@@ -10,7 +10,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingQueue
 {
 	internal class ListingQueuePriorityEntryGetterService : IListingQueuePriorityEntryGetterService
 	{
-		public Task<Queue<ListingQueuePriorityEntry>> GetListingQueuePriorityEntriesAsync(IEnumerable<Guid> listingQueueEntryIds)
+		public Task<IEnumerable<ListingQueuePriorityEntry>> GetListingQueuePriorityEntriesAsync(IEnumerable<Guid> listingQueueEntryIds)
 		{
 			throw new NotImplementedException();
 		}

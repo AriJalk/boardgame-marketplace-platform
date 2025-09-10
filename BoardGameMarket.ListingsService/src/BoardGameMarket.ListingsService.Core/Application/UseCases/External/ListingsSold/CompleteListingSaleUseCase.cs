@@ -3,11 +3,14 @@ using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.Listings;
 using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingsSold;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries;
-using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueuePriorityEntries;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingsSold;
+using BoardGameMarket.ListingsService.Core.Application.Services.Assemblers.DTOs;
+using BoardGameMarket.ListingsService.Core.Application.Services.Helpers;
+using BoardGameMarket.ListingsService.Core.Application.Services.ListingsSold;
 using BoardGameMarket.ListingsService.Core.Domain.Common;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
+using BoardGameMarket.ListingsService.Core.Domain.Enums;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using BoardGameMarket.ListingsService.Core.Domain.Services;
 
@@ -15,35 +18,29 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 {
 	internal class CompleteListingSaleUseCase
 	{
-		private readonly IListingSoldGetterService _listingSoldGetterService;
 		private readonly IListingSoldAdderService _listingSoldAdderService;
-		private readonly IListingQueueEntryGetterService _listingQueueEntryGetterService;
-		private readonly IListingQueuePriorityEntryGetterService _listingQueuePriorityEntryGetterService;
-		private readonly SaleDomainService _saleDomainService;
-		private readonly IListingGetterService _listingGetterService;
 		private readonly IListingUpdaterService _listingUpdaterService;
 		private readonly IListingQueueEntryUpdaterService _listingQueueEntryUpdaterService;
+		private readonly SaleDomainService _saleDomainService;
+		private readonly ListingFetcher _listingFetcher;
+		private readonly ListingValidations _listingValidations;
+		private readonly ListingSoldAddRequestComposer _listingSoldAddRequestComposer;
 		private readonly IUnitOfWork _unitOfWork;
 
-		private async Task<ListingSold> AddListingSoldAsync(ListingSoldAddRequest listingSoldAddRequest)
+		private async Task<ListingSold> AddListingSoldAsync(Guid listingId, Guid listingQueueEntryId)
 		{
+			ListingSoldAddRequest listingSoldAddRequest = await _listingSoldAddRequestComposer.ComposeListingSoldAddRequest(listingId, listingQueueEntryId);
 			ListingSold? listingSold = await _listingSoldAdderService.AddListingSoldAsync(listingSoldAddRequest);
-			if (listingSold == null)
-			{
-				throw new InvalidOperationException("Can't add sale");
+			if (listingSold == null) { 
+				throw new InvalidOperationException("Can't add sale"); 
 			}
 			return listingSold;
 		}
 
-		private async Task UpdateListingAsync(Guid listingId)
+		private async Task UpdateListingAsync(Listing listing)
 		{
-			Listing? listing = await _listingGetterService.GetListingByIdAsync(listingId);
-			if (listing == null)
-			{
-				throw new KeyNotFoundException("Listing not found");
-			}
 			ListingUpdateRequest listingUpdateRequest = listing.ToUpdateRequest();
-			listingUpdateRequest.Status = Domain.Enums.ListingStatus.Sold;
+			listingUpdateRequest.Status = ListingStatus.Pending;
 			if (await _listingUpdaterService.UpdateListingAsync(listingUpdateRequest) == null)
 			{
 				throw new InvalidOperationException("Can't update listing");
@@ -53,70 +50,36 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 		private async Task UpdateListingQueueEntryAsync(ListingQueueEntry requestQueueEntry)
 		{
 			ListingQueueEntryUpdateRequest listingQueueEntryUpdateRequest = requestQueueEntry.ToUpdateRequest();
-			listingQueueEntryUpdateRequest.Status = Domain.Enums.QueueStatus.Completed;
+			listingQueueEntryUpdateRequest.Status = QueueStatus.Approved;
 			if (await _listingQueueEntryUpdaterService.UpdateListingQueueEntryAsync(listingQueueEntryUpdateRequest) == null)
 			{
 				throw new InvalidOperationException("Can't update queue entry");
 			}
 		}
 
-		private async Task<Queue<ListingQueueEntry>> GetListingQueueEntriesAsync(Guid listingId)
+		private void ValidateResult(ListingQueueEntry requestQueueEntry, Listing listing)
 		{
-			return await _listingQueueEntryGetterService.GetListingQueueEntriesByListingIdAsync(listingId);
-		}
-
-		private async Task<Queue<ListingQueuePriorityEntry>> GetListingQueuePriorityEntries(IEnumerable<ListingQueueEntry> listingQueueEntries)
-		{
-			return await _listingQueuePriorityEntryGetterService.GetListingQueuePriorityEntriesAsync(listingQueueEntries.Select(qe => qe.Id));
-		}
-
-		private void ValidateRequest(ListingQueueEntry requestQueueEntry, Queue<ListingQueueEntry> listingQueueEntries, Queue<ListingQueuePriorityEntry> listingQueuePriorityEntries)
-		{
-			Result canSellResult = _saleDomainService.CanSell(requestQueueEntry, listingQueueEntries, listingQueuePriorityEntries);
-
+			Result canSellResult = _saleDomainService.CanSell(requestQueueEntry, listing);
 			if (!canSellResult.IsValid)
 			{
 				throw new InvalidOperationException(string.Join("\n", canSellResult.Errors));
 			}
 		}
 
-		private async Task<ListingQueueEntry> GetListingQueueEntryAsync(Guid listingQueueEntryId)
+		public async Task<ListingSold> ExecuteAsync(Guid requestQueueEntryId)
 		{
-			ListingQueueEntry? listingQueueEntry = await _listingQueueEntryGetterService.GetListingQueueEntryByIdAsync(listingQueueEntryId);
-			if (listingQueueEntry == null)
-			{
-				throw new KeyNotFoundException("Listing queue entry not found");
-			}
-			return listingQueueEntry;
-		}
-
-		private async Task ValidateListingNotSold(Guid listingId)
-		{
-			if (await _listingSoldGetterService.GetListingSoldByListingId(listingId) != null)
-			{
-				throw new InvalidOperationException("Listing already sold");
-			}
-		}
-
-		public async Task<ListingSold> ExecuteAsync(ListingSoldAddRequest listingSoldAddRequest)
-		{
-			Guid listingId = listingSoldAddRequest.ListingId;
-			await ValidateListingNotSold(listingId);
-			ListingQueueEntry? requestQueueEntry = await GetListingQueueEntryAsync(listingSoldAddRequest.ListingQueueEntryId);
-
-			Queue<ListingQueueEntry> listingQueueEntries = await GetListingQueueEntriesAsync(listingId);
-			Queue<ListingQueuePriorityEntry> listingQueuePriorityEntries = await GetListingQueuePriorityEntries(listingQueueEntries);
-
-			ValidateRequest(requestQueueEntry, listingQueueEntries, listingQueuePriorityEntries);
-
+			ListingQueueEntry? requestQueueEntry = await _listingFetcher.GetListingQueueEntryAsync(requestQueueEntryId);
+			Guid listingId = requestQueueEntry.ListingId;
+			Listing? listing = await _listingFetcher.GetListingAsync(listingId);
+			await _listingValidations.ValidateListingNotSold(listing);
+			ValidateResult(requestQueueEntry, listing);
 			try
 			{
 				await _unitOfWork.BeginTransactionAsync();
-				ListingSold listingSold = await AddListingSoldAsync(listingSoldAddRequest);
-				await UpdateListingAsync(listingId);
+				ListingSold listingSold = await AddListingSoldAsync(listingId, requestQueueEntryId);
+				await UpdateListingAsync(listing);
 				await UpdateListingQueueEntryAsync(requestQueueEntry);
 				await _unitOfWork.CommitTransactionAsync();
-				// TODO: return result
 				return listingSold;
 			}
 			catch (Exception ex)

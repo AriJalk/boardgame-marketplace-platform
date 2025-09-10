@@ -1,5 +1,6 @@
 ﻿using BoardGameMarket.ListingsService.Core.Domain.Common;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
+using BoardGameMarket.ListingsService.Core.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,31 +11,15 @@ namespace BoardGameMarket.ListingsService.Core.Domain.Services
 {
 	internal class SaleDomainService
 	{
-		private bool IsPrioritySaleValid(ListingQueueEntry listingQueueEntry, ListingQueuePriorityEntry topPriorityEntry)
+		public Result CanSell(ListingQueueEntry requestQueueEntry, Listing listing)
 		{
-			return listingQueueEntry.Id == topPriorityEntry.ListingQueueEntryId && listingQueueEntry.Status == Enums.QueueStatus.Pending;
-		}
-		private bool IsRegularSaleValid(ListingQueueEntry listingQueueEntry, ListingQueueEntry topListingQueueEntry)
-		{
-			return listingQueueEntry.Id == topListingQueueEntry.Id && listingQueueEntry.Status == Enums.QueueStatus.Pending;
-		}
-
-		public Result CanSell(ListingQueueEntry requestQueueEntry, Queue<ListingQueueEntry> listingQueueEntries, Queue<ListingQueuePriorityEntry> listingQueuePriorityEntries)
-		{
-			// Priority queue first
-			if (listingQueuePriorityEntries.TryPeek(out ListingQueuePriorityEntry? headPriorityEntry))
+			if (listing.Status != ListingStatus.Pending)
 			{
-				if (!IsPrioritySaleValid(requestQueueEntry, headPriorityEntry))
-				{
-					return Result.Failure("QueueEntry not matching Head of priority list");
-				}
+				return Result.Failure("Listing is not in pending status");
 			}
-			else if (listingQueueEntries.TryPeek(out ListingQueueEntry? headEntry))
+			if (requestQueueEntry.Status != QueueStatus.Approved)
 			{
-				if (!IsRegularSaleValid(requestQueueEntry, headEntry))
-				{
-					return Result.Failure("QueueEntry not matching head of queue");
-				}
+				return Result.Failure("Queue entry is not approved");
 			}
 
 			return Result.Success();
