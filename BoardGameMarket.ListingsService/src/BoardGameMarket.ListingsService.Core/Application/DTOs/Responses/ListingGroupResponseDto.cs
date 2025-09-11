@@ -1,6 +1,6 @@
 ﻿namespace BoardGameMarket.ListingsService.Core.Application.DTOs.Responses
 {
-	public class ListingGroupResponseDto
+	internal class ListingGroupResponseDto
 	{
 		public Guid Id { get; set; }
 		public Guid SellerUserId { get; set; }

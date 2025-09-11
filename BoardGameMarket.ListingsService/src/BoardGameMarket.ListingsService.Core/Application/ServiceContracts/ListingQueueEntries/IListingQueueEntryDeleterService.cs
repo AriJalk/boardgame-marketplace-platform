@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries
 {
-	public interface IListingQueueEntryDeleterService
+	internal interface IListingQueueEntryDeleterService
 	{
 		Task<bool> DeleteListingQueueEntryAsync(Guid listingQueueEntryId);
 	}

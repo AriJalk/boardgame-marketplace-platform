@@ -1,4 +1,5 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueuePriorityEntries;
+﻿using BoardGameMarket.ListingsService.Core.Application.Identity;
+using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueuePriorityEntries;
 using BoardGameMarket.ListingsService.Core.Application.Services.Helpers;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.Services;
@@ -10,11 +11,17 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 		private readonly ListingFetcher _listingFetcher;
 		private readonly IListingQueuePriorityEntryAdderService _listingQueuePriorityEntryAdderService;
 		private readonly PriorityQueueDomainService _priorityQueueDomainService;
+		private readonly ICurrentUserContext _currentUserContext;
 
 		public async Task<ListingQueuePriorityEntry> ExecuteAsync(Guid listingQueueEntryId, decimal priorityWeight)
 		{
 			ListingQueueEntry listingQueueEntry = await _listingFetcher.GetListingQueueEntryAsync(listingQueueEntryId);
-			IEnumerable<ListingQueuePriorityEntry> listingQueuePriorityEntries = await _listingFetcher.GetListingQueuePriorityEntires(listingQueueEntry.ListingId);
+
+			//Authorize
+			Guid sellerId = await _listingFetcher.GetSellerUserIdByListingIdAsync(listingQueueEntry.ListingId);
+			IdentityHelper.AuthorizeCurrentUserOrAdmin(sellerId, _currentUserContext);
+
+			IEnumerable<ListingQueuePriorityEntry> listingQueuePriorityEntries = await _listingFetcher.GetListingQueuePriorityEntiresAsync(listingQueueEntry.ListingId);
 			_priorityQueueDomainService.ValidatePriorityEntry(listingQueueEntry, listingQueuePriorityEntries, priorityWeight, shouldExist: false);
 			ListingQueuePriorityEntry? listingQueuePriorityEntry = await _listingQueuePriorityEntryAdderService.AddListingQueuePriorityEntryAsync(listingQueueEntryId, priorityWeight);
 			if (listingQueuePriorityEntry == null)

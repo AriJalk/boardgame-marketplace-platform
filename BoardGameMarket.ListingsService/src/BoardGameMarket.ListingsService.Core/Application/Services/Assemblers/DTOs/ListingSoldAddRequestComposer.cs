@@ -13,7 +13,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Assemblers.D
 		private readonly ListingFetcher _listingFetcher;
 		public async Task<ListingSoldAddRequest> ComposeListingSoldAddRequest(Guid listingId, Guid listingQueueEntryId)
 		{
-			Guid sellerId = await _listingFetcher.GetSellerUserIdByListingId(listingId);
+			Guid sellerId = await _listingFetcher.GetSellerUserIdByListingIdAsync(listingId);
 			Guid buyerId = (await _listingFetcher.GetListingQueueEntryAsync(listingQueueEntryId)).BuyerUserId;
 			return new ListingSoldAddRequest()
 			{

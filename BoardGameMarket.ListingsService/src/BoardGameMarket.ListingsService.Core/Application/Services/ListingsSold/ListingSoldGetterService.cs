@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingsSold
 {
-	public class ListingSoldGetterService : IListingSoldGetterService
+	internal class ListingSoldGetterService : IListingSoldGetterService
 	{
 		private readonly IListingSoldRepository _listingSoldRepository;
 		private readonly ILogger<ListingSoldGetterService> _logger;

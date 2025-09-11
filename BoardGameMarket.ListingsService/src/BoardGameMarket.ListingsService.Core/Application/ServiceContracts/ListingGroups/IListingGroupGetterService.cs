@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups
 {
-	public interface IListingGroupGetterService
+	internal interface IListingGroupGetterService
 	{
 		Task<ListingGroup?> GetListingGroupByIdAsync(Guid listingGroupId);
 		Task<IEnumerable<ListingGroup>> GetListingGroupsBySellerUserIdAsync(Guid sellerUserId);

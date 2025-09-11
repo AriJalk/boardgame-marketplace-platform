@@ -2,10 +2,10 @@
 
 namespace BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.Listings
 {
-	public class ListingUpdateRequest
+	internal class ListingUpdateRequest
 	{
 		public Guid Id { get; set; }
-		public Guid ListingGroupId { get; set; }
+		//public Guid ListingGroupId { get; set; }
 		public ListingStatus Status { get; set; }
 		public decimal Price { get; set; }
 		public string? Details { get; set; }

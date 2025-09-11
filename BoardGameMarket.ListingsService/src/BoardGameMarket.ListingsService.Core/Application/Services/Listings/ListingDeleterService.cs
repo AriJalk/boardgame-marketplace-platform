@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.Listings
 {
-	public class ListingDeleterService : IListingDeleterService
+	internal class ListingDeleterService : IListingDeleterService
 	{
 		private readonly IListingRepository _listingRepository;
 		private readonly ILogger<ListingDeleterService> _logger;

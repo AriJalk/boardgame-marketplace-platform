@@ -2,7 +2,7 @@
 
 namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingItems
 {
-	public interface IListingItemGetterService
+	internal interface IListingItemGetterService
 	{
 		Task<ListingItem?> GetListingItemById(Guid listingItemId);
 		Task<IEnumerable<ListingItem>> GetListingItemsByListingIdAsync(Guid listingId);

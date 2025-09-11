@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingQueueEntries
 {
-	public class ListingQueueEntryUpdaterService : IListingQueueEntryUpdaterService
+	internal class ListingQueueEntryUpdaterService : IListingQueueEntryUpdaterService
 	{
 		private readonly IListingQueueEntryRepository _listingQueueEntryRepository;
 		private readonly ILogger<ListingQueueEntryUpdaterService> _logger;
@@ -17,27 +17,9 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingQueue
 			_logger = logger;
 		}
 
-		public async Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntryUpdateRequest? listingQueueEntriesUpdateRequest)
+		public async Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntryToUpdate)
 		{
-			ArgumentNullException.ThrowIfNull(listingQueueEntriesUpdateRequest, nameof(listingQueueEntriesUpdateRequest));
-
-			_logger.LogInformation($"{nameof(ListingQueueEntryUpdaterService)}:{nameof(UpdateListingQueueEntryAsync)}- Update listing queue {listingQueueEntriesUpdateRequest.Id}");
-
-			ListingQueueEntry? listingQueueEntryToUpdate = await _listingQueueEntryRepository.GetListingQueueEntryByIdAsync(listingQueueEntriesUpdateRequest.Id);
-
-			if (listingQueueEntryToUpdate == null)
-			{
-				return null;
-			}
-
-			if (listingQueueEntryToUpdate.ListingId != listingQueueEntriesUpdateRequest.ListingId || listingQueueEntryToUpdate.BuyerUserId != listingQueueEntriesUpdateRequest.BuyerUserId)
-			{
-				throw new ArgumentException("Mismatch update info");
-			}
-
-			listingQueueEntryToUpdate.Status = listingQueueEntriesUpdateRequest.Status;
 			listingQueueEntryToUpdate.ModifiedAt = DateTime.UtcNow;
-
 			return await _listingQueueEntryRepository.UpdateListingQueueEntryAsync(listingQueueEntryToUpdate);
 		}
 	}

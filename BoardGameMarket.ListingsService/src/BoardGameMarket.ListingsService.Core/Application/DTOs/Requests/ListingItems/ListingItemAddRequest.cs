@@ -1,6 +1,6 @@
 ﻿namespace BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingItems
 {
-	public class ListingItemAddRequest
+	internal class ListingItemAddRequest
 	{
 		public Guid ListingId { get; set; }
 		public Guid BggItemId { get; set; }

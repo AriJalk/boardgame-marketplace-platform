@@ -39,20 +39,30 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Helpers
 			return listing;
 		}
 
+		public async Task<ListingQueueEntry> GetListingQueueEntryByIdAsync(Guid listingQueuEntryId)
+		{
+			ListingQueueEntry? listingQueueEntry = await _listingQueueEntryGetterService.GetListingQueueEntryByIdAsync(listingQueuEntryId);
+			if (listingQueueEntry == null)
+			{
+				throw new KeyNotFoundException("Listing queue entry not found");
+			}
+			return listingQueueEntry;
+		}
+
 		public async Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesAsync(Guid listingId)
 		{
 			return await _listingQueueEntryGetterService.GetListingQueueEntriesByListingIdAsync(listingId);
 		}
 
-		public async Task<IEnumerable<ListingQueuePriorityEntry>> GetListingQueuePriorityEntries(IEnumerable<ListingQueueEntry> listingQueueEntries)
+		public async Task<IEnumerable<ListingQueuePriorityEntry>> GetListingQueuePriorityEntriesAsync(IEnumerable<ListingQueueEntry> listingQueueEntries)
 		{
 			return await _listingQueuePriorityEntryGetterService.GetListingQueuePriorityEntriesAsync(listingQueueEntries.Select(qe => qe.Id));
 		}
 
-		public async Task<IEnumerable<ListingQueuePriorityEntry>> GetListingQueuePriorityEntires(Guid listingId)
+		public async Task<IEnumerable<ListingQueuePriorityEntry>> GetListingQueuePriorityEntiresAsync(Guid listingId)
 		{
 			IEnumerable<ListingQueueEntry> listingQueueEntries = await GetListingQueueEntriesAsync(listingId);
-			return await GetListingQueuePriorityEntries(listingQueueEntries);
+			return await GetListingQueuePriorityEntriesAsync(listingQueueEntries);
 		}
 
 		public async Task<ListingGroup> GetListingGroupByIdAsync(Guid listingGroupId)
@@ -65,11 +75,22 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Helpers
 			return listingGroup;
 		}
 
-		public async Task<Guid> GetSellerUserIdByListingId(Guid listingId)
+		public async Task<Guid> GetSellerUserIdByGroupIdAsync(Guid listingGroupId)
+		{
+			ListingGroup listingGroup = await GetListingGroupByIdAsync(listingGroupId);
+			return listingGroup.SellerUserId;
+		}
+
+		public async Task<Guid> GetSellerUserIdByListingIdAsync(Guid listingId)
 		{
 			Listing listing = await GetListingAsync(listingId);
 			ListingGroup listingGroup = await GetListingGroupByIdAsync(listing.ListingGroupId);
 			return listingGroup.SellerUserId;
+		}
+
+		public async Task<Guid?> GetBuyerUserIdByListingQueueEntryIdAsync(Guid listingQueueEntryId)
+		{
+			return (await GetListingQueueEntryByIdAsync(listingQueueEntryId)).BuyerUserId;
 		}
 	}
 }

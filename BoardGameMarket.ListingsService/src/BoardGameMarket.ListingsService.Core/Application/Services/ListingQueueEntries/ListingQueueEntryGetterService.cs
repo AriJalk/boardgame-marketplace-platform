@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingQueueEntries
 {
-	public class ListingQueueEntryGetterService : IListingQueueEntryGetterService
+	internal class ListingQueueEntryGetterService : IListingQueueEntryGetterService
 	{
 		private readonly IListingQueueEntryRepository _listingQueueEntryRepository;
 		private readonly ILogger<ListingQueueEntryGetterService> _logger;

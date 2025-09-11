@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingGroups
 {
-	public class ListingGroupGetterService : IListingGroupGetterService
+	internal class ListingGroupGetterService : IListingGroupGetterService
 	{
 		private readonly IListingGroupRepository _listingGroupRepository;
 		private readonly ILogger<ListingGroupAdderService> _logger;

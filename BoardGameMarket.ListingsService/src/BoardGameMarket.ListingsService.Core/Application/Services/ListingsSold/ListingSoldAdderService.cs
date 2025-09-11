@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingsSold
 {
-	public class ListingSoldAdderService : IListingSoldAdderService
+	internal class ListingSoldAdderService : IListingSoldAdderService
 	{
 		private readonly IListingSoldRepository _listingSoldRepository;
 		private readonly ILogger<ListingSoldAdderService> _logger;
@@ -18,15 +18,10 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingsSold
 			_logger = logger;
 		}
 
-		public async Task<ListingSold?> AddListingSoldAsync(ListingSoldAddRequest? listingSoldAddRequest)
+		public async Task<ListingSold?> AddListingSoldAsync(ListingSold listingSoldToAdd)
 		{
-			ArgumentNullException.ThrowIfNull(listingSoldAddRequest, nameof(listingSoldAddRequest));
-
-			_logger.LogInformation($"{nameof(ListingSoldAdderService)}:{nameof(AddListingSoldAsync)}- adding listing sold request");
-			ListingSold listingSoldToAdd = listingSoldAddRequest.ToListingSold();
 			listingSoldToAdd.Id = Guid.NewGuid();
 			listingSoldToAdd.CompletedAt = DateTime.UtcNow;
-
 			return await _listingSoldRepository.AddListingSoldAsync(listingSoldToAdd);
 		}
 	}

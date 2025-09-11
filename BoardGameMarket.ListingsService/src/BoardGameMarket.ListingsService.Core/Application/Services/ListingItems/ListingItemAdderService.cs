@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingItems
 {
-	public class ListingItemAdderService : IListingItemAdderService
+	internal class ListingItemAdderService : IListingItemAdderService
 	{
 		private readonly IListingItemRepository _listingItemRepository;
 		private readonly ILogger<ListingItemAdderService> _logger;
@@ -23,28 +23,19 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingItems
 			_logger = logger;
 		}
 
-		private ListingItem BuildListingItem(ListingItemAddRequest listingItemAddRequest)
+		public async Task<ListingItem?> AddListingItemAsync(ListingItem listingItemToAdd)
 		{
-			ListingItem listingItem = listingItemAddRequest.ToListingItem();
-			listingItem.Id = Guid.NewGuid();
-
-			return listingItem;
-		}
-
-		public async Task<ListingItem?> AddListingItemAsync(ListingItemAddRequest? listingItemAddRequest)
-		{
-			ArgumentNullException.ThrowIfNull(listingItemAddRequest, nameof(listingItemAddRequest));
-
-			ListingItem listingItemToAdd = BuildListingItem(listingItemAddRequest);
-
+			listingItemToAdd.Id = Guid.NewGuid();
 			return await _listingItemRepository.AddListingItemAsync(listingItemToAdd);
 		}
 
-		public async Task<IEnumerable<ListingItem>> AddListingItemsAsync(IEnumerable<ListingItemAddRequest> listingItemAddRequests)
+		public async Task<IEnumerable<ListingItem>> AddListingItemsAsync(IEnumerable<ListingItem> listingItemsToAdd)
 		{
-			IEnumerable<ListingItem> listingItems = listingItemAddRequests.Select(BuildListingItem);
-
-			return await _listingItemRepository.AddListingItemsAsync(listingItems);
+			foreach (ListingItem item in listingItemsToAdd)
+			{
+				item.Id = Guid.NewGuid();
+			}
+			return await _listingItemRepository.AddListingItemsAsync(listingItemsToAdd);
 		}
 	}
 }

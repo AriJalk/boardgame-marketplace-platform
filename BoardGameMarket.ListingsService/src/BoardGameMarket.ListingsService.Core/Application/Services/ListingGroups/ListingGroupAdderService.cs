@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingGroups
 {
-	public class ListingGroupAdderService : IListingGroupAdderService
+	internal class ListingGroupAdderService : IListingGroupAdderService
 	{
 		private readonly IListingGroupRepository _listingGroupRepository;
 		private readonly ILogger<ListingGroupAdderService> _logger;
@@ -23,18 +23,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingGroup
 			_logger = logger;
 		}
 
-		public async Task<ListingGroup?> AddListingGroup(ListingGroupAddRequest? listingGroupAddRequest)
+		public async Task<ListingGroup?> AddListingGroup(ListingGroup listingGroupToAdd)
 		{
-			ArgumentNullException.ThrowIfNull(listingGroupAddRequest, nameof(listingGroupAddRequest));
-
-			_logger.LogInformation($"{nameof(ListingGroupAdderService)}:{nameof(AddListingGroup)}- Adding listing group");
-
-			ListingGroup listingGroupToAdd = listingGroupAddRequest.ToListingGroup();
-
 			listingGroupToAdd.Id = Guid.NewGuid();
 			listingGroupToAdd.CreatedAt = DateTime.UtcNow;
 			listingGroupToAdd.ModifiedAt = DateTime.UtcNow;
-
 			return await _listingGroupRepository.AddListingGroupAsync(listingGroupToAdd);
 		}
 	}

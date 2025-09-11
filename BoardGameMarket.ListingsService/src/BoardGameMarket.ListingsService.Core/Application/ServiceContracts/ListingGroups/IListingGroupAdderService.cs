@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups
 {
-	public interface IListingGroupAdderService
+	internal interface IListingGroupAdderService
 	{
-		Task<ListingGroup?> AddListingGroup(ListingGroupAddRequest? listingGroupAddRequest);
+		Task<ListingGroup?> AddListingGroup(ListingGroup listingGroupToAdd);
 	}
 }

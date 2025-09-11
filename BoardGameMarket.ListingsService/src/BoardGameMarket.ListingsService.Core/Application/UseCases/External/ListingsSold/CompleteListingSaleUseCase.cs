@@ -1,13 +1,11 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingQueueEntries;
-using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.Listings;
-using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingsSold;
+﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingsSold;
+using BoardGameMarket.ListingsService.Core.Application.Identity;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingsSold;
 using BoardGameMarket.ListingsService.Core.Application.Services.Assemblers.DTOs;
 using BoardGameMarket.ListingsService.Core.Application.Services.Helpers;
-using BoardGameMarket.ListingsService.Core.Application.Services.ListingsSold;
 using BoardGameMarket.ListingsService.Core.Domain.Common;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.Enums;
@@ -26,11 +24,12 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 		private readonly ListingValidations _listingValidations;
 		private readonly ListingSoldAddRequestComposer _listingSoldAddRequestComposer;
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly ICurrentUserContext _currentUserContext;
 
 		private async Task<ListingSold> AddListingSoldAsync(Guid listingId, Guid listingQueueEntryId)
 		{
 			ListingSoldAddRequest listingSoldAddRequest = await _listingSoldAddRequestComposer.ComposeListingSoldAddRequest(listingId, listingQueueEntryId);
-			ListingSold? listingSold = await _listingSoldAdderService.AddListingSoldAsync(listingSoldAddRequest);
+			ListingSold? listingSold = await _listingSoldAdderService.AddListingSoldAsync(listingSoldAddRequest.ToListingSold());
 			if (listingSold == null) { 
 				throw new InvalidOperationException("Can't add sale"); 
 			}
@@ -39,9 +38,8 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 
 		private async Task UpdateListingAsync(Listing listing)
 		{
-			ListingUpdateRequest listingUpdateRequest = listing.ToUpdateRequest();
-			listingUpdateRequest.Status = ListingStatus.Pending;
-			if (await _listingUpdaterService.UpdateListingAsync(listingUpdateRequest) == null)
+			listing.Status = ListingStatus.Pending;
+			if (await _listingUpdaterService.UpdateListingAsync(listing) == null)
 			{
 				throw new InvalidOperationException("Can't update listing");
 			}
@@ -49,9 +47,8 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 
 		private async Task UpdateListingQueueEntryAsync(ListingQueueEntry requestQueueEntry)
 		{
-			ListingQueueEntryUpdateRequest listingQueueEntryUpdateRequest = requestQueueEntry.ToUpdateRequest();
-			listingQueueEntryUpdateRequest.Status = QueueStatus.Approved;
-			if (await _listingQueueEntryUpdaterService.UpdateListingQueueEntryAsync(listingQueueEntryUpdateRequest) == null)
+			requestQueueEntry.Status = QueueStatus.Approved;
+			if (await _listingQueueEntryUpdaterService.UpdateListingQueueEntryAsync(requestQueueEntry) == null)
 			{
 				throw new InvalidOperationException("Can't update queue entry");
 			}
@@ -71,6 +68,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 			ListingQueueEntry? requestQueueEntry = await _listingFetcher.GetListingQueueEntryAsync(requestQueueEntryId);
 			Guid listingId = requestQueueEntry.ListingId;
 			Listing? listing = await _listingFetcher.GetListingAsync(listingId);
+
+			//Authorize
+			Guid sellerId = await _listingFetcher.GetSellerUserIdByGroupIdAsync(listing.ListingGroupId);
+			IdentityHelper.AuthorizeCurrentUserOrAdmin(sellerId, _currentUserContext);
+
 			await _listingValidations.ValidateListingNotSold(listing);
 			ValidateResult(requestQueueEntry, listing);
 			try

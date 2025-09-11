@@ -1,17 +1,15 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.Listings;
+using BoardGameMarket.ListingsService.Core.Application.Identity;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries;
-using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueuePriorityEntries;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
-using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingsSold;
 using BoardGameMarket.ListingsService.Core.Application.Services.Helpers;
 using BoardGameMarket.ListingsService.Core.Domain.Common;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.Enums;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using BoardGameMarket.ListingsService.Core.Domain.Services;
-using System.Reflection;
 
 namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.ListingQueueEntries
 {
@@ -23,12 +21,13 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 		private readonly IListingUpdaterService _listingUpdaterService;
 		private readonly IListingQueueEntryUpdaterService _listingQueueEntryUpdaterService;
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly ICurrentUserContext _currentUserContext;
 
 		private async Task UpdateListingAsync(Listing listing)
 		{
 			ListingUpdateRequest listingUpdateRequest = listing.ToUpdateRequest();
 			listingUpdateRequest.Status = ListingStatus.Pending;
-			if (await _listingUpdaterService.UpdateListingAsync(listingUpdateRequest) == null)
+			if (await _listingUpdaterService.UpdateListingAsync(listing) == null)
 			{
 				throw new InvalidOperationException("Can't update listing");
 			}
@@ -38,7 +37,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 		{
 			ListingQueueEntryUpdateRequest listingQueueEntryUpdateRequest = requestQueueEntry.ToUpdateRequest();
 			listingQueueEntryUpdateRequest.Status = QueueStatus.Approved;
-			if (await _listingQueueEntryUpdaterService.UpdateListingQueueEntryAsync(listingQueueEntryUpdateRequest) == null)
+			if (await _listingQueueEntryUpdaterService.UpdateListingQueueEntryAsync(requestQueueEntry) == null)
 			{
 				throw new InvalidOperationException("Can't update queue entry");
 			}
@@ -54,17 +53,21 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 			}
 		}
 
-
 		public async Task<bool> ExecuteAsync(Guid listingQueueEntryId)
 		{
 			ListingQueueEntry? requestQueueEntry = await _listingFetcher.GetListingQueueEntryAsync(listingQueueEntryId);
 			Guid listingId = requestQueueEntry.ListingId;
+
+			//Authorize
+			Guid sellerId = await _listingFetcher.GetSellerUserIdByListingIdAsync(listingId);
+			IdentityHelper.AuthorizeCurrentUserOrAdmin(sellerId, _currentUserContext);
+
 			Listing? listing = await _listingFetcher.GetListingAsync(listingId);
 			await _listingValidations.ValidateListingNotSold(listing);
 
 
 			Queue<ListingQueueEntry> listingQueueEntries = new Queue<ListingQueueEntry>(await _listingFetcher.GetListingQueueEntriesAsync(listingId));
-			Queue<ListingQueuePriorityEntry> listingQueuePriorityEntries = new Queue<ListingQueuePriorityEntry>(await _listingFetcher.GetListingQueuePriorityEntries(listingQueueEntries));
+			Queue<ListingQueuePriorityEntry> listingQueuePriorityEntries = new Queue<ListingQueuePriorityEntry>(await _listingFetcher.GetListingQueuePriorityEntriesAsync(listingQueueEntries));
 
 			ValidateRequest(requestQueueEntry, listing, listingQueueEntries, listingQueuePriorityEntries);
 

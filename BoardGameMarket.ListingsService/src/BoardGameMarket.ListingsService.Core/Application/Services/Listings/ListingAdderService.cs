@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.Listings
 {
-	public class ListingAdderService : IListingAdderService
+	internal class ListingAdderService : IListingAdderService
 	{
 		private readonly IListingRepository _listingRepository;
 		private readonly ILogger<ListingAdderService> _logger;
@@ -28,28 +28,26 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Listings
 			return listing;
 		}
 
-		public async Task<Listing?> AddListingAsync(ListingAddRequest? listingAddRequest)
+		public async Task<Listing?> AddListingAsync(Listing listingToAdd)
 		{
-			ArgumentNullException.ThrowIfNull(listingAddRequest, nameof(listingAddRequest));
-
-			_logger.LogInformation($"{nameof(ListingAdderService)}:{nameof(AddListingAsync)}- adding listing");
-
-			Listing listingToAdd = BuildListing(listingAddRequest);
-
+			listingToAdd.Id = Guid.NewGuid();
+			listingToAdd.CreatedAt = DateTime.UtcNow;
+			listingToAdd.ModifiedAt = DateTime.UtcNow;
 			return await _listingRepository.AddListingAsync(listingToAdd);
 		}
 
-		public async Task<IEnumerable<Listing>> AddListingsAsync(IEnumerable<ListingAddRequest>? listingAddRequests)
+		public async Task<IEnumerable<Listing>> AddListingsAsync(IEnumerable<Listing> listingsToAdd)
 		{
-			if (listingAddRequests == null)
+
+			foreach (Listing listing in listingsToAdd)
 			{
-				return Enumerable.Empty<Listing>();
+				listing.Id = Guid.NewGuid();
+				listing.CreatedAt = DateTime.UtcNow;
+				listing.ModifiedAt = DateTime.UtcNow;
 			}
 			_logger.LogInformation($"{nameof(ListingAdderService)}:{nameof(AddListingsAsync)}- adding listings");
 
-			IEnumerable<Listing> listings = listingAddRequests.Select(BuildListing);
-
-			return await _listingRepository.AddListingsAsync(listings);
+			return await _listingRepository.AddListingsAsync(listingsToAdd);
 		}
 	}
 }

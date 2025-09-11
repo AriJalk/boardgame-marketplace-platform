@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingGroups
 {
-	public class ListingGroupDeleterService : IListingGroupDeleterService
+	internal class ListingGroupDeleterService : IListingGroupDeleterService
 	{
 		private readonly IListingGroupRepository _listingGroupRepository;
 		private readonly ILogger<ListingGroupDeleterService> _logger;

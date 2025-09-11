@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingGroups
 {
-	public class ListingGroupAddRequest
+	internal class ListingGroupAddRequest
 	{
 		public Guid SellerUserId { get; set; }
 		public string? Details { get; set; }

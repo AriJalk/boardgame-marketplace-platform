@@ -1,5 +1,6 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
+using BoardGameMarket.ListingsService.Core.Application.Identity;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries;
@@ -10,25 +11,21 @@ using Microsoft.Extensions.Logging;
 
 namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.ListingQueueEntries
 {
-	public class AddQueueEntryUseCase
+	internal class AddQueueEntryUseCase
 	{
 		private readonly IListingQueueEntryGetterService _listingQueueEntryGetterService;
 		private readonly IListingQueueEntryAdderService _listingQueueEntryAdderService;
 		private readonly IListingGetterService _listingGetterService;
 		private readonly IListingGroupGetterService _listingGroupGetterService;
 		private readonly ILogger<AddQueueEntryUseCase> _logger;
+		private readonly ICurrentUserContext _currentUserContext;
 
-		public AddQueueEntryUseCase(IListingQueueEntryGetterService listingQueueEntryGetterService, IListingQueueEntryAdderService listingQueueEntryAdderService, IListingGetterService listingGetterService, IListingGroupGetterService listingGroupGetterService, ILogger<AddQueueEntryUseCase> logger)
-		{
-			_listingQueueEntryGetterService = listingQueueEntryGetterService;
-			_listingQueueEntryAdderService = listingQueueEntryAdderService;
-			_listingGetterService = listingGetterService;
-			_listingGroupGetterService = listingGroupGetterService;
-			_logger = logger;
-		}
 
 		public async Task<ListingQueueEntryResponseDto> ExecuteAsync(ListingQueueEntryAddRequest listingQueueEntryAddRequest, QueueStatus? queueStatus = QueueStatus.Queued)
 		{
+			// Authorize
+			IdentityHelper.AuthorizeCurrentUserOrAdmin(listingQueueEntryAddRequest.BuyerUserId, _currentUserContext);
+
 			Listing? listing = await _listingGetterService.GetListingByIdAsync(listingQueueEntryAddRequest.ListingId);
 			if (listing == null)
 			{
@@ -50,7 +47,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 			{
 				throw new InvalidOperationException("Buyer can't queue more than once");
 			}
-			ListingQueueEntry? queueEntry = await _listingQueueEntryAdderService.AddListingQueueEntryAsync(listingQueueEntryAddRequest);
+			ListingQueueEntry? queueEntry = await _listingQueueEntryAdderService.AddListingQueueEntryAsync(listingQueueEntryAddRequest.ToListingQueueEntry());
 			if (queueEntry == null)
 			{
 				throw new InvalidOperationException("Can't create queue entry");

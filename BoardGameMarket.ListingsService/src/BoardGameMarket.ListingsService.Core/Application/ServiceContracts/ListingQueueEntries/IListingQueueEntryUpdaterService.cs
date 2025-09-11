@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries
 {
-	public interface IListingQueueEntryUpdaterService
+	internal interface IListingQueueEntryUpdaterService
 	{
-		Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntryUpdateRequest? listingQueueEntriesUpdateRequest);
+		Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntryToUpdate);
 	}
 }

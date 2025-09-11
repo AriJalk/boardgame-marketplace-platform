@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingQueueEntries
 {
-	public class ListingQueueEntryDeleterService : IListingQueueEntryDeleterService
+	internal class ListingQueueEntryDeleterService : IListingQueueEntryDeleterService
 	{
 		private readonly IListingQueueEntryRepository _listingQueueEntryRepository;
 		private readonly ILogger<ListingQueueEntryDeleterService> _logger;

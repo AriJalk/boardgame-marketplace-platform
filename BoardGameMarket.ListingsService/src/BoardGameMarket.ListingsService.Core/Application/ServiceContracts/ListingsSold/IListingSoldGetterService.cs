@@ -2,7 +2,7 @@
 
 namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingsSold
 {
-	public interface IListingSoldGetterService
+	internal interface IListingSoldGetterService
 	{
 		Task<ListingSold?> GetListingSoldByIdAsync(Guid listingSoldId);
 		Task<ListingSold?> GetListingSoldByListingId(Guid listingId);

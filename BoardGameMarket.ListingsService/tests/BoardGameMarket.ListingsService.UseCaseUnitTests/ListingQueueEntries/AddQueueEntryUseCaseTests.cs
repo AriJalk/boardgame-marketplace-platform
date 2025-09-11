@@ -23,7 +23,6 @@ namespace BoardGameMarket.ListingsService.UseCaseUnitTests.ListingQueueEntries
 			_listingGetterServiceMock = new Mock<IListingGetterService>();
 			_listingGroupGetterServiceMock = new Mock<IListingGroupGetterService>();
 			_loggerMock = new Mock<ILogger<AddQueueEntryUseCase>>();
-			_addQueueEntryUseCase = new AddQueueEntryUseCase(_listingQueueEntryGetterServiceMock.Object, _listingQueueEntryAdderServiceMock.Object, _listingGetterServiceMock.Object, _listingGroupGetterServiceMock.Object, _loggerMock.Object);
 		}
 	}
 }

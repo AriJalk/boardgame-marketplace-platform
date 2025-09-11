@@ -42,7 +42,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 				Id = listing.Id,
 				Status = listing.Status,
 				Details = listing.Details,
-				ListingGroupId = listing.ListingGroupId,
 				Price = listing.Price,
 			};
 		}

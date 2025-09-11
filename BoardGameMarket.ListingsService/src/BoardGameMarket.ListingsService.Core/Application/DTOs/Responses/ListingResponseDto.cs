@@ -2,7 +2,7 @@
 
 namespace BoardGameMarket.ListingsService.Core.Application.DTOs.Responses
 {
-	public class ListingResponseDto
+	internal class ListingResponseDto
 	{
 		public Guid Id { get; set; }
 		public ListingStatus Status { get; set; }

@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingQueueEntries
 {
-	public class ListingQueueEntryAdderService : IListingQueueEntryAdderService
+	internal class ListingQueueEntryAdderService : IListingQueueEntryAdderService
 	{
 		private readonly IListingQueueEntryRepository _listingQueueEntryRepository;
 		private readonly ILogger<ListingQueueEntryAdderService> _logger;
@@ -18,16 +18,13 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingQueue
 			_logger = logger;
 		}
 
-		public async Task<ListingQueueEntry?> AddListingQueueEntryAsync(ListingQueueEntryAddRequest? listingQueueEntryAddRequest)
+		public async Task<ListingQueueEntry?> AddListingQueueEntryAsync(ListingQueueEntry listingQueueEntryToAdd)
 		{
-			ArgumentNullException.ThrowIfNull(listingQueueEntryAddRequest, nameof(listingQueueEntryAddRequest));
-
-			_logger.LogInformation($"{nameof(ListingQueueEntryAdderService)}:{nameof(AddListingQueueEntryAsync)}- Adding Listing queue");
-
-			ListingQueueEntry listingQueueEntryToAdd = listingQueueEntryAddRequest.ToListingQueueEntry();
 			listingQueueEntryToAdd.Id = Guid.NewGuid();
 			listingQueueEntryToAdd.CreatedAt = DateTime.UtcNow;
 			listingQueueEntryToAdd.ModifiedAt = DateTime.UtcNow;
+
+			_logger.LogInformation($"{nameof(ListingQueueEntryAdderService)}:{nameof(AddListingQueueEntryAsync)}- Adding Listing queue");
 
 			return await _listingQueueEntryRepository.AddListingQueueEntryAsync(listingQueueEntryToAdd);
 		}

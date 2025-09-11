@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.Listings
 {
-	public class ListingGetterService : IListingGetterService
+	internal class ListingGetterService : IListingGetterService
 	{
 		private readonly IListingRepository _listingRepository;
 		private readonly ILogger<ListingGetterService> _logger;
