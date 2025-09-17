@@ -18,6 +18,13 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Helpers
 		private readonly IListingQueuePriorityEntryGetterService _listingQueuePriorityEntryGetterService;
 		private readonly IListingGroupGetterService _listingGroupGetterService;
 
+		public ListingFetcher(IListingGetterService listingGetterService, IListingQueueEntryGetterService listingQueueEntryGetterService, IListingQueuePriorityEntryGetterService listingQueuePriorityEntryGetterService, IListingGroupGetterService listingGroupGetterService)
+		{
+			_listingGetterService = listingGetterService;
+			_listingQueueEntryGetterService = listingQueueEntryGetterService;
+			_listingQueuePriorityEntryGetterService = listingQueuePriorityEntryGetterService;
+			_listingGroupGetterService = listingGroupGetterService;
+		}
 
 		public async Task<ListingQueueEntry> GetListingQueueEntryAsync(Guid listingQueueEntryId)
 		{

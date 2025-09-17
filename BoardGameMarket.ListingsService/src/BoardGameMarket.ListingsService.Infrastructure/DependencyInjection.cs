@@ -1,4 +1,6 @@
-﻿using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
+﻿using BoardGameMarket.ListingsService.Core.Domain.Entities;
+using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
+using BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositories;
 using BoardGameMarket.ListingsService.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -17,8 +19,21 @@ namespace BoardGameMarket.ListingsService.Infrastructure
 			services.AddScoped<IListingRepository, ListingRepository>();
 			services.AddScoped<IListingItemRepository, ListingItemRepository>();
 			services.AddScoped<IListingQueueEntryRepository, ListingQueueEntryRepository>();
+			services.AddScoped<IListingQueuePriorityEntryRepository, ListingQueuePriorityEntryRepository>();
 			services.AddScoped<IListingSoldRepository, ListingSoldRepository>();
 
+			return services;
+		}
+
+		public static IServiceCollection AddInMemoryInfrastructure(this IServiceCollection services)
+		{
+			services.AddTransient<IUnitOfWork, InMemoryUnitOfWork>();
+			services.AddSingleton<IListingGroupRepository, InMemoryRepository>();
+			services.AddSingleton<IListingRepository, InMemoryRepository>();
+			services.AddSingleton<IListingItemRepository, InMemoryRepository>();
+			services.AddSingleton<IListingQueueEntryRepository, InMemoryRepository>();
+			services.AddSingleton<IListingQueuePriorityEntryRepository, InMemoryRepository>();
+			services.AddSingleton<IListingSoldRepository, InMemoryRepository>();
 			return services;
 		}
 	}

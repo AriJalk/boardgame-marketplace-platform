@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.DTOs.Responses
 {
-	internal class ListingSoldResponseDto
+	public class ListingSoldResponseDto
 	{
 		public Guid Id { get; set; }
 		public ListingResponseDto? Listing {  get; set; }

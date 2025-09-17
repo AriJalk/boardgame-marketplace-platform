@@ -26,6 +26,19 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly ICurrentUserContext _currentUserContext;
 
+		public CompleteListingSaleUseCase(IListingSoldAdderService listingSoldAdderService, IListingUpdaterService listingUpdaterService, IListingQueueEntryUpdaterService listingQueueEntryUpdaterService, SaleDomainService saleDomainService, ListingFetcher listingFetcher, ListingValidations listingValidations, ListingSoldAddRequestComposer listingSoldAddRequestComposer, IUnitOfWork unitOfWork, ICurrentUserContext currentUserContext)
+		{
+			_listingSoldAdderService = listingSoldAdderService;
+			_listingUpdaterService = listingUpdaterService;
+			_listingQueueEntryUpdaterService = listingQueueEntryUpdaterService;
+			_saleDomainService = saleDomainService;
+			_listingFetcher = listingFetcher;
+			_listingValidations = listingValidations;
+			_listingSoldAddRequestComposer = listingSoldAddRequestComposer;
+			_unitOfWork = unitOfWork;
+			_currentUserContext = currentUserContext;
+		}
+
 		private async Task<ListingSold> AddListingSoldAsync(Guid listingId, Guid listingQueueEntryId)
 		{
 			ListingSoldAddRequest listingSoldAddRequest = await _listingSoldAddRequestComposer.ComposeListingSoldAddRequest(listingId, listingQueueEntryId);

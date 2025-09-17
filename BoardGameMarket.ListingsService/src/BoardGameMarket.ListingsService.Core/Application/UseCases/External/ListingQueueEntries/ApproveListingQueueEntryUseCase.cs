@@ -23,6 +23,17 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly ICurrentUserContext _currentUserContext;
 
+		public ApproveListingQueueEntryUseCase(ListingFetcher listingFetcher, ListingValidations listingValidations, QueueEntryApprovalDomainService queueEntryApprovalDomainService, IListingUpdaterService listingUpdaterService, IListingQueueEntryUpdaterService listingQueueEntryUpdaterService, IUnitOfWork unitOfWork, ICurrentUserContext currentUserContext)
+		{
+			_listingFetcher = listingFetcher;
+			_listingValidations = listingValidations;
+			_queueEntryApprovalDomainService = queueEntryApprovalDomainService;
+			_listingUpdaterService = listingUpdaterService;
+			_listingQueueEntryUpdaterService = listingQueueEntryUpdaterService;
+			_unitOfWork = unitOfWork;
+			_currentUserContext = currentUserContext;
+		}
+
 		private async Task UpdateListingAsync(Listing listing)
 		{
 			ListingUpdateRequest listingUpdateRequest = listing.ToUpdateRequest();

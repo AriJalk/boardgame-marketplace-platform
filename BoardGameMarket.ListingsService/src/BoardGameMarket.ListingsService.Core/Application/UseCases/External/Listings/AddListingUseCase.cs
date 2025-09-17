@@ -6,11 +6,6 @@ using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Services.Helpers;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Listings
 {
@@ -19,6 +14,14 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 		private readonly ListingFetcher _listingFetcher;
 		private readonly IListingAdderService _listingAdderService;
 		private readonly ICurrentUserContext _currentUserContext;
+
+		public AddListingUseCase(ListingFetcher listingFetcher, IListingAdderService listingAdderService, ICurrentUserContext currentUserContext)
+		{
+			_listingFetcher = listingFetcher;
+			_listingAdderService = listingAdderService;
+			_currentUserContext = currentUserContext;
+		}
+
 		public async Task<ListingResponseDto> ExecuteAsync(ListingAddRequest listingAddRequest)
 		{
 			//Validate

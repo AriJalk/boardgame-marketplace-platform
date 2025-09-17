@@ -21,6 +21,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 				ModifiedAt = listing.ModifiedAt,
 				Price = listing.Price,
 				Details = listing.Details,
+				ListingGroupId = listing.ListingGroupId,
 			};
 		}
 

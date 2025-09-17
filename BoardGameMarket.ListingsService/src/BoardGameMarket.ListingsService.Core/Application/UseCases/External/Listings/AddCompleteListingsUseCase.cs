@@ -18,7 +18,14 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 		private readonly ICurrentUserContext _currentUserContext;
 		private readonly ListingFetcher _listingFetcher;
 
-
+		public AddCompleteListingsUseCase(IListingAdderService listingAdderService, AddCompleteItemsUseCase addCompleteListingItemsUseCase, ILogger<AddCompleteListingsUseCase> logger, ICurrentUserContext currentUserContext, ListingFetcher listingFetcher)
+		{
+			_listingAdderService = listingAdderService;
+			_addCompleteListingItemsUseCase = addCompleteListingItemsUseCase;
+			_logger = logger;
+			_currentUserContext = currentUserContext;
+			_listingFetcher = listingFetcher;
+		}
 
 		private async Task<ListingResponseDto> BuildListingWithItems(ListingWithListingItemsRequest request)
 		{

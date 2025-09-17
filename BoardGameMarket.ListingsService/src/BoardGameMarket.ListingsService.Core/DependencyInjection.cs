@@ -1,14 +1,24 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
+﻿using BoardGameMarket.ListingsService.Core.Application.Identity;
+using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingItems;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries;
+using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueuePriorityEntries;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingsSold;
 using BoardGameMarket.ListingsService.Core.Application.Services.Assemblers.DTOs;
+using BoardGameMarket.ListingsService.Core.Application.Services.Helpers;
 using BoardGameMarket.ListingsService.Core.Application.Services.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.Services.ListingItems;
 using BoardGameMarket.ListingsService.Core.Application.Services.ListingQueueEntries;
+using BoardGameMarket.ListingsService.Core.Application.Services.ListingQueuePriorityEntries;
 using BoardGameMarket.ListingsService.Core.Application.Services.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Services.ListingsSold;
+using BoardGameMarket.ListingsService.Core.Application.UseCases.External.ListingGroups;
+using BoardGameMarket.ListingsService.Core.Application.UseCases.External.ListingItems;
+using BoardGameMarket.ListingsService.Core.Application.UseCases.External.ListingQueueEntries;
+using BoardGameMarket.ListingsService.Core.Application.UseCases.External.Listings;
+using BoardGameMarket.ListingsService.Core.Application.UseCases.External.ListingsSold;
+using BoardGameMarket.ListingsService.Core.Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BoardGameMarket.ListingsService.Core
@@ -17,6 +27,8 @@ namespace BoardGameMarket.ListingsService.Core
 	{
 		public static IServiceCollection AddCore(this IServiceCollection services)
 		{
+			services.AddScoped<ICurrentUserContext, CurrentUserContext>();
+
 			// Listing services
 			services.AddTransient<IListingAdderService, ListingAdderService>();
 			services.AddTransient<IListingGetterService, ListingGetterService>();
@@ -40,6 +52,12 @@ namespace BoardGameMarket.ListingsService.Core
 			services.AddTransient<IListingQueueEntryUpdaterService, ListingQueueEntryUpdaterService>();
 			services.AddTransient<IListingQueueEntryDeleterService, ListingQueueEntryDeleterService>();
 
+			// ListingQueuePriorityEntry services
+			services.AddTransient<IListingQueuePriorityEntryAdderService, ListingQueuePriorityEntryAdderService>();
+			services.AddTransient<IListingQueuePriorityEntryDeleterService, ListingQueuePriorityEntryDeleterService>();
+			services.AddTransient<IListingQueuePriorityEntryGetterService, ListingQueuePriorityEntryGetterService>();
+			services.AddTransient<IListingQueuePriorityEntryUpdaterService, ListingQueuePriorityEntryUpdaterService>();
+
 			// ListingSold services
 			services.AddTransient<IListingSoldAdderService, ListingSoldAdderService>();
 			services.AddTransient<IListingSoldGetterService, ListingSoldGetterService>();
@@ -50,6 +68,36 @@ namespace BoardGameMarket.ListingsService.Core
 			services.AddTransient<ListingItemDtoComposer>();
 			services.AddTransient<ListingQueueEntryDtoComposer>();
 			services.AddTransient<ListingGroupDtoComposer>();
+			services.AddTransient<ListingSoldAddRequestComposer>();
+
+			// Use Cases
+			services.AddTransient<AddCompleteListingGroupUseCase>();
+			services.AddTransient<GetListingGroupsPageUseCase>();
+			services.AddTransient<UpdateListingGroupUseCase>();
+
+			services.AddTransient<AddCompleteItemsUseCase>();
+			services.AddTransient<AddListingItemUseCase>();
+
+			services.AddTransient<AddQueueEntryUseCase>();
+			services.AddTransient<AddQueuePriorityEntryUseCase>();
+			services.AddTransient<ApproveListingQueueEntryUseCase>();
+			services.AddTransient<UpdateQueuePriorityEntryUseCase>();
+
+			services.AddTransient<AddCompleteListingsUseCase>();
+			services.AddTransient<AddListingUseCase>();
+			services.AddTransient<UpdateListingUseCase>();
+
+			services.AddTransient<CompleteListingSaleUseCase>();
+
+			// Helpers
+			services.AddTransient<ListingFetcher>();
+
+			// Domain
+			services.AddTransient<PriorityQueueDomainService>();
+			services.AddTransient<QueueEnqueueDomainService>();
+			services.AddTransient<QueueEntryApprovalDomainService>();
+			services.AddTransient<SaleDomainService>();
+			services.AddTransient<ListingValidations>();
 
 			return services;
 		}

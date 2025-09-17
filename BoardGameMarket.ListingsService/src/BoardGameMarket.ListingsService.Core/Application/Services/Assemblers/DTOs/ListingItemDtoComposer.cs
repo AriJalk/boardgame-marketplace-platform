@@ -10,9 +10,14 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.Assemblers.DTOs
 {
-	internal class ListingItemDtoComposer
+	public class ListingItemDtoComposer
 	{
 		private readonly IListingItemGetterService _listingItemGetterService;
+
+		public ListingItemDtoComposer(IListingItemGetterService listingItemGetterService)
+		{
+			_listingItemGetterService = listingItemGetterService;
+		}
 
 		public async Task<IEnumerable<ListingItemResponseDto>> ComposeListingItemsAsync(Guid listingId)
 		{

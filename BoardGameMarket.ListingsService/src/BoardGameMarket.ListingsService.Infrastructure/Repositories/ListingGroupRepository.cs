@@ -1,4 +1,5 @@
-﻿using BoardGameMarket.ListingsService.Core.Domain.Entities;
+﻿using BoardGameMarket.ListingsService.Core.Domain.Common;
+using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;	
 
 namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
@@ -21,6 +22,11 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 		}
 
 		public Task<IEnumerable<ListingGroup>> GetListingGroupsBySellerUserId(Guid sellerUserId)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<PagedResult<ListingGroup>> GetListingGroupsPageAsync(Cursor? cursor, int pageSize)
 		{
 			throw new NotImplementedException();
 		}

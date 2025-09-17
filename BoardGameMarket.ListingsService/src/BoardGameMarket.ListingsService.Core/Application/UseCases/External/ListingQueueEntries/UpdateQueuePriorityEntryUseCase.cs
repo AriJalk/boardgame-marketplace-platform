@@ -13,6 +13,13 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 		private readonly PriorityQueueDomainService _priorityQueueDomainService;
 		private readonly ICurrentUserContext _currentUserContext;
 
+		public UpdateQueuePriorityEntryUseCase(ListingFetcher listingFetcher, IListingQueuePriorityEntryUpdaterService listingQueuePriorityEntryUpdaterService, PriorityQueueDomainService priorityQueueDomainService, ICurrentUserContext currentUserContext)
+		{
+			_listingFetcher = listingFetcher;
+			_listingQueuePriorityEntryUpdaterService = listingQueuePriorityEntryUpdaterService;
+			_priorityQueueDomainService = priorityQueueDomainService;
+			_currentUserContext = currentUserContext;
+		}
 
 		public async Task<ListingQueuePriorityEntry> ExecuteAsync(Guid listingQueueEntryId, decimal priorityWeight)
 		{

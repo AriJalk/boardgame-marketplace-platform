@@ -2,11 +2,6 @@
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingItems
 {
@@ -31,6 +26,12 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingItems
 		{
 			_logger.LogInformation($"{nameof(ListingItemGetterService)}:{nameof(GetListingItemById)}- get listing items by listing {listingId}");
 			return await _listingItemRepository.GetListingsItemsByListingIdAsync(listingId);
+		}
+
+		public async Task<IEnumerable<ListingItem>> GetListingItemsByListingIdsAsync(IEnumerable<Guid> listingIds)
+		{
+			_logger.LogInformation($"{nameof(ListingItemGetterService)}:{nameof(GetListingItemsByListingIdsAsync)}- get listing items by listings {listingIds}");
+			return await _listingItemRepository.GetListingItemsByListingIdsAsync(listingIds);
 		}
 	}
 }

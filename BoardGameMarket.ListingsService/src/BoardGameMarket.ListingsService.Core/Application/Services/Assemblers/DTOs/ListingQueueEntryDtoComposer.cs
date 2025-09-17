@@ -7,11 +7,18 @@ using Microsoft.Extensions.Logging;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.Assemblers.DTOs
 {
-	internal class ListingQueueEntryDtoComposer
+	public class ListingQueueEntryDtoComposer
 	{
 		private readonly ILogger<ListingQueueEntryDtoComposer> _logger;
 		private readonly IListingQueueEntryGetterService _listingQueueEntryGetterService;
 		private readonly IListingQueuePriorityEntryGetterService _listingQueuePriorityEntryGetterService;
+
+		public ListingQueueEntryDtoComposer(ILogger<ListingQueueEntryDtoComposer> logger, IListingQueueEntryGetterService listingQueueEntryGetterService, IListingQueuePriorityEntryGetterService listingQueuePriorityEntryGetterService)
+		{
+			_logger = logger;
+			_listingQueueEntryGetterService = listingQueueEntryGetterService;
+			_listingQueuePriorityEntryGetterService = listingQueuePriorityEntryGetterService;
+		}
 
 		public async Task<ListingQueueEntryResponseDto?> ComposeListingQueueEntryByIdAsync(Guid queueEntryId)
 		{

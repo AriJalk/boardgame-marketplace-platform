@@ -5,11 +5,18 @@ using BoardGameMarket.ListingsService.Core.Domain.Entities;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.Assemblers.DTOs
 {
-	internal class ListingDtoComposer
+	public class ListingDtoComposer
 	{
 		private readonly IListingGetterService _listingGetterService;
 		private readonly ListingItemDtoComposer _listingItemDtosComposer;
 		private readonly ListingQueueEntryDtoComposer _listingQueueEntryDtosComposer;
+
+		public ListingDtoComposer(IListingGetterService listingGetterService, ListingItemDtoComposer listingItemDtosComposer, ListingQueueEntryDtoComposer listingQueueEntryDtosComposer)
+		{
+			_listingGetterService = listingGetterService;
+			_listingItemDtosComposer = listingItemDtosComposer;
+			_listingQueueEntryDtosComposer = listingQueueEntryDtosComposer;
+		}
 
 		private async Task<ListingResponseDto> ComposeCompleteListingAsync (Listing listing)
 		{

@@ -11,6 +11,12 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Assemblers.D
 	internal class ListingSoldAddRequestComposer
 	{
 		private readonly ListingFetcher _listingFetcher;
+
+		public ListingSoldAddRequestComposer(ListingFetcher listingFetcher)
+		{
+			_listingFetcher = listingFetcher;
+		}
+
 		public async Task<ListingSoldAddRequest> ComposeListingSoldAddRequest(Guid listingId, Guid listingQueueEntryId)
 		{
 			Guid sellerId = await _listingFetcher.GetSellerUserIdByListingIdAsync(listingId);

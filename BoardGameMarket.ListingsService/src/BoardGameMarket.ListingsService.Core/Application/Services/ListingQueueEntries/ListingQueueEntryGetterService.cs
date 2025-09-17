@@ -37,6 +37,14 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingQueue
 			return queueEntries.OrderBy(qe => qe.CreatedAt);
 		}
 
+		public async Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesByListingIdsAsync(IEnumerable<Guid> listingIds)
+		{
+			_logger.LogInformation($"{nameof(ListingQueueEntryGetterService)}:{nameof(GetListingQueueEntriesByListingIdsAsync)}- Get listing queues by listings {listingIds}");
+
+			IEnumerable<ListingQueueEntry> queueEntries = await _listingQueueEntryRepository.GetListingQueueEntriesByListingIdsAsync(listingIds);
+			return queueEntries.OrderBy(qe => qe.CreatedAt);
+		}
+
 		public async Task<ListingQueueEntry?> GetListingQueueEntryByIdAsync(Guid listingQueueId)
 		{
 			_logger.LogInformation($"{nameof(ListingQueueEntryGetterService)}:{nameof(GetListingQueueEntryByIdAsync)}- Get listing queue {listingQueueId}");

@@ -19,6 +19,14 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 		private readonly ListingFetcher _listingFetcher;
 		private readonly IListingGroupUpdaterService _listingGroupUpdaterService;
 		private readonly ICurrentUserContext _currentUserContext;
+
+		public UpdateListingGroupUseCase(ListingFetcher listingFetcher, IListingGroupUpdaterService listingGroupUpdaterService, ICurrentUserContext currentUserContext)
+		{
+			_listingFetcher = listingFetcher;
+			_listingGroupUpdaterService = listingGroupUpdaterService;
+			_currentUserContext = currentUserContext;
+		}
+
 		public async Task<ListingGroup> ExecuteAsync(ListingGroupUpdateRequest listingGroupUpdateRequest)
 		{
 			ListingGroup listingGroup = await _listingFetcher.GetListingGroupByIdAsync(listingGroupUpdateRequest.Id);

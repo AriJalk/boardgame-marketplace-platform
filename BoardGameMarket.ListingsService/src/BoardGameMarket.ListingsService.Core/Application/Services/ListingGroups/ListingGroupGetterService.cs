@@ -1,4 +1,5 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
+using BoardGameMarket.ListingsService.Core.Domain.Common;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using Microsoft.Extensions.Logging;
@@ -10,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingGroups
 {
-	internal class ListingGroupGetterService : IListingGroupGetterService
+	public class ListingGroupGetterService : IListingGroupGetterService
 	{
 		private readonly IListingGroupRepository _listingGroupRepository;
-		private readonly ILogger<ListingGroupAdderService> _logger;
+		private readonly ILogger<ListingGroupGetterService> _logger;
 
-		public ListingGroupGetterService(IListingGroupRepository listingGroupRepository, ILogger<ListingGroupAdderService> logger)
+		public ListingGroupGetterService(IListingGroupRepository listingGroupRepository, ILogger<ListingGroupGetterService> logger)
 		{
 			_listingGroupRepository = listingGroupRepository;
 			_logger = logger;
@@ -33,6 +34,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingGroup
 			_logger.LogInformation($"{nameof(ListingGroupGetterService)}:{nameof(GetListingGroupsBySellerUserIdAsync)}- get group by seller id {sellerUserId}");
 
 			return await _listingGroupRepository.GetListingGroupsBySellerUserId(sellerUserId);
+		}
+
+		public async Task<PagedResult<ListingGroup>> GetListingGroupsPageAsync(Cursor? cursor, int pageSize)
+		{
+			return await _listingGroupRepository.GetListingGroupsPageAsync(cursor, pageSize);
 		}
 	}
 }

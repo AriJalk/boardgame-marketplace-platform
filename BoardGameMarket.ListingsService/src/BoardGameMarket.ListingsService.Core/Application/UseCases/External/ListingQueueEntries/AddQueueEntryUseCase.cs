@@ -20,6 +20,15 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 		private readonly ILogger<AddQueueEntryUseCase> _logger;
 		private readonly ICurrentUserContext _currentUserContext;
 
+		public AddQueueEntryUseCase(IListingQueueEntryGetterService listingQueueEntryGetterService, IListingQueueEntryAdderService listingQueueEntryAdderService, IListingGetterService listingGetterService, IListingGroupGetterService listingGroupGetterService, ILogger<AddQueueEntryUseCase> logger, ICurrentUserContext currentUserContext)
+		{
+			_listingQueueEntryGetterService = listingQueueEntryGetterService;
+			_listingQueueEntryAdderService = listingQueueEntryAdderService;
+			_listingGetterService = listingGetterService;
+			_listingGroupGetterService = listingGroupGetterService;
+			_logger = logger;
+			_currentUserContext = currentUserContext;
+		}
 
 		public async Task<ListingQueueEntryResponseDto> ExecuteAsync(ListingQueueEntryAddRequest listingQueueEntryAddRequest, QueueStatus? queueStatus = QueueStatus.Queued)
 		{
