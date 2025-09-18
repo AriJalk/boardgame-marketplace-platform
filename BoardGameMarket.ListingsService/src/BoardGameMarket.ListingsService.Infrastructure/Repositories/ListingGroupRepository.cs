@@ -1,6 +1,7 @@
-﻿using BoardGameMarket.ListingsService.Core.Domain.Common;
+﻿using BoardGameMarket.ListingsService.Core.Application.Filters;
+using BoardGameMarket.ListingsService.Core.Domain.Common;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
-using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;	
+using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 
 namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 {
@@ -26,7 +27,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 			throw new NotImplementedException();
 		}
 
-		public Task<PagedResult<ListingGroup>> GetListingGroupsPageAsync(Cursor? cursor, int pageSize)
+		public Task<PagedResult<ListingGroup>> GetListingGroupsPageAsync(Cursor? cursor, int pageSize, ListingGroupFilter? filter)
 		{
 			throw new NotImplementedException();
 		}

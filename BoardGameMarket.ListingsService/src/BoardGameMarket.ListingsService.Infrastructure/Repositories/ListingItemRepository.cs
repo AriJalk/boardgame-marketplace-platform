@@ -30,6 +30,11 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 			throw new NotImplementedException();
 		}
 
+		public Task<IEnumerable<ListingItem>> GetListingItemsByCatalogIdAsync(Guid catalogId)
+		{
+			throw new NotImplementedException();
+		}
+
 		public Task<IEnumerable<ListingItem>> GetListingItemsByListingIdsAsync(IEnumerable<Guid> listingIds)
 		{
 			throw new NotImplementedException();

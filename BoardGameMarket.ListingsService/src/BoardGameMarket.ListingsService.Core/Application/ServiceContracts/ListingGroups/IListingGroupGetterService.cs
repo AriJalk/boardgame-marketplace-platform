@@ -1,10 +1,6 @@
-﻿using BoardGameMarket.ListingsService.Core.Domain.Common;
+﻿using BoardGameMarket.ListingsService.Core.Application.Filters;
+using BoardGameMarket.ListingsService.Core.Domain.Common;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups
 {
@@ -12,6 +8,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.List
 	{
 		Task<ListingGroup?> GetListingGroupByIdAsync(Guid listingGroupId);
 		Task<IEnumerable<ListingGroup>> GetListingGroupsBySellerUserIdAsync(Guid sellerUserId);
-		Task<PagedResult<ListingGroup>> GetListingGroupsPageAsync(Cursor? cursor, int pageSize);
+		Task<PagedResult<ListingGroup>> GetListingGroupsPageAsync(Cursor? cursor, int pageSize, ListingGroupFilter? filter = null);
 	}
 }

@@ -91,6 +91,7 @@ namespace BoardGameMarket.ListingsService.Core
 
 			// Helpers
 			services.AddTransient<ListingFetcher>();
+			services.AddScoped<RequestCache>();
 
 			// Domain
 			services.AddTransient<PriorityQueueDomainService>();

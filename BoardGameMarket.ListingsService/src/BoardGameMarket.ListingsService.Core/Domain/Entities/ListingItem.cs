@@ -7,8 +7,6 @@
 	{
 		public Guid Id { get; set; }
 		public Guid ListingId { get; set; }
-		public Guid BggItemId { get; set; }
-
-		//TODO: add name/details to override item service data
+		public Guid CatalogId { get; set; }
 	}
 }

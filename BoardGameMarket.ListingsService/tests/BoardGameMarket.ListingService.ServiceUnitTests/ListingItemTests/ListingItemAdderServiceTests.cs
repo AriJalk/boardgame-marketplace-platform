@@ -66,7 +66,7 @@ namespace BoardGameMarket.ListingService.ServiceUnitTests.ListingItemTests
 			ListingItem expected = new ListingItem()
 			{
 				Id = Guid.NewGuid(),
-				BggItemId = addRequest.BggItemId,
+				CatalogId = addRequest.CatalogId,
 				ListingId = addRequest.ListingId,
 			};
 

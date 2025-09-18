@@ -1,8 +1,10 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
+using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingItems;
+using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
+using BoardGameMarket.ListingsService.Core.Application.Services.Helpers;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
-using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
@@ -13,43 +15,48 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Assemblers.D
 		//private readonly IListingGroupGetterService _listingGroupGetterService;
 		private readonly ILogger<ListingGroupDtoComposer> _logger;
 		private readonly IListingGetterService _listingGetterService;
-		private readonly IListingItemRepository _listingItemRepository;
-		private readonly IListingQueueEntryRepository _listingQueueEntryRepository;
+		private readonly IListingItemGetterService _listingItemGetterService;
+		private readonly IListingQueueEntryGetterService _listingQueueEntryGetterService;
+		private readonly RequestCache _requestCache;
 
-		public ListingGroupDtoComposer(ILogger<ListingGroupDtoComposer> logger, IListingGetterService listingGetterService, IListingItemRepository listingItemRepository, IListingQueueEntryRepository listingQueueEntryRepository)
+		public ListingGroupDtoComposer(ILogger<ListingGroupDtoComposer> logger, IListingGetterService listingGetterService, IListingItemGetterService listingItemGetterService, IListingQueueEntryGetterService listingQueueEntryGetterService, RequestCache requestCache)
 		{
 			_logger = logger;
 			_listingGetterService = listingGetterService;
-			_listingItemRepository = listingItemRepository;
-			_listingQueueEntryRepository = listingQueueEntryRepository;
+			_listingItemGetterService = listingItemGetterService;
+			_listingQueueEntryGetterService = listingQueueEntryGetterService;
+			_requestCache = requestCache;
 		}
 
 		public async Task<ListingGroupResponseDto> ComposeListingGroupAsync(ListingGroup listingGroup)
 		{
+			Stopwatch sw = new Stopwatch();
 			IEnumerable<Listing> listings = await _listingGetterService.GetListingsByListingGroupIdAsync(listingGroup.Id);
+
 			IEnumerable<Guid> listingIds = listings.Select(l => l.Id);
 
-			Task<IEnumerable<ListingItem>> itemsTask = _listingItemRepository.GetListingItemsByListingIdsAsync(listingIds);
-			Task<IEnumerable<ListingQueueEntry>> queuesTask = _listingQueueEntryRepository.GetListingQueueEntriesByListingIdsAsync(listingIds);
+			Task<IEnumerable<ListingItem>> itemsTask = _listingItemGetterService.GetListingItemsByListingIdsAsync(listingIds);
+			Task<IEnumerable<ListingQueueEntry>> queuesTask = _listingQueueEntryGetterService.GetListingQueueEntriesByListingIdsAsync(listingIds);
 
 			await Task.WhenAll(itemsTask, queuesTask);
+
 
 			IEnumerable<ListingItem> allItems = await itemsTask;
 			IEnumerable<ListingQueueEntry> allQueueEntries = await queuesTask;
 
-			ILookup<Guid,ListingItem> itemsLookup = allItems.ToLookup(i => i.ListingId);
-			ILookup<Guid, ListingQueueEntry> queuesLookup = allQueueEntries.ToLookup(qe => qe.ListingId);
+			//ILookup<Guid,ListingItem> itemsLookup = allItems.ToLookup(i => i.ListingId);
+			//ILookup<Guid, ListingQueueEntry> queuesLookup = allQueueEntries.ToLookup(qe => qe.ListingId);
 
 			IEnumerable<ListingResponseDto> listingDtos = listings.Select(l => 
 			{
 				ListingResponseDto dto = l.ToDto();
-				dto.ListingItems = itemsLookup[dto.Id].Select(i => i.ToDto());
-				dto.QueueEntries = queuesLookup[dto.Id].Select(qe => qe.ToDto());
+				dto.ListingItems = _requestCache.GetListingItemsByListingId(dto.Id).Select(i => i.ToDto());
+				dto.QueueEntries = _requestCache.GetListingQueueEntriesByListingId(dto.Id).Select(qe => qe.ToDto());
 				return dto;
 			});
+
 			ListingGroupResponseDto listingGroupResponseDto = listingGroup.ToDto();
 			listingGroupResponseDto.Listings = listingDtos;
-
 			return listingGroupResponseDto;
 		}
 	}

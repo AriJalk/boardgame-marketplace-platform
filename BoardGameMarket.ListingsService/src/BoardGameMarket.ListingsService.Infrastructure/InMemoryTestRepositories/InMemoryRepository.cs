@@ -1,13 +1,9 @@
-﻿using BoardGameMarket.ListingsService.Core.Domain.Common;
+﻿using BoardGameMarket.ListingsService.Core.Application.Filters;
+using BoardGameMarket.ListingsService.Core.Domain.Common;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositories
 {
@@ -24,6 +20,33 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositorie
 		public InMemoryRepository(ILogger<InMemoryRepository> logger)
 		{
 			_logger = logger;
+		}
+
+		private PagedResult<ListingGroup> GetGroupsPage(List<ListingGroup> orderedListingGroups, Cursor? cursor, int pageSize)
+		{
+			int start = 0;
+
+			if (cursor != null)
+			{
+				start = orderedListingGroups.FindIndex(g =>
+					g.CreatedAt < cursor.LastCreatedAt || (g.CreatedAt == cursor.LastCreatedAt && g.Id < cursor.LastId));
+				if (start < 0) start = orderedListingGroups.Count;
+			}
+
+			var pageItems = orderedListingGroups.Skip(start).Take(pageSize).ToList();
+			string? nextCursor = null;
+
+			if (pageItems.Count == pageSize)
+			{
+				var last = pageItems.Last();
+				nextCursor = $"{last.CreatedAt:o}|{last.Id}";
+				nextCursor = Convert.ToBase64String(Encoding.UTF8.GetBytes(nextCursor));
+			}
+			return new PagedResult<ListingGroup>
+			{
+				Items = pageItems,
+				NextCursor = nextCursor
+			};
 		}
 
 		public async Task<Listing?> AddListingAsync(Listing listing)
@@ -110,6 +133,8 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositorie
 			return Task.FromResult(true);
 		}
 
+
+
 		public Task<Listing?> GetListingByIdAsync(Guid listingId)
 		{
 			return Task.FromResult(_listings.FirstOrDefault(l => l.Id == listingId));
@@ -125,36 +150,46 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositorie
 			return Task.FromResult(_listingGroups.Where(l => l.SellerUserId == sellerUserId));
 		}
 
-		public Task<PagedResult<ListingGroup>> GetListingGroupsPageAsync(Cursor? cursor, int pageSize)
+		public Task<PagedResult<ListingGroup>> GetListingGroupsPageAsync(Cursor? cursor, int pageSize, ListingGroupFilter? filter)
 		{
-			var sw = Stopwatch.StartNew();
-			var ordered = _listingGroups.OrderByDescending(g => g.CreatedAt).ThenByDescending(g => g.Id).ToList();
-			int start = 0;
-
-			if (cursor != null)
+			IEnumerable<ListingGroup> query = _listingGroups;
+			if (filter != null)
 			{
-				start = ordered.FindIndex(g =>
-					g.CreatedAt < cursor.LastCreatedAt || (g.CreatedAt == cursor.LastCreatedAt && g.Id < cursor.LastId));
-				if (start < 0) start = ordered.Count;
+				if (filter.SellerUserId.HasValue)
+				{
+					query = query.Where(g => g.SellerUserId == filter.SellerUserId.Value);
+				}
+
+				if (!string.IsNullOrEmpty(filter.Location))
+				{
+					query = query.Where(g => g.Location == filter.Location);
+				}
+
+				if (filter.ListingGroupIds != null)
+				{
+					query = query.Where(g => filter.ListingGroupIds.Contains(g.Id));
+				}
+
+				/*if (filter.CatalogId.HasValue)
+				{
+					HashSet<Guid> listingIds = new HashSet<Guid>(
+						_listingItems
+							.Where(i => i.CatalogId == filter.CatalogId.Value)
+							.Select(i => i.ListingId)
+					);
+
+					HashSet<Guid> groupIds = new HashSet<Guid>(
+						_listings
+							.Where(l => listingIds.Contains(l.Id))
+							.Select(l => l.ListingGroupId)
+					);
+
+					query = query.Where(g => groupIds.Contains(g.Id));
+				}*/
 			}
 
-			var pageItems = ordered.Skip(start).Take(pageSize).ToList();
-			string? nextCursor = null;
-
-			if (pageItems.Count == pageSize)
-			{
-				var last = pageItems.Last();
-				nextCursor = $"{last.CreatedAt:o}|{last.Id}";
-				nextCursor = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(nextCursor));
-			}
-
-			sw.Stop();
-			_logger.LogInformation("PAGING: {time}", sw.ElapsedMilliseconds);
-			return Task.FromResult(new PagedResult<ListingGroup>
-			{
-				Items = pageItems,
-				NextCursor = nextCursor
-			});
+			List<ListingGroup> ordered = query.OrderByDescending(g => g.CreatedAt).ThenByDescending(g => g.Id).ToList();
+			return Task.FromResult(GetGroupsPage(ordered, cursor, pageSize));
 		}
 
 		public Task<ListingItem?> GetListingItemByIdAsync(Guid listingItemId)
@@ -210,6 +245,11 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositorie
 		public Task<IEnumerable<ListingItem>> GetListingsItemsByListingIdAsync(Guid listingId)
 		{
 			return Task.FromResult(_listingItems.Where(i => i.ListingId == listingId));
+		}
+
+		public Task<IEnumerable<ListingItem>> GetListingItemsByCatalogIdAsync(Guid catalogId)
+		{
+			return Task.FromResult(_listingItems.Where(i => i.CatalogId == catalogId));
 		}
 
 		public Task<ListingSold?> GetListingSoldByIdAsync(Guid listingSoldId)
@@ -272,6 +312,11 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositorie
 			_listingQueuePriorityEntries.Remove(originalListingQueuePriorityEntry);
 			_listingQueuePriorityEntries.Add(listingQueuePriorityEntry);
 			return Task.FromResult(listingQueuePriorityEntry);
+		}
+
+		public Task<IEnumerable<Listing>> GetListingsByListingIdsAsync(IEnumerable<Guid> listingIds)
+		{
+			return Task.FromResult(_listings.Where(l => listingIds.Contains(l.Id)));
 		}
 	}
 }

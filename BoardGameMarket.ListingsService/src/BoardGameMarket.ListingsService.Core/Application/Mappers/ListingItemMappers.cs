@@ -16,7 +16,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 			return new ListingItemResponseDto()
 			{
 				Id = listingItem.Id,
-				BggItemId = listingItem.BggItemId,
+				CatalogId = listingItem.CatalogId,
 			};
 		}
 
@@ -24,7 +24,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 		{
 			return new ListingItem()
 			{
-				BggItemId = listingItemAddRequest.BggItemId,
+				CatalogId = listingItemAddRequest.CatalogId,
 				ListingId = listingItemAddRequest.ListingId,
 			};
 		}

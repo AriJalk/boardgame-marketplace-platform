@@ -1,4 +1,5 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
+﻿using BoardGameMarket.ListingsService.Core.Application.Filters;
+using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Domain.Common;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
@@ -22,6 +23,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingGroup
 			_logger = logger;
 		}
 
+		public Task<PagedResult<ListingGroup>> GetFilteredListingGroupsPageAsync(Cursor? cursor, int pageSize, ListingGroupFilter? filter)
+		{
+			throw new NotImplementedException();
+		}
+
 		public async Task<ListingGroup?> GetListingGroupByIdAsync(Guid listingGroupId)
 		{
 			_logger.LogInformation($"{nameof(ListingGroupGetterService)}:{nameof(GetListingGroupByIdAsync)}- get group {listingGroupId}");
@@ -36,9 +42,9 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingGroup
 			return await _listingGroupRepository.GetListingGroupsBySellerUserId(sellerUserId);
 		}
 
-		public async Task<PagedResult<ListingGroup>> GetListingGroupsPageAsync(Cursor? cursor, int pageSize)
+		public async Task<PagedResult<ListingGroup>> GetListingGroupsPageAsync(Cursor? cursor, int pageSize, ListingGroupFilter? filter = null)
 		{
-			return await _listingGroupRepository.GetListingGroupsPageAsync(cursor, pageSize);
+			return await _listingGroupRepository.GetListingGroupsPageAsync(cursor, pageSize, filter);
 		}
 	}
 }

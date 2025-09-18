@@ -12,6 +12,7 @@ namespace BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts
 		Task<ListingItem?> GetListingItemByIdAsync(Guid listingItemId);
 		Task<IEnumerable<ListingItem>> GetListingsItemsByListingIdAsync(Guid listingId);
 		Task<IEnumerable<ListingItem>> GetListingItemsByListingIdsAsync(IEnumerable<Guid> listingIds);
+		Task<IEnumerable<ListingItem>> GetListingItemsByCatalogIdAsync(Guid catalogId);
 		Task<ListingItem?> AddListingItemAsync(ListingItem listingItem);
 		Task<IEnumerable<ListingItem>> AddListingItemsAsync(IEnumerable<ListingItem> listingItems);
 		Task<bool> DeleteListingItem(Guid listingItemId);

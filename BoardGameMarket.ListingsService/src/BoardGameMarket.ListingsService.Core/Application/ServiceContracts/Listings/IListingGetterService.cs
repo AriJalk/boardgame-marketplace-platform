@@ -6,5 +6,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.List
 	{
 		Task<Listing?> GetListingByIdAsync(Guid listingId);
 		Task<IEnumerable<Listing>> GetListingsByListingGroupIdAsync(Guid groupId);
+		Task<IEnumerable<Listing>> GetListingsByListingIds(IEnumerable<Guid> listingIds);
 	}
 }

@@ -1,29 +1,27 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
+using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingItems;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueuePriorityEntries;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.Helpers
 {
-	internal class ListingFetcher
+	public class ListingFetcher
 	{
 		private readonly IListingGetterService _listingGetterService;
 		private readonly IListingQueueEntryGetterService _listingQueueEntryGetterService;
 		private readonly IListingQueuePriorityEntryGetterService _listingQueuePriorityEntryGetterService;
 		private readonly IListingGroupGetterService _listingGroupGetterService;
+		private readonly IListingItemGetterService _listingItemGetterService;
 
-		public ListingFetcher(IListingGetterService listingGetterService, IListingQueueEntryGetterService listingQueueEntryGetterService, IListingQueuePriorityEntryGetterService listingQueuePriorityEntryGetterService, IListingGroupGetterService listingGroupGetterService)
+		public ListingFetcher(IListingGetterService listingGetterService, IListingQueueEntryGetterService listingQueueEntryGetterService, IListingQueuePriorityEntryGetterService listingQueuePriorityEntryGetterService, IListingGroupGetterService listingGroupGetterService, IListingItemGetterService listingItemGetterService)
 		{
 			_listingGetterService = listingGetterService;
 			_listingQueueEntryGetterService = listingQueueEntryGetterService;
 			_listingQueuePriorityEntryGetterService = listingQueuePriorityEntryGetterService;
 			_listingGroupGetterService = listingGroupGetterService;
+			_listingItemGetterService = listingItemGetterService;
 		}
 
 		public async Task<ListingQueueEntry> GetListingQueueEntryAsync(Guid listingQueueEntryId)
@@ -98,6 +96,17 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Helpers
 		public async Task<Guid?> GetBuyerUserIdByListingQueueEntryIdAsync(Guid listingQueueEntryId)
 		{
 			return (await GetListingQueueEntryByIdAsync(listingQueueEntryId)).BuyerUserId;
+		}
+
+		public async Task<IEnumerable<Guid>> GetListingIdsByCatalogId(Guid catalogId)
+		{
+			IEnumerable<ListingItem> listingItems = await _listingItemGetterService.GetListingItemsByCatalogIdAsync(catalogId);
+			return listingItems.Select(i => i.ListingId);
+		}
+
+		public async Task<IEnumerable<Listing>> GetListingsByListingIds(IEnumerable<Guid> listingIds)
+		{
+			return await _listingGetterService.GetListingsByListingIds(listingIds);
 		}
 	}
 }

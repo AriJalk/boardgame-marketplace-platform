@@ -3,6 +3,6 @@
 	internal class ListingItemAddRequest
 	{
 		public Guid ListingId { get; set; }
-		public Guid BggItemId { get; set; }
+		public Guid CatalogId { get; set; }
 	}
 }

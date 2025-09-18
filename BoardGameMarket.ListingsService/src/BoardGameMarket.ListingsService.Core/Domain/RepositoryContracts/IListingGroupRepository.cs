@@ -1,4 +1,5 @@
-﻿using BoardGameMarket.ListingsService.Core.Domain.Common;
+﻿using BoardGameMarket.ListingsService.Core.Application.Filters;
+using BoardGameMarket.ListingsService.Core.Domain.Common;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 
 namespace BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts
@@ -11,6 +12,6 @@ namespace BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts
 		Task<ListingGroup?> AddListingGroupAsync(ListingGroup listingGroup);
 		Task<ListingGroup?> UpdateListingGroupAsync(ListingGroup listingGroup);
 		Task<bool> DeleteListingGroup(Guid listingGroupId);
-		Task<PagedResult<ListingGroup>> GetListingGroupsPageAsync(Cursor? cursor, int pageSize);
+		Task<PagedResult<ListingGroup>> GetListingGroupsPageAsync(Cursor? cursor, int pageSize, ListingGroupFilter? filter);
 	}
 }
