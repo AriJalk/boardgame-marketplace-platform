@@ -19,7 +19,6 @@ namespace BoardGameMarket.ListingsService.Infrastructure
 			services.AddScoped<IListingRepository, ListingRepository>();
 			services.AddScoped<IListingItemRepository, ListingItemRepository>();
 			services.AddScoped<IListingQueueEntryRepository, ListingQueueEntryRepository>();
-			services.AddScoped<IListingQueuePriorityEntryRepository, ListingQueuePriorityEntryRepository>();
 			services.AddScoped<IListingSoldRepository, ListingSoldRepository>();
 
 			return services;
@@ -32,7 +31,6 @@ namespace BoardGameMarket.ListingsService.Infrastructure
 			services.AddSingleton<IListingRepository, InMemoryRepository>();
 			services.AddSingleton<IListingItemRepository, InMemoryRepository>();
 			services.AddSingleton<IListingQueueEntryRepository, InMemoryRepository>();
-			services.AddSingleton<IListingQueuePriorityEntryRepository, InMemoryRepository>();
 			services.AddSingleton<IListingSoldRepository, InMemoryRepository>();
 			return services;
 		}

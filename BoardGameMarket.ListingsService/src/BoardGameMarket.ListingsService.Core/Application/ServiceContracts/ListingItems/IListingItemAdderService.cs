@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingItems
 {
-	internal interface IListingItemAdderService
+	public interface IListingItemAdderService
 	{
 		Task<ListingItem?> AddListingItemAsync(ListingItem listingItemToAdd);
 		Task<IEnumerable<ListingItem>> AddListingItemsAsync(IEnumerable<ListingItem> listingItemsToAdd);

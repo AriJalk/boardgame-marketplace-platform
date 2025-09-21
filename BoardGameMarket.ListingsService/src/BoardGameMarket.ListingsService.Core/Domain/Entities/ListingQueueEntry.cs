@@ -13,5 +13,6 @@ namespace BoardGameMarket.ListingsService.Core.Domain.Entities
 		public Guid BuyerUserId { get; set; }
 		public DateTime CreatedAt { get; set; }
 		public DateTime ModifiedAt { get; set; }
+		public decimal? Priority { get; set; }
 	}
 }

@@ -7,13 +7,12 @@ using System.Text;
 
 namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositories
 {
-	internal class InMemoryRepository : IListingGroupRepository, IListingRepository, IListingItemRepository, IListingQueueEntryRepository, IListingQueuePriorityEntryRepository, IListingSoldRepository
+	internal class InMemoryRepository : IListingGroupRepository, IListingRepository, IListingItemRepository, IListingQueueEntryRepository, IListingSoldRepository
 	{
 		private readonly List<ListingGroup> _listingGroups = new List<ListingGroup>();
 		private readonly List<Listing> _listings = new List<Listing>();
 		private readonly List<ListingItem> _listingItems = new List<ListingItem>();
 		private readonly List<ListingQueueEntry> _listingQueueEntries = new List<ListingQueueEntry>();
-		private readonly List<ListingQueuePriorityEntry> _listingQueuePriorityEntries = new List<ListingQueuePriorityEntry>();
 		private readonly List<ListingSold> _listingSolds = new List<ListingSold>();
 		private readonly ILogger<InMemoryRepository> _logger;
 
@@ -49,10 +48,10 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositorie
 			};
 		}
 
-		public async Task<Listing?> AddListingAsync(Listing listing)
+		public Task<Listing?> AddListingAsync(Listing listing)
 		{
 			_listings.Add(listing);
-			return listing;
+			return Task.FromResult(listing);
 		}
 
 		public Task<ListingGroup?> AddListingGroupAsync(ListingGroup listingGroup)
@@ -77,12 +76,6 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositorie
 		{
 			_listingQueueEntries.Add(listingQueueEntry);
 			return Task.FromResult(listingQueueEntry);
-		}
-
-		public Task<ListingQueuePriorityEntry?> AddListingQueuePriorityEntryAsync(ListingQueuePriorityEntry listingQueuePriorityEntry)
-		{
-			_listingQueuePriorityEntries.Add(listingQueuePriorityEntry);
-			return Task.FromResult(listingQueuePriorityEntry);
 		}
 
 		public Task<IEnumerable<Listing>> AddListingsAsync(IEnumerable<Listing> listings)
@@ -121,11 +114,6 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositorie
 			return Task.FromResult(true);
 		}
 
-		public Task<bool> DeleteListingQueuePriorityEntryAsync(Guid listingQueueEntryId)
-		{
-			_listingQueuePriorityEntries.Remove(_listingQueuePriorityEntries.FirstOrDefault(l => l.ListingQueueEntryId == listingQueueEntryId));
-			return Task.FromResult(true);
-		}
 
 		public Task<bool> DeleteListingSoldAsync(Guid listingSoldId)
 		{
@@ -222,16 +210,6 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositorie
 			return Task.FromResult(_listingQueueEntries.FirstOrDefault(qe => qe.Id == listingQueueEntryId));
 		}
 
-		public Task<IEnumerable<ListingQueuePriorityEntry>> GetListingQueuePriorityEntriesAsync(IEnumerable<Guid> listingQueueEntryIds)
-		{
-			return Task.FromResult(_listingQueuePriorityEntries.Where(qpe => listingQueueEntryIds.Contains(qpe.ListingQueueEntryId)));
-		}
-
-		public Task<ListingQueuePriorityEntry?> GetListingQueuePriorityEntryAsync(Guid listingQueueEntryId)
-		{
-			return Task.FromResult(_listingQueuePriorityEntries.FirstOrDefault(qpe => qpe.ListingQueueEntryId == listingQueueEntryId));
-		}
-
 		public Task<IEnumerable<Listing>> GetListingsByGroupIdAsync(Guid groupId)
 		{
 			return Task.FromResult(_listings.Where(l => l.ListingGroupId == groupId));
@@ -304,14 +282,6 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositorie
 			_listingQueueEntries.Remove(originalListingQueueEntry);
 			_listingQueueEntries.Add(listingQueueEntry);
 			return Task.FromResult(listingQueueEntry);
-		}
-
-		public Task<ListingQueuePriorityEntry?> UpdateListingQueuePriorityEntryAsync(ListingQueuePriorityEntry listingQueuePriorityEntry)
-		{
-			ListingQueuePriorityEntry? originalListingQueuePriorityEntry = _listingQueuePriorityEntries.FirstOrDefault(qpe => qpe.ListingQueueEntryId == listingQueuePriorityEntry.ListingQueueEntryId);
-			_listingQueuePriorityEntries.Remove(originalListingQueuePriorityEntry);
-			_listingQueuePriorityEntries.Add(listingQueuePriorityEntry);
-			return Task.FromResult(listingQueuePriorityEntry);
 		}
 
 		public Task<IEnumerable<Listing>> GetListingsByListingIdsAsync(IEnumerable<Guid> listingIds)

@@ -1,7 +1,6 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
 using BoardGameMarket.ListingsService.Core.Application.Exceptions;
-using BoardGameMarket.ListingsService.Core.Application.Identity;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.Services.Helpers;
@@ -12,25 +11,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.ListingGroups
+namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroups
 {
 	internal class UpdateListingGroupUseCase
 	{
 		private readonly ListingFetcher _listingFetcher;
 		private readonly IListingGroupUpdaterService _listingGroupUpdaterService;
-		private readonly ICurrentUserContext _currentUserContext;
 
-		public UpdateListingGroupUseCase(ListingFetcher listingFetcher, IListingGroupUpdaterService listingGroupUpdaterService, ICurrentUserContext currentUserContext)
+		public UpdateListingGroupUseCase(ListingFetcher listingFetcher, IListingGroupUpdaterService listingGroupUpdaterService)
 		{
 			_listingFetcher = listingFetcher;
 			_listingGroupUpdaterService = listingGroupUpdaterService;
-			_currentUserContext = currentUserContext;
 		}
 
 		public async Task<ListingGroup> ExecuteAsync(ListingGroupUpdateRequest listingGroupUpdateRequest)
 		{
 			ListingGroup listingGroup = await _listingFetcher.GetListingGroupByIdAsync(listingGroupUpdateRequest.Id);
-			IdentityHelper.AuthorizeCurrentUserOrAdmin(listingGroup.SellerUserId, _currentUserContext);
 			bool isChanged = false;
 			if (listingGroup.Details != listingGroupUpdateRequest.Details)
 			{

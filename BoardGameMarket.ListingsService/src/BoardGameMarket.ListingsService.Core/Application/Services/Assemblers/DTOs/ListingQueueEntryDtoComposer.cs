@@ -1,8 +1,8 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries;
-using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueuePriorityEntries;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
+using BoardGameMarket.ListingsService.Core.Domain.Services;
 using Microsoft.Extensions.Logging;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.Assemblers.DTOs
@@ -11,45 +11,28 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Assemblers.D
 	{
 		private readonly ILogger<ListingQueueEntryDtoComposer> _logger;
 		private readonly IListingQueueEntryGetterService _listingQueueEntryGetterService;
-		private readonly IListingQueuePriorityEntryGetterService _listingQueuePriorityEntryGetterService;
+		private readonly QueueDomainService _queueDomainService;
 
-		public ListingQueueEntryDtoComposer(ILogger<ListingQueueEntryDtoComposer> logger, IListingQueueEntryGetterService listingQueueEntryGetterService, IListingQueuePriorityEntryGetterService listingQueuePriorityEntryGetterService)
+		public ListingQueueEntryDtoComposer(ILogger<ListingQueueEntryDtoComposer> logger, IListingQueueEntryGetterService listingQueueEntryGetterService, QueueDomainService queueDomainService)
 		{
 			_logger = logger;
 			_listingQueueEntryGetterService = listingQueueEntryGetterService;
-			_listingQueuePriorityEntryGetterService = listingQueuePriorityEntryGetterService;
+			_queueDomainService = queueDomainService;
 		}
 
 		public async Task<ListingQueueEntryResponseDto?> ComposeListingQueueEntryByIdAsync(Guid queueEntryId)
 		{
 			ListingQueueEntry? queueEntry = await _listingQueueEntryGetterService.GetListingQueueEntryByIdAsync(queueEntryId);
 			ArgumentNullException.ThrowIfNull(queueEntry, nameof(queueEntry));
-
-			ListingQueuePriorityEntry? priorityEntry = await _listingQueuePriorityEntryGetterService.GetListingQueuePriorityEntryAsync(queueEntryId);
 			ListingQueueEntryResponseDto responseDto = queueEntry.ToDto();
-			responseDto.PriorityWeight = priorityEntry?.Priority;
 			return responseDto;
 		}
 
 		public async Task<IEnumerable<ListingQueueEntryResponseDto>> ComposeListingQueueEntriesByListingIdAsync(Guid listingId)
 		{
-			IEnumerable<ListingQueueEntry> queueEntries = await _listingQueueEntryGetterService.GetListingQueueEntriesByListingIdAsync(listingId);
+			IEnumerable<ListingQueueEntry> queueEntries = _queueDomainService.SortQueue(await _listingQueueEntryGetterService.GetListingQueueEntriesByListingIdAsync(listingId));
 
-			IEnumerable<ListingQueuePriorityEntry> priorityEntries = await _listingQueuePriorityEntryGetterService.GetListingQueuePriorityEntriesAsync(queueEntries.Select(e => e.Id));
-
-			IEnumerable<ListingQueueEntryResponseDto> responseDtos = queueEntries.Select(e => e.ToDto());
-
-			Dictionary<Guid, ListingQueueEntryResponseDto> dtoDict = queueEntries.ToDictionary(e => e.Id, e => e.ToDto());
-
-			foreach (var priorityEntry in priorityEntries)
-			{
-				if (dtoDict.TryGetValue(priorityEntry.ListingQueueEntryId, out var dto))
-				{
-					dto.PriorityWeight = priorityEntry.Priority;
-				}
-			}
-
-			return dtoDict.Values;
+			return queueEntries.Select(e => e.ToDto());
 		}
 	}
 }

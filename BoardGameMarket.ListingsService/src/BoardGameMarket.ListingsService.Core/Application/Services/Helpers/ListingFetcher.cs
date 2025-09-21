@@ -1,7 +1,6 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingItems;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries;
-using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueuePriorityEntries;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 
@@ -11,29 +10,18 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Helpers
 	{
 		private readonly IListingGetterService _listingGetterService;
 		private readonly IListingQueueEntryGetterService _listingQueueEntryGetterService;
-		private readonly IListingQueuePriorityEntryGetterService _listingQueuePriorityEntryGetterService;
 		private readonly IListingGroupGetterService _listingGroupGetterService;
 		private readonly IListingItemGetterService _listingItemGetterService;
 
-		public ListingFetcher(IListingGetterService listingGetterService, IListingQueueEntryGetterService listingQueueEntryGetterService, IListingQueuePriorityEntryGetterService listingQueuePriorityEntryGetterService, IListingGroupGetterService listingGroupGetterService, IListingItemGetterService listingItemGetterService)
+		public ListingFetcher(IListingGetterService listingGetterService, IListingQueueEntryGetterService listingQueueEntryGetterService, IListingGroupGetterService listingGroupGetterService, IListingItemGetterService listingItemGetterService)
 		{
 			_listingGetterService = listingGetterService;
 			_listingQueueEntryGetterService = listingQueueEntryGetterService;
-			_listingQueuePriorityEntryGetterService = listingQueuePriorityEntryGetterService;
 			_listingGroupGetterService = listingGroupGetterService;
 			_listingItemGetterService = listingItemGetterService;
 		}
 
-		public async Task<ListingQueueEntry> GetListingQueueEntryAsync(Guid listingQueueEntryId)
-		{
-			ListingQueueEntry? listingQueueEntry = await _listingQueueEntryGetterService.GetListingQueueEntryByIdAsync(listingQueueEntryId);
-			if (listingQueueEntry == null)
-			{
-				throw new KeyNotFoundException("Listing queue entry not found");
-			}
-			return listingQueueEntry;
-		}
-
+		
 		public async Task<Listing> GetListingAsync(Guid listingId)
 		{
 			Listing? listing = await _listingGetterService.GetListingByIdAsync(listingId);
@@ -54,20 +42,9 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Helpers
 			return listingQueueEntry;
 		}
 
-		public async Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesAsync(Guid listingId)
+		public async Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesAsyncByListingId(Guid listingId)
 		{
 			return await _listingQueueEntryGetterService.GetListingQueueEntriesByListingIdAsync(listingId);
-		}
-
-		public async Task<IEnumerable<ListingQueuePriorityEntry>> GetListingQueuePriorityEntriesAsync(IEnumerable<ListingQueueEntry> listingQueueEntries)
-		{
-			return await _listingQueuePriorityEntryGetterService.GetListingQueuePriorityEntriesAsync(listingQueueEntries.Select(qe => qe.Id));
-		}
-
-		public async Task<IEnumerable<ListingQueuePriorityEntry>> GetListingQueuePriorityEntiresAsync(Guid listingId)
-		{
-			IEnumerable<ListingQueueEntry> listingQueueEntries = await GetListingQueueEntriesAsync(listingId);
-			return await GetListingQueuePriorityEntriesAsync(listingQueueEntries);
 		}
 
 		public async Task<ListingGroup> GetListingGroupByIdAsync(Guid listingGroupId)
@@ -107,6 +84,13 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Helpers
 		public async Task<IEnumerable<Listing>> GetListingsByListingIds(IEnumerable<Guid> listingIds)
 		{
 			return await _listingGetterService.GetListingsByListingIds(listingIds);
+		}
+
+		public async Task<HashSet<Guid>> GetListingGroupIdsByCatalogId(Guid catalogId)
+		{
+			IEnumerable<Guid> listingIds = await GetListingIdsByCatalogId(catalogId);
+			IEnumerable<Listing> listings = await GetListingsByListingIds(listingIds);
+			return new HashSet<Guid>(listings.Select(l => l.ListingGroupId));
 		}
 	}
 }

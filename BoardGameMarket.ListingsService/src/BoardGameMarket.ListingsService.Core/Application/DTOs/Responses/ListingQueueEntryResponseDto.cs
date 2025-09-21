@@ -10,6 +10,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.DTOs.Responses
 		public DateTime CreatedAt { get; set; }
 		public DateTime ModifiedAt { get; set; }
 
-		public decimal? PriorityWeight { get; set; }
+		public decimal? Priority { get; set; }
 	}
 }

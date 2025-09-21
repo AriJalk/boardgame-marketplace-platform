@@ -1,8 +1,8 @@
 ﻿using BoardGameMarket.ListingsService.API.Helpers;
+using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.Composition;
 using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
 using BoardGameMarket.ListingsService.Core.Application.Filters;
-using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
-using BoardGameMarket.ListingsService.Core.Application.UseCases.External.ListingGroups;
+using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Domain.Common;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,7 +14,7 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 	{
 		private readonly GetListingGroupsPageUseCase _getListingGroupsPageUseCase;
 
-		public ListingGroupsController(GetListingGroupsPageUseCase getListingGroupsPageUseCase)
+		public ListingGroupsController(GetListingGroupsPageUseCase getListingGroupsPageUseCase, AddCompleteListingGroupUseCase addCompleteListingGroupUseCase)
 		{
 			_getListingGroupsPageUseCase = getListingGroupsPageUseCase;
 		}
@@ -24,6 +24,13 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		{
 			Cursor? cursorObject = CursorParser.Parse(cursor);
 			return Ok(await _getListingGroupsPageUseCase.ExecuteAsync(cursorObject, pageSize, filter));
+		}
+
+		[HttpPost]
+		public async Task<ActionResult<ListingGroupResponseDto>> AddListingGroupWithListings(AddCompleteListingGroupUseCase addCompleteListingGroupUseCase, ListingGroupWithListingsRequest listingGroupWithListingsRequest)
+		{
+			ListingGroupResponseDto listingGroupResponseDto = await addCompleteListingGroupUseCase.ExecuteAsync(listingGroupWithListingsRequest);
+			return Ok(listingGroupResponseDto);
 		}
 	}
 }

@@ -1,31 +1,38 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.Composition;
 using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
-using BoardGameMarket.ListingsService.Core.Application.Identity;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Services.Helpers;
-using BoardGameMarket.ListingsService.Core.Application.UseCases.External.ListingItems;
+using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingItems;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
-namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Listings
+namespace BoardGameMarket.ListingsService.Core.Application.UseCases.Listings
 {
-	internal class AddCompleteListingsUseCase
+	public class AddCompleteListingsUseCase
 	{
 		private readonly IListingAdderService _listingAdderService;
-		private readonly AddCompleteItemsUseCase _addCompleteListingItemsUseCase;
+		private readonly AddCompleteListingItemsUseCase _addCompleteListingItemsUseCase;
 		private readonly ILogger<AddCompleteListingsUseCase> _logger;
-		private readonly ICurrentUserContext _currentUserContext;
 		private readonly ListingFetcher _listingFetcher;
 
-		public AddCompleteListingsUseCase(IListingAdderService listingAdderService, AddCompleteItemsUseCase addCompleteListingItemsUseCase, ILogger<AddCompleteListingsUseCase> logger, ICurrentUserContext currentUserContext, ListingFetcher listingFetcher)
+		public AddCompleteListingsUseCase(IListingAdderService listingAdderService, AddCompleteListingItemsUseCase addCompleteListingItemsUseCase, ILogger<AddCompleteListingsUseCase> logger, ListingFetcher listingFetcher)
 		{
 			_listingAdderService = listingAdderService;
 			_addCompleteListingItemsUseCase = addCompleteListingItemsUseCase;
 			_logger = logger;
-			_currentUserContext = currentUserContext;
 			_listingFetcher = listingFetcher;
 		}
+
+		private static void ValidateGroupConsistency(IEnumerable<ListingWithListingItemsRequest> requests)
+		{
+			Guid groupId = requests.First().ListingAddRequest.ListingGroupId;
+			if (requests.Any(r => r.ListingAddRequest.ListingGroupId != groupId))
+			{
+				throw new InvalidOperationException("All listings must belong to the same group");
+			}
+		}
+
 
 		private async Task<ListingResponseDto> BuildListingWithItems(ListingWithListingItemsRequest request)
 		{
@@ -48,22 +55,9 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.Lis
 			return response;
 		}
 
-		private async Task ValidateGroupConsistency(IEnumerable<ListingWithListingItemsRequest> requests)
-		{
-			Guid groupId = requests.First().ListingAddRequest.ListingGroupId;
-			if (requests.Any(r => r.ListingAddRequest.ListingGroupId != groupId))
-			{
-				throw new InvalidOperationException("All listings must belong to the same group");
-			}
-			
-			// Authorize
-			Guid sellerId = await _listingFetcher.GetSellerUserIdByGroupIdAsync(groupId);
-			IdentityHelper.AuthorizeCurrentUserOrAdmin(sellerId, _currentUserContext);
-		}
-
 		public async Task<IEnumerable<ListingResponseDto>> ExecuteAsync(IEnumerable<ListingWithListingItemsRequest> requests)
 		{
-			await ValidateGroupConsistency(requests);
+			ValidateGroupConsistency(requests);
 			var tasks = requests.Select(BuildListingWithItems);
 			return await Task.WhenAll(tasks);
 		}

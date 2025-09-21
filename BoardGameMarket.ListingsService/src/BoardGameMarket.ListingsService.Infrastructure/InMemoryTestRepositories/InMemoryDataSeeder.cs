@@ -15,17 +15,15 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositorie
 		private readonly IListingRepository _listingRepository;
 		private readonly IListingItemRepository _listingItemRepository;
 		private readonly IListingQueueEntryRepository _listingQueueEntryRepository;
-		private readonly IListingQueuePriorityEntryRepository _listingQueuePriorityEntryRepository;
 		private readonly IListingSoldRepository _listingSoldRepository;
 		private readonly IFixture _fixture;
 
-		public InMemoryDataSeeder(IListingGroupRepository listingGroupRepository, IListingRepository listingRepository, IListingItemRepository listingItemRepository, IListingQueueEntryRepository listingQueueEntryRepository, IListingQueuePriorityEntryRepository listingQueuePriorityEntryRepository, IListingSoldRepository listingSoldRepository)
+		public InMemoryDataSeeder(IListingGroupRepository listingGroupRepository, IListingRepository listingRepository, IListingItemRepository listingItemRepository, IListingQueueEntryRepository listingQueueEntryRepository, IListingSoldRepository listingSoldRepository)
 		{
 			_listingGroupRepository = listingGroupRepository;
 			_listingRepository = listingRepository;
 			_listingItemRepository = listingItemRepository;
 			_listingQueueEntryRepository = listingQueueEntryRepository;
-			_listingQueuePriorityEntryRepository = listingQueuePriorityEntryRepository;
 			_listingSoldRepository = listingSoldRepository;
 			_fixture = new Fixture();
 		}
@@ -51,16 +49,15 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositorie
 					{
 						ListingQueueEntry listingQueueEntry = _fixture.Create<ListingQueueEntry>();
 						listingQueueEntry.ListingId = listing.Id;
-						await _listingQueueEntryRepository.AddListingQueueEntryAsync(listingQueueEntry);
 						if (k % 3 == 0)
 						{
-							ListingQueuePriorityEntry listingQueuePriorityEntry = new ListingQueuePriorityEntry() 
-							{
-								ListingQueueEntryId = listingQueueEntry.Id,
-								Priority = k * 10 
-							};
-							await _listingQueuePriorityEntryRepository.AddListingQueuePriorityEntryAsync(listingQueuePriorityEntry);
+							listingQueueEntry.Priority = (k + 1) * 10;
 						}
+						else
+						{
+							listingQueueEntry.Priority = null;
+						}
+							await _listingQueueEntryRepository.AddListingQueueEntryAsync(listingQueueEntry);
 					}
 				}
 			}

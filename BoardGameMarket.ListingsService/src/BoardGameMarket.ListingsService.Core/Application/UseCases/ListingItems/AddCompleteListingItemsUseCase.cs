@@ -1,19 +1,18 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.Composition;
-using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingItems;
+﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingItems;
 using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingItems;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using Microsoft.Extensions.Logging;
 
-namespace BoardGameMarket.ListingsService.Core.Application.UseCases.External.ListingItems
+namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingItems
 {
-	internal class AddCompleteItemsUseCase
+	public class AddCompleteListingItemsUseCase
 	{
 		private readonly IListingItemAdderService _listingItemAdderService;
-		private readonly ILogger<AddCompleteItemsUseCase> _logger;
+		private readonly ILogger<AddCompleteListingItemsUseCase> _logger;
 
-		public AddCompleteItemsUseCase(IListingItemAdderService listingItemAdderService, ILogger<AddCompleteItemsUseCase> logger)
+		public AddCompleteListingItemsUseCase(IListingItemAdderService listingItemAdderService, ILogger<AddCompleteListingItemsUseCase> logger)
 		{
 			_listingItemAdderService = listingItemAdderService;
 			_logger = logger;

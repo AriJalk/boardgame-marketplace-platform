@@ -8,6 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCore();
 builder.Services.AddInMemoryInfrastructure();
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+
 builder.Services.AddControllers();
 
 var app = builder.Build();
@@ -20,12 +24,14 @@ using (var scope = app.Services.CreateScope())
 		scope.ServiceProvider.GetRequiredService<IListingRepository>(),
 		scope.ServiceProvider.GetRequiredService<IListingItemRepository>(),
 		scope.ServiceProvider.GetRequiredService<IListingQueueEntryRepository>(),
-		scope.ServiceProvider.GetRequiredService<IListingQueuePriorityEntryRepository>(),
 		scope.ServiceProvider.GetRequiredService<IListingSoldRepository>()
 		);
 
 	await seeder.SeedAsync();
 }
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.MapControllers();
 

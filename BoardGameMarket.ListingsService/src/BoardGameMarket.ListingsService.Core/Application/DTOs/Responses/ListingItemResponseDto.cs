@@ -2,7 +2,8 @@
 {
 	public class ListingItemResponseDto
 	{
-		public Guid Id { get; set; }
+		//public Guid Id { get; set; }
+		public Guid ListingId { get; set; }
 		public Guid CatalogId { get; set; }
 	}
 }

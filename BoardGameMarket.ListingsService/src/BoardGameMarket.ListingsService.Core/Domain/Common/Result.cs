@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Domain.Common
 {
-	internal class Result
+	public class Result
 	{
 		public bool IsValid { get; }
 		public IEnumerable<string> Errors { get; }
@@ -29,7 +29,7 @@ namespace BoardGameMarket.ListingsService.Core.Domain.Common
 
 		public static Result Failure(params string[] errors)
 		{
-			return new Result(true, errors);
+			return new Result(false, errors);
 		}
 	}
 }

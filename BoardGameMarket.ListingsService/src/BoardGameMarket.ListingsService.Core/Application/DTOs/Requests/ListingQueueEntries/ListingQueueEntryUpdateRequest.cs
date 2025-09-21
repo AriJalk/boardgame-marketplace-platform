@@ -13,5 +13,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.Listing
 		public Guid ListingId { get; set; }
 		public QueueStatus Status { get; set; }
 		public Guid BuyerUserId { get; set; }
+		public decimal? Priority { get; set; }
 	}
 }

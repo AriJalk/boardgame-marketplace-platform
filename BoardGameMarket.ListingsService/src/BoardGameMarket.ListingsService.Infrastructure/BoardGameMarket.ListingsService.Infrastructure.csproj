@@ -14,4 +14,8 @@
     <ProjectReference Include="..\BoardGameMarket.ListingsService.Core\BoardGameMarket.ListingsService.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Identity\" />
+  </ItemGroup>
+
 </Project>

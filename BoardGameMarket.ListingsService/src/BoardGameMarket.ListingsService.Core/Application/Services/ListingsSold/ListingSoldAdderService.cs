@@ -1,5 +1,4 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingsSold;
-using BoardGameMarket.ListingsService.Core.Application.Mappers;
+﻿using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingsSold;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;

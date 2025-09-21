@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BoardGameMarket.ListingsService.Core.Domain.Entities
+namespace BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingQueueEntries
 {
-	public class ListingQueuePriorityEntry
+	internal class ListingQueueEntrySetPriorityRequest
 	{
 		public Guid ListingQueueEntryId { get; set; }
 		public decimal Priority { get; set; }

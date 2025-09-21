@@ -14,6 +14,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 				BuyerUserId = listingQueueEntry.BuyerUserId,
 				CreatedAt = listingQueueEntry.CreatedAt,
 				Status = listingQueueEntry.Status,
+				Priority = listingQueueEntry.Priority
 			};
 		}
 
@@ -24,6 +25,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 				ListingId = listingQueueEntryAddRequest.ListingId,
 				BuyerUserId = listingQueueEntryAddRequest.BuyerUserId,
 				Status = listingQueueEntryAddRequest.Status,
+				Priority = listingQueueEntryAddRequest.Priority
 			};
 		}
 
@@ -35,6 +37,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 				ListingId = listingQueueEntry.ListingId,
 				BuyerUserId = listingQueueEntry.BuyerUserId,
 				Status = listingQueueEntry.Status,
+				Priority = listingQueueEntry.Priority
 			};
 		}
 	}
