@@ -22,7 +22,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Helpers
 		}
 
 		
-		public async Task<Listing> GetListingAsync(Guid listingId)
+		public async Task<Listing> GetListingByIdAsync(Guid listingId)
 		{
 			Listing? listing = await _listingGetterService.GetListingByIdAsync(listingId);
 			if (listing == null)
@@ -65,7 +65,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Helpers
 
 		public async Task<Guid> GetSellerUserIdByListingIdAsync(Guid listingId)
 		{
-			Listing listing = await GetListingAsync(listingId);
+			Listing listing = await GetListingByIdAsync(listingId);
 			ListingGroup listingGroup = await GetListingGroupByIdAsync(listing.ListingGroupId);
 			return listingGroup.SellerUserId;
 		}

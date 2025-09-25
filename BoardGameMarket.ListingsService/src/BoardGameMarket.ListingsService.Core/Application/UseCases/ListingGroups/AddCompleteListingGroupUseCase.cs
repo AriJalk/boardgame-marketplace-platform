@@ -34,7 +34,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
 			{
 				listingWithListingItemsRequest.ListingAddRequest.ListingGroupId = listingGroup.Id;
 			}
-
+			
 			IEnumerable<ListingResponseDto> listingResponses = await _addCompleteListingsUseCase.ExecuteAsync(listingGroupWithListingsRequestDto.ListingWithListingItemsRequests);
 			ListingGroupResponseDto listingGroupResponse = listingGroup.ToDto();
 			listingGroupResponse.Listings = listingResponses;

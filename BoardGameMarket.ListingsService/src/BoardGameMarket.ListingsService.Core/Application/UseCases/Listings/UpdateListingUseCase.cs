@@ -24,7 +24,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.Listings
 
 		public async Task<Listing> ExecuteAsync(ListingUpdateRequest listingUpdateRequest)
 		{
-			Listing listing = await _listingFetcher.GetListingAsync(listingUpdateRequest.Id);
+			Listing listing = await _listingFetcher.GetListingByIdAsync(listingUpdateRequest.Id);
 			// Validate
 			Guid sellerId = await _listingFetcher.GetSellerUserIdByGroupIdAsync(listing.ListingGroupId);
 

@@ -8,6 +8,7 @@ using BoardGameMarket.ListingsService.Core.Domain.Entities;
 
 namespace BoardGameMarket.ListingsService.Core.Application.UseCases.Listings
 {
+	// TODO: remove?
 	internal class AddListingUseCase
 	{
 		private readonly ListingFetcher _listingFetcher;

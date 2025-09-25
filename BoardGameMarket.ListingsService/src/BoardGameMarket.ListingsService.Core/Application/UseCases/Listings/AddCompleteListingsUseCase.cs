@@ -5,7 +5,6 @@ using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings
 using BoardGameMarket.ListingsService.Core.Application.Services.Helpers;
 using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingItems;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.UseCases.Listings
 {
@@ -24,13 +23,18 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.Listings
 			_listingFetcher = listingFetcher;
 		}
 
-		private static void ValidateGroupConsistency(IEnumerable<ListingWithListingItemsRequest> requests)
+		private async Task ValidateGroupConsistency(IEnumerable<ListingWithListingItemsRequest> requests)
 		{
 			Guid groupId = requests.First().ListingAddRequest.ListingGroupId;
-			if (requests.Any(r => r.ListingAddRequest.ListingGroupId != groupId))
+
+
+			if (requests.Any(r => r.ListingAddRequest.ListingGroupId != groupId || r.ListingAddRequest.ListingGroupId == Guid.Empty))
 			{
-				throw new InvalidOperationException("All listings must belong to the same group");
+				throw new InvalidOperationException("All listings must belong to the same existing group");
 			}
+
+			// Validate group existance
+			await _listingFetcher.GetListingGroupByIdAsync(groupId);
 		}
 
 

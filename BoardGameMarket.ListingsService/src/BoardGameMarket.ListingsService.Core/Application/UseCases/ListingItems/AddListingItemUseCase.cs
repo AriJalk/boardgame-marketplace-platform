@@ -23,7 +23,15 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingItems
 
 		public async Task<ListingItemResponseDto> ExecuteAsync(ListingItemAddRequest listingItemAddRequest)
 		{
-			Guid sellerId = await _listingFetcher.GetSellerUserIdByListingIdAsync(listingItemAddRequest.ListingId);
+
+			if (listingItemAddRequest.ListingId == Guid.Empty)
+			{
+				throw new ArgumentException("ListingId empty");
+			}
+
+			// Validate existance of listing
+			await _listingFetcher.GetListingByIdAsync(listingItemAddRequest.ListingId);
+
 			ListingItem? listingItem = await _listingItemAdderService.AddListingItemAsync(listingItemAddRequest.ToListingItem());
 			if (listingItem == null)
 			{
