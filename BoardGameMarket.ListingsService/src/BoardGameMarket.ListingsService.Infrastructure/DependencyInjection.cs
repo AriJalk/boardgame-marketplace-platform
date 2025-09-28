@@ -27,11 +27,11 @@ namespace BoardGameMarket.ListingsService.Infrastructure
 		public static IServiceCollection AddInMemoryInfrastructure(this IServiceCollection services)
 		{
 			services.AddTransient<IUnitOfWork, InMemoryUnitOfWork>();
-			services.AddSingleton<IListingGroupRepository, InMemoryRepository>();
-			services.AddSingleton<IListingRepository, InMemoryRepository>();
-			services.AddSingleton<IListingItemRepository, InMemoryRepository>();
-			services.AddSingleton<IListingQueueEntryRepository, InMemoryRepository>();
-			services.AddSingleton<IListingSoldRepository, InMemoryRepository>();
+			services.AddSingleton<IListingGroupRepository, InMemoryListingGroupRepository>();
+			services.AddSingleton<IListingRepository, InMemoryListingRepository>();
+			services.AddSingleton<IListingItemRepository, InMemoryListingItemRepository>();
+			services.AddSingleton<IListingQueueEntryRepository, InMemoryListingQueueEntryRepository>();
+			services.AddSingleton<IListingSoldRepository, InMemoryListingSoldRepository>();
 			return services;
 		}
 	}

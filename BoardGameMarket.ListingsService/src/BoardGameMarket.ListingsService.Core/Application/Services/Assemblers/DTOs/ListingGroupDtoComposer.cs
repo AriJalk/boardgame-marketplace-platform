@@ -43,20 +43,20 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Assemblers.D
 
 			await Task.WhenAll(itemsTask, queuesTask);
 
-			IEnumerable<ListingItem> allItems = await itemsTask;
-			IEnumerable<ListingQueueEntry> allQueueEntries = await queuesTask;
+			//IEnumerable<ListingItem> allItems = await itemsTask;
+			//IEnumerable<ListingQueueEntry> allQueueEntries = await queuesTask;
 
 			//ILookup<Guid,ListingItem> itemsLookup = allItems.ToLookup(i => i.ListingId);
 			//ILookup<Guid, ListingQueueEntry> queuesLookup = allQueueEntries.ToLookup(qe => qe.ListingId);
 
 
-			IEnumerable<ListingResponseDto> listingDtos = listings.Select(l =>
+			ListingResponseDto[] listingDtos = listings.Select(l =>
 			{
 				ListingResponseDto dto = l.ToDto();
-				dto.ListingItems = _requestCache.GetListingItemsByListingId(dto.Id).Select(i => i.ToDto()).ToList();
-				dto.QueueEntries = _queueDomainService.SortQueue(_requestCache.GetListingQueueEntriesByListingId(dto.Id)).Select(qe => qe.ToDto()).ToList();
+				dto.ListingItems = _requestCache.GetListingItemsByListingId(dto.Id).Select(i => i.ToDto()).ToArray();
+				dto.QueueEntries = _queueDomainService.SortQueue(_requestCache.GetListingQueueEntriesByListingId(dto.Id)).Select(qe => qe.ToDto()).ToArray();
 				return dto;
-			});
+			}).ToArray();
 
 			ListingGroupResponseDto listingGroupResponseDto = listingGroup.ToDto();
 			listingGroupResponseDto.Listings = listingDtos;

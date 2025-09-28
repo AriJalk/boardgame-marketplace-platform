@@ -11,6 +11,7 @@ namespace BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts
 		Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesByBuyerUserId(Guid buyerUserId);
 		Task<ListingQueueEntry?> AddListingQueueEntryAsync(ListingQueueEntry listingQueueEntry);
 		Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntry);
-		Task<bool> DeleteListingQueueEntry(Guid listingQueueEntryId);
+		Task<bool> DeleteListingQueueEntryAsync(Guid listingQueueEntryId);
+		Task DeleteListingQueueEntiresByListingIdAsync(Guid listingId);
 	}
 }

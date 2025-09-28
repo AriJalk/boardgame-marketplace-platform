@@ -22,8 +22,8 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Assemblers.D
 		{
 			ListingResponseDto listingDto = listing.ToDto();
 
-			Task<IEnumerable<ListingItemResponseDto>> itemsTask = _listingItemDtosComposer.ComposeListingItemsAsync(listingDto.Id);
-			Task<IEnumerable<ListingQueueEntryResponseDto>> queueTasks = _listingQueueEntryDtosComposer.ComposeListingQueueEntriesByListingIdAsync(listingDto.Id);
+			Task<ListingItemResponseDto[]> itemsTask = _listingItemDtosComposer.ComposeListingItemsAsync(listingDto.Id);
+			Task<ListingQueueEntryResponseDto[]> queueTasks = _listingQueueEntryDtosComposer.ComposeListingQueueEntriesByListingIdAsync(listingDto.Id);
 			await Task.WhenAll(itemsTask, queueTasks);
 
 			listingDto.ListingItems = await itemsTask;

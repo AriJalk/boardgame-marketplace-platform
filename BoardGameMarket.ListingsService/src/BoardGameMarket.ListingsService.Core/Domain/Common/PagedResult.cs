@@ -8,7 +8,7 @@ namespace BoardGameMarket.ListingsService.Core.Domain.Common
 {
 	public class PagedResult<T>
 	{
-		public IEnumerable<T> Items { get; set; }
+		public T[] Items { get; set; } = Array.Empty<T>();
 		public string? NextCursor { get; set; }
 	}
 }

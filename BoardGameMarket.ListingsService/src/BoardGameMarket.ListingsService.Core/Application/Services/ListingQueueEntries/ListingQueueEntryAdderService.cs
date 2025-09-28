@@ -10,12 +10,10 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingQueue
 	internal class ListingQueueEntryAdderService : IListingQueueEntryAdderService
 	{
 		private readonly IListingQueueEntryRepository _listingQueueEntryRepository;
-		private readonly ILogger<ListingQueueEntryAdderService> _logger;
 
-		public ListingQueueEntryAdderService(IListingQueueEntryRepository listingQueueEntryRepository, ILogger<ListingQueueEntryAdderService> logger)
+		public ListingQueueEntryAdderService(IListingQueueEntryRepository listingQueueEntryRepository)
 		{
 			_listingQueueEntryRepository = listingQueueEntryRepository;
-			_logger = logger;
 		}
 
 		public async Task<ListingQueueEntry?> AddListingQueueEntryAsync(ListingQueueEntry listingQueueEntryToAdd)
@@ -23,8 +21,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingQueue
 			listingQueueEntryToAdd.Id = Guid.NewGuid();
 			listingQueueEntryToAdd.CreatedAt = DateTime.UtcNow;
 			listingQueueEntryToAdd.ModifiedAt = DateTime.UtcNow;
-
-			_logger.LogInformation($"{nameof(ListingQueueEntryAdderService)}:{nameof(AddListingQueueEntryAsync)}- Adding Listing queue");
 
 			return await _listingQueueEntryRepository.AddListingQueueEntryAsync(listingQueueEntryToAdd);
 		}

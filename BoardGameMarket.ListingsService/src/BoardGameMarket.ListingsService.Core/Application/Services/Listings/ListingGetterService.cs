@@ -17,18 +17,16 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Listings
 	{
 		private readonly IListingRepository _listingRepository;
 		private readonly RequestCache _requestCache;
-		private readonly ILogger<ListingGetterService> _logger;
 
-		public ListingGetterService(IListingRepository listingRepository, RequestCache requestCache, ILogger<ListingGetterService> logger)
+		public ListingGetterService(IListingRepository listingRepository, RequestCache requestCache)
 		{
 			_listingRepository = listingRepository;
 			_requestCache = requestCache;
-			_logger = logger;
 		}
 
 		public async Task<Listing?> GetListingByIdAsync(Guid listingId)
 		{
-			_logger.LogInformation($"{nameof(ListingGetterService)}:{nameof(GetListingByIdAsync)}- get listing {listingId}");
+			//_logger.LogInformation($"{nameof(ListingGetterService)}:{nameof(GetListingByIdAsync)}- get listing {listingId}");
 			if (_requestCache.TryGetListingById(listingId, out var listing))
 			{
 				return listing;
@@ -43,8 +41,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Listings
 
 		public async Task<IEnumerable<Listing>> GetListingsByListingGroupIdAsync(Guid groupId)
 		{
-			_logger.LogInformation($"{nameof(ListingGetterService)}:{nameof(GetListingsByListingGroupIdAsync)}- get listing by group {groupId}");
-
 			IReadOnlyList<Listing> listingsFromCache = _requestCache.GetListingsByGroupId(groupId);
 			if (listingsFromCache.Count > 0)
 			{
@@ -62,8 +58,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Listings
 
 		public async Task<IEnumerable<Listing>> GetListingsByListingIds(IEnumerable<Guid> listingIds)
 		{
-			_logger.LogInformation($"{nameof(ListingGetterService)}:{nameof(GetListingsByListingIds)}- get listings by ids {listingIds}");
-
 			List<Listing> listings = new List<Listing>();
 			HashSet<Guid> missingIds = new HashSet<Guid>();
 			foreach (Guid listingId in listingIds)

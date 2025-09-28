@@ -11,22 +11,22 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositorie
 	{
 		public Task BeginTransactionAsync()
 		{
-			throw new NotImplementedException();
+			return Task.CompletedTask;
 		}
 
 		public Task CommitTransactionAsync()
 		{
-			throw new NotImplementedException();
+			return Task.CompletedTask;
 		}
 
 		public Task RollBackTransactionAsync()
 		{
-			throw new NotImplementedException();
+			return Task.CompletedTask;
 		}
 
 		public Task<int> SaveChangesAsync()
 		{
-			throw new NotImplementedException();
+			return Task.FromResult(1);
 		}
 	}
 }

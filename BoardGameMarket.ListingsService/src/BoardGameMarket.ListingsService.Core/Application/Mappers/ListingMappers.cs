@@ -35,16 +35,5 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 				Status = listingAddRequest.Status,
 			};
 		}
-
-		public static ListingUpdateRequest ToUpdateRequest(this Listing listing)
-		{
-			return new ListingUpdateRequest()
-			{
-				Id = listing.Id,
-				Status = listing.Status,
-				Details = listing.Details,
-				Price = listing.Price,
-			};
-		}
 	}
 }

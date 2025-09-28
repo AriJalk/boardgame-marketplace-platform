@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingsSold
 {
-	internal interface IListingSoldDeleterService
+	public interface IListingSoldDeleterService
 	{
 		Task<bool> DeleteListingSoldAsync(Guid listingSoldId);
 	}

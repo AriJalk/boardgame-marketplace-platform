@@ -63,9 +63,11 @@ namespace BoardGameMarket.ListingsService.Core
 			services.AddTransient<AddCompleteListingGroupUseCase>();
 			services.AddTransient<GetListingGroupsPageUseCase>();
 			services.AddTransient<UpdateListingGroupUseCase>();
+			services.AddTransient<DeleteListingGroupUseCase>();
 
 			services.AddTransient<AddCompleteListingItemsUseCase>();
 			services.AddTransient<AddListingItemUseCase>();
+			services.AddTransient<DeleteListingUseCase>();
 
 			services.AddTransient<AddQueueEntryUseCase>();
 

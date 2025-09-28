@@ -1,4 +1,5 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingItems;
+using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,19 +13,20 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingItems
 	internal class ListingItemDeleterService : IListingItemDeleterService
 	{
 		private readonly IListingItemRepository _listingItemRepository;
-		private readonly ILogger<ListingItemDeleterService> _logger;
 
-		public ListingItemDeleterService(IListingItemRepository listingItemRepository, ILogger<ListingItemDeleterService> logger)
+		public ListingItemDeleterService(IListingItemRepository listingItemRepository)
 		{
 			_listingItemRepository = listingItemRepository;
-			_logger = logger;
 		}
 
 		public async Task<bool> DeleteListingItem(Guid listingItemId)
 		{
-			_logger.LogInformation($"{nameof(ListingItemDeleterService)}:{nameof(DeleteListingItem)}- Deleting item {listingItemId}");
+			return await _listingItemRepository.DeleteListingItemAsync(listingItemId);
+		}
 
-			return await _listingItemRepository.DeleteListingItem(listingItemId);
+		public async Task DeleteListingItemsByListingIdAsync(Guid listingId)
+		{
+			await _listingItemRepository.DeleteListingItemsByListingIdAsync(listingId);
 		}
 	}
 }

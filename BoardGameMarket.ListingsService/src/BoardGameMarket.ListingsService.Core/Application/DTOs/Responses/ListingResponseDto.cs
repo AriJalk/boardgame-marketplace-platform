@@ -10,8 +10,8 @@ namespace BoardGameMarket.ListingsService.Core.Application.DTOs.Responses
 		public DateTime ModifiedAt { get; set; }
 		public decimal Price { get; set; }
 		public string? Details { get; set; }
-		public IEnumerable<ListingItemResponseDto>? ListingItems { get; set; }
-		public IEnumerable<ListingQueueEntryResponseDto>? QueueEntries { get; set; }
+		public ListingItemResponseDto[]? ListingItems { get; set; }
+		public ListingQueueEntryResponseDto[]? QueueEntries { get; set; }
 		public Guid? ListingGroupId { get; set; } // Optional
 	}
 }

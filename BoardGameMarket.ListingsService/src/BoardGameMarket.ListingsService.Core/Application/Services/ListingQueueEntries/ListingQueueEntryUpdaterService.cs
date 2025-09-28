@@ -9,12 +9,10 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingQueue
 	internal class ListingQueueEntryUpdaterService : IListingQueueEntryUpdaterService
 	{
 		private readonly IListingQueueEntryRepository _listingQueueEntryRepository;
-		private readonly ILogger<ListingQueueEntryUpdaterService> _logger;
 
-		public ListingQueueEntryUpdaterService(IListingQueueEntryRepository listingQueueEntryRepository, ILogger<ListingQueueEntryUpdaterService> logger)
+		public ListingQueueEntryUpdaterService(IListingQueueEntryRepository listingQueueEntryRepository)
 		{
 			_listingQueueEntryRepository = listingQueueEntryRepository;
-			_logger = logger;
 		}
 
 		public async Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntryToUpdate)

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries
 {
-	internal interface IListingQueueEntryAdderService
+	public interface IListingQueueEntryAdderService
 	{
 		Task<ListingQueueEntry?> AddListingQueueEntryAsync(ListingQueueEntry listingQueueEntryToAdd);
 	}

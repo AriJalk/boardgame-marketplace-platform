@@ -1,4 +1,5 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.Listings;
+using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Services.Helpers;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.UseCases.Listings
 {
-	internal class UpdateListingUseCase
+	public class UpdateListingUseCase
 	{
 		private readonly ListingFetcher _listingFetcher;
 		private readonly IListingUpdaterService _listingUpdaterService;
@@ -22,9 +23,9 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.Listings
 			_listingUpdaterService = listingUpdaterService;
 		}
 
-		public async Task<Listing> ExecuteAsync(ListingUpdateRequest listingUpdateRequest)
+		public async Task<ListingResponseDto> ExecuteAsync(ListingUpdateRequest listingUpdateRequest, Guid listingId)
 		{
-			Listing listing = await _listingFetcher.GetListingByIdAsync(listingUpdateRequest.Id);
+			Listing listing = await _listingFetcher.GetListingByIdAsync(listingId);
 			// Validate
 			Guid sellerId = await _listingFetcher.GetSellerUserIdByGroupIdAsync(listing.ListingGroupId);
 
@@ -48,7 +49,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.Listings
 			{
 				throw new InvalidOperationException("Can't update listing");
 			}
-			return listingFromUpdate;
+			return listingFromUpdate.ToDto();
 		}
 	}
 }

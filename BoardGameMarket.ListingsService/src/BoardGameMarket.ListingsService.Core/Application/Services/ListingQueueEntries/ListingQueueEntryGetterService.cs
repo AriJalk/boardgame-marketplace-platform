@@ -15,13 +15,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingQueue
 	{
 		private readonly IListingQueueEntryRepository _listingQueueEntryRepository;
 		private readonly RequestCache _requestCache;
-		private readonly ILogger<ListingQueueEntryGetterService> _logger;
 
-		public ListingQueueEntryGetterService(IListingQueueEntryRepository listingQueueEntryRepository, RequestCache requestCache, ILogger<ListingQueueEntryGetterService> logger)
+		public ListingQueueEntryGetterService(IListingQueueEntryRepository listingQueueEntryRepository, RequestCache requestCache)
 		{
 			_listingQueueEntryRepository = listingQueueEntryRepository;
 			_requestCache = requestCache;
-			_logger = logger;
 		}
 
 		private async Task<IEnumerable<ListingQueueEntry>> GetFromCacheOrDb(Guid key, Func<Guid, Task<IEnumerable<ListingQueueEntry>>> fetchFromDb, Func<Guid, IReadOnlyList<ListingQueueEntry>> fetchFromCache)
@@ -41,15 +39,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingQueue
 
 		public async Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntiresByBuyerUserIdAsync(Guid buyerUserId)
 		{
-			_logger.LogInformation($"{nameof(ListingQueueEntryGetterService)}:{nameof(GetListingQueueEntiresByBuyerUserIdAsync)}- Get listing queues of buyer {buyerUserId}");
-
 			return await GetFromCacheOrDb(buyerUserId, _listingQueueEntryRepository.GetListingQueueEntriesByBuyerUserId, _requestCache.GetListingQueueEntriesByBuyerId);
 		}
 
 		public async Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesByListingIdAsync(Guid listingId)
 		{
-			_logger.LogInformation($"{nameof(ListingQueueEntryGetterService)}:{nameof(GetListingQueueEntriesByListingIdAsync)}- Get listing queues by listing {listingId}");
-
 			IEnumerable<ListingQueueEntry> queueEntries = await GetFromCacheOrDb(listingId, _listingQueueEntryRepository.GetListingQueueEntriesByListingIdAsync, _requestCache.GetListingQueueEntriesByListingId);
 
 			return queueEntries.OrderBy(qe => qe.CreatedAt);
@@ -58,8 +52,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingQueue
 		// TODO: extract combination of cache + db
 		public async Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesByListingIdsAsync(IEnumerable<Guid> listingIds)
 		{
-			_logger.LogInformation($"{nameof(ListingQueueEntryGetterService)}:{nameof(GetListingQueueEntriesByListingIdsAsync)}- Get listing queues by listings {listingIds}");
-
 			List<ListingQueueEntry> queueEntries = new List<ListingQueueEntry>();
 			HashSet<Guid> missingIds = new HashSet<Guid>();
 			foreach(Guid listingId in listingIds)
@@ -88,8 +80,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingQueue
 
 		public async Task<ListingQueueEntry?> GetListingQueueEntryByIdAsync(Guid listingQueueId)
 		{
-			_logger.LogInformation($"{nameof(ListingQueueEntryGetterService)}:{nameof(GetListingQueueEntryByIdAsync)}- Get listing queue {listingQueueId}");
-
 			if (_requestCache.TryGetListingQueueEntryById(listingQueueId, out var listingQueueEntry))
 			{
 				return listingQueueEntry;

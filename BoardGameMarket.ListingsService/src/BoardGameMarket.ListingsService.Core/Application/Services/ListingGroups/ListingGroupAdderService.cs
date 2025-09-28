@@ -15,12 +15,10 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingGroup
 	internal class ListingGroupAdderService : IListingGroupAdderService
 	{
 		private readonly IListingGroupRepository _listingGroupRepository;
-		private readonly ILogger<ListingGroupAdderService> _logger;
 
-		public ListingGroupAdderService(IListingGroupRepository listingGroupRepository, ILogger<ListingGroupAdderService> logger)
+		public ListingGroupAdderService(IListingGroupRepository listingGroupRepository)
 		{
 			_listingGroupRepository = listingGroupRepository;
-			_logger = logger;
 		}
 
 		public async Task<ListingGroup?> AddListingGroup(ListingGroup listingGroupToAdd)

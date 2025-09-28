@@ -12,18 +12,31 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 	public class ListingItemsController : ControllerBase
 	{
 
-		private readonly AddListingItemUseCase addListingItemUseCase;
+		private readonly AddListingItemUseCase _addListingItemUseCase;
+		private readonly IListingItemDeleterService _listingItemDeleterService;
 
-		public ListingItemsController(AddListingItemUseCase addListingItemUseCase)
+		public ListingItemsController(AddListingItemUseCase addListingItemUseCase, IListingItemDeleterService listingItemDeleterService)
 		{
-			this.addListingItemUseCase = addListingItemUseCase;
+			_addListingItemUseCase = addListingItemUseCase;
+			_listingItemDeleterService = listingItemDeleterService;
 		}
 
 		[HttpPost]
 		public async Task<ActionResult<ListingItemResponseDto>> AddListingItem(ListingItemAddRequest listingItemAddRequest)
 		{
-			ListingItemResponseDto listingItemResponseDto = await addListingItemUseCase.ExecuteAsync(listingItemAddRequest);
+			ListingItemResponseDto listingItemResponseDto = await _addListingItemUseCase.ExecuteAsync(listingItemAddRequest);
 			return Ok(listingItemResponseDto);
+		}
+
+		[HttpDelete("{listingItemId:guid}")]
+		public async Task<IActionResult> DeleteListingItem(Guid listingItemId)
+		{
+			bool isDeleted = await _listingItemDeleterService.DeleteListingItem(listingItemId);
+			if (isDeleted)
+			{
+				return NoContent();
+			}
+			return NotFound();
 		}
 	}
 }

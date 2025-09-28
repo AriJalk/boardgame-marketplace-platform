@@ -19,11 +19,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Assemblers.D
 			_listingItemGetterService = listingItemGetterService;
 		}
 
-		public async Task<IEnumerable<ListingItemResponseDto>> ComposeListingItemsAsync(Guid listingId)
+		public async Task<ListingItemResponseDto[]> ComposeListingItemsAsync(Guid listingId)
 		{
 			IEnumerable
 				<ListingItem> listingItems = await _listingItemGetterService.GetListingItemsByListingIdAsync(listingId);
-			return listingItems.Select(i => i.ToDto());
+			return listingItems.Select(i => i.ToDto()).ToArray();
 		}
 	}
 }

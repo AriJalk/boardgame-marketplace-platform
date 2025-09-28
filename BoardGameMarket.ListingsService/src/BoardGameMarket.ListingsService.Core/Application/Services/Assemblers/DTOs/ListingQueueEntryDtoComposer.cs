@@ -28,11 +28,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Assemblers.D
 			return responseDto;
 		}
 
-		public async Task<IEnumerable<ListingQueueEntryResponseDto>> ComposeListingQueueEntriesByListingIdAsync(Guid listingId)
+		public async Task<ListingQueueEntryResponseDto[]> ComposeListingQueueEntriesByListingIdAsync(Guid listingId)
 		{
 			IEnumerable<ListingQueueEntry> queueEntries = _queueDomainService.SortQueue(await _listingQueueEntryGetterService.GetListingQueueEntriesByListingIdAsync(listingId));
 
-			return queueEntries.Select(e => e.ToDto());
+			return queueEntries.Select(e => e.ToDto()).ToArray();
 		}
 	}
 }

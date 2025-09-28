@@ -59,9 +59,9 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.Listings
 			return response;
 		}
 
-		public async Task<IEnumerable<ListingResponseDto>> ExecuteAsync(IEnumerable<ListingWithListingItemsRequest> requests)
+		public async Task<ListingResponseDto[]> ExecuteAsync(IEnumerable<ListingWithListingItemsRequest> requests)
 		{
-			ValidateGroupConsistency(requests);
+			await ValidateGroupConsistency(requests);
 			var tasks = requests.Select(BuildListingWithItems);
 			return await Task.WhenAll(tasks);
 		}

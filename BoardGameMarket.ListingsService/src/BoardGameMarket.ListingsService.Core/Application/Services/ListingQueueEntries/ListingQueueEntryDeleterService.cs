@@ -12,19 +12,20 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingQueue
 	internal class ListingQueueEntryDeleterService : IListingQueueEntryDeleterService
 	{
 		private readonly IListingQueueEntryRepository _listingQueueEntryRepository;
-		private readonly ILogger<ListingQueueEntryDeleterService> _logger;
 
-		public ListingQueueEntryDeleterService(IListingQueueEntryRepository listingQueueEntryRepository, ILogger<ListingQueueEntryDeleterService> logger)
+		public ListingQueueEntryDeleterService(IListingQueueEntryRepository listingQueueEntryRepository)
 		{
 			_listingQueueEntryRepository = listingQueueEntryRepository;
-			_logger = logger;
+		}
+
+		public async Task DeleteListingQueueEntriesByListingIdAsync(Guid listingId)
+		{
+			await _listingQueueEntryRepository.DeleteListingQueueEntiresByListingIdAsync(listingId);
 		}
 
 		public async Task<bool> DeleteListingQueueEntryAsync(Guid listingQueueEntryId)
 		{
-			_logger.LogInformation($"{nameof(ListingQueueEntryDeleterService)}:{nameof(DeleteListingQueueEntryAsync)}- Deleting Listing queue entry {listingQueueEntryId}");
-
-			return await _listingQueueEntryRepository.DeleteListingQueueEntry(listingQueueEntryId);
+			return await _listingQueueEntryRepository.DeleteListingQueueEntryAsync(listingQueueEntryId);
 		}
 	}
 }

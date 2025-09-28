@@ -12,18 +12,13 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingGroup
 	internal class ListingGroupDeleterService : IListingGroupDeleterService
 	{
 		private readonly IListingGroupRepository _listingGroupRepository;
-		private readonly ILogger<ListingGroupDeleterService> _logger;
-
-		public ListingGroupDeleterService(IListingGroupRepository listingGroupRepository, ILogger<ListingGroupDeleterService> logger)
+		public ListingGroupDeleterService(IListingGroupRepository listingGroupRepository)
 		{
 			_listingGroupRepository = listingGroupRepository;
-			_logger = logger;
 		}
 
 		public async Task<bool> DeleteListingGroup(Guid listingGroupId)
 		{
-			_logger.LogInformation($"{nameof(ListingGroupDeleterService)}:{nameof(DeleteListingGroup)}- Deleting listing group {listingGroupId}");
-
 			return await _listingGroupRepository.DeleteListingGroup(listingGroupId);
 		}
 	}

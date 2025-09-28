@@ -10,13 +10,10 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingItems
 	{
 		private readonly IListingItemRepository _listingItemRepository;
 		private readonly RequestCache _requestCache;
-		private readonly ILogger<ListingItemGetterService> _logger;
-
-		public ListingItemGetterService(IListingItemRepository listingItemRepository, RequestCache requestCache, ILogger<ListingItemGetterService> logger)
+		public ListingItemGetterService(IListingItemRepository listingItemRepository, RequestCache requestCache)
 		{
 			_listingItemRepository = listingItemRepository;
 			_requestCache = requestCache;
-			_logger = logger;
 		}
 
 		private async Task<IEnumerable<ListingItem>> GetFromCacheOrDb(Guid key, 
@@ -39,7 +36,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingItems
 
 		public async Task<ListingItem?> GetListingItemById(Guid listingItemId)
 		{
-			_logger.LogInformation($"{nameof(ListingItemGetterService)}:{nameof(GetListingItemById)}- get listing item {listingItemId}");
+			//_logger.LogInformation($"{nameof(ListingItemGetterService)}:{nameof(GetListingItemById)}- get listing item {listingItemId}");
 			if (_requestCache.TryGetListingItemById(listingItemId, out var listingItem))
 			{
 				return listingItem;
@@ -54,19 +51,19 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingItems
 
 		public async Task<IEnumerable<ListingItem>> GetListingItemsByCatalogIdAsync(Guid catalogId)
 		{
-			_logger.LogInformation($"{nameof(ListingItemGetterService)}:{nameof(GetListingItemsByCatalogIdAsync)}- get catalog listing item {catalogId}");
+			//_logger.LogInformation($"{nameof(ListingItemGetterService)}:{nameof(GetListingItemsByCatalogIdAsync)}- get catalog listing item {catalogId}");
 			return await GetFromCacheOrDb(catalogId, _listingItemRepository.GetListingItemsByCatalogIdAsync, _requestCache.GetListingItemsByCatalogId);
 		}
 
 		public async Task<IEnumerable<ListingItem>> GetListingItemsByListingIdAsync(Guid listingId)
 		{
-			_logger.LogInformation($"{nameof(ListingItemGetterService)}:{nameof(GetListingItemsByListingIdAsync)}- get listing items by listing {listingId}");
+			//_logger.LogInformation($"{nameof(ListingItemGetterService)}:{nameof(GetListingItemsByListingIdAsync)}- get listing items by listing {listingId}");
 			return await GetFromCacheOrDb(listingId, _listingItemRepository.GetListingsItemsByListingIdAsync, _requestCache.GetListingItemsByListingId);
 		}
 
 		public async Task<IEnumerable<ListingItem>> GetListingItemsByListingIdsAsync(IEnumerable<Guid> listingIds)
 		{
-			_logger.LogInformation($"{nameof(ListingItemGetterService)}:{nameof(GetListingItemsByListingIdsAsync)}- get listing items by listings {listingIds}");
+			//_logger.LogInformation($"{nameof(ListingItemGetterService)}:{nameof(GetListingItemsByListingIdsAsync)}- get listing items by listings {listingIds}");
 			List<ListingItem> listingItems = new List<ListingItem>();
 			HashSet<Guid> missingIds = new HashSet<Guid>();
 			foreach(Guid listingId in listingIds)

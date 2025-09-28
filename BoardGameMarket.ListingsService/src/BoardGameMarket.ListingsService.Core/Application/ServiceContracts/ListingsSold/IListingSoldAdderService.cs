@@ -2,7 +2,7 @@
 
 namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingsSold
 {
-	internal interface IListingSoldAdderService
+	public interface IListingSoldAdderService
 	{
 		Task<ListingSold?> AddListingSoldAsync(ListingSold listingSoldToAdd);
 	}

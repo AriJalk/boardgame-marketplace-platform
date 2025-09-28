@@ -20,7 +20,12 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 			throw new NotImplementedException();
 		}
 
-		public Task<bool> DeleteListing(Guid listingId)
+		public Task<bool> DeleteListingAsync(Guid listingId)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task DeleteListingsByListingGroupIdAsync(Guid listingGroupId)
 		{
 			throw new NotImplementedException();
 		}

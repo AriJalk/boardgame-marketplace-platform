@@ -7,6 +7,6 @@
 		public string? Details { get; set; }
 		public string? PickupOptions { get; set; }
 		public string? Location { get; set; }
-		public IEnumerable<ListingResponseDto>? Listings { get; set; }
+		public ListingResponseDto[]? Listings { get; set; }
 	}
 }

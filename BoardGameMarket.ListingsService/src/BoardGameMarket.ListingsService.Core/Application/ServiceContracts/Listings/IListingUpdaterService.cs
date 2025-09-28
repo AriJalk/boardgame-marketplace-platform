@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings
 {
-	internal interface IListingUpdaterService
+	public interface IListingUpdaterService
 	{
 		Task<Listing?> UpdateListingAsync(Listing listingToUpdate);
 	}

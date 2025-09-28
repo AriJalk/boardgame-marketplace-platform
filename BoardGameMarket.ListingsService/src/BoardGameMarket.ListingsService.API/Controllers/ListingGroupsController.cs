@@ -13,10 +13,14 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 	public class ListingGroupsController : ControllerBase
 	{
 		private readonly GetListingGroupsPageUseCase _getListingGroupsPageUseCase;
+		private readonly AddCompleteListingGroupUseCase _addCompleteListingGroupUseCase;
+		private readonly DeleteListingGroupUseCase _deleteListingGroupUseCase;
 
-		public ListingGroupsController(GetListingGroupsPageUseCase getListingGroupsPageUseCase, AddCompleteListingGroupUseCase addCompleteListingGroupUseCase)
+		public ListingGroupsController(GetListingGroupsPageUseCase getListingGroupsPageUseCase, AddCompleteListingGroupUseCase addCompleteListingGroupUseCase, DeleteListingGroupUseCase deleteListingGroupUseCase)
 		{
 			_getListingGroupsPageUseCase = getListingGroupsPageUseCase;
+			_addCompleteListingGroupUseCase = addCompleteListingGroupUseCase;
+			_deleteListingGroupUseCase = deleteListingGroupUseCase;
 		}
 
 		[HttpGet]
@@ -27,10 +31,21 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		}
 
 		[HttpPost]
-		public async Task<ActionResult<ListingGroupResponseDto>> AddListingGroupWithListings(AddCompleteListingGroupUseCase addCompleteListingGroupUseCase, ListingGroupWithListingsRequest listingGroupWithListingsRequest)
+		public async Task<ActionResult<ListingGroupResponseDto>> AddListingGroupWithListings(ListingGroupWithListingsRequest listingGroupWithListingsRequest)
 		{
-			ListingGroupResponseDto listingGroupResponseDto = await addCompleteListingGroupUseCase.ExecuteAsync(listingGroupWithListingsRequest);
+			ListingGroupResponseDto listingGroupResponseDto = await _addCompleteListingGroupUseCase.ExecuteAsync(listingGroupWithListingsRequest);
 			return Ok(listingGroupResponseDto);
+		}
+
+		[HttpDelete("{listingGroupId:guid}")]
+		public async Task<IActionResult> DeleteListingGroup(Guid listingGroupId)
+		{
+			bool isDeleted = await _deleteListingGroupUseCase.ExecuteAsync(listingGroupId);
+			if (isDeleted)
+			{
+				return NoContent();
+			}
+			return NotFound();
 		}
 	}
 }

@@ -21,10 +21,10 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingItems
 			_logger = logger;
 		}
 
-		public async Task<IEnumerable<ListingItemResponseDto>> ExecuteAsync(IEnumerable<ListingItemAddRequest> listingItemAddRequests)
+		public async Task<ListingItemResponseDto[]> ExecuteAsync(IEnumerable<ListingItemAddRequest> listingItemAddRequests)
 		{
 			IEnumerable<ListingItem> listingItems = await _listingItemAdderService.AddListingItemsAsync(listingItemAddRequests.Select(i => i.ToListingItem()));
-			return listingItems.Select(i => i.ToDto());
+			return listingItems.Select(i => i.ToDto()).ToArray();
 		}
 	}
 }

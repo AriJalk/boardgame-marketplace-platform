@@ -1,26 +1,25 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
-using Microsoft.Extensions.Logging;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.Listings
 {
 	internal class ListingDeleterService : IListingDeleterService
 	{
 		private readonly IListingRepository _listingRepository;
-		private readonly ILogger<ListingDeleterService> _logger;
 
-		public ListingDeleterService(IListingRepository listingRepository, ILogger<ListingDeleterService> logger)
+		public ListingDeleterService(IListingRepository listingRepository)
 		{
 			_listingRepository = listingRepository;
-			_logger = logger;
 		}
 
 		public async Task<bool> DeleteListingAsync(Guid listingId)
 		{
-			_logger.LogInformation($"{nameof(ListingDeleterService)}:{nameof(DeleteListingAsync)}- Deleting listing {listingId}");
+			return await _listingRepository.DeleteListingAsync(listingId);
+		}
 
-			return await _listingRepository.DeleteListing(listingId);
-
+		public async Task DeleteListingsByListingGroupId(Guid listingGroupId)
+		{
+			await _listingRepository.DeleteListingsByListingGroupIdAsync(listingGroupId);
 		}
 	}
 }

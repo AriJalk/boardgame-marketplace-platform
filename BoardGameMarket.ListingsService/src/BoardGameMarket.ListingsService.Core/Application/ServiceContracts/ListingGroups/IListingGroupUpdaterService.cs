@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups
 {
-	internal interface IListingGroupUpdaterService
+	public interface IListingGroupUpdaterService
 	{
 		Task<ListingGroup?> UpdateListingGroupAsync(ListingGroup listingGroupToUpdate);
 	}
