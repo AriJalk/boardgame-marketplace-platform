@@ -7,26 +7,20 @@ namespace BoardGameMarket.UsersService.Core.Application.Mappers
 {
 	public static class UserMappers
 	{
-		public static UserDTO ToDTO(this ApplicationUser user)
+		public static UserDto ToDto(this ApplicationUser user)
 		{
-			IEnumerable<string> roles = user.UserRoles.Select(r => r.Role.Name);
-			return new UserDTO(user.UserId, roles, user.FirstName, user.LastName, user.DisplayName);
+			return new UserDto(user.UserId, user.Roles, user.FirstName, user.LastName, user.DisplayName);
 		}
 
-		public static ApplicationUser ToApplicationUser(this User user)
+		public static ApplicationUser ToApplicationUser(this UserDto userDto)
 		{
-
-			if (!Guid.TryParse(user.Id, out Guid entraId))
+			return new ApplicationUser()
 			{
-				throw new InvalidOperationException($"Invalid Entra user ID: {user.Id}");
-			}
-
-			return new ApplicationUser
-			{
-				UserId = entraId,
-				DisplayName = user.DisplayName,
-				FirstName = user.GivenName,
-				LastName = user.Surname
+				UserId = userDto.UserId,
+				DisplayName = userDto.DisplayName,
+				FirstName = userDto.FirstName,
+				LastName = userDto.LastName,
+				Roles = userDto.Roles,
 			};
 		}
 	}

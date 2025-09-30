@@ -1,4 +1,6 @@
-﻿namespace BoardGameMarket.UsersService.Core.Domain.Entities
+﻿using BoardGameMarket.UsersService.Core.Domain.Enums;
+
+namespace BoardGameMarket.UsersService.Core.Domain.Entities
 {
 	public class ApplicationUser
 	{
@@ -7,11 +9,11 @@
 		public string? LastName { get; set; }
 		public string? DisplayName { get; set; }
 
-		public ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+		public RoleType Roles { get; set; }
 
-		public bool HasRole(string roleName)
+		public bool HasRole(RoleType roleType)
 		{
-			return UserRoles.Any(r => r.Role.Name == roleName);
+			return Roles.HasFlag(roleType);
 		}
 	}
 }

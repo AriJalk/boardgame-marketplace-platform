@@ -1,5 +1,4 @@
 ﻿using AutoFixture;
-using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.Listings;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Services.Helpers;
 using BoardGameMarket.ListingsService.Core.Application.Services.Listings;
@@ -7,11 +6,6 @@ using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using FluentAssertions;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingService.ServiceUnitTests.ApplicationServices
 {
@@ -49,6 +43,7 @@ namespace BoardGameMarket.ListingService.ServiceUnitTests.ApplicationServices
 				// Assert
 				listingFromService.Should().NotBeNull();
 				listingFromService.Should().BeEquivalentTo(listingToAdd);
+				_listingRepositoryMock.Verify(r => r.AddListingAsync(listingToAdd), Times.Once);
 			}
 
 			[Fact]
@@ -64,6 +59,7 @@ namespace BoardGameMarket.ListingService.ServiceUnitTests.ApplicationServices
 
 				// Assert
 				listingFromService.Should().BeNull();
+				_listingRepositoryMock.Verify(r => r.AddListingAsync(listingToAdd), Times.Once);
 			}
 
 			[Fact]
@@ -79,6 +75,7 @@ namespace BoardGameMarket.ListingService.ServiceUnitTests.ApplicationServices
 
 				// Assert
 				listingsFromService.Should().BeEquivalentTo(listingsToAdd);
+				_listingRepositoryMock.Verify(r => r.AddListingsAsync(listingsToAdd), Times.Once);
 			}
 
 			[Fact]
@@ -94,6 +91,7 @@ namespace BoardGameMarket.ListingService.ServiceUnitTests.ApplicationServices
 
 				// Assert
 				listingsFromService.Should().BeNullOrEmpty();
+				_listingRepositoryMock.Verify(r => r.AddListingsAsync(listingsToAdd), Times.Once);
 			}
 		}
 
@@ -111,10 +109,13 @@ namespace BoardGameMarket.ListingService.ServiceUnitTests.ApplicationServices
 			{
 				// Arrange
 				Guid listingId = Guid.NewGuid();
-				_listingRepositoryMock.Setup(r => r.DeleteListingAsync(It.Is<Guid>(id => id == listingId))).ReturnsAsync(true);
-				// Assert
+				_listingRepositoryMock.Setup(r => r.DeleteListingAsync(It.IsAny<Guid>())).ReturnsAsync(true);
+				// Act
 				bool result = await _listingDeleterService.DeleteListingAsync(listingId);
+
+				// Assert
 				result.Should().BeTrue();
+				_listingRepositoryMock.Verify(r => r.DeleteListingAsync(listingId), Times.Once);
 			}
 
 			[Fact]
@@ -122,12 +123,27 @@ namespace BoardGameMarket.ListingService.ServiceUnitTests.ApplicationServices
 			{
 				// Arrange
 				Guid listingId = Guid.NewGuid();
-				_listingRepositoryMock.Setup(r => r.DeleteListingAsync(It.Is<Guid>(id => id == listingId))).ReturnsAsync(false);
+				_listingRepositoryMock.Setup(r => r.DeleteListingAsync(It.IsAny<Guid>())).ReturnsAsync(false);
+
 				// Act
 				bool result = await _listingDeleterService.DeleteListingAsync(listingId);
 
 				// Assert
 				result.Should().BeFalse();
+				_listingRepositoryMock.Verify(r => r.DeleteListingAsync(listingId), Times.Once);
+			}
+
+			[Fact]
+			public async Task DeleteListingsByListingGroupId_CallsRepoOnce()
+			{
+				// Arrange 
+				Guid groupId = Guid.NewGuid();
+
+				// Act
+				await _listingDeleterService.DeleteListingsByListingGroupId(groupId);
+
+				// Assert
+				_listingRepositoryMock.Verify(r => r.DeleteListingsByListingGroupIdAsync(groupId), Times.Once);
 			}
 		}
 
@@ -145,7 +161,7 @@ namespace BoardGameMarket.ListingService.ServiceUnitTests.ApplicationServices
 			{
 				// Arrange
 				Listing listingToFetch = _fixture.Create<Listing>();
-				_listingRepositoryMock.Setup(r => r.GetListingByIdAsync(It.Is<Guid>(id => id == listingToFetch.Id))).ReturnsAsync(listingToFetch);
+				_listingRepositoryMock.Setup(r => r.GetListingByIdAsync(It.IsAny<Guid>())).ReturnsAsync(listingToFetch);
 
 				// Act
 				Listing? listingFromService = await _listingGetterService.GetListingByIdAsync(listingToFetch.Id);
@@ -153,6 +169,7 @@ namespace BoardGameMarket.ListingService.ServiceUnitTests.ApplicationServices
 				// Assert
 				listingFromService.Should().NotBeNull();
 				listingFromService.Should().BeEquivalentTo(listingToFetch);
+				_listingRepositoryMock.Verify(r => r.GetListingByIdAsync(listingToFetch.Id), Times.Once);
 			}
 
 			[Fact]
@@ -167,6 +184,7 @@ namespace BoardGameMarket.ListingService.ServiceUnitTests.ApplicationServices
 
 				// Assert
 				listingFromService.Should().BeNull();
+				_listingRepositoryMock.Verify(r => r.GetListingByIdAsync(listingId), Times.Once);
 			}
 
 			[Fact]
@@ -181,6 +199,7 @@ namespace BoardGameMarket.ListingService.ServiceUnitTests.ApplicationServices
 
 				// Assert
 				listingsFromService.Should().BeNullOrEmpty();
+				_listingRepositoryMock.Verify(r => r.GetListingsByGroupIdAsync(groupId), Times.Once);
 			}
 
 			[Fact]
@@ -192,54 +211,57 @@ namespace BoardGameMarket.ListingService.ServiceUnitTests.ApplicationServices
 					.With(l => l.ListingGroupId, groupId)
 					.CreateMany(5);
 
-				_listingRepositoryMock.Setup(r => r.GetListingsByGroupIdAsync(It.Is<Guid>(id => id == groupId))).ReturnsAsync(listingsToFetch);
+				_listingRepositoryMock.Setup(r => r.GetListingsByGroupIdAsync(It.IsAny<Guid>())).ReturnsAsync(listingsToFetch);
 
 				// Act
 				IEnumerable<Listing> listingsFromService = await _listingGetterService.GetListingsByListingGroupIdAsync(groupId);
 
 				// Assert
 				listingsFromService.Should().BeEquivalentTo(listingsToFetch);
+				_listingRepositoryMock.Verify(r => r.GetListingsByGroupIdAsync(groupId), Times.Once);
+			}
+		}
+
+		public class ListingUpdaterServiceTests : ListingServicesTests
+		{
+			private readonly IListingUpdaterService _listingUpdaterService;
+
+			public ListingUpdaterServiceTests()
+			{
+				_listingUpdaterService = new ListingUpdaterService(_listingRepositoryMock.Object);
 			}
 
-			public class ListingUpdaterServiceTests : ListingServicesTests
+			[Fact]
+			public async Task UpdateListingAsync_InvalidUpdateRequest_ReturnsNull()
 			{
-				private readonly IListingUpdaterService _listingUpdaterService;
+				// Arrange
+				Listing listingToUpdate = _fixture.Create<Listing>();
 
-				public ListingUpdaterServiceTests()
-				{
-					_listingUpdaterService = new ListingUpdaterService(_listingRepositoryMock.Object);
-				}
+				_listingRepositoryMock.Setup(r => r.UpdateListingAsync(It.IsAny<Listing>())).ReturnsAsync(null as Listing);
+				// Act
+				Listing? listingFromService = await _listingUpdaterService.UpdateListingAsync(listingToUpdate);
 
-				[Fact]
-				public async Task UpdateListingAsync_InvalidUpdateRequest_ReturnsNull()
-				{
-					// Arrange
-					Listing listingToUpdate = _fixture.Create<Listing>();
+				// Assert
+				listingFromService.Should().BeNull();
+				_listingRepositoryMock.Verify(r => r.UpdateListingAsync(listingToUpdate), Times.Once);
+			}
 
-					_listingRepositoryMock.Setup(r => r.UpdateListingAsync(It.IsAny<Listing>())).ReturnsAsync(null as Listing);
-					// Act
-					Listing? listingFromService = await _listingUpdaterService.UpdateListingAsync(listingToUpdate);
+			[Fact]
+			public async Task UpdateListingAsync_ValidUpdateRequest_ReturnsListing()
+			{
+				// Arrange
+				Listing listingToUpdate = _fixture.Create<Listing>();
 
-					// Assert
-					listingFromService.Should().BeNull();
-				}
+				_listingRepositoryMock.Setup(r => r.UpdateListingAsync(It.IsAny<Listing>())).ReturnsAsync(listingToUpdate);
+				// Act
+				Listing? listingFromService = await _listingUpdaterService.UpdateListingAsync(listingToUpdate);
 
-				[Fact]
-				public async Task UpdateListingAsync_ValidUpdateRequest_ReturnsListing()
-				{
-					// Arrange
-					Listing listingToUpdate = _fixture.Create<Listing>();
+				// Assert
+				listingFromService.Should().NotBeNull();
 
-					_listingRepositoryMock.Setup(r => r.UpdateListingAsync(It.IsAny<Listing>())).ReturnsAsync(listingToUpdate);
-					// Act
-					Listing? listingFromService = await _listingUpdaterService.UpdateListingAsync(listingToUpdate);
-
-					// Assert
-					listingFromService.Should().NotBeNull();
-
-					listingToUpdate.ModifiedAt = listingFromService.ModifiedAt;
-					listingFromService.Should().BeEquivalentTo(listingToUpdate);
-				}
+				listingToUpdate.ModifiedAt = listingFromService.ModifiedAt;
+				listingFromService.Should().BeEquivalentTo(listingToUpdate);
+				_listingRepositoryMock.Verify(r => r.UpdateListingAsync(listingToUpdate), Times.Once);
 			}
 		}
 	}

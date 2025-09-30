@@ -4,6 +4,6 @@ namespace BoardGameMarket.UsersService.Core.Application.ServiceContracts.Applica
 {
 	public interface IUserUpdaterService
 	{
-		Task<ApplicationUser?> UpdateUserAsync(ApplicationUser updatedUser, Guid requesterId);
+		Task<ApplicationUser?> UpdateUserAsync(ApplicationUser updatedUser);
 	}
 }

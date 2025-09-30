@@ -21,8 +21,4 @@
     <ProjectReference Include="..\BoardGameMarket.ListingsService.Infrastructure\BoardGameMarket.ListingsService.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Middleware\" />
-  </ItemGroup>
-
 </Project>
