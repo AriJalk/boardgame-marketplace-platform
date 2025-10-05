@@ -62,7 +62,7 @@ namespace BoardGameMarket.UsersService.Infrastructure.Repositories
 			{
 				userToUpdate.FirstName = user.FirstName;
 				userToUpdate.LastName = user.LastName;
-				userToUpdate.Roles = user.Roles;
+				userToUpdate.Role = user.Role;
 				userToUpdate.DisplayName = user.DisplayName;
 
 				if (await _dbContext.SaveChangesAsync() > 0)

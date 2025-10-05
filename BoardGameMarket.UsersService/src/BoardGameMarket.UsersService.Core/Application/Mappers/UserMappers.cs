@@ -9,7 +9,7 @@ namespace BoardGameMarket.UsersService.Core.Application.Mappers
 	{
 		public static UserDto ToDto(this ApplicationUser user)
 		{
-			return new UserDto(user.UserId, user.Roles, user.FirstName, user.LastName, user.DisplayName);
+			return new UserDto(user.UserId, user.Role, user.FirstName, user.LastName, user.DisplayName);
 		}
 
 		public static ApplicationUser ToApplicationUser(this UserDto userDto)
@@ -20,7 +20,7 @@ namespace BoardGameMarket.UsersService.Core.Application.Mappers
 				DisplayName = userDto.DisplayName,
 				FirstName = userDto.FirstName,
 				LastName = userDto.LastName,
-				Roles = userDto.Roles,
+				Role = userDto.Roles,
 			};
 		}
 	}

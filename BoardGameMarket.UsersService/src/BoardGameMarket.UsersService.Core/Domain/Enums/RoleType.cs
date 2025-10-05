@@ -3,10 +3,9 @@
 	[Flags]
 	public enum RoleType
 	{
-		None = 0,
-		User = 1 << 0,
-		Moderator = 1 << 1,
-		Admin = 1 << 2
+		User = 1,
+		Moderator = 2,
+		Admin = 3,
 	}
 
 	public static class RolesHelper

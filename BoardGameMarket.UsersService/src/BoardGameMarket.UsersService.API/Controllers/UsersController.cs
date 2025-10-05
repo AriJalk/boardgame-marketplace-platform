@@ -3,6 +3,7 @@ using BoardGameMarket.UsersService.Core.Application.Mappers;
 using BoardGameMarket.UsersService.Core.Application.ServiceContracts.ApplicationUsers;
 using BoardGameMarket.UsersService.Core.Application.UseCases;
 using BoardGameMarket.UsersService.Core.Domain.Entities;
+using BoardGameMarket.UsersService.Core.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.UsersService.API.Controllers
@@ -11,15 +12,21 @@ namespace BoardGameMarket.UsersService.API.Controllers
 	[ApiController]
 	public class UsersController : ControllerBase
 	{
+		private readonly ILogger<UsersController> _logger;
 		private readonly IUserGetterService _userGetterService;
 		private readonly IUserAdderService _userAdderService;
 		private readonly DeleteUserUseCase _deleteUserUseCase;
+		private readonly UpdateUserDetailsUseCase _updateUserDetailsUseCase;
+		private readonly UpdateUserRolesUseCase _updateUserRolesUseCase;
 
-		public UsersController(IUserGetterService userGetterService, IUserAdderService userAdderService, DeleteUserUseCase deleteUserUseCase)
+		public UsersController(ILogger<UsersController> logger, IUserGetterService userGetterService, IUserAdderService userAdderService, DeleteUserUseCase deleteUserUseCase, UpdateUserDetailsUseCase updateUserDetailsUseCase, UpdateUserRolesUseCase updateUserRolesUseCase)
 		{
+			_logger = logger;
 			_userGetterService = userGetterService;
 			_userAdderService = userAdderService;
 			_deleteUserUseCase = deleteUserUseCase;
+			_updateUserDetailsUseCase = updateUserDetailsUseCase;
+			_updateUserRolesUseCase = updateUserRolesUseCase;
 		}
 
 		[HttpGet("{userId:guid}")]
@@ -37,30 +44,47 @@ namespace BoardGameMarket.UsersService.API.Controllers
 		[HttpPost]
 		public async Task<ActionResult<UserDto>> RegisterUser(UserDto userDto)
 		{
-			ApplicationUser? user = await _userAdderService.AddUserAsync(userDto.ToApplicationUser());
-			if (user == null)
+			if (await _userGetterService.GetUserByUserIdAsync(userDto.UserId) != null)
 			{
-				return BadRequest();
+				return Conflict("User exists");
 			}
-
-			return Ok(user.ToDto());
+			ApplicationUser userToAdd = userDto.ToApplicationUser();
+			userToAdd.Role = RoleType.User;
+			ApplicationUser? userFromService = await _userAdderService.AddUserAsync(userToAdd);
+			if (userFromService == null)
+			{
+				return StatusCode(StatusCodes.Status500InternalServerError);
+			}
+			return CreatedAtAction(nameof(GetUser), new { userId = userFromService.UserId }, userFromService.ToDto());
 		}
 
 		[HttpDelete("{targetId:guid}")]
 		public async Task<IActionResult> DeleteUser(Guid targetId, [FromQuery] Guid requesterId)
 		{
-			ApplicationUser? requesterUser = await _userGetterService.GetUserByUserIdAsync(targetId);
-			if (requesterUser == null)
-			{
-				return BadRequest();
-			}
-
-			if (await _deleteUserUseCase.ExecuteAsync(requesterUser, targetId))
+			if (await _deleteUserUseCase.ExecuteAsync(requesterId, targetId))
 			{
 				return NoContent();
 			}
-
 			return NotFound();
+		}
+
+		[HttpPut("{targetId:guid}")]
+		public async Task<ActionResult<UserDto>> UpdateUserDetails([FromRoute] Guid targetId, [FromQuery] Guid requesterId, [FromBody] UserUpdateRequest userUpdateRequest)
+		{
+			UserDto? user = await _updateUserDetailsUseCase.ExecuteAsync(requesterId, targetId, userUpdateRequest);
+			if (user == null)
+			{
+				return BadRequest();
+			}
+			return Ok(user);
+		}
+
+		[HttpPut("{targetId:guid}/role")]
+		public async Task<ActionResult<UserDto>> UpdateUserRole([FromRoute] Guid targetId, [FromQuery] Guid requesterId, [FromQuery] RoleType roleTypes)
+		{
+			UserDto? updatedUser = await _updateUserRolesUseCase.ExecuteAsync(requesterId, targetId, roleTypes);
+
+			return Ok(updatedUser);
 		}
 	}
 }

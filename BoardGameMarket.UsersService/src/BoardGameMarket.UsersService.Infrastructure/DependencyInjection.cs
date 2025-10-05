@@ -1,4 +1,5 @@
-﻿using BoardGameMarket.UsersService.Core.Domain.RepositoryContracts;
+﻿using BoardGameMarket.UsersMicroservice.Core.Domain.RepositoryContracts;
+using BoardGameMarket.UsersService.Core.Domain.RepositoryContracts;
 using BoardGameMarket.UsersService.Infrastructure.DbContexts;
 using BoardGameMarket.UsersService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,7 @@ namespace BoardGameMarket.UsersService.Infrastructure
 {
 	public static class DependencyInjection
 	{
-		public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+		public static IServiceCollection AddPostgresInfrastructure(this IServiceCollection services, IConfiguration configuration)
 		{
 			services.AddDbContext<ApplicationDbContext>(options =>
 			{
@@ -26,5 +27,18 @@ namespace BoardGameMarket.UsersService.Infrastructure
 
 			return services;
 		}
+		public static IServiceCollection AddInMemoryInfrastructure(this IServiceCollection services)
+		{
+			services.AddDbContext<ApplicationDbContext>(options =>
+			{
+				options.UseInMemoryDatabase("UserDatabase");
+			});
+
+			services.AddScoped<IUserRepository, UserRepository>();
+			services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+			return services;
+		}
+
 	}
 }

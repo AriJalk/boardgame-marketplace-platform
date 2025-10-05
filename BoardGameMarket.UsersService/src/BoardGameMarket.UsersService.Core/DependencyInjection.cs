@@ -1,5 +1,7 @@
 ﻿using BoardGameMarket.UsersService.Core.Application.ServiceContracts.ApplicationUsers;
 using BoardGameMarket.UsersService.Core.Application.Services.ApplicationUsers;
+using BoardGameMarket.UsersService.Core.Application.UseCases;
+using BoardGameMarket.UsersService.Core.Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 
@@ -11,7 +13,13 @@ namespace BoardGameMarket.UsersService.Core
 		{
 			services.AddScoped<IUserGetterService, UserGetterService>();
 			services.AddScoped<IUserDeleterService, UserDeleterService>();
+			services.AddScoped<IUserAdderService, UserAdderService>();
 
+			services.AddScoped<DeleteUserUseCase>();
+			services.AddScoped<UpdateUserDetailsUseCase>();
+			services.AddScoped<UpdateUserRolesUseCase>();
+
+			services.AddSingleton<UserUpdateDomainService>();
 
 			return services;
 		}

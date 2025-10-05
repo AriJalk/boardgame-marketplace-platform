@@ -9,11 +9,17 @@ namespace BoardGameMarket.UsersService.Core.Domain.Entities
 		public string? LastName { get; set; }
 		public string? DisplayName { get; set; }
 
-		public RoleType Roles { get; set; }
+		public RoleType Role { get; set; }
 
 		public bool HasRole(RoleType roleType)
 		{
-			return Roles.HasFlag(roleType);
+			return Role.HasFlag(roleType);
 		}
+
+		public bool HasAnyRole(RoleType rolesToCheck)
+		{
+			return (Role & rolesToCheck) != 0;
+		}
+
 	}
 }
