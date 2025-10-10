@@ -1,0 +1,6 @@
+services:
+  boardgamemarket.marketgateway.api:
+    image: ${DOCKER_REGISTRY-}boardgamemarketmarketgatewayapi
+    build:
+      context: .
+      dockerfile: BoardgameMarket.MarketGateway.API/Dockerfile

@@ -1,4 +1,5 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
+﻿using BoardGameMarket.ListingsService.Core.Application.Identity;
+using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingItems;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
@@ -20,21 +21,17 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
 		private readonly IListingQueueEntryDeleterService _listingQueueEntryDeleterService;
 		private readonly IListingGroupDeleterService _listingGroupDeleterService;
 		private readonly IListingGetterService _listingGetterService;
-		private readonly IUnitOfWork _unitOfWork;
 
-		public DeleteListingGroupUseCase(IListingDeleterService listingDeleterService, IListingItemDeleterService listingItemDeleterService, IListingQueueEntryDeleterService listingQueueEntryDeleterService, IListingGroupDeleterService listingGroupDeleterService, IListingGetterService listingGetterService, IUnitOfWork unitOfWork)
-		{
-			_listingDeleterService = listingDeleterService;
-			_listingItemDeleterService = listingItemDeleterService;
-			_listingQueueEntryDeleterService = listingQueueEntryDeleterService;
-			_listingGroupDeleterService = listingGroupDeleterService;
-			_listingGetterService = listingGetterService;
-			_unitOfWork = unitOfWork;
-		}
+		private readonly IUnitOfWork _unitOfWork;
+		private readonly IIdentityValidationService _identityValidationService;
+
+
 
 		public async Task<bool> ExecuteAsync(Guid listingGroupId)
 		{
 			await _unitOfWork.BeginTransactionAsync();
+			
+			
 			IEnumerable<Listing> listings = (await _listingGetterService.GetListingsByListingGroupIdAsync(listingGroupId)).ToList();
 			foreach (Listing listing in listings)
 			{

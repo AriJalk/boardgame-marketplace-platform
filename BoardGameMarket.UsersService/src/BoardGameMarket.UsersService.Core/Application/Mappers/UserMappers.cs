@@ -20,7 +20,7 @@ namespace BoardGameMarket.UsersService.Core.Application.Mappers
 				DisplayName = userDto.DisplayName,
 				FirstName = userDto.FirstName,
 				LastName = userDto.LastName,
-				Role = userDto.Roles,
+				Role = userDto.Role,
 			};
 		}
 	}

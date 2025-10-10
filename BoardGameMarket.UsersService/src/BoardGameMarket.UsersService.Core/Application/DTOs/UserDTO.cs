@@ -2,5 +2,5 @@
 
 namespace BoardGameMarket.UsersService.Core.Application.DTOs
 {
-	public record UserDto(Guid UserId, RoleType Roles, string? FirstName, string? LastName, string? DisplayName) { };
+	public record UserDto(Guid UserId, RoleType Role, string? FirstName, string? LastName, string? DisplayName) { };
 }

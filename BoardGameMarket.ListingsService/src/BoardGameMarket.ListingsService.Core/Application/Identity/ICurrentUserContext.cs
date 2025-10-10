@@ -8,8 +8,9 @@ namespace BoardGameMarket.ListingsService.Core.Application.Identity
 {
 	public interface ICurrentUserContext
 	{
-		Guid UserId { get; }
-		IReadOnlyCollection<string> Roles { get; }
-		void Set(Guid userId, IEnumerable<string> roles);
+		Guid? UserId { get; }
+		RoleType? Role { get; }
+		void Set(Guid? userId, RoleType? role);
+		bool HasUser();
 	}
 }

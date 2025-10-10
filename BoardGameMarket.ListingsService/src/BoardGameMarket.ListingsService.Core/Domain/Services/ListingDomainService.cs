@@ -34,5 +34,7 @@ namespace BoardGameMarket.ListingsService.Core.Domain.Services
 		{
 			return ValidateStatus(listing, ListingStatus.Reserved);
 		}
+
+
 	}
 }

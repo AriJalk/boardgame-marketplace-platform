@@ -20,15 +20,16 @@ namespace BoardGameMarket.ListingsService.API.Middleware
 		public Task Invoke(HttpContext httpContext)
 		{
 			string? userIdHeader = httpContext.Request.Headers["User-Id"];
-			string? rolesHeader = httpContext.Response.Headers["Roles"];
+			string? roleHeader = httpContext.Request.Headers["Role"];
 
-			if (Guid.TryParse(userIdHeader, out Guid userId))
+			if (Guid.TryParse(userIdHeader, out Guid userId) && int.TryParse(roleHeader, out int roleInt) && Enum.IsDefined(typeof(RoleType), roleInt))
 			{
-				var roles = rolesHeader?.Split(',') ?? Array.Empty<string>();
-				_currentUserContext.Set(userId, roles);
+				_currentUserContext.Set(userId, (RoleType)roleInt);
 			}
-
-
+			else
+			{
+				_currentUserContext.Set(null, null);
+			}
 			return _next(httpContext);
 		}
 	}

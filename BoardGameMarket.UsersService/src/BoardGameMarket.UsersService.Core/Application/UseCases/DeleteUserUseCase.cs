@@ -1,13 +1,6 @@
 ﻿using BoardGameMarket.UsersService.Core.Application.ServiceContracts.ApplicationUsers;
 using BoardGameMarket.UsersService.Core.Domain.Entities;
 using BoardGameMarket.UsersService.Core.Domain.Enums;
-using Microsoft.Graph.IdentityGovernance.EntitlementManagement.Assignments.AdditionalAccessWithAccessPackageIdWithIncompatibleAccessPackageId;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BoardGameMarket.UsersService.Core.Application.UseCases
 {
@@ -16,12 +9,16 @@ namespace BoardGameMarket.UsersService.Core.Application.UseCases
 		private readonly IUserDeleterService _userDeleterService;
 		private readonly IUserGetterService _userGetterService;
 
-		
+		public DeleteUserUseCase(IUserDeleterService userDeleterService, IUserGetterService userGetterService)
+		{
+			_userDeleterService = userDeleterService;
+			_userGetterService = userGetterService;
+		}
 
 		public async Task<bool> ExecuteAsync(Guid requesterId, Guid userToDeleteId)
 		{
 			ApplicationUser? requester = await _userGetterService.GetUserByUserIdAsync(requesterId);
-			if (requester == null || !requester.Role.IsAuthorized(RoleType.Moderator | RoleType.Admin))
+			if (requester == null || requester.Role < RoleType.Moderator)
 			{
 				throw new UnauthorizedAccessException();
 			}
