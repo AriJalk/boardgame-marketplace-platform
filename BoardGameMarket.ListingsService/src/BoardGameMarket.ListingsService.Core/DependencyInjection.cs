@@ -1,4 +1,5 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
+﻿using BoardGameMarket.ListingsService.Core.Application.Identity;
+using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingItems;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
@@ -77,6 +78,8 @@ namespace BoardGameMarket.ListingsService.Core
 
 			services.AddTransient<CompleteListingSaleUseCase>();
 
+			services.AddTransient<DeleteListingItemUseCase>();
+
 			// Helpers
 			services.AddTransient<ListingFetcher>();
 			services.AddScoped<RequestCache>();
@@ -84,6 +87,8 @@ namespace BoardGameMarket.ListingsService.Core
 			// Domain
 			services.AddTransient<QueueDomainService>();
 			services.AddTransient<ListingDomainService>();
+
+			services.AddScoped<ICurrentUserContext, CurrentUserContext>();
 
 			return services;
 		}

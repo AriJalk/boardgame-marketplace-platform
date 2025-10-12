@@ -1,3 +1,4 @@
+using BoardGameMarket.ListingsService.API.Middleware;
 using BoardGameMarket.ListingsService.Core;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using BoardGameMarket.ListingsService.Infrastructure;
@@ -16,7 +17,8 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-
+app.UseExceptionHandlingMiddleware();
+app.UseCurrentUserMiddleware();
 using (var scope = app.Services.CreateScope())
 {
 	InMemoryDataSeeder seeder = new InMemoryDataSeeder(

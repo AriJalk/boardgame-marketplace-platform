@@ -21,16 +21,29 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
 		private readonly IListingQueueEntryDeleterService _listingQueueEntryDeleterService;
 		private readonly IListingGroupDeleterService _listingGroupDeleterService;
 		private readonly IListingGetterService _listingGetterService;
+		private readonly ListingFetcher _listingFetcher;
 
 		private readonly IUnitOfWork _unitOfWork;
-		private readonly IIdentityValidationService _identityValidationService;
+		private readonly ICurrentUserContext _currentUserContext;
 
-
+		public DeleteListingGroupUseCase(IListingDeleterService listingDeleterService, IListingItemDeleterService listingItemDeleterService, IListingQueueEntryDeleterService listingQueueEntryDeleterService, IListingGroupDeleterService listingGroupDeleterService, IListingGetterService listingGetterService, ListingFetcher listingFetcher, IUnitOfWork unitOfWork, ICurrentUserContext currentUserContext)
+		{
+			_listingDeleterService = listingDeleterService;
+			_listingItemDeleterService = listingItemDeleterService;
+			_listingQueueEntryDeleterService = listingQueueEntryDeleterService;
+			_listingGroupDeleterService = listingGroupDeleterService;
+			_listingGetterService = listingGetterService;
+			_listingFetcher = listingFetcher;
+			_unitOfWork = unitOfWork;
+			_currentUserContext = currentUserContext;
+		}
 
 		public async Task<bool> ExecuteAsync(Guid listingGroupId)
 		{
 			await _unitOfWork.BeginTransactionAsync();
-			
+			ListingGroup listingGroup = await _listingFetcher.GetListingGroupByIdAsync(listingGroupId);
+			// Validate
+			_currentUserContext.ValidateSameUserOrAtLeastRole(listingGroup.SellerUserId, RoleType.Moderator);
 			
 			IEnumerable<Listing> listings = (await _listingGetterService.GetListingsByListingGroupIdAsync(listingGroupId)).ToList();
 			foreach (Listing listing in listings)

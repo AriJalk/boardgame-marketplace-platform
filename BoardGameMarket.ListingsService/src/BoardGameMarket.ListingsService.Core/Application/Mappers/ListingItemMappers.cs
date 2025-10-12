@@ -15,6 +15,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 		{
 			return new ListingItemResponseDto()
 			{
+				Id = listingItem.Id,
 				ListingId = listingItem.ListingId,
 				CatalogId = listingItem.CatalogId,
 			};

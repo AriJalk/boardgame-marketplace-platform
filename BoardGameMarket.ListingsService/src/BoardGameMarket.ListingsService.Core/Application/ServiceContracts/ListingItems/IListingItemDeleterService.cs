@@ -9,7 +9,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.List
 {
 	public interface IListingItemDeleterService
 	{
-		Task<bool> DeleteListingItem(Guid listingItemId);
+		Task<bool> DeleteListingItemAsync(Guid listingItemId);
 		Task DeleteListingItemsByListingIdAsync(Guid listingId);
 	}
 }

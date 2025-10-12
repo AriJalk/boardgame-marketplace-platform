@@ -24,7 +24,7 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		}
 
 		[HttpGet]
-		public async Task<ActionResult<PagedResult<ListingGroupResponseDto>>> GetListingGroups([FromHeader] string? cursor, [FromHeader] int pageSize, [FromQuery] ListingGroupFilter? filter)
+		public async Task<ActionResult<PagedResult<ListingGroupResponseDto>>> GetListingGroups([FromQuery] ListingGroupFilter? filter, [FromHeader] string? cursor, [FromHeader] int pageSize = 10)
 		{
 			Cursor? cursorObject = CursorParser.Parse(cursor);
 			return Ok(await _getListingGroupsPageUseCase.ExecuteAsync(cursorObject, pageSize, filter));

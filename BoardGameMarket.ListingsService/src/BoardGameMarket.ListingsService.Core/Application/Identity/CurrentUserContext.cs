@@ -22,6 +22,15 @@ namespace BoardGameMarket.ListingsService.Core.Application.Identity
 		{
 			return UserId != null && Role != null;
 		}
+
+		
+		public void ValidateSameUserOrAtLeastRole(Guid userId, RoleType requiredRole)
+		{
+			if (!HasUser() || userId != UserId && Role < requiredRole)
+			{
+				throw new UnauthorizedAccessException();
+			}
+		}
 	}
 
 

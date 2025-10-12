@@ -19,7 +19,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingItems
 			_listingItemRepository = listingItemRepository;
 		}
 
-		public async Task<bool> DeleteListingItem(Guid listingItemId)
+		public async Task<bool> DeleteListingItemAsync(Guid listingItemId)
 		{
 			return await _listingItemRepository.DeleteListingItemAsync(listingItemId);
 		}

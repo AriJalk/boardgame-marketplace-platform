@@ -9,26 +9,23 @@ namespace BoardGameMarket.ListingsService.API.Middleware
 	public class CurrentUserMiddleware
 	{
 		private readonly RequestDelegate _next;
-		private readonly ICurrentUserContext _currentUserContext;
-
-		public CurrentUserMiddleware(RequestDelegate next, ICurrentUserContext currentUserContext)
+		public CurrentUserMiddleware(RequestDelegate next)
 		{
 			_next = next;
-			_currentUserContext = currentUserContext;
 		}
 
-		public Task Invoke(HttpContext httpContext)
+		public Task Invoke(HttpContext httpContext, ICurrentUserContext currentUserContext)
 		{
-			string? userIdHeader = httpContext.Request.Headers["User-Id"];
+			string? userIdHeader = httpContext.Request.Headers["UserId"];
 			string? roleHeader = httpContext.Request.Headers["Role"];
 
 			if (Guid.TryParse(userIdHeader, out Guid userId) && int.TryParse(roleHeader, out int roleInt) && Enum.IsDefined(typeof(RoleType), roleInt))
 			{
-				_currentUserContext.Set(userId, (RoleType)roleInt);
+				currentUserContext.Set(userId, (RoleType)roleInt);
 			}
 			else
 			{
-				_currentUserContext.Set(null, null);
+				currentUserContext.Set(null, null);
 			}
 			return _next(httpContext);
 		}

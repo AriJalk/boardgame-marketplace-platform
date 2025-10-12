@@ -1,5 +1,6 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.Listings;
 using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
+using BoardGameMarket.ListingsService.Core.Application.Identity;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Services.Helpers;
@@ -16,11 +17,13 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.Listings
 	{
 		private readonly ListingFetcher _listingFetcher;
 		private readonly IListingUpdaterService _listingUpdaterService;
+		private readonly ICurrentUserContext _currentUserContext;
 
-		public UpdateListingUseCase(ListingFetcher listingFetcher, IListingUpdaterService listingUpdaterService)
+		public UpdateListingUseCase(ListingFetcher listingFetcher, IListingUpdaterService listingUpdaterService, ICurrentUserContext currentUserContext)
 		{
 			_listingFetcher = listingFetcher;
 			_listingUpdaterService = listingUpdaterService;
+			_currentUserContext = currentUserContext;
 		}
 
 		public async Task<ListingResponseDto> ExecuteAsync(ListingUpdateRequest listingUpdateRequest, Guid listingId)
@@ -28,6 +31,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.Listings
 			Listing listing = await _listingFetcher.GetListingByIdAsync(listingId);
 			// Validate
 			Guid sellerId = await _listingFetcher.GetSellerUserIdByGroupIdAsync(listing.ListingGroupId);
+			_currentUserContext.ValidateSameUserOrAtLeastRole(sellerId, RoleType.Moderator);
 
 			bool isChanged = false;
 			if (listing.Details != listingUpdateRequest.Details)

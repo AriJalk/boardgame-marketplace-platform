@@ -12,5 +12,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.Identity
 		RoleType? Role { get; }
 		void Set(Guid? userId, RoleType? role);
 		bool HasUser();
+		void ValidateSameUserOrAtLeastRole(Guid userId, RoleType requiredRole);
 	}
 }
