@@ -10,7 +10,8 @@ builder.Services.AddCoreServices();
 #if (DEBUG)
 builder.Services.AddInMemoryInfrastructure();
 #else
-builder.Services.AddPostgresInfrastructure();
+builder.Services.AddInMemoryInfrastructure();
+//builder.Services.AddPostgresInfrastructure(builder.Configuration);
 #endif
 
 builder.Services.AddControllers()

@@ -3,4 +3,18 @@ services:
     image: ${DOCKER_REGISTRY-}boardgamemarketmarketgatewayapi
     build:
       context: .
-      dockerfile: BoardgameMarket.MarketGateway.API/Dockerfile
+      dockerfile: src/BoardGameMarket.MarketGateway.API/Dockerfile
+    environment:
+      USERS_MICROSERVICE_HOST: users-microservice
+      USERS_MICROSERVICE_PORT: 8080
+      REDIS_HOST: redis-container
+      REDIS_PORT: 6379
+
+  redis-container:
+    image: redis:8.2.2
+
+  users-microservice:
+    image: arieljalkiver/boardgame-market:users
+    ports:
+     - "6001:8080"
+

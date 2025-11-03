@@ -12,19 +12,19 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["BoardgameMarket.MarketGateway.API/BoardgameMarket.MarketGateway.API.csproj", "BoardgameMarket.MarketGateway.API/"]
-RUN dotnet restore "./BoardgameMarket.MarketGateway.API/BoardgameMarket.MarketGateway.API.csproj"
+COPY ["BoardGameMarket.MarketGateway.API/BoardGameMarket.MarketGateway.API.csproj", "BoardGameMarket.MarketGateway.API/"]
+RUN dotnet restore "./BoardGameMarket.MarketGateway.API/BoardGameMarket.MarketGateway.API.csproj"
 COPY . .
-WORKDIR "/src/BoardgameMarket.MarketGateway.API"
-RUN dotnet build "./BoardgameMarket.MarketGateway.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/BoardGameMarket.MarketGateway.API"
+RUN dotnet build "./BoardGameMarket.MarketGateway.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./BoardgameMarket.MarketGateway.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./BoardGameMarket.MarketGateway.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "BoardgameMarket.MarketGateway.API.dll"]
+ENTRYPOINT ["dotnet", "BoardGameMarket.MarketGateway.API.dll"]

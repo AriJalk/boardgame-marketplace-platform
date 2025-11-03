@@ -7,7 +7,12 @@ using BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositories;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCore();
+
+#if DEBUG
 builder.Services.AddInMemoryInfrastructure();
+#else
+builder.Services.AddInfrastructure();
+#endif
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -19,6 +24,8 @@ var app = builder.Build();
 
 app.UseExceptionHandlingMiddleware();
 app.UseCurrentUserMiddleware();
+
+#if DEBUG
 using (var scope = app.Services.CreateScope())
 {
 	InMemoryDataSeeder seeder = new InMemoryDataSeeder(
@@ -31,6 +38,7 @@ using (var scope = app.Services.CreateScope())
 
 	await seeder.SeedAsync();
 }
+#endif
 
 app.UseSwagger();
 app.UseSwaggerUI();
