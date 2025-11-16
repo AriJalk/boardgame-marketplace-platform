@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import { ListingDetailComponent } from './features/listings/components/display/listing-detail-component/listing-detail-component';
-import { ListingGroupsGrid } from './features/listings/components/display/listing-groups-grid/listing-groups-grid';
+import { ListingGroupDetailsPage } from './features/listing-groups/components/display/listing-group-details-page/listing-group-details-page';
+import { ListingGroupsGrid } from './features/listing-groups/components/display/listing-groups-grid/listing-groups-grid';
 
 export const routes: Routes = [
-    { path: "listings/:listingId", component: ListingDetailComponent },
+    { path: "listing-groups/:listingGroupId", component: ListingGroupDetailsPage },
     { path: "", component: ListingGroupsGrid }
 ];

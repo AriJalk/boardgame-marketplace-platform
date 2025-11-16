@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { ListingSummaryCard } from "../listing-summary-card/listing-summary-card";
+import { ListingGroupCard } from "../listing-group-card/listing-group-card";
 
 @Component({
   selector: 'bgm-listing-groups-grid',
-  imports: [MatGridListModule, ListingSummaryCard],
+  imports: [MatGridListModule, ListingGroupCard],
   templateUrl: './listing-groups-grid.html',
   styleUrl: './listing-groups-grid.css',
 })
