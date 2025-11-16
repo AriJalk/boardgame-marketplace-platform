@@ -1,6 +1,7 @@
 ﻿using BoardGameMarket.MarketGateway.Core.Application.Users;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Principal;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
 {
@@ -24,7 +25,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 
 			if (user == null)
 			{
-				return NotFound();
+				
 			}
 
 			return Ok(user);

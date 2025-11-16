@@ -2,7 +2,6 @@
 using BoardGameMarket.UsersService.Core.Domain.Entities;
 using BoardGameMarket.UsersService.Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Graph.ApplicationsWithAppId;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using System;
 using System.Collections.Generic;

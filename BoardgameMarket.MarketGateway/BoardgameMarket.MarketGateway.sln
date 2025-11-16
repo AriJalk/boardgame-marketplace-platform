@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36623.8
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11205.157 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
@@ -9,11 +9,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{927E6670
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameMarket.MarketGateway.API", "src\BoardGameMarket.MarketGateway.API\BoardGameMarket.MarketGateway.API.csproj", "{B523B973-8FA5-DE10-50E4-2778260E6C30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameMarket.MarketGateway.Core", "BoardGameMarket.MarketGateway.Core\BoardGameMarket.MarketGateway.Core.csproj", "{1AB4C1AD-779E-4AB0-AC99-0CF34DC60E8C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameMarket.MarketGateway.Infrastructure", "BoardGameMarket.MarketGateway.Infrastructure\BoardGameMarket.MarketGateway.Infrastructure.csproj", "{58C57608-3462-439E-B303-948036C14A5E}"
-EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameMarket.MarketGateway.Core", "src\BoardGameMarket.MarketGateway.Core\BoardGameMarket.MarketGateway.Core.csproj", "{FD73C1E9-850B-0793-0A6D-059E63BB6C03}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameMarket.MarketGateway.Infrastructure", "src\BoardGameMarket.MarketGateway.Infrastructure\BoardGameMarket.MarketGateway.Infrastructure.csproj", "{89C29CE1-EA47-019B-4664-D0245C77FB1D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,26 +25,26 @@ Global
 		{B523B973-8FA5-DE10-50E4-2778260E6C30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B523B973-8FA5-DE10-50E4-2778260E6C30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B523B973-8FA5-DE10-50E4-2778260E6C30}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1AB4C1AD-779E-4AB0-AC99-0CF34DC60E8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1AB4C1AD-779E-4AB0-AC99-0CF34DC60E8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1AB4C1AD-779E-4AB0-AC99-0CF34DC60E8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1AB4C1AD-779E-4AB0-AC99-0CF34DC60E8C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{58C57608-3462-439E-B303-948036C14A5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{58C57608-3462-439E-B303-948036C14A5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{58C57608-3462-439E-B303-948036C14A5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{58C57608-3462-439E-B303-948036C14A5E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD73C1E9-850B-0793-0A6D-059E63BB6C03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD73C1E9-850B-0793-0A6D-059E63BB6C03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD73C1E9-850B-0793-0A6D-059E63BB6C03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD73C1E9-850B-0793-0A6D-059E63BB6C03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89C29CE1-EA47-019B-4664-D0245C77FB1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89C29CE1-EA47-019B-4664-D0245C77FB1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89C29CE1-EA47-019B-4664-D0245C77FB1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89C29CE1-EA47-019B-4664-D0245C77FB1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B523B973-8FA5-DE10-50E4-2778260E6C30} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{1AB4C1AD-779E-4AB0-AC99-0CF34DC60E8C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
-		{58C57608-3462-439E-B303-948036C14A5E} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{FD73C1E9-850B-0793-0A6D-059E63BB6C03} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{89C29CE1-EA47-019B-4664-D0245C77FB1D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4C24C55F-6403-433F-AB8A-6E4EAA124C81}

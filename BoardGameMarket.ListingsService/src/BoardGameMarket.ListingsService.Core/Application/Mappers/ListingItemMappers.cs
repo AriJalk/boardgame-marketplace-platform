@@ -18,6 +18,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 				Id = listingItem.Id,
 				ListingId = listingItem.ListingId,
 				CatalogId = listingItem.CatalogId,
+				Details = listingItem.Details,
 			};
 		}
 
@@ -27,6 +28,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 			{
 				CatalogId = listingItemAddRequest.CatalogId,
 				ListingId = listingItemAddRequest.ListingId,
+				Details = listingItemAddRequest.Details,
 			};
 		}
 	}

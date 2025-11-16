@@ -4,5 +4,6 @@
 	{
 		public Guid ListingId { get; set; }
 		public Guid CatalogId { get; set; }
+		public string? Details { get; set; }
 	}
 }

@@ -1,7 +1,6 @@
 ﻿
 using BoardGameMarket.UsersService.Core.Application.DTOs;
 using BoardGameMarket.UsersService.Core.Domain.Entities;
-using Microsoft.Graph.Models;
 
 namespace BoardGameMarket.UsersService.Core.Application.Mappers
 {

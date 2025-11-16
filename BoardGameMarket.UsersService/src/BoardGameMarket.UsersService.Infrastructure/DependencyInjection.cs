@@ -5,7 +5,6 @@ using BoardGameMarket.UsersService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Graph.Models.ExternalConnectors;
 using System;
 using System.Collections.Generic;
 using System.Linq;

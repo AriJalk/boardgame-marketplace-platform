@@ -1,0 +1,25 @@
+<p>listing-detail-component works!</p>
+
+<h3>{{listingDetail?.id}}</h3>
+<h3>{{listingDetail?.title}}</h3>
+<h3>{{listingDetail?.price}}</h3>
+
+<mat-card appearance="outlined">
+    <mat-card-header>
+        <!-- <mat-card-title> Australian Shepherd</mat-card-title> -->
+        <!-- <mat-card-subtitle>Herding group</mat-card-subtitle> -->
+    </mat-card-header>
+    <mat-card-content>
+        @for (item of listingDetail?.items; track $index) {
+            @if(isBgg(item)){
+                <bgm-bgg-item-card [item]="item"></bgm-bgg-item-card>
+            }
+            @else if(isCustom(item)){
+                <bgm-custom-item-card [item]="item"></bgm-custom-item-card>
+            }
+        }
+    </mat-card-content>
+    <mat-card-actions>
+        <button matButton>Learn More</button>
+    </mat-card-actions>
+</mat-card>
