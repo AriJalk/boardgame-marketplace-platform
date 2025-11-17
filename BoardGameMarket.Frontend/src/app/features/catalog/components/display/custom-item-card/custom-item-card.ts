@@ -8,5 +8,5 @@ import { CustomItem } from '../../../models/catalog-item.model';
   styleUrl: './custom-item-card.css',
 })
 export class CustomItemCard {
-  @Input() item!: CustomItem
+  @Input({ required: true }) item!: CustomItem
 }

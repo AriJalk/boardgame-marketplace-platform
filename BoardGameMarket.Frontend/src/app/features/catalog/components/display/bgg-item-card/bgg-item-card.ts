@@ -8,5 +8,5 @@ import { BggItem } from '../../../models/catalog-item.model';
   styleUrl: './bgg-item-card.css',
 })
 export class BggItemCard {
-  @Input() item!: BggItem
+  @Input({ required: true }) item!: BggItem
 }

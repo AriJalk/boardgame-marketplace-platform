@@ -1,14 +1,6 @@
-<h3>Listing title: {{listing?.title}}</h3>
-<h3>Price: {{listing?.price}}</h3>
-@for (item of listing?.items; track $index) 
+<h3>Listing title: {{listing.title}}</h3>
+<h3>Price: {{listing.price}}</h3>
+@for (item of listing.items; track $index) 
 {
-    @if (isBgg(item.catalogItem)) 
-    {
-        <bgm-bgg-item-card [item]="item.catalogItem"></bgm-bgg-item-card>
-    }
-    @else if (isCustom(item.catalogItem)) 
-    {
-        <bgm-custom-item-card [item]="item.catalogItem"></bgm-custom-item-card>
-    }
-    <h3>Details: {{item.details}}</h3>
+    <bgm-listing-item-card [listingItem]=item></bgm-listing-item-card>
 }

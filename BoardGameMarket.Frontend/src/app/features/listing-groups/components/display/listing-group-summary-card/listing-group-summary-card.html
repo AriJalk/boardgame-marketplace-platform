@@ -1,0 +1,15 @@
+<mat-card>
+    <h3>Seller: {{listingGroup.seller.displayName}}</h3>
+    <h3>Location: {{listingGroup.location}}</h3>
+    <h3>Pickup Options: {{listingGroup.pickupOptions}}</h3>
+    <h3>Details: {{listingGroup.details}}</h3>
+    @for (listing of listingGroup.listings; track $index)
+    {
+    <div>
+        <bgm-listing-summary-card [listing]="listing"></bgm-listing-summary-card>
+    </div>
+    }
+    <mat-card-actions>
+        <button matButton="elevated" [routerLink]="['/listing-groups', listingGroup.id]">Details</button>
+    </mat-card-actions>
+</mat-card>
