@@ -1,3 +1,17 @@
 .app-container {
   height: 100vh;
 }
+
+.sidebar {
+  background-color: #f2f3f5;
+  color: #333;
+}
+
+.content {
+  background-color: #ffffff;
+  color: #222;
+}
+
+:root {
+  --accent-color: #4a90e2;
+}

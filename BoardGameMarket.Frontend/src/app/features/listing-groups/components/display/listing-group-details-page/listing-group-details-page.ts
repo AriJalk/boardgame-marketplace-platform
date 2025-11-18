@@ -22,6 +22,7 @@ export class ListingGroupDetailsPage implements OnInit {
         this.listingGroup = {
           id: id,
           location: "Test location",
+          postingTime: new Date(Date.now()),
           seller: { id: "1", displayName: "Test Seller" },
           pickupOptions: "Test pickup options",
           details: "Test details",

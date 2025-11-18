@@ -4,10 +4,11 @@ import { ListingGroupSummary } from '../../../models/listing-group.model';
 import { RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'bgm-listing-group-summary-card',
-  imports: [ListingSummaryCard, RouterLink, MatCardModule, MatButtonModule],
+  imports: [ListingSummaryCard, RouterLink, MatCardModule, MatButtonModule, DatePipe],
   templateUrl: './listing-group-summary-card.html',
   styleUrl: './listing-group-summary-card.css',
 })
@@ -15,6 +16,7 @@ export class ListingGroupSummaryCard {
   listingGroup: ListingGroupSummary = {
     id: "1",
     seller: { id: "1", displayName: "Test seller" },
+    postingTime: new Date(Date.now()),
     location: "BS",
     pickupOptions: "Pickup",
     details: "Arrange details",

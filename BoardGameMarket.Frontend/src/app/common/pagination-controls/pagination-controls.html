@@ -1,0 +1,8 @@
+<div class="flex-container" style="justify-content: space-around;">
+  <button matMiniFab [disabled]="!hasPrevious" aria-label="Previous" (click)="previous.emit()">
+    <mat-icon>keyboard_arrow_left</mat-icon>
+  </button>
+  <button matMiniFab [disabled]="!hasNext" aria-label="Next" (click)="next.emit()">
+    <mat-icon>keyboard_arrow_right</mat-icon>
+  </button>
+</div>

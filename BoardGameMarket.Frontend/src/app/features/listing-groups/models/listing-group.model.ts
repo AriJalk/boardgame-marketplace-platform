@@ -4,6 +4,7 @@ import { UserSummary } from "../../users/models/user.model";
 export interface ListingGroup {
     id: string;
     seller: UserSummary;
+    postingTime: Date
     pickupOptions: string;
     location: string;
     details?: string;
