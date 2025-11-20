@@ -1,10 +1,18 @@
-<mat-sidenav-container class="app-container">
-    <mat-sidenav mode="side" opened class="sidebar">
-        <h1>Boardgame Market</h1>
-        <bgm-side-nav></bgm-side-nav>
-    </mat-sidenav>
+<mat-toolbar>
+    <button matMiniFab (click)="drawer.toggle()">
+        <mat-icon>menu</mat-icon>
+    </button>
+</mat-toolbar>
+<mat-drawer-container class="app-container" autosize>
+    <mat-drawer #drawer class="sidebar" mode="side">
+        <div class="margin-10">
+            <bgm-side-nav></bgm-side-nav>
+        </div>
+    </mat-drawer>
 
-    <mat-sidenav-content class="content">
+    <div class="sidenav-content">
+
         <router-outlet></router-outlet>
-    </mat-sidenav-content>
-</mat-sidenav-container>
+    </div>
+
+</mat-drawer-container>
