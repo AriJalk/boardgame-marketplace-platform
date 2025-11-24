@@ -1,0 +1,12 @@
+<div [formGroup]="listingForm">
+    <mat-form-field class="example-full-width">
+        <mat-label>Price</mat-label>
+        <input type="number" matInput formControlName="price" placeholder="Price">
+    </mat-form-field>
+      @for(listingItem of listingItems.controls; track listingItem; let i=$index)
+      {
+        <bgm-add-listing-item-form [itemForm]="listingItem"></bgm-add-listing-item-form>
+      }
+
+      <button matButton (click)="addlistingItem()">Add listing item</button>
+</div>

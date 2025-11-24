@@ -1,17 +1,6 @@
-.app-container {
+
+.main-content {
   height: 100vh;
-}
-
-.sidebar {
-  background-color: #f2f3f5;
-  color: #333;
-}
-
-.sidenav-content {
-  background-color: #ffffff;
-  color: #222;
-}
-
-:root {
-  --accent-color: #4a90e2;
+  overflow-y: auto;
+  padding: 16px;
 }

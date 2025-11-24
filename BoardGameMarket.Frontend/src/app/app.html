@@ -1,17 +1,16 @@
+<bgm-add-listing-group-form></bgm-add-listing-group-form>
 <mat-toolbar>
     <button matMiniFab (click)="drawer.toggle()">
         <mat-icon>menu</mat-icon>
     </button>
 </mat-toolbar>
 <mat-drawer-container class="app-container" autosize>
-    <mat-drawer #drawer class="sidebar" mode="side">
+    <mat-drawer #drawer mode="side" style="width: 10%; min-width: 200px;">
         <div class="margin-10">
-            <bgm-side-nav></bgm-side-nav>
+            <bgm-side-nav [drawer]="drawer"></bgm-side-nav>
         </div>
     </mat-drawer>
-
-    <div class="sidenav-content">
-
+    <div class="main-content">
         <router-outlet></router-outlet>
     </div>
 

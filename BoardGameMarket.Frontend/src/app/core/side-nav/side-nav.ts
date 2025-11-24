@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDrawer } from '@angular/material/sidenav';
 import { RouterLink } from "@angular/router";
 
 @Component({
@@ -9,5 +10,5 @@ import { RouterLink } from "@angular/router";
   styleUrl: './side-nav.css',
 })
 export class SideNav {
-
+  @Input({ required: true }) drawer!: MatDrawer
 }
