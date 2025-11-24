@@ -21,8 +21,8 @@ export class ListingGroupSummaryCard {
     pickupOptions: "Pickup",
     details: "Arrange details",
     listings: [
-      { id: "1", price: 30, title: "Puerto Rico Bundle" },
-      { id: "2", price: 50, title: "Agricola Bundle" },
+      { id: "1", price: 30, title: "Puerto Rico Bundle", details: "complete" },
+      { id: "2", price: 50, title: "Agricola Bundle", details: "complete" },
     ]
 
   };

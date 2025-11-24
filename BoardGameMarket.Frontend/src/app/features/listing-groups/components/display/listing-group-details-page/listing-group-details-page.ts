@@ -28,13 +28,13 @@ export class ListingGroupDetailsPage implements OnInit {
           details: "Test details",
           listings: [
             {
-              id: "1", title: "Puerto rico bundle", price: 50, items: [
-                { catalogItem: { id: "1", name: "Puerto rico base", type: 'bgg', bggLink: 'https://www.boardgamegeek.com/boardgame/3076' } as BggItem, details: 'base game' },
+              id: "1", title: "Puerto rico bundle", price: 50, details: 'details', items: [
+                { catalogItem: { id: "1", name: "Puerto rico base", type: 'bgg', bggLink: 'https://www.boardgamegeek.com/boardgame/3076' } as BggItem, details: 'base game',  },
                 { catalogItem: { id: "2", name: "Puerto rico expansion", type: 'custom', bggLink: '2' } as CustomItem, details: 'exp' }
               ]
             },
             {
-              id: "2", title: "Agricola bundle", price: 100, items: [
+              id: "2", title: "Agricola bundle",  details: 'details',price: 100, items: [
                 { catalogItem: { id: "3", name: "Agricola base", type: 'bgg', bggLink: 'https://www.boardgamegeek.com/boardgame/31260' } as BggItem, details: 'base game' },
                 { catalogItem: { id: "4", name: "Agricola expansion", type: 'custom', bggLink: '2' } as CustomItem, details: 'exp' }
               ]

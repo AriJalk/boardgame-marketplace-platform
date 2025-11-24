@@ -1,0 +1,6 @@
+<form [formGroup]="formGroup" (submit)="submitForm()">
+    <bgm-add-listing-group-form [listingGroupForm]="formGroup" (listingAdded)="addListing()"
+        (listingItemAdded)="addListingItem($event)">
+    </bgm-add-listing-group-form>
+    <button matButton type="submit">Submit</button>
+</form>

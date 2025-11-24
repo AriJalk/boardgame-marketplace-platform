@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ListingGroupCreationPage } from './listing-group-creation-page';
+import { AddListingGroupPage } from './add-listing-group-page';
 
-describe('ListingGroupCreationPage', () => {
-  let component: ListingGroupCreationPage;
-  let fixture: ComponentFixture<ListingGroupCreationPage>;
+describe('AddListingGroupPage', () => {
+  let component: AddListingGroupPage;
+  let fixture: ComponentFixture<AddListingGroupPage>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ListingGroupCreationPage]
+      imports: [AddListingGroupPage]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ListingGroupCreationPage);
+    fixture = TestBed.createComponent(AddListingGroupPage);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

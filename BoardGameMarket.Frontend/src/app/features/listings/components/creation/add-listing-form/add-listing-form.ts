@@ -1,29 +1,24 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { AddListingItemForm } from '../../../../listing-items/creation/add-listing-item-form/add-listing-item-form';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { AddListingItemForm } from '../../../../listing-items/creation/add-listing-item-form/add-listing-item-form';
 
 @Component({
   selector: 'bgm-add-listing-form',
-  imports: [ReactiveFormsModule, MatFormFieldModule, AddListingItemForm, MatInputModule, MatButtonModule],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, AddListingItemForm],
   templateUrl: './add-listing-form.html',
   styleUrl: './add-listing-form.css',
 })
 export class AddListingForm {
   @Input({ required: true }) listingForm!: FormGroup;
-
-  constructor(private fb: FormBuilder) { }
+  @Output() listingItemAdded = new EventEmitter<FormGroup>();
 
   get listingItems(): FormArray<FormGroup> {
     return this.listingForm.get('listingItems') as FormArray;
   }
-
   addlistingItem() {
-    this.listingItems.push(this.fb.group({
-      catalogItemId: [''],
-      details: ['']
-    }));
-  }
+    this.listingItemAdded.emit(this.listingForm);
+  };
 }

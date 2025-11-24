@@ -5,12 +5,12 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterOutlet } from '@angular/router';
 import { SideNav } from './core/side-nav/side-nav';
-import { AddListingGroupForm } from "./features/listing-groups/components/creation/add-listing-group-form/add-listing-group-form";
+import { AddListingGroupPage } from "./features/listing-groups/components/creation/add-listing-group-page/add-listing-group-page";
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, SideNav, MatSidenavModule, MatToolbarModule, MatIconModule, MatButtonModule,
-    AddListingGroupForm],
+    AddListingGroupPage],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

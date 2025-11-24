@@ -1,11 +1,10 @@
-{{listingGroupForm.value | json}}
-<form [formGroup]="listingGroupForm">
+<div [formGroup]="listingGroupForm">
     <mat-form-field class="example-full-width">
         <mat-label>Pickup Location</mat-label>
-        <input type="text" matInput formControlName="pickupLocation" placeholder="Pickup Location">
+        <input type="text" matInput formControlName="pickupOptions" placeholder="Pickup Options">
     </mat-form-field>
-    @for(listing of listings.controls; track listing; let i=$index){
-        <bgm-add-listing-form [listingForm]="listing"></bgm-add-listing-form>
+    @for (listing of listings.controls; track $index) {
+        <bgm-add-listing-form [listingForm]="listing" (listingItemAdded)="addListingItem(listing)"></bgm-add-listing-form>
     }
-    <button matButton (click)="addlisting()">Add listing</button>
-</form>
+    <button matButton type="button" (click)="addListing()">Add listing</button>
+</div>
