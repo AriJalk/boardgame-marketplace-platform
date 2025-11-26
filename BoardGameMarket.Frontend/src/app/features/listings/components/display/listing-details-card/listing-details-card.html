@@ -1,6 +1,9 @@
-<h3>Listing title: {{listing.title}}</h3>
-<h3>Price: {{listing.price}}</h3>
-@for (item of listing.items; track $index) 
-{
-    <bgm-listing-item-card [listingItem]=item></bgm-listing-item-card>
+@if (listing){
+    <h3>Listing title: {{listing.title}}</h3>
+    <h3>Price: {{listing.price}}</h3>
+    <h3>Details: {{listing.details}}</h3>
+    @for (item of listing.items; track $index)
+    {
+        <bgm-listing-item-card [listingItem]=item></bgm-listing-item-card>
+    }
 }

@@ -1,11 +1,21 @@
 <div [formGroup]="listingForm">
-  <mat-form-field class="example-full-width">
+  <mat-form-field class="full-width">
+    <mat-label>Title</mat-label>
+    <input type="text" matInput formControlName="title" placeholder="Title">
+  </mat-form-field>
+  <mat-form-field class="full-width">
     <mat-label>Price</mat-label>
     <input type="number" matInput formControlName="price" placeholder="Price">
   </mat-form-field>
-  @for (listingItem of listingItems.controls; track $index) 
-  {
-    <bgm-add-listing-item-form [itemForm]="listingItem"></bgm-add-listing-item-form>
-  }
-  <button matButton type="button" (click)="addlistingItem()">Add listing item</button>
+  <div class="grid">
+    @for (listingItem of listingItems.controls; track $index; let i = $index)
+    {
+      <mat-card class="margin-10">
+        <h4>Item {{i + 1}}</h4>
+        <bgm-add-listing-item-form [itemForm]="listingItem"></bgm-add-listing-item-form>
+            <button matButton="elevated" type="button" (click)="removeListingItem(i)">Remove Item</button>
+      </mat-card>
+    }
+  </div>
+  <button matButton type="button" (click)="addListingItemFormGroup()">Add listing item</button>
 </div>
