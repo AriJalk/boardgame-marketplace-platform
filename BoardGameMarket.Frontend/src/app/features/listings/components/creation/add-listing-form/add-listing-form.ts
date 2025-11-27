@@ -1,14 +1,14 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { AddListingItemForm } from '../../../../listing-items/creation/add-listing-item-form/add-listing-item-form';
 import { MatCardModule } from "@angular/material/card";
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'bgm-add-listing-form',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, AddListingItemForm, MatCardModule],
+  imports: [ReactiveFormsModule, MatButtonModule, MatCardModule, AddListingItemForm, MatFormFieldModule, MatInputModule],
   templateUrl: './add-listing-form.html',
   styleUrl: './add-listing-form.css',
 })
@@ -17,27 +17,44 @@ export class AddListingForm implements OnInit {
   @Output() listingRemoved = new EventEmitter<number>();
 
   constructor(private fb: FormBuilder) { }
-
+  
   ngOnInit(): void {
-    this.listingForm.addControl('listingItems', this.fb.array([this.createListingItemFormGroup()]))
+    this.listingForm.addControl('listingItems', this.fb.array([]));
   }
 
   get listingItems(): FormArray<FormGroup> {
     return this.listingForm.get('listingItems') as FormArray;
   }
 
-  createListingItemFormGroup(): FormGroup {
+  createBggListingItemFormGroup(): FormGroup {
     return this.fb.group({
-      catalogItemId: [''],
+      type: 'bgg',
+      bggLink: [''],
       details: [''],
     });
   }
 
-  addListingItemFormGroup() {
-    this.listingItems.push(this.createListingItemFormGroup());
+  createCustomListingItemFormGroup(): FormGroup {
+    return this.fb.group({
+      type: 'custom',
+      name: [''],
+      details: [''],
+    });
   }
 
+  addBggListingItem() {
+    this.listingItems.push(this.createBggListingItemFormGroup());
+  }
+
+  addCustomListingItem() {
+    this.listingItems.push(this.createCustomListingItemFormGroup());
+  }
+
+
+
   removeListingItem(index: number) {
-    this.listingItems.removeAt(index);
+    if (this.listingItems.length > 1) {
+      this.listingItems.removeAt(index);
+    }
   }
 }

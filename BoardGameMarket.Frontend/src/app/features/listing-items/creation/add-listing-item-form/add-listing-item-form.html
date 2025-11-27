@@ -1,10 +1,10 @@
 <div [formGroup]="itemForm">
-    <mat-form-field class="full-width">
-        <mat-label>Catalog ID</mat-label>
-        <input type="text" matInput formControlName="catalogItemId" placeholder="Catalog ID">
-    </mat-form-field>
-    <mat-form-field class="full-width">
-        <mat-label>Details</mat-label>
-        <input type="text" matInput formControlName="details" placeholder="Details">
-    </mat-form-field>
+    @switch (itemForm.get('type')?.value) {
+        @case ('bgg'){
+            <bgm-add-bgg-listing-item-form [itemForm]="itemForm"></bgm-add-bgg-listing-item-form>
+        }
+        @case ('custom') {
+            <bgm-add-custom-listing-item-form [itemForm]="itemForm"></bgm-add-custom-listing-item-form>
+        }
+    }
 </div>

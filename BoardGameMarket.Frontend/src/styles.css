@@ -3,11 +3,15 @@
     flex-wrap: wrap;
 }
 
-.margin-10{
+.flex-1 {
+    flex: 1;
+}
+
+.margin-10 {
     margin: 10%;
 }
 
-.margin-5{
+.margin-5 {
     margin: 5%;
 }
 
@@ -16,6 +20,18 @@
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 
-.full-width{
+.full-width {
     width: 100%;
+}
+
+.mat-secondary-container {
+    background-color: var(--mat-sys-secondary-container);
+}
+
+.card-container {
+    margin: 10%;
+}
+
+.card-container>* {
+    margin: 5%;
 }

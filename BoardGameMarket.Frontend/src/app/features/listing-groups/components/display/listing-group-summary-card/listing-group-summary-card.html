@@ -1,5 +1,5 @@
-<mat-card>
-    <div class="margin-5">
+<mat-card class="card-container">
+    <div>
         <h3>Seller: {{listingGroup.seller.displayName}}</h3>
         <h3>Location: {{listingGroup.location}}</h3>
         <h3>Posting Date: {{listingGroup.postingTime | date}}</h3>
@@ -8,9 +8,9 @@
     </div>
     @for (listing of listingGroup.listings; track $index)
     {
-    <div class="margin-5">
-        <bgm-listing-summary-card [listing]="listing"></bgm-listing-summary-card>
-    </div>
+        <div class="mat-secondary-container">
+            <bgm-listing-summary-card class="card-container" [listing]="listing"></bgm-listing-summary-card>
+        </div>
     }
     <mat-card-actions>
         <button matButton="elevated" [routerLink]="['/listing-groups', listingGroup.id]">Details</button>

@@ -3,14 +3,14 @@
         <mat-label>Pickup Location</mat-label>
         <input type="text" matInput formControlName="pickupOptions" placeholder="Pickup Options">
     </mat-form-field>
-    <div class="grid">
-    @for (listing of listings.controls; track $index; let i = $index) {
-        <mat-card class="margin-10">
+    <div class="flex-container">
+        @for (listing of listings.controls; track $index; let i = $index) {
+        <mat-card class="card-container">
             <h3>Listing {{i + 1}}</h3>
             <bgm-add-listing-form [listingForm]="listing"></bgm-add-listing-form>
-            <button matButton="elevated" (click)="removeListing(i)">Remove Listing</button>
+            <button matButton="elevated" type="button" (click)="removeListing(i)">Remove Listing</button>
         </mat-card>
-    }
+        }
     </div>
-    <button matButton type="button" (click)="addListingFormGroup()">Add listing</button>
+    <button matButton="elevated" type="button" (click)="addListing()">Add listing</button>
 </div>

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ListingDetail } from '../../../models/listing.model';
-import { ListingItemCard } from '../../../../listing-items/components/listing-item-card/listing-item-card';
+import { ListingItemCard } from '../../../../listing-items/components/display/listing-item-card/listing-item-card';
 
 @Component({
   selector: 'bgm-listing-details-card',

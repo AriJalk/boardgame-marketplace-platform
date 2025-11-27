@@ -10,7 +10,3 @@
   flex-direction: column; /* Stacks toolbar and sidenav container vertically */
   height: 100vh; /* Occupies full viewport height */
 }
-
-.full-height-sidenav-container {
-  flex: 1; /* Allows the sidenav container to fill remaining vertical space */
-}

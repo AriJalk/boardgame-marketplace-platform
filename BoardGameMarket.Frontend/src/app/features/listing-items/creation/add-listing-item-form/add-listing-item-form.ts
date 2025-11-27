@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { Component, Input } from '@angular/core';
+import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AddBggListingItemForm } from '../add-bgg-listing-item-form/add-bgg-listing-item-form';
+import { AddCustomListingItemForm } from '../add-custom-listing-item-form/add-custom-listing-item-form';
+
 @Component({
   selector: 'bgm-add-listing-item-form',
-  imports: [MatFormFieldModule, MatInputModule, ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AddBggListingItemForm, AddCustomListingItemForm, FormsModule],
   templateUrl: './add-listing-item-form.html',
   styleUrl: './add-listing-item-form.css',
 })

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -35,11 +35,13 @@ export class AddListingGroupForm implements OnInit {
     });
   }
 
-  addListingFormGroup() {
+  addListing() {
     this.listings.push(this.createListingFormGroup());
   }
 
   removeListing(index: number) {
-    this.listings.removeAt(index);
+    if (this.listings.length > 1) {
+      this.listings.removeAt(index);
+    }
   }
 }
