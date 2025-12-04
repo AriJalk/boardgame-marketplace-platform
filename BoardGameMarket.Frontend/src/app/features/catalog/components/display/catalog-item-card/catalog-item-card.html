@@ -1,7 +1,4 @@
+<h2>Name: {{catalogItem.name}}</h2>
 @if (isBgg(catalogItem)){
     <bgm-bgg-item-card [item]="catalogItem"></bgm-bgg-item-card>
-}
-@else if (isCustom(catalogItem)) 
-{
-    <bgm-custom-item-card [item]="catalogItem"></bgm-custom-item-card>
 }

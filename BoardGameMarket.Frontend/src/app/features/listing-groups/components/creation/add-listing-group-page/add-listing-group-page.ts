@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AddListingGroupForm } from "../add-listing-group-form/add-listing-group-form";
 import { MatAnchor, MatButtonModule } from "@angular/material/button";
 
@@ -23,6 +23,6 @@ export class AddListingGroupPage implements OnInit {
   }
 
   submitForm() {
-    console.log(this.formGroup.value);
+    console.log(this.formGroup.getRawValue());
   }
 }

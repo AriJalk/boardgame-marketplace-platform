@@ -1,4 +1,4 @@
-<mat-card class="card-container">
+<mat-card class="card-container padding-2">
     <div>
         <h3>Seller: {{listingGroup.seller.displayName}}</h3>
         <h3>Location: {{listingGroup.location}}</h3>
@@ -8,7 +8,7 @@
     </div>
     @for (listing of listingGroup.listings; track $index)
     {
-        <div class="mat-secondary-container">
+        <div class="mat-secondary-container padding-2">
             <bgm-listing-summary-card class="card-container" [listing]="listing"></bgm-listing-summary-card>
         </div>
     }

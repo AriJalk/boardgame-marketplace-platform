@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { AddListingItemForm } from '../../../../listing-items/creation/add-listing-item-form/add-listing-item-form';
@@ -17,7 +17,7 @@ export class AddListingForm implements OnInit {
   @Output() listingRemoved = new EventEmitter<number>();
 
   constructor(private fb: FormBuilder) { }
-  
+
   ngOnInit(): void {
     this.listingForm.addControl('listingItems', this.fb.array([]));
   }
@@ -28,7 +28,9 @@ export class AddListingForm implements OnInit {
 
   createBggListingItemFormGroup(): FormGroup {
     return this.fb.group({
-      type: 'bgg',
+      id: [''],
+      type: new FormControl({ value: 'bgg', disabled: true }),
+      name: [''],
       bggLink: [''],
       details: [''],
     });
@@ -36,7 +38,7 @@ export class AddListingForm implements OnInit {
 
   createCustomListingItemFormGroup(): FormGroup {
     return this.fb.group({
-      type: 'custom',
+      type: new FormControl({ value: 'custom', disabled: true }),
       name: [''],
       details: [''],
     });
@@ -53,8 +55,6 @@ export class AddListingForm implements OnInit {
 
 
   removeListingItem(index: number) {
-    if (this.listingItems.length > 1) {
-      this.listingItems.removeAt(index);
-    }
+    this.listingItems.removeAt(index);
   }
 }

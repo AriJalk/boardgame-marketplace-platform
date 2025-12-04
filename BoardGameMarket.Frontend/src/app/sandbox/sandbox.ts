@@ -4,10 +4,11 @@ import { Observable } from 'rxjs';
 import { ListingDetail } from '../features/listings/models/listing.model';
 import { ListingDetailsCard } from '../features/listings/components/display/listing-details-card/listing-details-card';
 import { AsyncPipe } from '@angular/common';
+import { SearchCatalog } from "../features/catalog/components/search-catalog/search-catalog";
 
 @Component({
   selector: 'bgm-sandbox',
-  imports: [ListingDetailsCard, AsyncPipe],
+  imports: [ListingDetailsCard, AsyncPipe, SearchCatalog],
   templateUrl: './sandbox.html',
   styleUrl: './sandbox.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
