@@ -40,5 +40,15 @@ namespace TestingService
 
 			return Ok(listing);
 		}
+
+		[HttpGet("items/bgg/{id:int}")]
+		public async Task<IActionResult> GetBggItemId(int id)
+		{
+			if (id > 100)
+			{
+				return Ok(Guid.NewGuid());
+			}
+			return NotFound();
+		}
 	}
 }

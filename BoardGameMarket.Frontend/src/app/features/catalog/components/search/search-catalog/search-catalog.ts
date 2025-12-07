@@ -1,8 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatFormField, MatInputModule } from '@angular/material/input';
-import { BggItem } from '../../models/catalog-item.model';
-import { CatalogItemCard } from '../display/catalog-item-card/catalog-item-card';
-import { CatalogItemGetterService } from '../../services/catalog-item-getter.service';
+import { BggItem } from '../../../models/catalog-item.model';
+import { CatalogItemCard } from '../../display/catalog-item-card/catalog-item-card';
+import { CatalogItemGetterService } from '../../../services/catalog-item-getter.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe, CommonModule } from '@angular/common';
 

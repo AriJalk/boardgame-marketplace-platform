@@ -27,4 +27,19 @@ export class CatalogItemGetterService {
     ];
     return of(dummy).pipe(delay(400));
   }
+
+  private extractBggId(url: string): number | null {
+    const match = url.match(/^(?:https?:\/\/)?(?:www\.)?boardgamegeek\.com\/[^/]+\/(\d+)(?:\/|$)/);
+    return match ? Number(match[1]) : null;
+  }
+
+  getItemByBggUrl(url: string | null): Observable<string | null> {
+    if (url !== null) {
+      const id = this.extractBggId(url);
+      if (id !== null) {
+        return this.httpClient.get<string>(`https://localhost:7155/api/testing/items/bgg/${id}`);
+      }
+    }
+    return of(null);
+  }
 }

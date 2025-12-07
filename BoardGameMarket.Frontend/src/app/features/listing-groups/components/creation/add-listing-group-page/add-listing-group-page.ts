@@ -23,6 +23,12 @@ export class AddListingGroupPage implements OnInit {
   }
 
   submitForm() {
+    if (this.formGroup.valid) {
+      console.log("VALID");
+    }
+    else {
+      console.log("INVALID");
+    }
     console.log(this.formGroup.getRawValue());
   }
 }

@@ -1,10 +1,11 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { AddListingItemForm } from '../../../../listing-items/creation/add-listing-item-form/add-listing-item-form';
 import { MatCardModule } from "@angular/material/card";
 import { MatInputModule } from '@angular/material/input';
+import { requireControl } from '../../../../../common/validators/require-control.validator';
 
 @Component({
   selector: 'bgm-add-listing-form',
@@ -28,18 +29,16 @@ export class AddListingForm implements OnInit {
 
   createBggListingItemFormGroup(): FormGroup {
     return this.fb.group({
-      id: [''],
+      id: new FormControl({ value: null, disabled: true }, [Validators.required]),
       type: new FormControl({ value: 'bgg', disabled: true }),
-      name: [''],
-      bggLink: [''],
       details: [''],
-    });
+    }, { validators: requireControl('id') });
   }
 
   createCustomListingItemFormGroup(): FormGroup {
     return this.fb.group({
       type: new FormControl({ value: 'custom', disabled: true }),
-      name: [''],
+      name: new FormControl(null, [Validators.required]),
       details: [''],
     });
   }

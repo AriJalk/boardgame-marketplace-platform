@@ -3,7 +3,8 @@
         <mat-label>Bgg Link</mat-label>
         <input type="text" matInput formControlName="bggLink" placeholder="Bgg Link">
     </mat-form-field> -->
-    <bgm-search-catalog (itemSelected)="selectItem($event)"></bgm-search-catalog>
+    <!-- <bgm-search-catalog (itemSelected)="selectItem($event)"></bgm-search-catalog> -->
+    <bgm-retrieve-bgg-item-id (idRetrieved)="attachId($event)"></bgm-retrieve-bgg-item-id>
     <mat-form-field class="full-width">
         <mat-label>Details</mat-label>
         <input type="text" matInput formControlName="details" placeholder="Details">
