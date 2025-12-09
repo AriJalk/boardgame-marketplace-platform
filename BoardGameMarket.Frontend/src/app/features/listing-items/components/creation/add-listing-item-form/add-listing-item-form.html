@@ -1,0 +1,13 @@
+<div [formGroup]="itemForm">
+  @switch (itemForm.get('type')?.value) {
+    @case ('bgg') {
+      <bgm-add-bgg-listing-item-form [itemForm]="itemForm"></bgm-add-bgg-listing-item-form>
+      @if (itemForm.invalid && itemForm.touched) {
+        No bgg data supplied
+      }
+    }
+    @case ('custom') {
+      <bgm-add-custom-listing-item-form [itemForm]="itemForm"></bgm-add-custom-listing-item-form>
+    }
+  }
+</div>

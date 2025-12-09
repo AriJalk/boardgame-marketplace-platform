@@ -14,7 +14,7 @@ import { DatePipe } from '@angular/common';
 })
 export class ListingGroupSummaryCard {
   listingGroup: ListingGroupSummary = {
-    id: "1",
+    id: "127699fa-ff4c-4c12-b149-9534485a0129",
     seller: { id: "1", displayName: "Test seller" },
     postingTime: new Date(Date.now()),
     location: "BS",

@@ -1,9 +1,11 @@
-@if (listing){
-    <h3>Listing title: {{listing.title}}</h3>
-    <h3>Price: {{listing.price}}</h3>
-    <h3>Details: {{listing.details}}</h3>
-    @for (item of listing.items; track $index)
-    {
-        <bgm-listing-item-card [listingItem]=item></bgm-listing-item-card>
-    }
-}
+<div class="flex-container-column">
+  <h3>Listing title: {{ listing.title }}</h3>
+  <h3>Price: {{ listing.price }}</h3>
+  <h3>Details: {{ listing.details }}</h3>
+  <h4>Items:</h4>
+  @for (item of listing.items; track $index) {
+    <mat-card class="margin-5">
+      <bgm-listing-item-card class="padding-2" [listingItem]="item"></bgm-listing-item-card>
+    </mat-card>
+  }
+</div>

@@ -24,7 +24,7 @@ export class RetrieveBggItemId implements AfterViewInit {
       distinctUntilChanged(),
       filter(value => !!value),
       switchMap(url => {
-        return this.catalogGetterService.getItemByBggUrl(url).pipe(
+        return this.catalogGetterService.getItemIdByBggUrl(url).pipe(
           catchError(() => {
             return of(null);
           }));

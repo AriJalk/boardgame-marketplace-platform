@@ -1,0 +1,13 @@
+<div [formGroup]="itemForm">
+  <mat-form-field class="full-width">
+    <mat-label>Name</mat-label>
+    <input type="text" matInput formControlName="name" placeholder="Name" />
+    @if (itemForm.get('name')?.invalid && itemForm.touched) {
+      Required
+    }
+  </mat-form-field>
+  <mat-form-field class="full-width">
+    <mat-label>Details</mat-label>
+    <input type="text" matInput formControlName="details" placeholder="Details" />
+  </mat-form-field>
+</div>

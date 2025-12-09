@@ -1,14 +1,15 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { delay, Observable, of } from 'rxjs';
 import { BggItem, CatalogItem } from '../models/catalog-item.model';
+import { API_CONFIG_SERVICE } from '../../../core/api-config/api-config.service';
+import { ApiConfig } from '../../../core/api-config/api-config.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CatalogItemGetterService {
-  private url: string = "https://localhost:6063/api/items"
-  constructor(private httpClient: HttpClient) { }
+  constructor(private httpClient: HttpClient, @Inject(API_CONFIG_SERVICE) private apiConfig: ApiConfig) { }
 
   getItems(itemIds: string[]): Observable<CatalogItem[]> {
     const request = "?ids=" + itemIds.join(",");
@@ -30,14 +31,15 @@ export class CatalogItemGetterService {
 
   private extractBggId(url: string): number | null {
     const match = url.match(/^(?:https?:\/\/)?(?:www\.)?boardgamegeek\.com\/[^/]+\/(\d+)(?:\/|$)/);
+    console.log(match);
     return match ? Number(match[1]) : null;
   }
 
-  getItemByBggUrl(url: string | null): Observable<string | null> {
+  getItemIdByBggUrl(url: string | null): Observable<string | null> {
     if (url !== null) {
       const id = this.extractBggId(url);
       if (id !== null) {
-        return this.httpClient.get<string>(`https://localhost:7155/api/testing/items/bgg/${id}`);
+        return this.httpClient.get<string>(`${this.apiConfig.apiEndpoint}/catalog/bgg/${id}`);
       }
     }
     return of(null);

@@ -1,0 +1,18 @@
+@if (listingGroup !== null && listingGroup.seller !== null) {
+  <h1>Details page</h1>
+  <h3>Id: {{ listingGroup.id }}</h3>
+  <h3>Seller: {{ listingGroup.seller.displayName }}</h3>
+  <h3>Location: {{ listingGroup.location }}</h3>
+  <h3>Pickup Options: {{ listingGroup.pickupOptions }}</h3>
+
+  <div class="grid">
+    @for (listing of listingGroup.listings; track $index) {
+      <mat-card class="margin-5">
+        <bgm-listing-details-card
+          class="padding-2 margin-5"
+          [listing]="listing"
+        ></bgm-listing-details-card>
+      </mat-card>
+    }
+  </div>
+}
