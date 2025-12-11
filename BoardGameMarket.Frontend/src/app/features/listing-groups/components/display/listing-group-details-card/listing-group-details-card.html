@@ -12,6 +12,9 @@
           class="padding-2 margin-5"
           [listing]="listing"
         ></bgm-listing-details-card>
+        <ng-container
+          *ngTemplateOutlet="listingExtraTemplate; context: { $implicit: listing }"
+        ></ng-container>
       </mat-card>
     }
   </div>

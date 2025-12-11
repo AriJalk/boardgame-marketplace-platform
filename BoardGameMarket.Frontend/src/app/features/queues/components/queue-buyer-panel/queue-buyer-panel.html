@@ -1,0 +1,7 @@
+<div class="flex-container">
+  @if (!isSubscribed) {
+    <button matButton class="flex-1" (click)="onSubscribed()">Subscribe</button>
+  } @else {
+    <button matButton class="flex-1" (click)="onUnsubscribed()">Unsubscribe</button>
+  }
+</div>

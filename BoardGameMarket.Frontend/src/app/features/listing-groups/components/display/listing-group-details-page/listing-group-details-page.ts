@@ -6,10 +6,11 @@ import { ListingGroupService } from '../../../services/listing-group.service';
 import { Observable } from 'rxjs';
 import { ListingGroupDetailsCard } from '../listing-group-details-card/listing-group-details-card';
 import { AsyncPipe } from '@angular/common';
+import { QueueBuyerPanel } from '../../../../queues/components/queue-buyer-panel/queue-buyer-panel';
 
 @Component({
   selector: 'bgm-listing-group-details-page',
-  imports: [MatCardModule, ListingGroupDetailsCard, AsyncPipe],
+  imports: [MatCardModule, ListingGroupDetailsCard, AsyncPipe, QueueBuyerPanel],
   templateUrl: './listing-group-details-page.html',
   styleUrl: './listing-group-details-page.css',
 })

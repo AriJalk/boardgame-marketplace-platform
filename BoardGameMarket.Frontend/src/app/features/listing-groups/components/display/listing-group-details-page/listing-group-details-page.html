@@ -1,3 +1,8 @@
 <bgm-listing-group-details-card
   [listingGroup]="listingGroup$ | async"
+  [listingExtraTemplate]="subscriptionPanelTemplate"
 ></bgm-listing-group-details-card>
+
+<ng-template #subscriptionPanelTemplate let-listing>
+  <bgm-queue-buyer-panel [listingId]="listing.id" [isSubscribed]="false"></bgm-queue-buyer-panel>
+</ng-template>

@@ -10,6 +10,15 @@ namespace TestingService.Controllers
 		[HttpGet("{id:guid}")]
 		public IActionResult Get(Guid id)
 		{
+			ListingItemDto listingItem = new ListingItemDto(new CatalogItemDto(Guid.NewGuid(), "test item", "bgg", "https://www.boardgamegeek.com/boardgame/1", null), "Item details");
+			ListingDetailDto listing = new ListingDetailDto(Guid.NewGuid(),
+					"Listing title", 500, "Listing details",
+					new List<ListingItemDto>()
+					{
+						listingItem,
+						listingItem,
+					}
+					);
 			ListingGroupDetailedDto group = new ListingGroupDetailedDto(
 				id,
 				new UserSummaryDto(Guid.NewGuid(), "Test name"),
@@ -19,13 +28,8 @@ namespace TestingService.Controllers
 				"Listing group details",
 				new List<ListingDetailDto>()
 				{
-					new ListingDetailDto(Guid.NewGuid(),
-					"Listing title", 500, "Listing details",
-					new List<ListingItemDto>()
-					{
-						new ListingItemDto(new CatalogItemDto(Guid.NewGuid(), "test item", "bgg", "https://www.boardgamegeek.com", null), "Item details")
-					}
-					)
+					listing,
+					listing,
 				}
 				);
 
