@@ -12,7 +12,7 @@ export class ListingGroupService {
     private httpClient: HttpClient,
     @Inject(API_CONFIG_SERVICE) private apiConfig: ApiConfig,
   ) {}
-  fetchListingGroupDetails(listingGroupId: string) {
+  getListingGroupDetails(listingGroupId: string) {
     return this.httpClient.get<ListingGroupDetails>(
       `${this.apiConfig.apiEndpoint}/listingGroups/${listingGroupId}`,
     );

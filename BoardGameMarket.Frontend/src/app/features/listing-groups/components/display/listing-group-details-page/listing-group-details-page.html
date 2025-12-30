@@ -1,8 +1,17 @@
-<bgm-listing-group-details-card
-  [listingGroup]="listingGroup$ | async"
-  [listingExtraTemplate]="subscriptionPanelTemplate"
-></bgm-listing-group-details-card>
+@if (listingGroup$ | async; as listingGroup) {
+  <bgm-listing-group-details-card
+    [listingGroup]="listingGroup"
+    [listingExtraTemplate]="subscriptionPanelTemplate"
+  ></bgm-listing-group-details-card>
 
-<ng-template #subscriptionPanelTemplate let-listing>
-  <bgm-queue-buyer-panel [listingId]="listing.id" [isSubscribed]="false"></bgm-queue-buyer-panel>
-</ng-template>
+  <ng-template #subscriptionPanelTemplate let-listing>
+    @if (user?.id !== listingGroup.seller.id) {
+      <bgm-queue-buyer-panel
+        [listingId]="listing.id"
+        [isSubscribed]="false"
+      ></bgm-queue-buyer-panel>
+    } @else {
+      <bgm-queue-seller-panel [listingsId]="listing.id"></bgm-queue-seller-panel>
+    }
+  </ng-template>
+}

@@ -5,9 +5,9 @@
   <h3>Location: {{ listingGroup.location }}</h3>
   <h3>Pickup Options: {{ listingGroup.pickupOptions }}</h3>
 
-  <div class="grid">
+  <div class="flex-container">
     @for (listing of listingGroup.listings; track $index) {
-      <mat-card class="margin-5">
+      <mat-card class="margin-5 flex-grow-1">
         <bgm-listing-details-card
           class="padding-2 margin-5"
           [listing]="listing"

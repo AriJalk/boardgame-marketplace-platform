@@ -5,7 +5,9 @@ export interface UserSummary {
 
 export interface UserLogin {
     id: string;
-    role: RoleType
+    displayName: string;
+    role: RoleType;
+    token: string;
 }
 
 export enum RoleType {

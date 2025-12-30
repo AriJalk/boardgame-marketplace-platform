@@ -16,12 +16,12 @@ namespace TestingService.Controllers
 					new List<ListingItemDto>()
 					{
 						listingItem,
-						listingItem,
+						listingItem with {CatalogItem = listingItem.CatalogItem with {Id = Guid.NewGuid()}},
 					}
 					);
 			ListingGroupDetailedDto group = new ListingGroupDetailedDto(
 				id,
-				new UserSummaryDto(Guid.NewGuid(), "Test name"),
+				new UserSummaryDto(Guid.Parse("4552ea90-84c8-4d7c-8409-d80b39cad771"), "Test name"),
 				DateTime.UtcNow,
 				"Test pickup",
 				"Test location",
@@ -29,7 +29,7 @@ namespace TestingService.Controllers
 				new List<ListingDetailDto>()
 				{
 					listing,
-					listing,
+					listing with {Id = Guid.NewGuid()},
 				}
 				);
 

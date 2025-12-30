@@ -1,5 +1,5 @@
 import { ListingDetail, ListingSummary } from "../../listings/models/listing.model";
-import { UserSummary } from "../../users/models/user.model";
+import { UserSummary } from "../../../core/users/models/user.model";
 
 export interface ListingGroup {
     id: string;
