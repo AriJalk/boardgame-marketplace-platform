@@ -18,12 +18,14 @@ namespace TestingService.Controllers
 			_listingsService = listingsService;
 		}
 
-		[HttpGet("{id:guid}/queues")]
-		public IActionResult GetQueues(Guid id)
+		[HttpGet("{listingId:guid}/queues")]
+		public IActionResult GetQueues(Guid listingId)
 		{
-			if (_listingsService.QueueEntries.TryGetValue(id, out var queueEntries))
+			if (_listingsService.QueueEntries.TryGetValue(listingId, out var queueEntries))
 			{
-				QueuePageResponseDto pageResponse = new QueuePageResponseDto(queueEntries.OrderBy(q => q.CreatedAt), queueEntries.Where(q => q.Priority != null).OrderBy(q => q.Priority));
+				QueuePageResponseDto pageResponse = new QueuePageResponseDto(
+					TimeQueue: queueEntries.OrderBy(q => q.CreatedAt),
+					PriorityQueue: queueEntries.Where(q => q.Priority != null).OrderBy(q => q.Priority));
 				return Ok(pageResponse);
 			}
 
@@ -33,8 +35,15 @@ namespace TestingService.Controllers
 		[HttpPost("{listingId:guid}/queues/{queueEntryId:guid}")]
 		public IActionResult UpdateQueueEntryPriority(Guid listingId, Guid queueEntryId, [FromBody] UpdateQueuePriorityRequest updateRequest)
 		{
-			bool isSuccessful = _listingsService.UpdateQueuePriority(listingId, queueEntryId, updateRequest.RequestedIndex);
-
+			bool isSuccessful;
+			if (updateRequest.RequestedIndex == -1)
+			{
+				isSuccessful = _listingsService.RemoveQueuePriority(listingId, queueEntryId);
+			}
+			else
+			{
+				isSuccessful = _listingsService.UpdateQueuePriority(listingId, queueEntryId, updateRequest.RequestedIndex);
+			}
 			if (!isSuccessful)
 			{
 				return BadRequest();

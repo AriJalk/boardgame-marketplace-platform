@@ -24,6 +24,7 @@ export class QueueSellerPanel {
   );
 
   @ViewChild('priorityQueue') priorityContainer?: CdkDropList;
+  @ViewChild('timeQueue') timeContainer?: CdkDropList;
 
   constructor(private queueService: QueueService) {}
 
@@ -36,9 +37,15 @@ export class QueueSellerPanel {
   }
 
   priorityChangeRequest<QueueEntry>($event: CdkDragDrop<QueueEntry>) {
-    const requestedIndex = $event.currentIndex;
+    let requestedIndex = $event.currentIndex;
     const data = this.toQueueEntry($event.item.data);
-    if (
+    // Removal
+    if ($event.container !== this.priorityContainer) {
+      if ($event.previousContainer === this.priorityContainer) {
+        requestedIndex = -1;
+      }
+    } else if (
+      // Same entry
       $event.previousContainer === this.priorityContainer &&
       $event.currentIndex === $event.previousIndex
     ) {

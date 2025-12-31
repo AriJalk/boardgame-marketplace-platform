@@ -87,19 +87,28 @@ namespace TestingService.Services
 				ListingQueueEntryResponseDto? queueEntry = listingQueues.FirstOrDefault(q => q.Id == queueEntryId);
 				if (queueEntry != null)
 				{
-					var orderedList = listingQueues.Where(q => q.Priority != null).OrderBy(q => q.Priority).ToList();
-					if (requestedIndex == 0)
+					int entryIndex = listingQueues.IndexOf(queueEntry);
+					var priorityList = listingQueues.Where(q => q.Priority != null).OrderBy(q => q.Priority).ToList();
+					if (priorityList.ElementAtOrDefault(requestedIndex) == queueEntry)
 					{
-						queueEntry.Priority = orderedList[0].Priority - 1000;
+						return false;
 					}
-					else if (requestedIndex >= orderedList.Count - 1)
+					var filteredList = priorityList.Where(q => q != queueEntry).ToList();
+					if (priorityList.Count == 0)
 					{
-						queueEntry.Priority = orderedList[orderedList.Count - 1].Priority + 1000;
+						queueEntry.Priority = 0;
+					}
+					else if (requestedIndex == 0)
+					{
+						queueEntry.Priority = filteredList[0].Priority - 1000;
+					}
+					else if (requestedIndex >= filteredList.Count - 1)
+					{
+						queueEntry.Priority = filteredList[filteredList.Count - 1].Priority + 1000;
 					}
 					else
 					{
-						var filtered = orderedList.Where(q => q.Id != queueEntry.Id).ToList();
-						queueEntry.Priority = (filtered[requestedIndex - 1].Priority + filtered[requestedIndex].Priority) * 0.5f;
+						queueEntry.Priority = (filteredList[requestedIndex - 1].Priority + filteredList[requestedIndex].Priority) * 0.5f;
 					}
 					return true;
 				}
@@ -107,5 +116,18 @@ namespace TestingService.Services
 			return false;
 		}
 
+		public bool RemoveQueuePriority(Guid listingId, Guid queueEntryId)
+		{
+			if (QueueEntries.TryGetValue(listingId, out var listingQueues))
+			{
+				ListingQueueEntryResponseDto? queueEntry = listingQueues.FirstOrDefault(q => q.Id == queueEntryId);
+				if (queueEntry != null)
+				{
+					queueEntry.Priority = null;
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 }

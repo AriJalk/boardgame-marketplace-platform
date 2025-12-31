@@ -9,6 +9,7 @@
         [cdkDropListData]="queues.timeQueue"
         cdkDropListSortingDisabled
         cdkDropListHasAnchor
+        (cdkDropListDropped)="priorityChangeRequest($event)"
       >
         @for (item of queues.timeQueue; track $index) {
           <div cdkDrag [cdkDragData]="item">
@@ -24,6 +25,7 @@
       <div
         cdkDropList
         #priorityQueue="cdkDropList"
+        [cdkDropListConnectedTo]="timeQueue"
         (cdkDropListDropped)="priorityChangeRequest($event)"
         [cdkDropListData]="queues.priorityQueue"
       >
