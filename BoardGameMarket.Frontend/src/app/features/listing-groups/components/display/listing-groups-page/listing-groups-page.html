@@ -1,3 +1,12 @@
-<bgm-listing-groups-grid></bgm-listing-groups-grid>
+<div class="grid">
+  @for (listingGroup of listingGroups$ | async; track $index) {
+    <bgm-listing-group-summary-card [listingGroup]="listingGroup"></bgm-listing-group-summary-card>
+  }
+</div>
 
-<bgm-pagination-controls [hasNext]="hasNext" [hasPrevious]="hasPrevious" (previous)="previous_clicked()" (next)="next_clicked()"></bgm-pagination-controls>
+<bgm-pagination-controls
+  [hasNext]="hasNext"
+  [hasPrevious]="hasPrevious"
+  (previous)="previous_clicked()"
+  (next)="next_clicked()"
+></bgm-pagination-controls>

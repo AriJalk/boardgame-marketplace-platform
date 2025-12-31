@@ -1,46 +1,48 @@
-<div class="flex-container justify-center-evenly">
-  <div class="flex-container-column">
-    <h4>Time-based queue</h4>
-    <div
-      #timeQueue="cdkDropList"
-      cdkDropList
-      [cdkDropListConnectedTo]="priorityQueue"
-      [cdkDropListData]="timeQueueEntries"
-      cdkDropListSortingDisabled
-      cdkDropListHasAnchor
-    >
-      @for (item of timeQueueEntries; track item) {
-        <div cdkDrag [cdkDragData]="item">
-          <ng-container
-            *ngTemplateOutlet="queuePanelTemplate; context: { $implicit: item }"
-          ></ng-container>
-        </div>
-      }
+@if (queues$ | async; as queues) {
+  <div class="flex-container justify-center-evenly">
+    <div class="flex-container-column">
+      <h4>Time-based queue</h4>
+      <div
+        #timeQueue="cdkDropList"
+        cdkDropList
+        [cdkDropListConnectedTo]="priorityQueue"
+        [cdkDropListData]="queues.timeQueue"
+        cdkDropListSortingDisabled
+        cdkDropListHasAnchor
+      >
+        @for (item of queues.timeQueue; track $index) {
+          <div cdkDrag [cdkDragData]="item">
+            <ng-container
+              *ngTemplateOutlet="queuePanelTemplate; context: { $implicit: item }"
+            ></ng-container>
+          </div>
+        }
+      </div>
+    </div>
+    <div class="flex-container-column">
+      <h4>Priority-based queue</h4>
+      <div
+        cdkDropList
+        #priorityQueue="cdkDropList"
+        (cdkDropListDropped)="priorityChangeRequest($event)"
+        [cdkDropListData]="queues.priorityQueue"
+      >
+        @for (item of queues.priorityQueue; track $index) {
+          <div cdkDrag [cdkDragData]="item">
+            <ng-container
+              *ngTemplateOutlet="queuePanelTemplate; context: { $implicit: item }"
+            ></ng-container>
+          </div>
+        }
+      </div>
     </div>
   </div>
-  <div class="flex-container-column">
-    <h4>Priority-based queue</h4>
-    <div
-      cdkDropList
-      #priorityQueue="cdkDropList"
-      (cdkDropListDropped)="priorityChangeRequest($event)"
-      [cdkDropListData]="priorityQueueEntries"
-    >
-      @for (item of priorityQueueEntries; track item) {
-        <div cdkDrag [cdkDragData]="item">
-          <ng-container
-            *ngTemplateOutlet="queuePanelTemplate; context: { $implicit: item }"
-          ></ng-container>
-        </div>
-      }
-    </div>
-  </div>
-</div>
+}
 
 <ng-template #queuePanelTemplate let-item>
   @if (toQueueEntry(item); as queueEntry) {
-    @if (item.priority !== undefined) {
-      <mat-card class="example-box" style="color: salmon;">
+    @if (item.priority !== null) {
+      <mat-card class="example-box" style="color: salmon">
         <h4>{{ queueEntry.createdAt | date: 'short' }}</h4>
         <h4>{{ queueEntry.status }}</h4>
         <h4>{{ queueEntry.buyer.displayName }}</h4>

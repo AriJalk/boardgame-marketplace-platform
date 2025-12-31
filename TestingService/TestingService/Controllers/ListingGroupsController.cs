@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TestingService.Dtos;
+using TestingService.Services;
 
 namespace TestingService.Controllers
 {
@@ -7,33 +8,26 @@ namespace TestingService.Controllers
 	[ApiController]
 	public class ListingGroupsController : ControllerBase
 	{
+		ListingsService _listingsService;
+		public ListingGroupsController(ListingsService listingsService)
+		{
+			_listingsService = listingsService;
+		}
 		[HttpGet("{id:guid}")]
 		public IActionResult Get(Guid id)
 		{
-			ListingItemDto listingItem = new ListingItemDto(new CatalogItemDto(Guid.NewGuid(), "test item", "bgg", "https://www.boardgamegeek.com/boardgame/1", null), "Item details");
-			ListingDetailDto listing = new ListingDetailDto(Guid.NewGuid(),
-					"Listing title", 500, "Listing details",
-					new List<ListingItemDto>()
-					{
-						listingItem,
-						listingItem with {CatalogItem = listingItem.CatalogItem with {Id = Guid.NewGuid()}},
-					}
-					);
-			ListingGroupDetailedDto group = new ListingGroupDetailedDto(
-				id,
-				new UserSummaryDto(Guid.Parse("4552ea90-84c8-4d7c-8409-d80b39cad771"), "Test name"),
-				DateTime.UtcNow,
-				"Test pickup",
-				"Test location",
-				"Listing group details",
-				new List<ListingDetailDto>()
-				{
-					listing,
-					listing with {Id = Guid.NewGuid()},
-				}
-				);
+			if (_listingsService.ListingGroups.TryGetValue(id, out ListingGroupDetailedDto? lg))
+			{
+				return Ok(lg);
+			}
 
-			return Ok(group);
+			return NotFound();
+		}
+
+		[HttpGet()]
+		public IActionResult Get()
+		{
+			return Ok(_listingsService.ListingGroups.Values);
 		}
 	}
 }

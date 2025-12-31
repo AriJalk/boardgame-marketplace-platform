@@ -1,40 +1,34 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { CdkDragDrop, CdkDropList, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { castTo } from '../../../../../core/utilities';
-import { DatePipe, NgTemplateOutlet } from '@angular/common';
+import { AsyncPipe, CommonModule, DatePipe, NgTemplateOutlet } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { QueueService } from '../../../queue.service';
-import { QueueEntry } from '../../../models/quque-entry.model';
-
-const PRIORITY_GAP = 1000;
+import { QueueEntry, QueuePageResponse } from '../../../models/quque-entry.model';
+import { Observable, startWith, Subject, switchMap } from 'rxjs';
 
 @Component({
   selector: 'bgm-queue-seller-panel',
-  imports: [DatePipe, DragDropModule, NgTemplateOutlet, MatCardModule],
+  imports: [DatePipe, DragDropModule, NgTemplateOutlet, MatCardModule, AsyncPipe, CommonModule],
   templateUrl: './queue-seller-panel.html',
   styleUrl: './queue-seller-panel.css',
 })
 export class QueueSellerPanel {
   @Input({ required: true }) listingsId!: string;
 
-  timeQueueEntries!: QueueEntry[];
-  priorityQueueEntries: QueueEntry[] = [];
+  private reload$ = new Subject<void>();
+
+  readonly queues$ = this.reload$.pipe(
+    startWith(void 0),
+    switchMap(() => this.queueService.getQueues(this.listingsId)),
+  );
 
   @ViewChild('priorityQueue') priorityContainer?: CdkDropList;
 
   constructor(private queueService: QueueService) {}
 
   ngOnInit(): void {
-    this.loadQueues();
-  }
-
-  loadQueues(): void {
-    this.queueService.getQueue(this.listingsId).subscribe({
-      next: (value) => {
-        this.timeQueueEntries = value.timeQueue;
-        this.priorityQueueEntries = value.priorityQueue;
-      },
-    });
+    this.reload$.next();
   }
 
   toQueueEntry(item: any): QueueEntry {
@@ -51,16 +45,12 @@ export class QueueSellerPanel {
       return;
     }
 
-    this.queueService.updatePriority(data.id, requestedIndex).subscribe({
-      next: (value) => {
-        if (value.isSuccessful) {
-          // this.loadQueues();
-          if (this.priorityQueueEntries.find((v) => v.id == data.id)) {
-            moveItemInArray(this.priorityQueueEntries, $event.previousIndex, $event.currentIndex);
-          } else {
-            this.priorityQueueEntries.splice($event.currentIndex, 0, data);
-          }
-        }
+    this.queueService.updatePriority(this.listingsId, data.id, requestedIndex).subscribe({
+      next: () => {
+        this.reload$.next();
+      },
+      error: (value) => {
+        console.log(value);
       },
     });
   }

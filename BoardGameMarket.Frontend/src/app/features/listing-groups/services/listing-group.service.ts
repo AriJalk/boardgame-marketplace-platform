@@ -2,7 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { API_CONFIG_SERVICE } from '../../../core/api-config/api-config.service';
 import { ApiConfig } from '../../../core/api-config/api-config.interface';
-import { ListingGroupDetails } from '../models/listing-group.model';
+import { ListingGroupDetails, ListingGroupSummary } from '../models/listing-group.model';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -16,5 +17,9 @@ export class ListingGroupService {
     return this.httpClient.get<ListingGroupDetails>(
       `${this.apiConfig.apiEndpoint}/listingGroups/${listingGroupId}`,
     );
+  }
+
+  getListingGroupSummaries(): Observable<ListingGroupSummary[]> {
+    return this.httpClient.get<ListingGroupSummary[]>(`${this.apiConfig.apiEndpoint}/listingGroups`)
   }
 }

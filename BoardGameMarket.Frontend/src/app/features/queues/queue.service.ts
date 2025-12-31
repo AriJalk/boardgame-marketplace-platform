@@ -1,70 +1,23 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { Injectable } from '@angular/core';
-import { QueueEntry, QueuePageResponse } from './models/quque-entry.model';
+import { Inject, Injectable } from '@angular/core';
+import { QueuePageResponse } from './models/quque-entry.model';
+import { API_CONFIG_SERVICE } from '../../core/api-config/api-config.service';
+import { ApiConfig } from '../../core/api-config/api-config.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class QueueService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(
+    private httpClient: HttpClient,
+    @Inject(API_CONFIG_SERVICE) private apiConfig: ApiConfig,
+  ) {}
 
-  getQueue(listingId: string): Observable<QueuePageResponse> {
-    const date = new Date();
-    const timeQueueEntries = [
-      {
-        id: crypto.randomUUID(),
-        buyer: { displayName: 'buyer1', id: 'test1Id' },
-        createdAt: date,
-        status: 'QUEUE',
-      },
-      {
-        id: crypto.randomUUID(),
-        buyer: { displayName: 'buyer2', id: 'test1Id' },
-        createdAt: this.addDays(date, 1),
-        status: 'QUEUE',
-      },
-      {
-        id: crypto.randomUUID(),
-        buyer: { displayName: 'buyer3', id: 'test1Id' },
-        createdAt: this.addDays(date, 2),
-        status: 'QUEUE',
-      },
-      {
-        id: crypto.randomUUID(),
-        buyer: { displayName: 'buyer4', id: 'test1Id' },
-        createdAt: this.addDays(date, 3),
-        status: 'QUEUE',
-      },
-      {
-        id: crypto.randomUUID(),
-        buyer: { displayName: 'buyer5', id: 'test1Id' },
-        createdAt: this.addDays(date, 4),
-        status: 'QUEUE',
-      },
-      {
-        id: crypto.randomUUID(),
-        buyer: { displayName: 'buyer6', id: 'test1Id' },
-        createdAt: this.addDays(date, 5),
-        status: 'QUEUE',
-      },
-      {
-        id: crypto.randomUUID(),
-        buyer: { displayName: 'buyer7', id: 'test1Id' },
-        createdAt: this.addDays(date, 6),
-        status: 'QUEUE',
-      },
-    ];
-
-    const priorityQueueEntries = [];
-    priorityQueueEntries.push(timeQueueEntries[0], timeQueueEntries[2], timeQueueEntries[4]);
-    return of({ timeQueue: timeQueueEntries, priorityQueue: priorityQueueEntries });
-  }
-
-  addDays(date: Date, days: number) {
-    const newDate = new Date(date);
-    newDate.setDate(newDate.getDate() + days);
-    return newDate;
+  getQueues(listingId: string): Observable<QueuePageResponse> {
+    return this.httpClient.get<QueuePageResponse>(
+      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queues`,
+    );
   }
 
   /**
@@ -74,14 +27,14 @@ export class QueueService {
    * @param b Requested new index.
    * @returns Priority result.
    */
-  updatePriority(queueEntryId: string, requestedIndex: number): Observable<UpdatePriorityResult> {
-    return of({
-      isSuccessful: true,
-    });
+  updatePriority(
+    listingId: string,
+    queueEntryId: string,
+    requestedIndex: number,
+  ): Observable<void> {
+    return this.httpClient.post<void>(
+      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queues/${queueEntryId}`,
+      { requestedIndex },
+    );
   }
-}
-
-export interface UpdatePriorityResult {
-  isSuccessful: boolean;
-  error?: string;
 }
