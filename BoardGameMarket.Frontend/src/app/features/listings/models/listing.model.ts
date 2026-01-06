@@ -1,13 +1,12 @@
-import { ListingItem } from "../../listing-items/models/listing-item.model"
+import { ListingItem } from '../../listing-items/models/listing-item.model';
 
 export interface ListingSummary {
-    id: string;
-    title: string;
-    price: number;
-    details: string;
+  id: string;
+  title: string;
+  price: number;
+  details?: string;
 }
 
 export interface ListingDetail extends ListingSummary {
-    items: ListingItem[];
+  items: ListingItem[];
 }
-

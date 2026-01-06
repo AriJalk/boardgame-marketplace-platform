@@ -1,4 +1,8 @@
 ﻿namespace TestingService.Dtos
 {
-	public record UserSummaryDto(Guid Id, string DisplayName) { }
+	public class UserSummaryDto
+	{
+		public Guid Id { get; set; }
+		public string? DisplayName { get; set; }
+	}
 }

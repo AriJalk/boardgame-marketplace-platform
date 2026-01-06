@@ -1,4 +1,4 @@
-<h2>Name: {{catalogItem.name}}</h2>
-@if (isBgg(catalogItem)){
-    <bgm-bgg-item-card [item]="catalogItem"></bgm-bgg-item-card>
+<h2>Name: {{ catalogItem.name }}</h2>
+@if (catalogItem.type === 'bgg') {
+  <h2><a [href]="catalogItem.bggLink"></a></h2>
 }

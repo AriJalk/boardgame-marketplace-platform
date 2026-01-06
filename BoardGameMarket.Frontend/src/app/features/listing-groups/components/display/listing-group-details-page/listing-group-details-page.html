@@ -1,8 +1,12 @@
 @if (listingGroup$ | async; as listingGroup) {
-  <bgm-listing-group-details-card
-    [listingGroup]="listingGroup"
-    [listingExtraTemplate]="subscriptionPanelTemplate"
-  ></bgm-listing-group-details-card>
+  @if (user?.id === listingGroup.seller.id) {
+    <bgm-edit-listing-group [listingId]="listingGroup.id"></bgm-edit-listing-group>
+  } @else {
+    <bgm-listing-group-details-card
+      [listingGroup]="listingGroup"
+      [listingExtraTemplate]="subscriptionPanelTemplate"
+    ></bgm-listing-group-details-card>
+  }
 
   <ng-template #subscriptionPanelTemplate let-listing>
     @if (user?.id !== listingGroup.seller.id) {

@@ -1,0 +1,6 @@
+@if (formGroup$ | async; as formGroup) {
+  <form [formGroup]="formGroup" (submit)="submitForm()">
+    <bgm-listing-group-form [formGroup]="formGroup"> </bgm-listing-group-form>
+    <button matButton type="submit">Submit</button>
+  </form>
+}

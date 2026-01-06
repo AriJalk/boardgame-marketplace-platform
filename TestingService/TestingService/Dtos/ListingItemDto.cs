@@ -1,4 +1,9 @@
 ﻿namespace TestingService.Dtos
 {
-	public record ListingItemDto(CatalogItemDto CatalogItem, string? details) { }
+	public class ListingItemDto
+	{
+		public Guid Id { get; set; }
+		public CatalogItemDto? CatalogItem { get; set; }
+		public string? details { get; set; }
+	}
 }

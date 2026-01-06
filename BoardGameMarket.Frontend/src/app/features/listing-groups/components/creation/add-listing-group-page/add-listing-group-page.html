@@ -1,5 +1,4 @@
 <form [formGroup]="formGroup" (submit)="submitForm()">
-    <bgm-add-listing-group-form [listingGroupForm]="formGroup">
-    </bgm-add-listing-group-form>
-    <button matButton type="submit">Submit</button>
+  <bgm-listing-group-form [formGroup]="formGroup"> </bgm-listing-group-form>
+  <button matButton type="submit">Submit</button>
 </form>

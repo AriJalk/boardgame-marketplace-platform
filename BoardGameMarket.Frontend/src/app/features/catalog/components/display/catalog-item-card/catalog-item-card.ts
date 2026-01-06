@@ -1,10 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { BggItem, CatalogItem, CustomItem } from '../../../models/catalog-item.model';
-import { BggItemCard } from '../bgg-item-card/bgg-item-card';
 
 @Component({
   selector: 'bgm-catalog-item-card',
-  imports: [BggItemCard],
+  imports: [],
   templateUrl: './catalog-item-card.html',
   styleUrl: './catalog-item-card.css',
 })

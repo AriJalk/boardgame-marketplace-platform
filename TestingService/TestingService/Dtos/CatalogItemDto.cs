@@ -1,4 +1,11 @@
 ﻿namespace TestingService.Dtos
 {
-	public record CatalogItemDto(Guid Id, string Name, string? Type, string? BggLink, string? ImageUrl) { }
+	public class CatalogItemDto
+	{
+		public Guid Id { get; set; }
+		public string? Name { get; set; }
+		public string? Type { get; set; }
+		public string? BggLink { get; set; }
+		public string? ImageUrl { get; set; }
+	}
 }

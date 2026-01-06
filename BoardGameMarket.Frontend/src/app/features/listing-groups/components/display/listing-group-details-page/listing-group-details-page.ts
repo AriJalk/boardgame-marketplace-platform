@@ -9,11 +9,19 @@ import { AuthStubService } from '../../../../../core/auth/auth-stub.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { UserSummary } from '../../../../../core/users/models/user.model';
-import { QueueSellerPanel } from "../../../../queues/components/queue-seller/queue-seller-panel/queue-seller-panel";
+import { QueueSellerPanel } from '../../../../queues/components/queue-seller/queue-seller-panel/queue-seller-panel';
+import { EditListingGroup } from '../../edit-listing-group/edit-listing-group';
 
 @Component({
   selector: 'bgm-listing-group-details-page',
-  imports: [MatCardModule, ListingGroupDetailsCard, QueueBuyerPanel, AsyncPipe, QueueSellerPanel],
+  imports: [
+    MatCardModule,
+    ListingGroupDetailsCard,
+    QueueBuyerPanel,
+    AsyncPipe,
+    QueueSellerPanel,
+    EditListingGroup,
+  ],
   templateUrl: './listing-group-details-page.html',
   styleUrl: './listing-group-details-page.css',
 })
