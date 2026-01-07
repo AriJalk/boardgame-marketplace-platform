@@ -1,26 +1,31 @@
 <div [formGroup]="listingForm">
   <mat-form-field class="full-width">
     <mat-label>Title</mat-label>
-    <input type="text" matInput formControlName="title" placeholder="Title">
+    <input type="text" matInput formControlName="title" placeholder="Title" />
   </mat-form-field>
   <mat-form-field class="full-width">
     <mat-label>Price</mat-label>
-    <input type="number" matInput formControlName="price" placeholder="Price">
+    <input type="number" matInput formControlName="price" placeholder="Price" />
   </mat-form-field>
   <div class="flex-container-column children-margin-5">
-    @for (listingItem of listingItems.controls; track $index; let i = $index)
-    {
-    <mat-card class="card-container padding-2">
-      <div class="flex-container-column">
-        <h4>Item {{i + 1}}</h4>
-        <bgm-add-listing-item-form [itemForm]="listingItem"></bgm-add-listing-item-form>
-        <button matButton="elevated" type="button" (click)="removeListingItem(i)">Remove Item</button>
-      </div>
-    </mat-card>
+    @for (listingItem of listingItems.controls; track listingItem; let i = $index) {
+      <mat-card class="card-container padding-2">
+        <div class="flex-container-column">
+          <h4>Item {{ i + 1 }}</h4>
+          <bgm-add-listing-item-form [itemForm]="listingItem"></bgm-add-listing-item-form>
+          <button matButton="elevated" type="button" (click)="removeListingItem(i)">
+            Remove Item
+          </button>
+        </div>
+      </mat-card>
     }
   </div>
 </div>
 <div class="flex-container children-margin-5">
-  <button class="flex-1" matButton="elevated" type="button" (click)="addBggListingItem()">Add BGG Item</button>
-  <button class="flex-1" matButton="elevated" type="button" (click)="addCustomListingItem()">Add Custom Item</button>
+  <button class="flex-1" matButton="elevated" type="button" (click)="addBggListingItem()">
+    Add BGG Item
+  </button>
+  <button class="flex-1" matButton="elevated" type="button" (click)="addCustomListingItem()">
+    Add Custom Item
+  </button>
 </div>

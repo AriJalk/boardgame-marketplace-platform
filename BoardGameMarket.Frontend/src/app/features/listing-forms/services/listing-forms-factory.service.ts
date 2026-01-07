@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ListingDetail } from '../../listings/models/listing.model';
 import { ListingItem } from '../../listing-items/models/listing-item.model';
 import { minArrayLength } from '../../../common/validators/min-array-length.validator';
@@ -9,19 +9,26 @@ import { ListingGroupDetails } from '../../listing-groups/models/listing-group.m
 @Injectable({
   providedIn: 'root',
 })
-export class ListingFormsFactoryService {
+export class ListingFormsFactory {
   constructor(private fb: FormBuilder) {}
 
-  createCatalogItemFormGroup(value?: CatalogItem) {
-    return this.fb.group({
+  createCatalogItemFormGroup(value?: CatalogItem, type?: 'bgg' | 'custom'): FormGroup {
+    const formGroup = this.fb.group({
       id: [value?.id ?? null],
       name: [value?.name ?? ''],
-      type: [value?.type ?? ''],
+      type: [value?.type ?? type ?? ''],
     });
+    if (type === 'custom') {
+      formGroup.get('name')?.addValidators(Validators.required);
+    }
+
+    return formGroup;
   }
-  createListingItemFormGroup(value?: ListingItem): FormGroup {
+
+  createListingItemFormGroup(value?: ListingItem, type?: 'bgg' | 'custom'): FormGroup {
     return this.fb.group({
-      catalogItem: this.createCatalogItemFormGroup(value?.catalogItem),
+      id: [value?.id ?? null],
+      catalogItem: this.createCatalogItemFormGroup(value?.catalogItem, type),
       details: [value?.details ?? ''],
     });
   }

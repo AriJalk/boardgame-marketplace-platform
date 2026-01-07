@@ -26,12 +26,15 @@ namespace TestingService.Services
 			{
 				BuildListingGroup(listingGroup);
 			}
-			Console.WriteLine(JsonSerializer.Serialize(listingGroups));
 		}
 
 		private void BuildListingGroup(ListingGroupDetailedDto listingGroup)
 		{
 			ListingGroups[listingGroup.Id] = listingGroup;
+			if (listingGroup.Listings == null)
+			{
+				return;
+			}
 			foreach (ListingDetailDto listing in listingGroup.Listings)
 			{
 				BuildListing(listing);

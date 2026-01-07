@@ -8,8 +8,8 @@ import { RoleType, UserLogin, UserSummary } from '../users/models/user.model';
 export class AuthStubService {
   loggedInUser?: UserLogin;
 
-  buyerId = '4552ea90-84c8-4d7c-8409-d80b39cad772';
   sellerId = '4552ea90-84c8-4d7c-8409-d80b39cad771';
+  buyerId = '4552ea90-84c8-4d7c-8409-d80b39cad772';
   constructor(private httpClient: HttpClient) {
     this.loggedInUser = {
       id: this.sellerId,

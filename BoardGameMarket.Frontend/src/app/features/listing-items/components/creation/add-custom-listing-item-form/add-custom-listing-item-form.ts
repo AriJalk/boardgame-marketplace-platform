@@ -11,4 +11,8 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class AddCustomListingItemForm {
   @Input({ required: true }) itemForm!: FormGroup;
+
+  get catalogItem(): FormGroup {
+    return this.itemForm.get('catalogItem') as FormGroup;
+  }
 }

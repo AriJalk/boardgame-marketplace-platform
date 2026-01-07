@@ -5,7 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ListingFormsFactoryService } from '../services/listing-forms-factory.service';
+import { ListingFormsFactory } from '../services/listing-forms-factory.service';
 import { ListingForm } from '../listing-form/listing-form';
 
 @Component({
@@ -25,7 +25,7 @@ import { ListingForm } from '../listing-form/listing-form';
 export class ListingGroupForm {
   @Input({ required: true }) formGroup!: FormGroup;
 
-  constructor(private listingFormFactory: ListingFormsFactoryService) {}
+  constructor(private listingFormFactory: ListingFormsFactory) {}
 
   get listingFormGroups(): FormArray<FormGroup> {
     return this.formGroup.get('listings') as FormArray;

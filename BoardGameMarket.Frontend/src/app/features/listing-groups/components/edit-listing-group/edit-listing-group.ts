@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ListingGroupForm } from '../../../listing-forms/listing-group-form/listing-group-form';
 import { ListingGroupService } from '../../services/listing-group.service';
-import { ListingFormsFactoryService } from '../../../listing-forms/services/listing-forms-factory.service';
+import { ListingFormsFactory } from '../../../listing-forms/services/listing-forms-factory.service';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { map, Observable, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
@@ -19,7 +19,7 @@ export class EditListingGroup implements OnInit {
 
   constructor(
     private listingGroupService: ListingGroupService,
-    private formFactory: ListingFormsFactoryService,
+    private formFactory: ListingFormsFactory,
   ) {}
 
   ngOnInit(): void {

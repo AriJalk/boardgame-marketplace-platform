@@ -1,4 +1,4 @@
-<div [formGroup]="listingForm">
+<div [formGroup]="formGroup">
   <mat-form-field class="full-width">
     <mat-label>Title</mat-label>
     <input type="text" matInput formControlName="title" placeholder="Title" />
@@ -8,11 +8,11 @@
     <input type="number" matInput formControlName="price" placeholder="Price" />
   </mat-form-field>
   <div class="flex-container-column children-margin-5">
-    @for (listingItem of listingItemFormGroups.controls; track $index; let i = $index) {
+    @for (listingItem of listingItemFormGroups.controls; track listingItem; let i = $index) {
       <mat-card class="card-container padding-2">
         <div class="flex-container-column">
           <h4>Item {{ i + 1 }}</h4>
-          <bgm-add-listing-item-form [itemForm]="listingItem"></bgm-add-listing-item-form>
+          <bgm-listing-item-form [formGroup]="listingItem"></bgm-listing-item-form>
           <button matButton="elevated" type="button" (click)="removeListingItem(i)">
             Remove Item
           </button>

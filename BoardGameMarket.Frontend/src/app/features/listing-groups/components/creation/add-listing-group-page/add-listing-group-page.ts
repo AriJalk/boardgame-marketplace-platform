@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatAnchor, MatButtonModule } from '@angular/material/button';
 import { ListingGroupForm } from '../../../../listing-forms/listing-group-form/listing-group-form';
-import { ListingFormsFactoryService } from '../../../../listing-forms/services/listing-forms-factory.service';
+import { ListingFormsFactory } from '../../../../listing-forms/services/listing-forms-factory.service';
 import { ListingGroupService } from '../../../services/listing-group.service';
 
 @Component({
@@ -14,7 +14,7 @@ import { ListingGroupService } from '../../../services/listing-group.service';
 export class AddListingGroupPage implements OnInit {
   formGroup!: FormGroup;
 
-  constructor(private listingFormFactory: ListingFormsFactoryService, private listingGroupService : ListingGroupService) {}
+  constructor(private listingFormFactory: ListingFormsFactory, private listingGroupService : ListingGroupService) {}
 
   ngOnInit(): void {
     this.formGroup = this.listingFormFactory.creatingListingGroupFormGroup();

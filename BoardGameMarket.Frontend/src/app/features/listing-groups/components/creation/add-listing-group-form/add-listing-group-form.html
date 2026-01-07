@@ -8,7 +8,7 @@
         <input type="text" matInput formControlName="location" placeholder="Location">
     </mat-form-field>
     <div class="flex-container children-margin-1">
-        @for (listing of listings.controls; track $index; let i = $index) {
+        @for (listing of listings.controls; track listing; let i = $index) {
         <mat-card class="card-container center-container padding-2">
             <h3>Listing {{i + 1}}</h3>
             <bgm-add-listing-form [listingForm]="listing"></bgm-add-listing-form>

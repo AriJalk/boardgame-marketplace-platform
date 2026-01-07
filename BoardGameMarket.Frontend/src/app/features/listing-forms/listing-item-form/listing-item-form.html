@@ -1,0 +1,7 @@
+@if (listingItem) {
+  <bgm-listing-item-card [listingItem]="listingItem"></bgm-listing-item-card>
+} @else if (getValueFromCatalogItem('type') === 'bgg') {
+  <bgm-add-bgg-listing-item-form [itemForm]="formGroup"></bgm-add-bgg-listing-item-form>
+} @else {
+  <bgm-add-custom-listing-item-form [itemForm]="formGroup"></bgm-add-custom-listing-item-form>
+}

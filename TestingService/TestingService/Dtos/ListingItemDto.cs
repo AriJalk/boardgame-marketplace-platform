@@ -4,6 +4,6 @@
 	{
 		public Guid Id { get; set; }
 		public CatalogItemDto? CatalogItem { get; set; }
-		public string? details { get; set; }
+		public string? Details { get; set; }
 	}
 }
