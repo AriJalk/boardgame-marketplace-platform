@@ -11,7 +11,7 @@
         cdkDropListHasAnchor
         (cdkDropListDropped)="priorityChangeRequest($event)"
       >
-        @for (item of queues.timeQueue; track $index) {
+        @for (item of queues.timeQueue; track item) {
           <div cdkDrag [cdkDragData]="item">
             <ng-container
               *ngTemplateOutlet="queuePanelTemplate; context: { $implicit: item }"
@@ -29,7 +29,7 @@
         (cdkDropListDropped)="priorityChangeRequest($event)"
         [cdkDropListData]="queues.priorityQueue"
       >
-        @for (item of queues.priorityQueue; track $index) {
+        @for (item of queues.priorityQueue; track item) {
           <div cdkDrag [cdkDragData]="item">
             <ng-container
               *ngTemplateOutlet="queuePanelTemplate; context: { $implicit: item }"

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddListingGroupForm } from './add-listing-group-form';
+import { CreateListingGroupPage } from './create-listing-group-page';
 
-describe('AddListingGroupForm', () => {
-  let component: AddListingGroupForm;
-  let fixture: ComponentFixture<AddListingGroupForm>;
+describe('CreateListingGroupPage', () => {
+  let component: CreateListingGroupPage;
+  let fixture: ComponentFixture<CreateListingGroupPage>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddListingGroupForm]
+      imports: [CreateListingGroupPage]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AddListingGroupForm);
+    fixture = TestBed.createComponent(CreateListingGroupPage);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

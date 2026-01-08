@@ -3,19 +3,21 @@ import { ListingGroupForm } from '../../../listing-forms/listing-group-form/list
 import { ListingGroupService } from '../../services/listing-group.service';
 import { ListingFormsFactory } from '../../../listing-forms/services/listing-forms-factory.service';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { map, Observable, take } from 'rxjs';
+import { BehaviorSubject, map, Observable, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'bgm-edit-listing-group',
   imports: [ListingGroupForm, ReactiveFormsModule, AsyncPipe, MatButtonModule],
-  templateUrl: './edit-listing-group.html',
-  styleUrl: './edit-listing-group.css',
+  templateUrl: './edit-listing-group-page.html',
+  styleUrl: './edit-listing-group-page.css',
 })
-export class EditListingGroup implements OnInit {
+export class EditListingGroupPage implements OnInit {
   @Input({ required: true }) listingId!: string;
-  formGroup$!: Observable<FormGroup>;
+
+  private formGroupSubject = new BehaviorSubject<FormGroup | null>(null);
+  formGroup$ = this.formGroupSubject.asObservable();
 
   constructor(
     private listingGroupService: ListingGroupService,
@@ -23,19 +25,26 @@ export class EditListingGroup implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.formGroup$ = this.listingGroupService
+    this.listingGroupService
       .getListingGroupDetails(this.listingId)
-      .pipe(map((value) => this.formFactory.creatingListingGroupFormGroup(value)));
+      .pipe(take(1))
+      .subscribe((details) => {
+        const formGroup = this.formFactory.creatingListingGroupFormGroup(details);
+        this.formGroupSubject.next(formGroup);
+        console.log(formGroup.value);
+      });
   }
 
   submitForm() {
-    this.formGroup$.pipe(take(1)).subscribe((formGroup) => {
-      if (formGroup.valid) {
-        console.log('VALID');
-      } else {
-        console.log('INVALID');
-      }
-      console.log(formGroup.getRawValue());
-    });
+    const formGroup = this.formGroupSubject.value;
+    if (!formGroup) {
+      return;
+    }
+    if (formGroup.valid) {
+      console.log('VALID');
+    } else {
+      console.log('INVALID');
+    }
+    console.log(formGroup.getRawValue());
   }
 }

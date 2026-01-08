@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { UserSummary } from '../../../../../core/users/models/user.model';
 import { QueueSellerPanel } from '../../../../queues/components/queue-seller/queue-seller-panel/queue-seller-panel';
-import { EditListingGroup } from '../../edit-listing-group/edit-listing-group';
+import { EditListingGroupPage } from '../../edit-listing-group-page/edit-listing-group-page';
 
 @Component({
   selector: 'bgm-listing-group-details-page',
@@ -20,7 +20,7 @@ import { EditListingGroup } from '../../edit-listing-group/edit-listing-group';
     QueueBuyerPanel,
     AsyncPipe,
     QueueSellerPanel,
-    EditListingGroup,
+    EditListingGroupPage,
   ],
   templateUrl: './listing-group-details-page.html',
   styleUrl: './listing-group-details-page.css',

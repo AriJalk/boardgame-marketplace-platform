@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using TestingService.Dtos;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace TestingService.Controllers
 {
@@ -13,7 +11,7 @@ namespace TestingService.Controllers
 		{
 			if (id > 0)
 			{
-				return Ok(Guid.NewGuid());
+				return Ok(new { Id = id, Name = "catalog item name" });
 			}
 			return NotFound();
 		}

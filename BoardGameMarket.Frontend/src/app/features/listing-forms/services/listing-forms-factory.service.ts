@@ -4,7 +4,7 @@ import { ListingDetail } from '../../listings/models/listing.model';
 import { ListingItem } from '../../listing-items/models/listing-item.model';
 import { minArrayLength } from '../../../common/validators/min-array-length.validator';
 import { CatalogItem } from '../../catalog/models/catalog-item.model';
-import { ListingGroupDetails } from '../../listing-groups/models/listing-group.model';
+import { ListingGroup, ListingGroupDetails } from '../../listing-groups/models/listing-group.model';
 
 @Injectable({
   providedIn: 'root',
@@ -14,14 +14,11 @@ export class ListingFormsFactory {
 
   createCatalogItemFormGroup(value?: CatalogItem, type?: 'bgg' | 'custom'): FormGroup {
     const formGroup = this.fb.group({
-      id: [value?.id ?? null],
-      name: [value?.name ?? ''],
+      id: this.fb.control(value?.id ?? null, { validators: Validators.required }),
+      name: this.fb.control(value?.name ?? '', { validators: Validators.required }),
       type: [value?.type ?? type ?? ''],
+      bggLink: [value?.bggLink ?? ''],
     });
-    if (type === 'custom') {
-      formGroup.get('name')?.addValidators(Validators.required);
-    }
-
     return formGroup;
   }
 

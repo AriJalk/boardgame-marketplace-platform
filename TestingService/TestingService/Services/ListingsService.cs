@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using System.Text.Json;
+﻿using System.Text.Json;
 using TestingService.Core.Application.DTOs.Responses;
 using TestingService.Dtos;
 
@@ -8,7 +7,7 @@ namespace TestingService.Services
 
 	public class ListingsService
 	{
-
+		private Random _random = new Random();
 		public Dictionary<Guid, ListingGroupDetailedDto> ListingGroups = new Dictionary<Guid, ListingGroupDetailedDto>();
 		public Dictionary<Guid, ListingDetailDto> Listings = new Dictionary<Guid, ListingDetailDto>();
 		public Dictionary<Guid, List<ListingQueueEntryResponseDto>> QueueEntries = new Dictionary<Guid, List<ListingQueueEntryResponseDto>>();
@@ -44,6 +43,24 @@ namespace TestingService.Services
 		private void BuildListing(ListingDetailDto listing)
 		{
 			Listings[listing.Id] = listing;
+			if (listing.Items == null) 
+			{
+				return;
+			}
+			foreach(ListingItemDto item in listing.Items)
+			{
+				if (item.CatalogItem == null)
+				{
+					return;
+				}
+				item.CatalogItem.BggLink = GenerateBggUrl();
+			}
+		}
+
+		private string GenerateBggUrl()
+		{
+			int id = _random.Next(1, 461367);
+			return $"https://www.boardgamegeek.com/boardgame/{id}";
 		}
 
 		public bool UpdateQueuePriority(Guid listingId, Guid queueEntryId, int requestedIndex)

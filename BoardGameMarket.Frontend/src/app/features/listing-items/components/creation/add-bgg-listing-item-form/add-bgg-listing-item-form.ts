@@ -6,19 +6,29 @@ import { RetrieveBggItemId } from '../../../../catalog/components/search/retriev
 import { BggItem } from '../../../../catalog/models/catalog-item.model';
 @Component({
   selector: 'bgm-add-bgg-listing-item-form',
-  imports: [MatFormFieldModule, MatInputModule, FormsModule, ReactiveFormsModule, RetrieveBggItemId],
+  imports: [
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RetrieveBggItemId,
+  ],
   templateUrl: './add-bgg-listing-item-form.html',
   styleUrl: './add-bgg-listing-item-form.css',
 })
 export class AddBggListingItemForm {
-  @Input({ required: true }) itemForm!: FormGroup;
+  @Input({ required: true }) formGroup!: FormGroup;
   @Output() itemSelected = new EventEmitter<BggItem>();
 
+  get catalogItem() {
+    return this.formGroup.get('catalogItem');
+  }
+
   selectItem(item: BggItem) {
-    this.itemForm.patchValue({ id: item.id, name: item.name });
+    this.formGroup.patchValue({ id: item.id, name: item.name });
   }
 
   attachId(itemId: string | null) {
-    this.itemForm.patchValue({ id: itemId });
+    this.catalogItem?.patchValue({ id: itemId });
   }
 }
