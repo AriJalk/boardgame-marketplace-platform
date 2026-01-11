@@ -40,11 +40,7 @@ export class EditListingGroupPage implements OnInit {
     if (!formGroup) {
       return;
     }
-    if (formGroup.valid) {
-      console.log('VALID');
-    } else {
-      console.log('INVALID');
-    }
+    console.log(formGroup.valid ? 'Valid' : 'Invalid');
     console.log(formGroup.getRawValue());
   }
 }

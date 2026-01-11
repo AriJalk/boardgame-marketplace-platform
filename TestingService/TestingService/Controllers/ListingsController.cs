@@ -1,8 +1,5 @@
-﻿
-
-using Microsoft.AspNetCore.Mvc;
-using TestingService.Core.Application.DTOs.Responses;
-using TestingService.Dtos;
+﻿using Microsoft.AspNetCore.Mvc;
+using TestingService.Dtos.Queue;
 using TestingService.Services;
 
 namespace TestingService.Controllers

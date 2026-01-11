@@ -8,43 +8,64 @@ import {
   debounceTime,
   distinctUntilChanged,
   filter,
+  finalize,
   of,
   Subscription,
   switchMap,
+  tap,
 } from 'rxjs';
+import { CatalogItem } from '../../../models/catalog-item.model';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'bgm-retrieve-bgg-item-id',
-  imports: [MatFormFieldModule, FormsModule, MatInputModule, ReactiveFormsModule],
+  imports: [
+    MatFormFieldModule,
+    FormsModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './retrieve-bgg-item-id.html',
   styleUrl: './retrieve-bgg-item-id.css',
 })
 export class RetrieveBggItemId implements AfterViewInit, OnDestroy {
-  @Output() idRetrieved = new EventEmitter<string | null>();
+  @Output() catalogItemRetrieved = new EventEmitter<CatalogItem | null>();
 
-  formControl = new FormControl('');
+  urlControl = new FormControl('');
+  name?: string;
+
+  isLoading: boolean = false;
 
   private valueChangeSubscription!: Subscription;
 
   constructor(private catalogGetterService: CatalogItemGetterService) {}
 
   ngAfterViewInit(): void {
-    this.valueChangeSubscription = this.formControl?.valueChanges
+    this.valueChangeSubscription = this.urlControl?.valueChanges
       .pipe(
         debounceTime(300),
         distinctUntilChanged(),
         filter((value) => !!value),
+        tap(() => (this.isLoading = true)),
         switchMap((url) => {
           return this.catalogGetterService.getItemIdByBggUrl(url).pipe(
             catchError(() => {
               return of(null);
             }),
+            finalize(() => (this.isLoading = false)),
           );
         }),
       )
       .subscribe({
         next: (value) => {
-          this.idRetrieved.emit(value);
+          if (value !== null) {
+            this.catalogItemRetrieved.emit(value);
+            this.name = value?.name;
+            this.urlControl.disable();
+          }
         },
       });
   }

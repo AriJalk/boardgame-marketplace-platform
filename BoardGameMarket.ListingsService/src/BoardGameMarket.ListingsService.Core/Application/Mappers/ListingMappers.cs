@@ -22,6 +22,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 				Price = listing.Price,
 				Details = listing.Details,
 				ListingGroupId = listing.ListingGroupId,
+				Title = listing.Title,
 			};
 		}
 
@@ -33,6 +34,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 				Price = listingAddRequest.Price,
 				Details = listingAddRequest.Details,
 				Status = listingAddRequest.Status,
+				Title = listingAddRequest.Title,
 			};
 		}
 	}

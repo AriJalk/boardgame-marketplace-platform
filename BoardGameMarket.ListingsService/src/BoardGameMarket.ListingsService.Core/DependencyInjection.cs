@@ -38,7 +38,7 @@ namespace BoardGameMarket.ListingsService.Core
 			services.AddTransient<IListingGroupUpdaterService, ListingGroupUpdaterService>();
 			services.AddTransient<IListingGroupDeleterService, ListingGroupDeleterService>();
 
-			// ListingItem services
+			// ListingItemInfo services
 			services.AddTransient<IListingItemAdderService, ListingItemAdderService>();
 			services.AddTransient<IListingItemGetterService, ListingItemGetterService>();
 			services.AddTransient<IListingItemDeleterService, ListingItemDeleterService>();

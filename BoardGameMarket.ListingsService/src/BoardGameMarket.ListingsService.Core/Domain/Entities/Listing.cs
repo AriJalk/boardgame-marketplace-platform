@@ -8,6 +8,7 @@ namespace BoardGameMarket.ListingsService.Core.Domain.Entities
 	public class Listing
 	{
 		public Guid Id { get; set; }
+		public string? Title { get; set; }
 		public Guid ListingGroupId { get; set; }
 		public ListingStatus Status { get; set; }
 		public DateTime CreatedAt { get; set; }

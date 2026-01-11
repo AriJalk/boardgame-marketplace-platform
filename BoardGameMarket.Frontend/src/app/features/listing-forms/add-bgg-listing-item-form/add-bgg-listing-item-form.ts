@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { RetrieveBggItemId } from '../../../../catalog/components/search/retrieve-bgg-item-id/retrieve-bgg-item-id';
-import { BggItem } from '../../../../catalog/models/catalog-item.model';
+import { RetrieveBggItemId } from '../../catalog/components/search/retrieve-bgg-item-id/retrieve-bgg-item-id';
+import { BggItem, CatalogItem } from '../../catalog/models/catalog-item.model';
 @Component({
   selector: 'bgm-add-bgg-listing-item-form',
   imports: [
@@ -28,7 +28,7 @@ export class AddBggListingItemForm {
     this.formGroup.patchValue({ id: item.id, name: item.name });
   }
 
-  attachId(itemId: string | null) {
-    this.catalogItem?.patchValue({ id: itemId });
+  attachItem(item: CatalogItem | null) {
+    this.catalogItem?.patchValue({ id: item?.id, name: item?.name });
   }
 }

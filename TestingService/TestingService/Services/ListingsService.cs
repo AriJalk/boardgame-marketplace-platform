@@ -1,6 +1,9 @@
 ﻿using System.Text.Json;
-using TestingService.Core.Application.DTOs.Responses;
-using TestingService.Dtos;
+using TestingService.Dtos.Item;
+using TestingService.Dtos.Listing;
+using TestingService.Dtos.ListingGroup;
+using TestingService.Dtos.Queue;
+using TestingService.Dtos.User;
 
 namespace TestingService.Services
 {
@@ -8,7 +11,7 @@ namespace TestingService.Services
 	public class ListingsService
 	{
 		private Random _random = new Random();
-		public Dictionary<Guid, ListingGroupDetailedDto> ListingGroups = new Dictionary<Guid, ListingGroupDetailedDto>();
+		public Dictionary<Guid, ListingGroupDetailDto> ListingGroups = new Dictionary<Guid, ListingGroupDetailDto>();
 		public Dictionary<Guid, ListingDetailDto> Listings = new Dictionary<Guid, ListingDetailDto>();
 		public Dictionary<Guid, List<ListingQueueEntryResponseDto>> QueueEntries = new Dictionary<Guid, List<ListingQueueEntryResponseDto>>();
 		public Dictionary<Guid, UserSummaryDto> Users = new Dictionary<Guid, UserSummaryDto>();
@@ -17,17 +20,17 @@ namespace TestingService.Services
 		{
 			string json = File.ReadAllText(Path.Combine(hostEnvironment.ContentRootPath, "SeedData", "MOCK_DATA.json"));
 
-			IEnumerable<ListingGroupDetailedDto>? listingGroups = JsonSerializer.Deserialize<IEnumerable<ListingGroupDetailedDto>>(json, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+			IEnumerable<ListingGroupDetailDto>? listingGroups = JsonSerializer.Deserialize<IEnumerable<ListingGroupDetailDto>>(json, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
 			if (listingGroups == null)
 				return;
-			foreach (ListingGroupDetailedDto listingGroup in listingGroups)
+			foreach (ListingGroupDetailDto listingGroup in listingGroups)
 			{
 				BuildListingGroup(listingGroup);
 			}
 		}
 
-		private void BuildListingGroup(ListingGroupDetailedDto listingGroup)
+		private void BuildListingGroup(ListingGroupDetailDto listingGroup)
 		{
 			ListingGroups[listingGroup.Id] = listingGroup;
 			if (listingGroup.Listings == null)

@@ -15,7 +15,7 @@ export class ListingGroupService {
   ) {}
   getListingGroupDetails(listingGroupId: string) {
     return this.httpClient.get<ListingGroupDetails>(
-      `${this.apiConfig.apiEndpoint}/listingGroups/${listingGroupId}`,
+      `${this.apiConfig.apiEndpoint}/listingGroups/${listingGroupId}/detail`,
     );
   }
 

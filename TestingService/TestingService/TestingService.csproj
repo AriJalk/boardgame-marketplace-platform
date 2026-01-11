@@ -7,11 +7,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Folder Include="Helpers\" />
+		<PackageReference Include="AutoFixture" Version="4.18.1" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AutoFixture" Version="4.18.1" />
+	  <Folder Include="Listings\ServiceClients\" />
 	</ItemGroup>
 
 </Project>

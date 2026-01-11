@@ -1,4 +1,4 @@
-﻿namespace TestingService.Dtos
+﻿namespace TestingService.Dtos.Queue
 {
 	public class UpdateQueuePriorityRequest
 	{

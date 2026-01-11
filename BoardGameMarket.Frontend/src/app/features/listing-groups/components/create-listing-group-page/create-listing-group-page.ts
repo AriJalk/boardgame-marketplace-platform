@@ -28,6 +28,7 @@ export class CreateListingGroupPage implements OnInit {
   }
 
   submitForm() {
+    console.log(this.formGroup.valid ? 'Valid' : 'Invalid');
     console.log(this.formGroup.getRawValue());
   }
 }

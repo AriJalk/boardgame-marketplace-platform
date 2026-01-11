@@ -1,6 +1,4 @@
-﻿using TestingService.Core.Application.DTOs.Responses;
-
-namespace TestingService.Dtos
+﻿namespace TestingService.Dtos.Queue
 {
 	public record QueuePageResponseDto(IEnumerable<ListingQueueEntryResponseDto> TimeQueue, IEnumerable<ListingQueueEntryResponseDto> PriorityQueue)
 	{

@@ -37,11 +37,11 @@ export class CatalogItemGetterService {
     return match ? Number(match[1]) : null;
   }
 
-  getItemIdByBggUrl(url: string | null): Observable<string | null> {
+  getItemIdByBggUrl(url: string | null): Observable<CatalogItem | null> {
     if (url !== null) {
       const id = this.extractBggId(url);
       if (id !== null) {
-        return this.httpClient.get<string>(`${this.apiConfig.apiEndpoint}/catalog/bgg/${id}`);
+        return this.httpClient.get<CatalogItem>(`${this.apiConfig.apiEndpoint}/catalog/bgg/${id}`);
       }
     }
     return of(null);

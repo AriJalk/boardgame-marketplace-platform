@@ -43,10 +43,10 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.Assemblers.D
 
 			await Task.WhenAll(itemsTask, queuesTask);
 
-			//IEnumerable<ListingItem> allItems = await itemsTask;
+			//IEnumerable<ListingItemInfo> allItems = await itemsTask;
 			//IEnumerable<ListingQueueEntry> allQueueEntries = await queuesTask;
 
-			//ILookup<Guid,ListingItem> itemsLookup = allItems.ToLookup(i => i.ListingId);
+			//ILookup<Guid,ListingItemInfo> itemsLookup = allItems.ToLookup(i => i.ListingId);
 			//ILookup<Guid, ListingQueueEntry> queuesLookup = allQueueEntries.ToLookup(qe => qe.ListingId);
 
 

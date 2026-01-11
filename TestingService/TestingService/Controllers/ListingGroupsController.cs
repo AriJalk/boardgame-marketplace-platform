@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TestingService.Dtos;
+using TestingService.Dtos.ListingGroup;
+using TestingService.Helpers;
 using TestingService.Services;
 
 namespace TestingService.Controllers
@@ -13,10 +14,10 @@ namespace TestingService.Controllers
 		{
 			_listingsService = listingsService;
 		}
-		[HttpGet("{id:guid}")]
-		public IActionResult Get(Guid id)
+		[HttpGet("{id:guid}/detail")]
+		public IActionResult GetListingGroupDetailed(Guid id)
 		{
-			if (_listingsService.ListingGroups.TryGetValue(id, out ListingGroupDetailedDto? lg))
+			if (_listingsService.ListingGroups.TryGetValue(id, out ListingGroupDetailDto? lg))
 			{
 				return Ok(lg);
 			}
@@ -24,10 +25,23 @@ namespace TestingService.Controllers
 			return NotFound();
 		}
 
-		[HttpGet()]
-		public IActionResult Get()
+		[HttpGet("{id:guid}/summary")]
+		public IActionResult GetListingGroupSummary(Guid id)
 		{
-			return Ok(_listingsService.ListingGroups.Values);
+			if (_listingsService.ListingGroups.TryGetValue(id, out ListingGroupDetailDto? lg))
+			{
+				return Ok(lg.ToListingGroupSummary());
+			}
+
+			return NotFound();
+		}
+
+
+
+		[HttpGet()]
+		public ActionResult<IEnumerable<ListingGroupSummaryDto>> Get()
+		{
+			return Ok(_listingsService.ListingGroups.Values.Select(lg => lg.ToListingGroupSummary()));
 		}
 	}
 }

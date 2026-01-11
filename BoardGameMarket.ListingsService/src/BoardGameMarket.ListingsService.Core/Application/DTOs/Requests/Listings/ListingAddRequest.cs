@@ -5,6 +5,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.Listing
 	public class ListingAddRequest
 	{
 		public Guid ListingGroupId { get; set; }
+		public string? Title { get; set; }
 		public ListingStatus Status { get; set; }
 		public decimal Price { get; set; }
 		public string? Details { get; set; }

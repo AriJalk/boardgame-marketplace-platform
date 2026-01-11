@@ -1,7 +1,7 @@
 ﻿using TestingService.Core.Domain.Enums;
-using TestingService.Dtos;
+using TestingService.Dtos.User;
 
-namespace TestingService.Core.Application.DTOs.Responses
+namespace TestingService.Dtos.Queue
 {
 	public class ListingQueueEntryResponseDto
 	{

@@ -9,9 +9,10 @@ namespace TestingService.Controllers
 		[HttpGet("bgg/{id:int}")]
 		public async Task<IActionResult> GetBggItemId(int id)
 		{
+			await Task.Delay(1000);
 			if (id > 0)
 			{
-				return Ok(new { Id = id, Name = "catalog item name" });
+				return Ok(new { Id = Guid.NewGuid(), Name = "catalog item name" });
 			}
 			return NotFound();
 		}

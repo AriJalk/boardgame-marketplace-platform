@@ -7,8 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { ListingItem } from '../../listing-items/models/listing-item.model';
 import { CatalogItem } from '../../catalog/models/catalog-item.model';
 import { ListingItemCard } from '../../listing-items/components/display/listing-item-card/listing-item-card';
-import { AddBggListingItemForm } from "../../listing-items/components/creation/add-bgg-listing-item-form/add-bgg-listing-item-form";
-import { AddCustomListingItemForm } from "../../listing-items/components/creation/add-custom-listing-item-form/add-custom-listing-item-form";
+import { AddBggListingItemForm } from "../add-bgg-listing-item-form/add-bgg-listing-item-form";
+import { AddCustomListingItemForm } from "../add-custom-listing-item-form/add-custom-listing-item-form";
 
 @Component({
   selector: 'bgm-listing-item-form',
