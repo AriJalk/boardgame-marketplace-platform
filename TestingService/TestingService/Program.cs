@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using TestingService.Configuration;
 using TestingService.Domains.CatalogItems.Services;
 using TestingService.Domains.Listings.Services;
+using TestingService.Domains.Queues.Services;
 using TestingService.Domains.Users.Services;
 
 var builder = WebApplication.CreateBuilder(args);

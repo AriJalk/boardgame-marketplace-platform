@@ -13,7 +13,7 @@ export class CatalogItemCard implements OnInit {
   @Input({ required: true }) catalogItem!: CatalogItem;
 
   ngOnInit(): void {
-    console.log(this.catalogItem);
+    
   }
 
   // isBgg(item: CatalogItem): item is BggItem {

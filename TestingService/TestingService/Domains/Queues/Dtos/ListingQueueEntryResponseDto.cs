@@ -1,4 +1,4 @@
-﻿using TestingService.Core.Domain.Enums;
+﻿using TestingService.Domains.Queues.Enums;
 using TestingService.Domains.Users.Dtos;
 
 namespace TestingService.Domains.Queues.Dtos
@@ -10,6 +10,6 @@ namespace TestingService.Domains.Queues.Dtos
 		public UserSummaryDto? Buyer { get; set; }
 		public DateTime CreatedAt { get; set; }
 		public DateTime ModifiedAt { get; set; }
-		public float? Priority { get; set; }
+		public decimal? Priority { get; set; }
 	}
 }

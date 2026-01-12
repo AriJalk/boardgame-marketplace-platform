@@ -19,7 +19,6 @@ import { EditListingGroupPage } from '../../edit-listing-group-page/edit-listing
     ListingGroupDetailsCard,
     QueueBuyerPanel,
     AsyncPipe,
-    QueueSellerPanel,
     EditListingGroupPage,
   ],
   templateUrl: './listing-group-details-page.html',

@@ -1,4 +1,4 @@
-﻿namespace TestingService.Domains.Listings.Enums
+﻿namespace TestingService.Domains.Queues.Enums
 {
 	public enum QueueStatus
 	{

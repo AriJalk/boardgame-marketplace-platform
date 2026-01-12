@@ -31,7 +31,6 @@ export class EditListingGroupPage implements OnInit {
       .subscribe((details) => {
         const formGroup = this.formFactory.creatingListingGroupFormGroup(details);
         this.formGroupSubject.next(formGroup);
-        console.log(formGroup.value);
       });
   }
 

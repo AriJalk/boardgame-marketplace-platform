@@ -41,11 +41,5 @@ namespace TestingService.Domains.Listings.Services
 				Listings[listing.Id] = listing.ToListingDetail(listingGroup.Id);
 			}
 		}
-
-		private string GenerateBggUrl()
-		{
-			int id = _random.Next(1, 461367);
-			return $"https://www.boardgamegeek.com/boardgame/{id}";
-		}
 	}
 }
