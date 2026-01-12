@@ -1,10 +1,26 @@
-using TestingService.Services;
+
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using TestingService.Configuration;
+using TestingService.Domains.CatalogItems.Services;
+using TestingService.Domains.Listings.Services;
+using TestingService.Domains.Users.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+JsonSerializerOptions jsonOptions = new JsonSerializerOptions();
+jsonOptions.ConfigureJson();
 
-builder.Services.AddSingleton<ListingsService>();
+builder.Services.AddControllers().
+	AddJsonOptions(options => options.JsonSerializerOptions.ConfigureJson());
+
+builder.Services.AddSingleton(jsonOptions);
+builder.Services.AddSingleton<CatalogService>();
+builder.Services.AddSingleton<ListingsDataService>();
+builder.Services.AddSingleton<QueuesDataService>();
+builder.Services.AddSingleton<UsersService>();
+
+builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.ConfigureJson());
 
 var app = builder.Build();
 

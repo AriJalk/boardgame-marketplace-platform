@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TestingService.Dtos.Queue;
-using TestingService.Services;
+using TestingService.Domains.Listings.Services;
+using TestingService.Domains.Queues.Dtos;
 
 namespace TestingService.Controllers
 {
@@ -8,17 +8,17 @@ namespace TestingService.Controllers
 	[ApiController]
 	public class ListingsController : ControllerBase
 	{
-		ListingsService _listingsService;
+		QueuesDataService _queuesService;
 
-		public ListingsController(ListingsService listingsService)
+		public ListingsController(QueuesDataService queuesService)
 		{
-			_listingsService = listingsService;
+			_queuesService = queuesService;
 		}
 
 		[HttpGet("{listingId:guid}/queues")]
 		public IActionResult GetQueues(Guid listingId)
 		{
-			if (_listingsService.QueueEntries.TryGetValue(listingId, out var queueEntries))
+			if (_queuesService.QueueEntries.TryGetValue(listingId, out var queueEntries))
 			{
 				QueuePageResponseDto pageResponse = new QueuePageResponseDto(
 					TimeQueue: queueEntries.OrderBy(q => q.CreatedAt),
@@ -35,11 +35,11 @@ namespace TestingService.Controllers
 			bool isSuccessful;
 			if (updateRequest.RequestedIndex == -1)
 			{
-				isSuccessful = _listingsService.RemoveQueuePriority(listingId, queueEntryId);
+				isSuccessful = _queuesService.RemoveQueuePriority(listingId, queueEntryId);
 			}
 			else
 			{
-				isSuccessful = _listingsService.UpdateQueuePriority(listingId, queueEntryId, updateRequest.RequestedIndex);
+				isSuccessful = _queuesService.UpdateQueuePriority(listingId, queueEntryId, updateRequest.RequestedIndex);
 			}
 			if (!isSuccessful)
 			{
