@@ -1,6 +1,6 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
-using BoardGameMarket.ListingsService.Core.Domain.Common;
+using BoardGameMarket.ListingsService.Core.Application.Common;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using Microsoft.Extensions.Logging;

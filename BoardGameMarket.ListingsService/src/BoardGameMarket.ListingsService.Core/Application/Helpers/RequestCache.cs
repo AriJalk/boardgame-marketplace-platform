@@ -1,6 +1,6 @@
 ﻿using BoardGameMarket.ListingsService.Core.Domain.Entities;
 
-namespace BoardGameMarket.ListingsService.Core.Application.Services.Helpers
+namespace BoardGameMarket.ListingsService.Core.Application.Helpers
 {
 	public class RequestCache
 	{

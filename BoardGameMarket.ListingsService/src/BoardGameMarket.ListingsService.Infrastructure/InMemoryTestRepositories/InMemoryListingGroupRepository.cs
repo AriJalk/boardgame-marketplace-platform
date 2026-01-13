@@ -1,5 +1,5 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.Filters;
-using BoardGameMarket.ListingsService.Core.Domain.Common;
+using BoardGameMarket.ListingsService.Core.Application.Common;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using System;
@@ -21,7 +21,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositorie
 			if (cursor != null)
 			{
 				start = orderedListingGroups.FindIndex(g =>
-					g.CreatedAt < cursor.LastCreatedAt || (g.CreatedAt == cursor.LastCreatedAt && g.Id < cursor.LastId));
+					g.CreatedAt < cursor.LastCreatedAt || (g.CreatedAt == cursor.LastCreatedAt && g.Id.CompareTo(cursor.LastId) < 0));
 				if (start < 0) start = orderedListingGroups.Count;
 			}
 

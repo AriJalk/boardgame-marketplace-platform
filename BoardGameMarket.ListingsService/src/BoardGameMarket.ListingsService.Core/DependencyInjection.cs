@@ -1,21 +1,16 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.Identity;
+﻿using BoardGameMarket.ListingsService.Core.Application.Helpers;
+using BoardGameMarket.ListingsService.Core.Application.Identity;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingItems;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingsSold;
-using BoardGameMarket.ListingsService.Core.Application.Services.Assemblers.DTOs;
-using BoardGameMarket.ListingsService.Core.Application.Services.Helpers;
+using BoardGameMarket.ListingsService.Core.Application.Services.AggregateServices;
 using BoardGameMarket.ListingsService.Core.Application.Services.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.Services.ListingItems;
 using BoardGameMarket.ListingsService.Core.Application.Services.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.Services.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Services.ListingsSold;
-using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroups;
-using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingItems;
-using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueueEntries;
-using BoardGameMarket.ListingsService.Core.Application.UseCases.Listings;
-using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingsSold;
 using BoardGameMarket.ListingsService.Core.Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -54,40 +49,15 @@ namespace BoardGameMarket.ListingsService.Core
 			services.AddTransient<IListingSoldGetterService, ListingSoldGetterService>();
 			services.AddTransient<IListingSoldDeleterService, ListingSoldDeleterService>();
 
-			// Dto Composers
-			services.AddTransient<ListingDtoComposer>();
-			services.AddTransient<ListingItemDtoComposer>();
-			services.AddTransient<ListingQueueEntryDtoComposer>();
-			services.AddTransient<ListingGroupDtoComposer>();
-
-			// Use Cases
-			services.AddTransient<AddCompleteListingGroupUseCase>();
-			services.AddTransient<GetListingGroupsPageUseCase>();
-			services.AddTransient<UpdateListingGroupUseCase>();
-			services.AddTransient<DeleteListingGroupUseCase>();
-
-			services.AddTransient<AddCompleteListingItemsUseCase>();
-			services.AddTransient<AddListingItemUseCase>();
-			services.AddTransient<DeleteListingUseCase>();
-
-			services.AddTransient<AddQueueEntryUseCase>();
-
-			services.AddTransient<AddCompleteListingsUseCase>();
-			services.AddTransient<AddListingUseCase>();
-			services.AddTransient<UpdateListingUseCase>();
-
-			services.AddTransient<CompleteListingSaleUseCase>();
-
-			services.AddTransient<DeleteListingItemUseCase>();
-
 			// Helpers
-			services.AddTransient<ListingFetcher>();
 			services.AddScoped<RequestCache>();
 
-			// Domain
-			services.AddTransient<QueueDomainService>();
-			services.AddTransient<ListingDomainService>();
+			// Use-cases
 
+			services.AddScoped<ListingAggregateService>();
+			services.AddScoped<ListingGroupAggregateService>();
+
+			// Context
 			services.AddScoped<ICurrentUserContext, CurrentUserContext>();
 
 			return services;

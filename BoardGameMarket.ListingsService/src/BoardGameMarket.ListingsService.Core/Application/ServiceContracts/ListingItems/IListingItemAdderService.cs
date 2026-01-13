@@ -1,5 +1,4 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingItems;
-using BoardGameMarket.ListingsService.Core.Domain.Entities;
+﻿using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

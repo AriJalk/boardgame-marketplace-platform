@@ -1,37 +1,28 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingGroups;
-using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
+﻿using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingGroups;
+using BoardGameMarket.ListingsService.Core.Application.Contracts.Listings;
+using BoardGameMarket.ListingsService.Core.Domain.Aggragates;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 {
-	internal static class ListingGroupMappers
+	public static class ListingGroupMappers
 	{
-		public static ListingGroupResponseDto ToDto(this ListingGroup listingGroup)
+		public static ListingGroupDetail ToListingGroupDetail(this ListingGroupAggregate listingGroupAggregate)
 		{
-			return new ListingGroupResponseDto()
-			{
-				Id = listingGroup.Id,
-				SellerUserId = listingGroup.SellerUserId,
-				PickupOptions = listingGroup.PickupOptions,
-				Details = listingGroup.Details,
-				Location = listingGroup.Location,
-			};
+			ListingGroup listingGroup = listingGroupAggregate.ListingGroup;
+			IReadOnlyCollection<ListingInGroupDetail> listingsInfo = listingGroupAggregate.Listings.Select(l => l.ToListingInGroupDetail()).ToList().AsReadOnly();
+			return new ListingGroupDetail(
+				listingGroup.Id, listingGroup.SellerUserId, listingGroup.CreatedAt, listingGroup.ModifiedAt, listingGroup.Details, listingGroup.PickupOptions, listingGroup.Location, listingsInfo);
 		}
 
-		public static ListingGroup ToListingGroup(this ListingGroupAddRequest listingGroupAddRequest)
+		public static ListingGroupSummary ToListingGroupSummary(this ListingGroupAggregate listingGroupAggregate)
 		{
-			return new ListingGroup()
-			{
-				SellerUserId = listingGroupAddRequest.SellerUserId,
-				Details = listingGroupAddRequest.Details,
-				Location = listingGroupAddRequest.Location,
-				PickupOptions = listingGroupAddRequest.PickupOptions,
-			};
+			ListingGroup listingGroup = listingGroupAggregate.ListingGroup;
+			IReadOnlyCollection<ListingInGroupSummary> listingsInfo = listingGroupAggregate.Listings.Select(l => l.Listing.ToListingInGroupSummary()).ToList().AsReadOnly();
+			return new ListingGroupSummary(listingGroup.Id, listingGroup.SellerUserId, listingGroup.CreatedAt, listingGroup.ModifiedAt, listingGroup.Details, listingGroup.PickupOptions, listingGroup.Location, listingsInfo);
 		}
 	}
 }

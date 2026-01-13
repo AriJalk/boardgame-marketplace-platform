@@ -1,4 +1,4 @@
-﻿using BoardGameMarket.ListingsService.Core.Domain.Common;
+﻿using BoardGameMarket.ListingsService.Core.Application.Common;
 
 namespace BoardGameMarket.ListingsService.API.Helpers
 {

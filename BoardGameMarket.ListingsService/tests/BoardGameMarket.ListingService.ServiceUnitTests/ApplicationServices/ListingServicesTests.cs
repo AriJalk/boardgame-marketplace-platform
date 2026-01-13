@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
+using BoardGameMarket.ListingsService.Core.Application.Helpers;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
-using BoardGameMarket.ListingsService.Core.Application.Services.Helpers;
 using BoardGameMarket.ListingsService.Core.Application.Services.Listings;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;

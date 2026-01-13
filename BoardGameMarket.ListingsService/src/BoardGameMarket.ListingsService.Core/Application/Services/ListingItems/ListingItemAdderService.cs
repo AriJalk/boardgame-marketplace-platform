@@ -1,6 +1,4 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingItems;
-using BoardGameMarket.ListingsService.Core.Application.Mappers;
-using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingItems;
+﻿using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingItems;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using Microsoft.Extensions.Logging;

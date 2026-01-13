@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BoardGameMarket.ListingsService.Core.Domain.Common
+namespace BoardGameMarket.ListingsService.Core.Application.Common
 {
 	public class PagedResult<T>
 	{

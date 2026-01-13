@@ -1,8 +1,6 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingQueueEntries;
-using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries;
+﻿using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
-using Microsoft.Extensions.Logging;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingQueueEntries
 {

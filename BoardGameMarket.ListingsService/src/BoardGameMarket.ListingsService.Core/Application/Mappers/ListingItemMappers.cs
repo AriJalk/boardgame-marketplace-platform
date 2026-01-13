@@ -1,35 +1,16 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.ListingItems;
-using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
+﻿using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingItems;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 {
 	internal static class ListingItemMappers
 	{
-		public static ListingItemResponseDto ToDto(this ListingItem listingItem)
+		public static ListingItemInfo ToListingItemInfo(this ListingItem listingItem)
 		{
-			return new ListingItemResponseDto()
-			{
-				Id = listingItem.Id,
-				ListingId = listingItem.ListingId,
-				CatalogId = listingItem.CatalogId,
-				Details = listingItem.Details,
-			};
-		}
-
-		public static ListingItem ToListingItem(this ListingItemAddRequest listingItemAddRequest)
-		{
-			return new ListingItem()
-			{
-				CatalogId = listingItemAddRequest.CatalogId,
-				ListingId = listingItemAddRequest.ListingId,
-				Details = listingItemAddRequest.Details,
-			};
+			return new ListingItemInfo(listingItem.Id, listingItem.CatalogId, listingItem.Details);
 		}
 	}
 }

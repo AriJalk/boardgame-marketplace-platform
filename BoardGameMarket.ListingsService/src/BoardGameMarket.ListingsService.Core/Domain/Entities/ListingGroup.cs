@@ -11,7 +11,7 @@ namespace BoardGameMarket.ListingsService.Core.Domain.Entities
 		public DateTime CreatedAt { get; set; }
 		public DateTime ModifiedAt { get; set; }
 		public string? Details { get; set; }
-		public string? PickupOptions { get; set; }
-		public string? Location { get; set; }
+		public string PickupOptions { get; set; } = string.Empty;
+		public string Location { get; set; } = string.Empty;
 	}
 }

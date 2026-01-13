@@ -1,5 +1,4 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.Listings;
-using BoardGameMarket.ListingsService.Core.Domain.Entities;
+﻿using BoardGameMarket.ListingsService.Core.Domain.Entities;
 
 namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings
 {

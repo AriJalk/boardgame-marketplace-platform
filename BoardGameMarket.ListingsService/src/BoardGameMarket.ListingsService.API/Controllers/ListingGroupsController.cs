@@ -1,9 +1,11 @@
 ﻿using BoardGameMarket.ListingsService.API.Helpers;
-using BoardGameMarket.ListingsService.Core.Application.DTOs.Requests.Composition;
-using BoardGameMarket.ListingsService.Core.Application.DTOs.Responses;
+using BoardGameMarket.ListingsService.Core.Application.Common;
+using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.Filters;
-using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroups;
-using BoardGameMarket.ListingsService.Core.Domain.Common;
+using BoardGameMarket.ListingsService.Core.Application.Mappers;
+using BoardGameMarket.ListingsService.Core.Application.Services.AggregateServices;
+using BoardGameMarket.ListingsService.Core.Domain.Aggragates;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.ListingsService.API.Controllers
@@ -12,40 +14,47 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 	[ApiController]
 	public class ListingGroupsController : ControllerBase
 	{
-		private readonly GetListingGroupsPageUseCase _getListingGroupsPageUseCase;
-		private readonly AddCompleteListingGroupUseCase _addCompleteListingGroupUseCase;
-		private readonly DeleteListingGroupUseCase _deleteListingGroupUseCase;
+		private ListingGroupAggregateService _aggregateService;
 
-		public ListingGroupsController(GetListingGroupsPageUseCase getListingGroupsPageUseCase, AddCompleteListingGroupUseCase addCompleteListingGroupUseCase, DeleteListingGroupUseCase deleteListingGroupUseCase)
+		public ListingGroupsController(ListingGroupAggregateService aggregateService)
 		{
-			_getListingGroupsPageUseCase = getListingGroupsPageUseCase;
-			_addCompleteListingGroupUseCase = addCompleteListingGroupUseCase;
-			_deleteListingGroupUseCase = deleteListingGroupUseCase;
+			_aggregateService = aggregateService;
 		}
 
-		[HttpGet]
-		public async Task<ActionResult<PagedResult<ListingGroupResponseDto>>> GetListingGroups([FromQuery] ListingGroupFilter? filter, [FromHeader] string? cursor, [FromHeader] int pageSize = 10)
+
+
+		[HttpGet()]
+		public async Task<ActionResult<PagedResult<ListingGroupSummary>>> Get([FromQuery] string? cursor, [FromQuery] int pageSize = 10, [FromQuery] ListingGroupFilter? filter = null)
 		{
 			Cursor? cursorObject = CursorParser.Parse(cursor);
-			return Ok(await _getListingGroupsPageUseCase.ExecuteAsync(cursorObject, pageSize, filter));
-		}
+			PagedResult<ListingGroupAggregate> listingGroups = await _aggregateService.GetSummaryPageAsync(cursorObject, pageSize, filter);
+			IEnumerable<ListingGroupSummary> summaries = listingGroups.Items.Select(i => i.ToListingGroupSummary());
 
-		[HttpPost]
-		public async Task<ActionResult<ListingGroupResponseDto>> AddListingGroupWithListings(ListingGroupWithListingsRequest listingGroupWithListingsRequest)
-		{
-			ListingGroupResponseDto listingGroupResponseDto = await _addCompleteListingGroupUseCase.ExecuteAsync(listingGroupWithListingsRequest);
-			return Ok(listingGroupResponseDto);
-		}
-
-		[HttpDelete("{listingGroupId:guid}")]
-		public async Task<IActionResult> DeleteListingGroup(Guid listingGroupId)
-		{
-			bool isDeleted = await _deleteListingGroupUseCase.ExecuteAsync(listingGroupId);
-			if (isDeleted)
+			PagedResult<ListingGroupSummary> pagedResult = new PagedResult<ListingGroupSummary>()
 			{
-				return NoContent();
+				Items = summaries.ToArray(),
+				NextCursor = listingGroups.NextCursor,
+			};
+
+			return Ok(pagedResult);
+		}
+
+
+		[HttpGet("/{listingGroupId:guid}")]
+		public async Task<ActionResult<ListingGroupDetail>> GetListingGroup(Guid listingGroupId)
+		{
+			ListingGroupAggregate? listingGroupAggregate;
+			try
+			{
+				listingGroupAggregate = await _aggregateService.GetListingGroupAggregateAsync(listingGroupId, loadItems: true, loadQueues: false);
+
+
+				return Ok(listingGroupAggregate);
 			}
-			return NotFound();
+			catch (KeyNotFoundException ex)
+			{
+				return NotFound();
+			}
 		}
 	}
 }
