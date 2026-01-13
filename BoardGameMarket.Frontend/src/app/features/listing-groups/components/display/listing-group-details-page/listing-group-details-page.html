@@ -9,6 +9,11 @@
   }
 
   <ng-template #subscriptionPanelTemplate let-listing>
-    <bgm-queue-buyer-panel [listingId]="listing.id" [isSubscribed]="false"></bgm-queue-buyer-panel>
+    @if (user?.id) {
+      <bgm-queue-buyer-panel
+        [listingId]="listing.id"
+        [isSubscribed]="false"
+      ></bgm-queue-buyer-panel>
+    }
   </ng-template>
 }

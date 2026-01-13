@@ -1,0 +1,5 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/BoardGameMarket.MarketGateway.API/BoardGameMarket.MarketGateway.API.csproj" />
+  </Folder>
+</Solution>

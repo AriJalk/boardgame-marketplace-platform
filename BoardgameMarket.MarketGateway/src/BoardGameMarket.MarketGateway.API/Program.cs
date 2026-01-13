@@ -1,24 +1,34 @@
-using BoardGameMarket.MarketGateway.Infrastructure;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using BoardGameMarket.MarketGateway.API.Configuration;
+using BoardGameMarket.MarketGateway.API.Modules.CatalogItems.Services;
+using BoardGameMarket.MarketGateway.API.Modules.Listings.Services;
+using BoardGameMarket.MarketGateway.API.Modules.Queues.Services;
+using BoardGameMarket.MarketGateway.API.Modules.Users.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddControllers();
+JsonSerializerOptions jsonOptions = new JsonSerializerOptions();
+jsonOptions.ConfigureJson();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-	.AddJwtBearer(options =>
-	{
-		options.Authority = $"https://{builder.Configuration["TENANT_NAME"]}.ciamlogin.com/{builder.Configuration["TENANT_ID"]}/v2.0";
-		options.Audience = builder.Configuration["TENANT_CLIENT_ID"];
-	});
+builder.Services.AddControllers().
+	AddJsonOptions(options => options.JsonSerializerOptions.ConfigureJson());
+
+builder.Services.AddSingleton(jsonOptions);
+builder.Services.AddSingleton<CatalogService>();
+builder.Services.AddSingleton<ListingsDataService>();
+builder.Services.AddSingleton<QueuesDataService>();
+builder.Services.AddSingleton<UsersService>();
+
+builder.Services.ConfigureHttpJsonOptions(options => options.SerializerOptions.ConfigureJson());
 
 var app = builder.Build();
 
-
-//app.UseHsts();
-app.UseHttpsRedirection();
-
+app.UseCors(policy =>
+{
+	policy.WithOrigins("https://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+});
 app.MapControllers();
 
 app.Run();
