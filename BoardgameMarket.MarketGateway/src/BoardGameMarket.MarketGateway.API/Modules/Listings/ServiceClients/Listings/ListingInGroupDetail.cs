@@ -10,8 +10,7 @@ namespace BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.List
 		DateTime CreatedAt,
 		DateTime ModifiedAt,
 		decimal Price,
-		IReadOnlyCollection<ListingItemInfo>
-		ListingItems,
+		ListingItemInfo[] ListingItems,
 		string? Details)
 	{ }
 }

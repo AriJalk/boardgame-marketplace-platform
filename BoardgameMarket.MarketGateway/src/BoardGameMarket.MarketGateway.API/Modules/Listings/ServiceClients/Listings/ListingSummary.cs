@@ -1,4 +1,5 @@
-﻿using BoardGameMarket.MarketGateway.API.Modules.Listings.Enums;
+﻿
+using BoardGameMarket.MarketGateway.API.Modules.Listings.Enums;
 
 namespace BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.Listings
 {

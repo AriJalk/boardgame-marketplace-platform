@@ -6,7 +6,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Contracts.Listings
 		Guid Id,
 		string Title,
 		decimal Price,
-		IReadOnlyCollection<UpdateListingItem> ListingItems,
+		UpdateListingItem[] ListingItems,
 		string? Details)
 	{ }
 }

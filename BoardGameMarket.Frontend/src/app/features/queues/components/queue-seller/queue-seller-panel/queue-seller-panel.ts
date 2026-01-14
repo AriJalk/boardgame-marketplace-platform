@@ -23,8 +23,8 @@ export class QueueSellerPanel {
     switchMap(() => this.queueService.getQueues(this.listingsId)),
   );
 
-  @ViewChild('priorityQueue') priorityContainer?: CdkDropList;
-  @ViewChild('timeQueue') timeContainer?: CdkDropList;
+  @ViewChild('queueByTime') timeContainer?: CdkDropList;
+  @ViewChild('queueByPriority') priorityContainer?: CdkDropList;
 
   constructor(private queueService: QueueService) {}
 

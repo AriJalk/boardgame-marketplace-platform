@@ -22,24 +22,24 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.AggregateSer
 			_listingQueueEntryGetterService = listingQueueEntryGetterService;
 		}
 
-		async Task<IReadOnlyCollection<ListingItem>> LoadItemsAsync(Guid listingId)
+		async Task<IEnumerable<ListingItem>> LoadItemsAsync(Guid listingId)
 		{
-			return (await _listingItemGetterService.GetListingItemsByListingIdAsync(listingId)).ToList().AsReadOnly();
+			return (await _listingItemGetterService.GetListingItemsByListingIdAsync(listingId));
 		}
 
-		async Task<IReadOnlyCollection<ListingQueueEntry>> LoadQueueAsync(Guid listingId) {
-			return (await _listingQueueEntryGetterService.GetListingQueueEntriesByListingIdAsync(listingId)).ToList().AsReadOnly();
+		async Task<IEnumerable<ListingQueueEntry>> LoadQueueAsync(Guid listingId) {
+			return (await _listingQueueEntryGetterService.GetListingQueueEntriesByListingIdAsync(listingId));
 		}
 
 		private async Task<ListingAggregate> BuildListingAggregateAsync(Listing listing, bool loadItems, bool loadQueue)
 		{
-			Task<IReadOnlyCollection<ListingItem>>? itemsTask = loadItems ? LoadItemsAsync(listing.Id) : null;
+			Task<IEnumerable<ListingItem>>? itemsTask = loadItems ? LoadItemsAsync(listing.Id) : null;
 
-			Task<IReadOnlyCollection<ListingQueueEntry>>? queueTask = loadQueue ? LoadQueueAsync(listing.Id) : null;
+			Task<IEnumerable<ListingQueueEntry>>? queueTask = loadQueue ? LoadQueueAsync(listing.Id) : null;
 
 			await Task.WhenAll(itemsTask ?? Task.CompletedTask, queueTask ?? Task.CompletedTask);
 
-			return new ListingAggregate(listing, itemsTask?.Result, queueTask?.Result);
+			return new ListingAggregate(listing, itemsTask?.Result.ToList().AsReadOnly(), queueTask?.Result.ToList().AsReadOnly());
 		}
 
 
@@ -48,7 +48,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.AggregateSer
 			Listing? listing = await _listingGetterService.GetListingByIdAsync(listingId);
 			if (listing == null)
 			{
-				throw new KeyNotFoundException();
+				throw new KeyNotFoundException($"Listing {listingId} not found");
 			}
 
 			return await BuildListingAggregateAsync(listing, loadItems, loadQueue);
@@ -58,7 +58,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.AggregateSer
 		{
 			List<ListingAggregate> aggregates = new List<ListingAggregate>();
 
-			IReadOnlyCollection<Listing> listings = (await _listingGetterService.GetListingsByListingGroupIdAsync(listingGroupId)).ToList().AsReadOnly();
+			IEnumerable<Listing> listings = (await _listingGetterService.GetListingsByListingGroupIdAsync(listingGroupId)).ToList().AsReadOnly();
 
 			foreach (Listing listing in listings)
 			{

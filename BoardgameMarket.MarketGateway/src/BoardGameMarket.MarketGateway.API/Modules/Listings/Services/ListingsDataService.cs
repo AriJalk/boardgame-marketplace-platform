@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using System.Text.Json.Serialization;
 using BoardGameMarket.MarketGateway.API.Modules.Listings.Helpers;
 using BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.ListingGroups;
 using BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.Listings;

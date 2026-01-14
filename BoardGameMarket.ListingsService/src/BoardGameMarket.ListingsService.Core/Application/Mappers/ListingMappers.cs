@@ -13,14 +13,14 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 		public static ListingDetail ToListingDetail(this ListingAggregate listingAggregate)
 		{
 			Listing listing = listingAggregate.Listing;
-			IReadOnlyCollection<ListingItemInfo> listingItemsInfo = listingAggregate.Items.Select(i => i.ToListingItemInfo()).ToList().AsReadOnly();
+			ListingItemInfo[] listingItemsInfo = listingAggregate.Items.Select(i => i.ToListingItemInfo()).ToArray();
 			return new ListingDetail(listing.Id, listing.Title, listing.ListingGroupId, listing.Status, listing.CreatedAt, listing.ModifiedAt, listing.Price, listingItemsInfo, listing.Details);
 		}
 
 		public static ListingInGroupDetail ToListingInGroupDetail(this ListingAggregate listingAggregate)
 		{
 			Listing listing = listingAggregate.Listing;
-			IReadOnlyCollection<ListingItemInfo> listingItemsInfo = listingAggregate.Items.Select(i => i.ToListingItemInfo()).ToList().AsReadOnly();
+			ListingItemInfo[] listingItemsInfo = listingAggregate.Items.Select(i => i.ToListingItemInfo()).ToArray();
 			return new ListingInGroupDetail(listing.Id, listing.Title, listing.Status, listing.CreatedAt, listing.ModifiedAt, listing.Price, listingItemsInfo, listing.Details);
 		}
 

@@ -1,5 +1,4 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.Helpers;
-using BoardGameMarket.ListingsService.Core.Application.Identity;
+﻿using BoardGameMarket.ListingsService.Core.Application.Identity;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingItems;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries;
@@ -11,7 +10,6 @@ using BoardGameMarket.ListingsService.Core.Application.Services.ListingItems;
 using BoardGameMarket.ListingsService.Core.Application.Services.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.Services.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Services.ListingsSold;
-using BoardGameMarket.ListingsService.Core.Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BoardGameMarket.ListingsService.Core
@@ -49,13 +47,11 @@ namespace BoardGameMarket.ListingsService.Core
 			services.AddTransient<IListingSoldGetterService, ListingSoldGetterService>();
 			services.AddTransient<IListingSoldDeleterService, ListingSoldDeleterService>();
 
-			// Helpers
-			services.AddScoped<RequestCache>();
 
-			// Use-cases
-
+			// Aggregates
 			services.AddScoped<ListingAggregateService>();
 			services.AddScoped<ListingGroupAggregateService>();
+			services.AddScoped<ListingQueueAggregateService>();
 
 			// Context
 			services.AddScoped<ICurrentUserContext, CurrentUserContext>();

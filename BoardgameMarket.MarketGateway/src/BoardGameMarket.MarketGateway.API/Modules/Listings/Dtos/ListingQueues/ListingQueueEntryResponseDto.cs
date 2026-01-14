@@ -1,7 +1,7 @@
 ﻿using BoardGameMarket.MarketGateway.API.Modules.Queues.Enums;
 using BoardGameMarket.MarketGateway.API.Modules.Users.Dtos;
 
-namespace BoardGameMarket.MarketGateway.API.Modules.Queues.Dtos
+namespace BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.ListingQueues
 {
 	public class ListingQueueEntryResponseDto
 	{

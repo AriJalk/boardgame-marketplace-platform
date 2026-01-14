@@ -9,6 +9,6 @@ export interface QueueEntry {
 }
 
 export interface QueuePageResponse {
-  timeQueue: QueueEntry[];
-  priorityQueue: QueueEntry[];
+  queueByTime: QueueEntry[];
+  queueByPriority: QueueEntry[];
 }

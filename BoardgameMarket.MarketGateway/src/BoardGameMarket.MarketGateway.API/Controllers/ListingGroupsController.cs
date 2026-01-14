@@ -3,7 +3,6 @@ using BoardGameMarket.MarketGateway.API.Modules.CatalogItems.Dtos;
 using BoardGameMarket.MarketGateway.API.Modules.CatalogItems.Helpers;
 using BoardGameMarket.MarketGateway.API.Modules.CatalogItems.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Modules.CatalogItems.Services;
-using BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos;
 using BoardGameMarket.MarketGateway.API.Modules.Listings.Helpers;
 using BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.ListingGroups;
 using BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.ListingItems;
@@ -12,6 +11,9 @@ using BoardGameMarket.MarketGateway.API.Modules.Listings.Services;
 using BoardGameMarket.MarketGateway.API.Modules.Users.Helpers;
 using BoardGameMarket.MarketGateway.API.Modules.Users.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Modules.Users.Services;
+using BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.ListingGroups;
+using BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.Listings;
+using BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.ListingItems;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
 {

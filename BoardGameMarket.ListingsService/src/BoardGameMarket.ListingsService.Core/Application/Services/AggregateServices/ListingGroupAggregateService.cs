@@ -31,7 +31,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.AggregateSer
 
 			if (listingGroup == null)
 			{
-				throw new KeyNotFoundException();
+				throw new KeyNotFoundException($"Listing group {listingGroupId} not found");
 			}
 
 			IReadOnlyCollection<ListingAggregate> listings = (await _listingAggregateService.GetListingAggregatesByListingGroupIdAsync(listingGroupId, loadItems, loadQueues)).ToList().AsReadOnly();

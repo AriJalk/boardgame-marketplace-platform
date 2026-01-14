@@ -1,4 +1,4 @@
-﻿using BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos;
+﻿using BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.Listings;
 using BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.Listings;
 
 namespace BoardGameMarket.MarketGateway.API.Modules.Listings.Helpers

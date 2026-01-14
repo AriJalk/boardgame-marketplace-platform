@@ -21,8 +21,6 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 			_aggregateService = aggregateService;
 		}
 
-
-
 		[HttpGet()]
 		public async Task<ActionResult<PagedResult<ListingGroupSummary>>> Get([FromQuery] string? cursor, [FromQuery] int pageSize = 10, [FromQuery] ListingGroupFilter? filter = null)
 		{
@@ -49,11 +47,11 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 				listingGroupAggregate = await _aggregateService.GetListingGroupAggregateAsync(listingGroupId, loadItems: true, loadQueues: false);
 
 
-				return Ok(listingGroupAggregate);
+				return Ok(listingGroupAggregate.ToListingGroupDetail());
 			}
 			catch (KeyNotFoundException ex)
 			{
-				return NotFound();
+				return NotFound(ex.Message);
 			}
 		}
 	}

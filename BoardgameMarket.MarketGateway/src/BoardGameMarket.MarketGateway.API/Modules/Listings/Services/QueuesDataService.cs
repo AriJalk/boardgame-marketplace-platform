@@ -1,7 +1,7 @@
-﻿using BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.Listings;
+﻿using BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.ListingQueueEntries;
+using BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.Listings;
 using BoardGameMarket.MarketGateway.API.Modules.Listings.Services;
-using BoardGameMarket.MarketGateway.API.Modules.Queues.Dtos;
-using BoardGameMarket.MarketGateway.API.Modules.Queues.ServiceClients;
+using BoardGameMarket.MarketGateway.API.Modules.Queues.Enums;
 using BoardGameMarket.MarketGateway.API.Modules.Users.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Modules.Users.Services;
 
@@ -42,19 +42,11 @@ namespace BoardGameMarket.MarketGateway.API.Modules.Queues.Services
 					int index = _random.Next(userCount - 1);
 					user = _usersService.Users.Values.ElementAt(index);
 				}
-				while(subscribedUsers.Contains(user));
+				while (subscribedUsers.Contains(user));
 				subscribedUsers.Add(user);
 
-				ListingQueueEntryInfo queueEntry = new ListingQueueEntryInfo()
-				{
-					Id = Guid.NewGuid(),
-					ListingId = listing.Id,
-					BuyerUserId = user.Id,
-					CreatedAt = DateTime.Now.AddDays(-gap),
-					ModifiedAt = DateTime.Now,
-					Status = Enums.QueueStatus.Queued,
-					Priority = i % 2 == 0 ? gap++ * PRIORITY_GAP : null,
-				};
+				ListingQueueEntryInfo queueEntry = new ListingQueueEntryInfo(Guid.NewGuid(), QueueStatus.Queued, user.Id, DateTime.Now.AddDays(-gap), DateTime.Now, i % 2 == 0 ? gap++ * PRIORITY_GAP : null);
+
 				queueEntries.Add(queueEntry);
 			}
 			ListingQueueEntries[listing.Id] = queueEntries;
@@ -74,22 +66,22 @@ namespace BoardGameMarket.MarketGateway.API.Modules.Queues.Services
 						return false;
 					}
 					var filteredList = priorityList.Where(q => q != queueEntry).ToList();
-					if (priorityList.Count == 0)
-					{
-						queueEntry.Priority = 0;
-					}
-					else if (requestedIndex == 0)
-					{
-						queueEntry.Priority = filteredList[0].Priority - 1000;
-					}
-					else if (requestedIndex >= filteredList.Count - 1)
-					{
-						queueEntry.Priority = filteredList[filteredList.Count - 1].Priority + 1000;
-					}
-					else
-					{
-						queueEntry.Priority = (filteredList[requestedIndex - 1].Priority + filteredList[requestedIndex].Priority) * 0.5m;
-					}
+					//if (priorityList.Count == 0)
+					//{
+					//	queueEntry.Priority = 0;
+					//}
+					//else if (requestedIndex == 0)
+					//{
+					//	queueEntry.Priority = filteredList[0].Priority - 1000;
+					//}
+					//else if (requestedIndex >= filteredList.Count - 1)
+					//{
+					//	queueEntry.Priority = filteredList[filteredList.Count - 1].Priority + 1000;
+					//}
+					//else
+					//{
+					//	queueEntry.Priority = (filteredList[requestedIndex - 1].Priority + filteredList[requestedIndex].Priority) * 0.5m;
+					//}
 					return true;
 				}
 			}
@@ -103,7 +95,7 @@ namespace BoardGameMarket.MarketGateway.API.Modules.Queues.Services
 				ListingQueueEntryInfo? queueEntry = listingQueues.FirstOrDefault(q => q.Id == queueEntryId);
 				if (queueEntry != null)
 				{
-					queueEntry.Priority = null;
+					//queueEntry.Priority = null;
 					return true;
 				}
 			}

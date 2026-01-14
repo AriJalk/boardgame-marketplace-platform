@@ -1,6 +1,7 @@
-﻿using BoardGameMarket.MarketGateway.API.Modules.Users.Dtos;
+﻿using BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.Listings;
+using BoardGameMarket.MarketGateway.API.Modules.Users.Dtos;
 
-namespace BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos
+namespace BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.ListingGroups
 {
 	public class ListingGroupDetailDto
 	{

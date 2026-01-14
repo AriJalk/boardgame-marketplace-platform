@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using BoardGameMarket.MarketGateway.API.Modules.Queues.Dtos;
-using BoardGameMarket.MarketGateway.API.Modules.Queues.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Modules.Queues.Services;
 using BoardGameMarket.MarketGateway.API.Modules.Users.Helpers;
 using BoardGameMarket.MarketGateway.API.Modules.Users.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Modules.Users.Services;
+using BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.ListingQueues;
+using BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.ListingQueueEntries;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
 {
@@ -30,8 +30,8 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 				IEnumerable<ListingQueueEntryInfo> priorityQueue = queueEntries.Where(q => q.Priority != null).OrderBy(q => q.Priority);
 
 				QueuePageResponseDto pageResponse = new QueuePageResponseDto(
-					TimeQueue: timeQueue.Select(q => BuildListingQueueEntryResponseDto(q)),
-					PriorityQueue: priorityQueue.Select(q => BuildListingQueueEntryResponseDto(q)));
+					QueueByTime: timeQueue.Select(q => BuildListingQueueEntryResponseDto(q)),
+					QueueByPriority: priorityQueue.Select(q => BuildListingQueueEntryResponseDto(q)));
 				return Ok(pageResponse);
 			}
 

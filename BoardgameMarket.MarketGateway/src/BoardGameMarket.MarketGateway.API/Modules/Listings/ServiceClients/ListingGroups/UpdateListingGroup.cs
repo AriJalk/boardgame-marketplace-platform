@@ -9,7 +9,7 @@ namespace BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.List
 		string? Details,
 		string? PickupOptions,
 		string Location,
-		IReadOnlyCollection<UpdateListing> Listings)
+		UpdateListing[] Listings)
 	{
 	}
 }

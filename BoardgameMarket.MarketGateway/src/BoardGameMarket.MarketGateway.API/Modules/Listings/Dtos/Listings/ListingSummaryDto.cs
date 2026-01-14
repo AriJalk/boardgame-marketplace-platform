@@ -1,4 +1,4 @@
-﻿namespace BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos
+﻿namespace BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.Listings
 {
 	public class ListingSummaryDto
 	{

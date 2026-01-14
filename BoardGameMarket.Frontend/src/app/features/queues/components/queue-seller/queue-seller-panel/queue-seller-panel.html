@@ -3,15 +3,15 @@
     <div class="flex-container-column">
       <h4>Time-based queue</h4>
       <div
-        #timeQueue="cdkDropList"
+        #queueByTime="cdkDropList"
         cdkDropList
-        [cdkDropListConnectedTo]="priorityQueue"
-        [cdkDropListData]="queues.timeQueue"
+        [cdkDropListConnectedTo]="queueByPriority"
+        [cdkDropListData]="queues.queueByTime"
         cdkDropListSortingDisabled
         cdkDropListHasAnchor
         (cdkDropListDropped)="priorityChangeRequest($event)"
       >
-        @for (item of queues.timeQueue; track item.id) {
+        @for (item of queues.queueByTime; track item.id) {
           <div cdkDrag [cdkDragData]="item">
             <ng-container
               *ngTemplateOutlet="queuePanelTemplate; context: { $implicit: item }"
@@ -24,12 +24,12 @@
       <h4>Priority-based queue</h4>
       <div
         cdkDropList
-        #priorityQueue="cdkDropList"
-        [cdkDropListConnectedTo]="timeQueue"
+        #queueByPriority="cdkDropList"
+        [cdkDropListConnectedTo]="queueByTime"
         (cdkDropListDropped)="priorityChangeRequest($event)"
-        [cdkDropListData]="queues.priorityQueue"
+        [cdkDropListData]="queues.queueByPriority"
       >
-        @for (item of queues.priorityQueue; track item.id) {
+        @for (item of queues.queueByPriority; track item.id) {
           <div cdkDrag [cdkDragData]="item">
             <ng-container
               *ngTemplateOutlet="queuePanelTemplate; context: { $implicit: item }"

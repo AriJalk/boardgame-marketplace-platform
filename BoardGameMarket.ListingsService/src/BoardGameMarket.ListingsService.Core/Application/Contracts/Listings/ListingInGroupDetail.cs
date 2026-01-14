@@ -10,8 +10,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Contracts.Listings
 		DateTime CreatedAt,
 		DateTime ModifiedAt,
 		decimal Price,
-		IReadOnlyCollection<ListingItemInfo>
-		ListingItems,
+		ListingItemInfo[] ListingItems,
 		string? Details)
 	{ }
 }

@@ -6,7 +6,7 @@ namespace BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.List
 		Guid Id,
 		string Title,
 		decimal Price,
-		IReadOnlyCollection<UpdateListingItem> ListingItems,
+		UpdateListingItem[] ListingItems,
 		string? Details)
 	{ }
 }

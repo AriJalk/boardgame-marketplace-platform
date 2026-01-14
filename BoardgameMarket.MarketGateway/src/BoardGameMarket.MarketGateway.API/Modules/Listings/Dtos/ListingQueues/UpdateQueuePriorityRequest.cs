@@ -1,4 +1,4 @@
-﻿namespace BoardGameMarket.MarketGateway.API.Modules.Queues.Dtos
+﻿namespace BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.ListingQueues
 {
 	public class UpdateQueuePriorityRequest
 	{

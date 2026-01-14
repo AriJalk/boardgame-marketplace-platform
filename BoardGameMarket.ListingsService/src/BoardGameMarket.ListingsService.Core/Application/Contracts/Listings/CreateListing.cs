@@ -9,8 +9,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Contracts.Listings
 	string Title,
 	Guid ListingGroupId,
 	decimal Price,
-	IReadOnlyCollection<CreateListingItem>
-	ListingItems,
+	CreateListingItem[] ListingItems,
 	string? Details)
 	{ }
 }

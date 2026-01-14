@@ -1,5 +1,4 @@
 ﻿using AutoFixture;
-using BoardGameMarket.ListingsService.Core.Application.Helpers;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Services.Listings;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
@@ -153,7 +152,7 @@ namespace BoardGameMarket.ListingService.ServiceUnitTests.ApplicationServices
 
 			public ListingGetterServiceTests()
 			{
-				_listingGetterService = new ListingGetterService(_listingRepositoryMock.Object, new RequestCache());
+				_listingGetterService = new ListingGetterService(_listingRepositoryMock.Object);
 			}
 
 			[Fact]
