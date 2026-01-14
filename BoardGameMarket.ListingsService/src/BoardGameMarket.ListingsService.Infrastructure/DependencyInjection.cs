@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Infrastructure
@@ -32,6 +34,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure
 			services.AddSingleton<IListingItemRepository, InMemoryListingItemRepository>();
 			services.AddSingleton<IListingQueueEntryRepository, InMemoryListingQueueEntryRepository>();
 			services.AddSingleton<IListingSoldRepository, InMemoryListingSoldRepository>();
+
 			return services;
 		}
 	}

@@ -12,6 +12,8 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["src/BoardGameMarket.ListingsService.API/BoardGameMarket.ListingsService.API.csproj", "src/BoardGameMarket.ListingsService.API/"]
+COPY ["src/BoardGameMarket.ListingsService.Core/BoardGameMarket.ListingsService.Core.csproj", "src/BoardGameMarket.ListingsService.Core/"]
+COPY ["src/BoardGameMarket.ListingsService.Infrastructure/BoardGameMarket.ListingsService.Infrastructure.csproj", "src/BoardGameMarket.ListingsService.Infrastructure/"]
 RUN dotnet restore "./src/BoardGameMarket.ListingsService.API/BoardGameMarket.ListingsService.API.csproj"
 COPY . .
 WORKDIR "/src/src/BoardGameMarket.ListingsService.API"

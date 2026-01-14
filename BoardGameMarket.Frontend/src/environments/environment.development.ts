@@ -1,3 +1,3 @@
 export const devEnvironment = {
-    apiEndpoint: 'https://localhost:7155/api',
+    apiEndpoint: 'https://localhost:60899/api',
 }

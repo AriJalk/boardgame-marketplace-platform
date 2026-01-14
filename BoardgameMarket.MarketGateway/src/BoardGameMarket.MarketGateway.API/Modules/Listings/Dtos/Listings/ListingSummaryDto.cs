@@ -1,10 +1,6 @@
 ﻿namespace BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.Listings
 {
-	public class ListingSummaryDto
+	public record ListingSummaryDto(Guid Id, string? Title, decimal Price, string? Details)
 	{
-		public Guid Id { get; set; }
-		public string? Title { get; set; }
-		public decimal Price { get; set; }
-		public string? Details { get; set; }
 	}
 }

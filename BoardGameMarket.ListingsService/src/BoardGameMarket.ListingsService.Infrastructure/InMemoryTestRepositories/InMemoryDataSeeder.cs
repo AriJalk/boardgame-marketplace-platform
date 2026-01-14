@@ -3,8 +3,10 @@ using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositories
@@ -17,8 +19,10 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositorie
 		private readonly IListingQueueEntryRepository _listingQueueEntryRepository;
 		private readonly IListingSoldRepository _listingSoldRepository;
 		private readonly IFixture _fixture;
+		private readonly JsonSerializerOptions _jsonOptions;
+		private readonly string _seedPath;
 
-		public InMemoryDataSeeder(IListingGroupRepository listingGroupRepository, IListingRepository listingRepository, IListingItemRepository listingItemRepository, IListingQueueEntryRepository listingQueueEntryRepository, IListingSoldRepository listingSoldRepository)
+		public InMemoryDataSeeder(IListingGroupRepository listingGroupRepository, IListingRepository listingRepository, IListingItemRepository listingItemRepository, IListingQueueEntryRepository listingQueueEntryRepository, IListingSoldRepository listingSoldRepository, JsonSerializerOptions jsonOptions, string seedPath)
 		{
 			_listingGroupRepository = listingGroupRepository;
 			_listingRepository = listingRepository;
@@ -26,40 +30,64 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositorie
 			_listingQueueEntryRepository = listingQueueEntryRepository;
 			_listingSoldRepository = listingSoldRepository;
 			_fixture = new Fixture();
+			_jsonOptions = jsonOptions;
+			_seedPath = seedPath;
 		}
 
 		public async Task SeedAsync()
 		{
-			for (int i = 0; i < 100; i++)
+			Task groupsTask = SeedListingGroups();
+			Task listingsTask = SeedListings();
+			Task itemsTask = SeedListingItems();
+
+			await Task.WhenAll(groupsTask, listingsTask, itemsTask);
+		}
+
+		private async Task SeedListingGroups()
+		{
+			string json = File.ReadAllText(Path.Combine(_seedPath, "LISTING_GROUPS_MOCK_DATA.json"));
+
+			IEnumerable<ListingGroup>? listingGroups = JsonSerializer.Deserialize<IEnumerable<ListingGroup>>(json, _jsonOptions);
+
+			if (listingGroups == null)
 			{
-				ListingGroup listingGroup = _fixture.Create<ListingGroup>();
+				return;
+			}
+			foreach(ListingGroup listingGroup in listingGroups)
+			{
 				await _listingGroupRepository.AddListingGroupAsync(listingGroup);
-				for (int j = 0; j < 5; j++)
-				{
-					Listing listing = _fixture.Create<Listing>();
-					listing.ListingGroupId = listingGroup.Id;
-					await _listingRepository.AddListingAsync(listing);
-					for (int k = 0; k < 10; k++)
-					{
-						ListingItem listingItem = _fixture.Create<ListingItem>();
-						listingItem.ListingId = listing.Id;
-						await _listingItemRepository.AddListingItemAsync(listingItem);
-					}
-					for (int k = 0; k < 10; k++)
-					{
-						ListingQueueEntry listingQueueEntry = _fixture.Create<ListingQueueEntry>();
-						listingQueueEntry.ListingId = listing.Id;
-						if (k % 3 == 0)
-						{
-							listingQueueEntry.Priority = (k + 1) * 10;
-						}
-						else
-						{
-							listingQueueEntry.Priority = null;
-						}
-							await _listingQueueEntryRepository.AddListingQueueEntryAsync(listingQueueEntry);
-					}
-				}
+			}
+		}
+
+		private async Task SeedListings()
+		{
+			string json = File.ReadAllText(Path.Combine(_seedPath, "LISTINGS_MOCK_DATA.json"));
+
+			IEnumerable<Listing>? listings = JsonSerializer.Deserialize<IEnumerable<Listing>>(json, _jsonOptions);
+
+			if (listings == null)
+			{
+				return;
+			}
+			foreach (Listing listing in listings)
+			{
+				await _listingRepository.AddListingAsync(listing);
+			}
+		}
+
+		private async Task SeedListingItems()
+		{
+			string json = File.ReadAllText(Path.Combine(_seedPath, "LISTING_ITEMS_MOCK_DATA.json"));
+
+			IEnumerable<ListingItem>? listingItems = JsonSerializer.Deserialize<IEnumerable<ListingItem>>(json, _jsonOptions);
+
+			if (listingItems == null)
+			{
+				return;
+			}
+			foreach (ListingItem listingItem  in listingItems)
+			{
+				await _listingItemRepository.AddListingItemAsync(listingItem);
 			}
 		}
 	}

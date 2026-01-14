@@ -10,26 +10,5 @@ namespace BoardGameMarket.MarketGateway.API.Modules.Listings.Helpers
 			return new ListingDetail(listingInGroupDetail.Id, listingInGroupDetail.Title, listingGroupId, listingInGroupDetail.Status, listingInGroupDetail.CreatedAt, listingInGroupDetail.ModifiedAt, listingInGroupDetail.Price, listingInGroupDetail.ListingItems, listingInGroupDetail.Details);
 		}
 
-		public static ListingSummaryDto ToListingSummaryDto(this ListingInGroupDetail listing)
-		{
-			return new ListingSummaryDto()
-			{
-				Id = listing.Id,
-				Title = listing.Title,
-				Price = listing.Price,
-				Details = listing.Details
-			};
-		}
-
-		public static ListingSummaryDto ToListingSummaryDto(this ListingDetail listing)
-		{
-			return new ListingSummaryDto()
-			{
-				Id = listing.Id,
-				Title = listing.Title,
-				Price = listing.Price,
-				Details = listing.Details
-			};
-		}
 	}
 }

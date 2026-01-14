@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using BoardGameMarket.MarketGateway.API.Modules.CatalogItems.Dtos;
+﻿using BoardGameMarket.MarketGateway.API.Modules.CatalogItems.Dtos;
 using BoardGameMarket.MarketGateway.API.Modules.CatalogItems.Helpers;
 using BoardGameMarket.MarketGateway.API.Modules.CatalogItems.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Modules.CatalogItems.Services;
+using BoardGameMarket.MarketGateway.API.Modules.Common;
+using BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.ListingGroups;
+using BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.ListingItems;
+using BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.Listings;
+using BoardGameMarket.MarketGateway.API.Modules.Listings.Filters;
 using BoardGameMarket.MarketGateway.API.Modules.Listings.Helpers;
 using BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.ListingGroups;
 using BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.ListingItems;
@@ -11,9 +15,7 @@ using BoardGameMarket.MarketGateway.API.Modules.Listings.Services;
 using BoardGameMarket.MarketGateway.API.Modules.Users.Helpers;
 using BoardGameMarket.MarketGateway.API.Modules.Users.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Modules.Users.Services;
-using BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.ListingGroups;
-using BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.Listings;
-using BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.ListingItems;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
 {
@@ -35,12 +37,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		[HttpGet("{id:guid}/detail")]
 		public IActionResult GetListingGroupDetail(Guid id)
 		{
-			if (_listingsService.ListingGroups.TryGetValue(id, out ListingGroupDetail? lg))
-			{
-				return Ok(BuildListingGroupDetailDto(lg));
-			}
-
-			return NotFound();
+			return Ok();
 		}
 
 		private ListingGroupDetailDto BuildListingGroupDetailDto(ListingGroupDetail listingGroup)
@@ -98,39 +95,33 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		[HttpGet("{id:guid}/summary")]
 		public IActionResult GetListingGroupSummary(Guid id)
 		{
-			if (_listingsService.ListingGroups.TryGetValue(id, out ListingGroupDetail? lg))
-			{
-				return Ok(BuildListingGroupSummaryDto(lg));
-			}
-			return NotFound();
+			return Ok();
 		}
 
-		private ListingGroupSummaryDto BuildListingGroupSummaryDto(ListingGroupDetail listingGroup)
+
+		private ListingSummaryDto BuildListingSummaryDto(ListingInGroupSummary listing)
 		{
-			List<ListingSummaryDto> listingSummaryDtos = new List<ListingSummaryDto>();
-			foreach (ListingInGroupDetail listing in listingGroup.Listings)
-			{
-				listingSummaryDtos.Add(listing.ToListingSummaryDto());
-			}
-			UserInfo sellerUserInfo = _usersService.Users[listingGroup.SellerUserId];
-			return new ListingGroupSummaryDto()
-			{
-				Id = listingGroup.Id,
-				Seller = sellerUserInfo.ToUserSummaryDto(),
-				PostingTime = listingGroup.CreatedAt,
-				Location = listingGroup.Location,
-				PickupOptions = listingGroup.PickupOptions,
-				Details = listingGroup.Details,
-				Listings = listingSummaryDtos
-			};
+			return new ListingSummaryDto(listing.Id, listing.Title, listing.Price, listing.Details);
 		}
 
+		private ListingGroupSummaryDto BuildListingGroupSummaryDto(ListingGroupSummary listingGroup)
+		{
+			UserInfo sellerUserInfo = new UserInfo(Guid.NewGuid(), Modules.Users.Enums.RoleType.User, "FIRST", "LAST", "DNUSER");
+
+			IEnumerable<ListingSummaryDto> listings = listingGroup.Listings.Select(l => BuildListingSummaryDto(l));
+
+			return new ListingGroupSummaryDto(listingGroup.Id, sellerUserInfo.ToUserSummaryDto(), listingGroup.CreatedAt, listingGroup.PickupOptions, listingGroup.Location, listingGroup.Details, listings);
+		}
 
 
 		[HttpGet()]
-		public ActionResult<IEnumerable<ListingGroupSummaryDto>> Get()
+		public async Task<ActionResult<IEnumerable<ListingGroupSummaryDto>>> Get([FromQuery] string? cursor = null, [FromQuery] int pageSize = 10, [FromQuery] ListingGroupFilter? filter = null)
 		{
-			return Ok(_listingsService.ListingGroups.Values.Select(lg => BuildListingGroupSummaryDto(lg)));
+			PagedResult<ListingGroupSummary> pagedResult = await _listingsService.GetListingGroupsSummaryPage(pageSize, cursor, filter);
+
+			IEnumerable<ListingGroupSummaryDto> listingGroups = pagedResult.Items.Select(i => BuildListingGroupSummaryDto(i));
+
+			return Ok(listingGroups);
 		}
 	}
 }

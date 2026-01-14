@@ -17,7 +17,6 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositorie
 		private PagedResult<ListingGroup> GetGroupsPage(List<ListingGroup> orderedListingGroups, Cursor? cursor, int pageSize)
 		{
 			int start = 0;
-
 			if (cursor != null)
 			{
 				start = orderedListingGroups.FindIndex(g =>

@@ -1,44 +1,56 @@
-﻿using System.Text.Json;
+﻿using BoardGameMarket.MarketGateway.API.Modules.Common;
+using BoardGameMarket.MarketGateway.API.Modules.Listings.Filters;
 using BoardGameMarket.MarketGateway.API.Modules.Listings.Helpers;
 using BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.ListingGroups;
 using BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.Listings;
 using BoardGameMarket.MarketGateway.API.Modules.Users.Dtos;
+using System.Collections.Specialized;
+using System.Text;
+using System.Text.Json;
+using System.Web;
 
 namespace BoardGameMarket.MarketGateway.API.Modules.Listings.Services
 {
 	public class ListingsDataService
 	{
-		private Random _random = new Random();
-		public Dictionary<Guid, ListingGroupDetail> ListingGroups = new Dictionary<Guid, ListingGroupDetail>();
-		public Dictionary<Guid, ListingDetail> Listings = new Dictionary<Guid, ListingDetail>();
+		private readonly HttpClient _httpClient;
 
-		public Dictionary<Guid, UserSummaryDto> Users = new Dictionary<Guid, UserSummaryDto>();
-
-		public ListingsDataService(IWebHostEnvironment hostEnvironment, JsonSerializerOptions jsonOptions)
+		public ListingsDataService(ListingsHttpClient httpClient)
 		{
-			string json = File.ReadAllText(Path.Combine(hostEnvironment.ContentRootPath, "SeedData", "LISTING_GROUPS_MOCK_DATA.json"));
-
-			IEnumerable<ListingGroupDetail>? listingGroups = JsonSerializer.Deserialize<IEnumerable<ListingGroupDetail>>(json, jsonOptions);
-
-			if (listingGroups == null)
-				return;
-			foreach (ListingGroupDetail listingGroup in listingGroups)
-			{
-				BuildListingGroup(listingGroup);
-			}
+			_httpClient = httpClient.HttpClient;
 		}
 
-		private void BuildListingGroup(ListingGroupDetail listingGroup)
+		public async Task<PagedResult<ListingGroupSummary>> GetListingGroupsSummaryPage(int pageSize = 10, string? cursor = null, ListingGroupFilter? filter = null)
 		{
-			ListingGroups[listingGroup.Id] = listingGroup;
-			if (listingGroup.Listings == null)
+			NameValueCollection query = HttpUtility.ParseQueryString(string.Empty);
+
+			query["pageSize"] = pageSize.ToString();
+			if (cursor != null)
 			{
-				return;
+				query["cursor"] = cursor;
 			}
-			foreach (ListingInGroupDetail listing in listingGroup.Listings)
+			if (filter?.SellerUserId != null)
 			{
-				Listings[listing.Id] = listing.ToListingDetail(listingGroup.Id);
+				query["sellerUserId"] = filter.SellerUserId.ToString();
 			}
+
+
+			string uri = $"api/listingGroups?{query.ToString()}";
+
+			HttpResponseMessage response = await _httpClient.GetAsync(uri);
+
+			if (!response.IsSuccessStatusCode)
+			{
+				throw new InvalidOperationException();
+			}
+
+			PagedResult<ListingGroupSummary>? pagedResult = await response.Content.ReadFromJsonAsync<PagedResult<ListingGroupSummary>>();
+
+			if (pagedResult == null)
+			{
+				throw new InvalidDataException();
+			}
+			return pagedResult;
 		}
 	}
 }

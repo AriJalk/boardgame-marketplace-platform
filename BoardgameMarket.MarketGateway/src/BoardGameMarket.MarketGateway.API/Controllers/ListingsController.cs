@@ -21,22 +21,22 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 			_usersService = usersService;
 		}
 
-		[HttpGet("{listingId:guid}/queues")]
-		public IActionResult GetQueues(Guid listingId)
-		{
-			if (_queuesService.ListingQueueEntries.TryGetValue(listingId, out var queueEntries))
-			{
-				IEnumerable<ListingQueueEntryInfo> timeQueue = queueEntries.OrderBy(q => q.CreatedAt);
-				IEnumerable<ListingQueueEntryInfo> priorityQueue = queueEntries.Where(q => q.Priority != null).OrderBy(q => q.Priority);
+		//[HttpGet("{listingId:guid}/queues")]
+		//public IActionResult GetQueues(Guid listingId)
+		//{
+		//	if (_queuesService.ListingQueueEntries.TryGetValue(listingId, out var queueEntries))
+		//	{
+		//		IEnumerable<ListingQueueEntryInfo> timeQueue = queueEntries.OrderBy(q => q.CreatedAt);
+		//		IEnumerable<ListingQueueEntryInfo> priorityQueue = queueEntries.Where(q => q.Priority != null).OrderBy(q => q.Priority);
 
-				QueuePageResponseDto pageResponse = new QueuePageResponseDto(
-					QueueByTime: timeQueue.Select(q => BuildListingQueueEntryResponseDto(q)),
-					QueueByPriority: priorityQueue.Select(q => BuildListingQueueEntryResponseDto(q)));
-				return Ok(pageResponse);
-			}
+		//		QueuePageResponseDto pageResponse = new QueuePageResponseDto(
+		//			QueueByTime: timeQueue.Select(q => BuildListingQueueEntryResponseDto(q)),
+		//			QueueByPriority: priorityQueue.Select(q => BuildListingQueueEntryResponseDto(q)));
+		//		return Ok(pageResponse);
+		//	}
 
-			return NotFound();
-		}
+		//	return NotFound();
+		//}
 
 		private ListingQueueEntryResponseDto BuildListingQueueEntryResponseDto(ListingQueueEntryInfo listingQueueEntryInfo)
 		{
@@ -52,23 +52,23 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 			};
 		}
 
-		[HttpPost("{listingId:guid}/queues/{queueEntryId:guid}")]
-		public IActionResult UpdateQueueEntryPriority(Guid listingId, Guid queueEntryId, [FromBody] UpdateQueuePriorityRequest updateRequest)
-		{
-			bool isSuccessful;
-			if (updateRequest.RequestedIndex == -1)
-			{
-				isSuccessful = _queuesService.RemoveQueuePriority(listingId, queueEntryId);
-			}
-			else
-			{
-				isSuccessful = _queuesService.UpdateQueuePriority(listingId, queueEntryId, updateRequest.RequestedIndex);
-			}
-			if (!isSuccessful)
-			{
-				return BadRequest();
-			}
-			return NoContent();
-		}
+		//[HttpPost("{listingId:guid}/queues/{queueEntryId:guid}")]
+		//public IActionResult UpdateQueueEntryPriority(Guid listingId, Guid queueEntryId, [FromBody] UpdateQueuePriorityRequest updateRequest)
+		//{
+		//	bool isSuccessful;
+		//	if (updateRequest.RequestedIndex == -1)
+		//	{
+		//		isSuccessful = _queuesService.RemoveQueuePriority(listingId, queueEntryId);
+		//	}
+		//	else
+		//	{
+		//		isSuccessful = _queuesService.UpdateQueuePriority(listingId, queueEntryId, updateRequest.RequestedIndex);
+		//	}
+		//	if (!isSuccessful)
+		//	{
+		//		return BadRequest();
+		//	}
+		//	return NoContent();
+		//}
 	}
 }
