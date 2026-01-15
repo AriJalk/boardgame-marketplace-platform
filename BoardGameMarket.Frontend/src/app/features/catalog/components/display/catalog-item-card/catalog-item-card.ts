@@ -12,9 +12,7 @@ import { BggItem, CatalogItem, CustomItem } from '../../../models/catalog-item.m
 export class CatalogItemCard implements OnInit {
   @Input({ required: true }) catalogItem!: CatalogItem;
 
-  ngOnInit(): void {
-    
-  }
+  ngOnInit(): void {}
 
   // isBgg(item: CatalogItem): item is BggItem {
   //   return this.catalogItem?.type === 'bgg';

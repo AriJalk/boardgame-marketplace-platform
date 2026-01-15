@@ -1,9 +1,7 @@
 using System.Text.Json;
 using BoardGameMarket.MarketGateway.API.Configuration;
-using BoardGameMarket.MarketGateway.API.Modules.CatalogItems.Services;
-using BoardGameMarket.MarketGateway.API.Modules.Listings.Services;
-using BoardGameMarket.MarketGateway.API.Modules.Queues.Services;
-using BoardGameMarket.MarketGateway.API.Modules.Users.Services;
+using BoardGameMarket.MarketGateway.API.Application.CatalogItems.Services;
+using BoardGameMarket.MarketGateway.API.Application.Users.Services;
 using BoardGameMarket.MarketGateway.API.StartupExtensions;
 
 var builder = WebApplication.CreateBuilder(args);

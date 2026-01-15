@@ -5,6 +5,7 @@ import { ListingGroupSummary } from '../../../models/listing-group.model';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { ListingGroupSummaryCard } from '../listing-group-summary-card/listing-group-summary-card';
+import { PagedResult } from '../../../../../common/paged-result';
 
 @Component({
   selector: 'bgm-listing-groups-page',
@@ -16,12 +17,12 @@ export class ListingGroupsPage implements OnInit {
   hasNext: boolean = true;
   hasPrevious: boolean = false;
 
-  listingGroups$!: Observable<ListingGroupSummary[]>;
+  listingGroups$!: Observable<PagedResult<ListingGroupSummary>>;
 
   constructor(private listingGroupService: ListingGroupService) {}
 
   ngOnInit(): void {
-    this.listingGroups$ = this.listingGroupService.getListingGroupSummaries();
+    this.listingGroups$ = this.listingGroupService.getListingGroupSummariesPage();
   }
 
   previous_clicked() {

@@ -4,6 +4,7 @@ import { API_CONFIG_SERVICE } from '../../../core/api-config/api-config.service'
 import { ApiConfig } from '../../../core/api-config/api-config.interface';
 import { ListingGroupDetails, ListingGroupSummary } from '../models/listing-group.model';
 import { Observable } from 'rxjs';
+import { PagedResult } from '../../../common/paged-result';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,7 @@ export class ListingGroupService {
     );
   }
 
-  getListingGroupSummaries(): Observable<ListingGroupSummary[]> {
-    return this.httpClient.get<ListingGroupSummary[]>(`${this.apiConfig.apiEndpoint}/listingGroups`)
+  getListingGroupSummariesPage(): Observable<PagedResult<ListingGroupSummary>> {
+    return this.httpClient.get<PagedResult<ListingGroupSummary>>(`${this.apiConfig.apiEndpoint}/listingGroups?pageSize=50`)
   }
 }

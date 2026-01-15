@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using BoardGameMarket.MarketGateway.API.Modules.Queues.Services;
-using BoardGameMarket.MarketGateway.API.Modules.Users.Helpers;
-using BoardGameMarket.MarketGateway.API.Modules.Users.ServiceClients;
-using BoardGameMarket.MarketGateway.API.Modules.Users.Services;
-using BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.ListingQueues;
-using BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.ListingQueueEntries;
+using BoardGameMarket.MarketGateway.API.Application.Users.Helpers;
+using BoardGameMarket.MarketGateway.API.Application.Users.ServiceClients;
+using BoardGameMarket.MarketGateway.API.Application.Users.Services;
+using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Dtos;
+using BoardGameMarket.MarketGateway.API.Application.ListingQueues.ServiceClients;
+using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
 {
@@ -13,9 +13,9 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 	public class ListingsController : ControllerBase
 	{
 		QueuesDataService _queuesService;
-		UsersService _usersService;
+		UsersDataService _usersService;
 
-		public ListingsController(QueuesDataService queuesService, UsersService usersService)
+		public ListingsController(QueuesDataService queuesService, UsersDataService usersService)
 		{
 			_queuesService = queuesService;
 			_usersService = usersService;
@@ -38,9 +38,9 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		//	return NotFound();
 		//}
 
-		private ListingQueueEntryResponseDto BuildListingQueueEntryResponseDto(ListingQueueEntryInfo listingQueueEntryInfo)
+		private async Task<ListingQueueEntryResponseDto> BuildListingQueueEntryResponseDto(ListingQueueEntryInfo listingQueueEntryInfo)
 		{
-			UserInfo buyer = _usersService.Users[listingQueueEntryInfo.BuyerUserId];
+			UserInfo buyer = await _usersService.GetUser(listingQueueEntryInfo.BuyerUserId);
 			return new ListingQueueEntryResponseDto()
 			{
 				Id = listingQueueEntryInfo.Id,

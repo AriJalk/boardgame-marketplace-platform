@@ -9,6 +9,8 @@ services:
       LISTINGS_SERVICE_PORT: 8080
     networks:
     - microservices-network
+    ports:
+    - 8081:8081
 
   listings-microservice:
     image: arieljalkiver/boardgame-market:listings

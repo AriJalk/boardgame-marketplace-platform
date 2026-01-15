@@ -1,20 +1,14 @@
-﻿using BoardGameMarket.MarketGateway.API.Modules.CatalogItems.Dtos;
-using BoardGameMarket.MarketGateway.API.Modules.CatalogItems.Helpers;
-using BoardGameMarket.MarketGateway.API.Modules.CatalogItems.ServiceClients;
-using BoardGameMarket.MarketGateway.API.Modules.CatalogItems.Services;
-using BoardGameMarket.MarketGateway.API.Modules.Common;
-using BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.ListingGroups;
-using BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.ListingItems;
-using BoardGameMarket.MarketGateway.API.Modules.Listings.Dtos.Listings;
-using BoardGameMarket.MarketGateway.API.Modules.Listings.Filters;
-using BoardGameMarket.MarketGateway.API.Modules.Listings.Helpers;
-using BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.ListingGroups;
-using BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.ListingItems;
-using BoardGameMarket.MarketGateway.API.Modules.Listings.ServiceClients.Listings;
-using BoardGameMarket.MarketGateway.API.Modules.Listings.Services;
-using BoardGameMarket.MarketGateway.API.Modules.Users.Helpers;
-using BoardGameMarket.MarketGateway.API.Modules.Users.ServiceClients;
-using BoardGameMarket.MarketGateway.API.Modules.Users.Services;
+﻿using BoardGameMarket.MarketGateway.API.Application.CatalogItems.Services;
+using BoardGameMarket.MarketGateway.API.Application.Common;
+using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Assemblers;
+using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Dtos;
+using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Filters;
+using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Mappers;
+using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients;
+using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services;
+using BoardGameMarket.MarketGateway.API.Application.ListingGroups.UseCases;
+using BoardGameMarket.MarketGateway.API.Application.Listings.Services;
+using BoardGameMarket.MarketGateway.API.Application.Users.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
@@ -23,105 +17,42 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 	[ApiController]
 	public class ListingGroupsController : ControllerBase
 	{
-		ListingsDataService _listingsService;
-		CatalogService _catalogService;
-		UsersService _usersService;
+		private readonly ListingGroupsDataService _listingGroupsService;
+		private readonly GetListingGroupDetailUseCase _getListingGroupDetailUseCase;
+		private readonly GetListingGroupSummaryPageUseCase _getListingGroupSummaryPageUseCase;
 
-		public ListingGroupsController(ListingsDataService listingsService, CatalogService catalogService, UsersService usersService)
+		public ListingGroupsController(ListingGroupsDataService listingGroupsService, GetListingGroupDetailUseCase getListingGroupDetailUseCase, GetListingGroupSummaryPageUseCase getListingGroupSummaryPageUseCase)
 		{
-			_listingsService = listingsService;
-			_catalogService = catalogService;
-			_usersService = usersService;
+			_listingGroupsService = listingGroupsService;
+			_getListingGroupDetailUseCase = getListingGroupDetailUseCase;
+			_getListingGroupSummaryPageUseCase = getListingGroupSummaryPageUseCase;
 		}
 
-		[HttpGet("{id:guid}/detail")]
-		public IActionResult GetListingGroupDetail(Guid id)
+		[HttpGet("{listingGroupId:guid}/detail")]
+		public async Task<ActionResult<ListingGroupDetailDto>> GetListingGroupDetail(Guid listingGroupId)
 		{
-			return Ok();
+			ListingGroupDetailDto dto = await _getListingGroupDetailUseCase.Execute(listingGroupId);
+			return Ok(dto);
 		}
 
-		private ListingGroupDetailDto BuildListingGroupDetailDto(ListingGroupDetail listingGroup)
-		{
-			List<ListingDetailDto> listingDtos = new List<ListingDetailDto>();
-			foreach (ListingInGroupDetail listing in listingGroup.Listings)
-			{
-				listingDtos.Add(BuildListingDetailDto(listing));
-			}
-			UserInfo sellerUserInfo = _usersService.Users[listingGroup.SellerUserId];
-			return new ListingGroupDetailDto()
-			{
-				Id = listingGroup.Id,
-				Seller = sellerUserInfo.ToUserSummaryDto(),
-				PostingTime = listingGroup.CreatedAt,
-				Location = listingGroup.Location,
-				PickupOptions = listingGroup.PickupOptions,
-				Details = listingGroup.Details,
-				Listings = listingDtos,
-			};
-		}
 
-		private ListingDetailDto BuildListingDetailDto(ListingInGroupDetail listing)
-		{
-			List<ListingItemDto> listingItemDtos = new List<ListingItemDto>();
-			foreach (ListingItemInfo listingItemInfo in listing.ListingItems)
-			{
-				listingItemDtos.Add(BuildListingItemDto(listingItemInfo));
-			}
-			return new ListingDetailDto()
-			{
-				Id = listing.Id,
-				Title = listing.Title,
-				Price = listing.Price,
-				Details = listing.Details,
-				Items = listingItemDtos
-			};
-		}
 
-		private ListingItemDto BuildListingItemDto(ListingItemInfo listingItem)
-		{
-			CatalogItemDto catalogItemDto = new CatalogItemDto();
-			if (_catalogService.CatalogItems.TryGetValue(listingItem.CatalogId, out CatalogItemInfo? catalogItemInfo))
-			{
-				catalogItemDto = catalogItemInfo.ToCatalogItemDto();
-			}
-			return new ListingItemDto()
-			{
-				Id = listingItem.Id,
-				CatalogItem = catalogItemDto,
-				Details = listingItem.Details,
-			};
-		}
-
-		[HttpGet("{id:guid}/summary")]
-		public IActionResult GetListingGroupSummary(Guid id)
+		[HttpGet("{listingGroupId:guid}/summary")]
+		public IActionResult GetListingGroupSummary(Guid listingGroupId)
 		{
 			return Ok();
 		}
 
 
-		private ListingSummaryDto BuildListingSummaryDto(ListingInGroupSummary listing)
-		{
-			return new ListingSummaryDto(listing.Id, listing.Title, listing.Price, listing.Details);
-		}
 
-		private ListingGroupSummaryDto BuildListingGroupSummaryDto(ListingGroupSummary listingGroup)
-		{
-			UserInfo sellerUserInfo = new UserInfo(Guid.NewGuid(), Modules.Users.Enums.RoleType.User, "FIRST", "LAST", "DNUSER");
-
-			IEnumerable<ListingSummaryDto> listings = listingGroup.Listings.Select(l => BuildListingSummaryDto(l));
-
-			return new ListingGroupSummaryDto(listingGroup.Id, sellerUserInfo.ToUserSummaryDto(), listingGroup.CreatedAt, listingGroup.PickupOptions, listingGroup.Location, listingGroup.Details, listings);
-		}
 
 
 		[HttpGet()]
-		public async Task<ActionResult<IEnumerable<ListingGroupSummaryDto>>> Get([FromQuery] string? cursor = null, [FromQuery] int pageSize = 10, [FromQuery] ListingGroupFilter? filter = null)
+		public async Task<ActionResult<PagedResult<ListingGroupSummaryDto>>> GetSummaryPage([FromQuery] int pageSize = 10, [FromQuery] string? cursor = null, [FromQuery] ListingGroupFilter? filter = null)
 		{
-			PagedResult<ListingGroupSummary> pagedResult = await _listingsService.GetListingGroupsSummaryPage(pageSize, cursor, filter);
+			PagedResult<ListingGroupSummaryDto> page = await _getListingGroupSummaryPageUseCase.Execute(pageSize, cursor, filter);
 
-			IEnumerable<ListingGroupSummaryDto> listingGroups = pagedResult.Items.Select(i => BuildListingGroupSummaryDto(i));
-
-			return Ok(listingGroups);
+			return Ok(page);
 		}
 	}
 }
