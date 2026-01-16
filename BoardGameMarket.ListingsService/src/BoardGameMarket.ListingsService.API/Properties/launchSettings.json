@@ -5,7 +5,8 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "IN_MEMORY": "true"
+        "IN_MEMORY": "true",
+        "IS_SEEDING": "true"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5054"
