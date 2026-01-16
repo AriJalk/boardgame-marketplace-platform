@@ -13,9 +13,9 @@ namespace BoardGameMarket.MarketGateway.API.Application.Listings.Assemblers
 {
 	public class ListingDetailDtoAssembler
 	{
-		private readonly CatalogService _catalogService;
+		private readonly CatalogDataService _catalogService;
 
-		public ListingDetailDtoAssembler(CatalogService catalogService)
+		public ListingDetailDtoAssembler(CatalogDataService catalogService)
 		{
 			_catalogService = catalogService;
 		}
@@ -24,7 +24,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.Listings.Assemblers
 		{
 			IEnumerable<Task<ListingItemDto>> tasks = listingItems.Select(async item =>
 			{
-				CatalogItemInfo catalogItem = await _catalogService.GetCatalogItem(item.CatalogId);
+				CatalogItemInfo catalogItem = await _catalogService.GetCatalogItemByInternalId(item.CatalogId);
 				return item.ToListingItemDto(catalogItem.ToCatalogItemDto());
 			});
 

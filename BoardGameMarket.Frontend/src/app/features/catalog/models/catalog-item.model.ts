@@ -2,12 +2,12 @@ export interface CatalogItem {
   id: string;
   name: string;
   type: 'bgg' | 'custom';
-  bggLink?: string;
+  bggUrl?: string;
   imageUrl?: string;
 }
 
 export interface BggItem extends CatalogItem {
-  bggLink: string;
+  bggUrl: string;
   imageUrl?: string;
 }
 

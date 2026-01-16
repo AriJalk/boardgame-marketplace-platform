@@ -26,8 +26,8 @@ export class CatalogItemGetterService {
 
   searchItems(searchString: string): Observable<BggItem[]> {
     const dummy: BggItem[] = [
-      { id: '420498', bggLink: '', name: searchString, type: 'bgg' },
-      { id: '12536', bggLink: 'bggLink', name: searchString + ';DUMMY', type: 'bgg' },
+      { id: '420498', bggUrl: '', name: searchString, type: 'bgg' },
+      { id: '12536', bggUrl: 'bggUrl', name: searchString + ';DUMMY', type: 'bgg' },
     ];
     return of(dummy).pipe(delay(400));
   }

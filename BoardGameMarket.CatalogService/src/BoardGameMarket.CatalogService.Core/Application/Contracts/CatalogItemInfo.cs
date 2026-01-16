@@ -9,5 +9,5 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.CatalogService.Core.Application.Contracts
 {
-	public record CatalogItemInfo(Guid Id, CatalogItemType Type, string Name, string? bggUrl, string? imageUrl) { }
+	public record CatalogItemInfo(Guid Id, CatalogItemType Type, string Name, string? BggUrl, string? ImageUrl) { }
 }

@@ -1,7 +1,6 @@
 ﻿using BoardGameMarket.MarketGateway.API.Configuration;
 using BoardGameMarket.MarketGateway.API.Application.CatalogItems.Services;
 using BoardGameMarket.MarketGateway.API.Application.Users.Services;
-using System.Diagnostics;
 using System.Text.Json;
 using BoardGameMarket.MarketGateway.API.Application.Shared;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services;
@@ -25,8 +24,12 @@ namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 
 			services.AddSingleton(jsonOptions);
 
-			services.AddSingleton<CatalogService>();
+			// Users microservice
 			services.AddSingleton<UsersDataService>();
+
+			// Catalog microservice
+			services.AddScoped<CatalogDataService>();
+			services.AddScoped<CatalogHttpClient>();
 
 			// Listings microservice
 			services.AddScoped<ListingsDataService>();
@@ -45,12 +48,15 @@ namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 
 			services.ConfigureHttpJsonOptions(options => options.SerializerOptions.ConfigureJson());
 
+			// Http clients
 			services.AddHttpClient<ListingsHttpClient>(config =>
 			{
 				config.BaseAddress = new Uri($"http://{configuration["LISTINGS_SERVICE_HOST"]}:{configuration["LISTINGS_SERVICE_PORT"]}");
 			});
-
-
+			services.AddHttpClient<CatalogHttpClient>(config =>
+			{
+				config.BaseAddress = new Uri($"http://{configuration["CATALOG_SERVICE_HOST"]}:{configuration["CATALOG_SERVICE_PORT"]}");
+			});
 
 			return services;
 		}

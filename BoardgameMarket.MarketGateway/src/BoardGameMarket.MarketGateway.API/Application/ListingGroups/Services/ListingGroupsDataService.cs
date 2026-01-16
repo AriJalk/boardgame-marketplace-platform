@@ -50,7 +50,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
 		public async Task<ListingGroupDetail> GetListingGroupDetail(Guid listingGroupId)
 		{
-			string uri = $"api/listingGroups/{listingGroupId}";
+			string uri = $"api/ListingGroups/{listingGroupId}";
 
 			HttpResponseMessage response = await _httpClient.GetAsync(uri);
 

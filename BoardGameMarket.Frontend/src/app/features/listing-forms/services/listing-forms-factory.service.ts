@@ -17,7 +17,7 @@ export class ListingFormsFactory {
       id: this.fb.control(value?.id ?? null),
       name: this.fb.control(value?.name ?? ''),
       type: [value?.type ?? type ?? ''],
-      bggLink: [value?.bggLink ?? ''],
+      bggUrl: [value?.bggUrl ?? ''],
     });
     if (type === 'bgg') {
       formGroup.get('id')?.addValidators(Validators.required);

@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BoardGameMarket.MarketGateway.API.Application.CatalogItems.Dtos;
+using BoardGameMarket.MarketGateway.API.Application.CatalogItems.Mappers;
+using BoardGameMarket.MarketGateway.API.Application.CatalogItems.ServiceClients;
+using BoardGameMarket.MarketGateway.API.Application.CatalogItems.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
 {
@@ -6,15 +10,18 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 	[ApiController]
 	public class CatalogController : ControllerBase
 	{
-		[HttpGet("bgg/{id:int}")]
-		public async Task<IActionResult> GetBggItemId(int id)
+		private readonly CatalogDataService _catalogService;
+
+		public CatalogController(CatalogDataService catalogService)
 		{
-			await Task.Delay(1000);
-			if (id > 0)
-			{
-				return Ok(new { Id = Guid.NewGuid(), Name = "catalog item name" });
-			}
-			return NotFound();
+			_catalogService = catalogService;
+		}
+
+		[HttpGet("bgg/{bggId:int}")]
+		public async Task<ActionResult<CatalogItemDto>> GetBggItemByBggId(int bggId)
+		{
+			CatalogItemInfo catalogItemInfo = await _catalogService.GetBggCatalogItemByBggId(bggId);
+			return Ok(catalogItemInfo.ToCatalogItemDto());
 		}
 	}
 }

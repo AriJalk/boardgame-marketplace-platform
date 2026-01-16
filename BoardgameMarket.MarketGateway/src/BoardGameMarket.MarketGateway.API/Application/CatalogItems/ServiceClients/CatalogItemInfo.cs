@@ -2,7 +2,7 @@
 
 namespace BoardGameMarket.MarketGateway.API.Application.CatalogItems.ServiceClients
 {
-	public record CatalogItemInfo(Guid Id, string Name, CatalogItemType Type, int? BggId, string? ImageUrl)
+	public record CatalogItemInfo(Guid Id, string Name, CatalogItemType Type, string? BggUrl, string? ImageUrl)
 	{
 	}
 }

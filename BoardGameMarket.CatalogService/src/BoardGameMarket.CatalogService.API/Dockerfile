@@ -11,10 +11,12 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["BoardGameMarket.CatalogService.API/BoardGameMarket.CatalogService.API.csproj", "BoardGameMarket.CatalogService.API/"]
-RUN dotnet restore "./BoardGameMarket.CatalogService.API/BoardGameMarket.CatalogService.API.csproj"
+COPY ["src/BoardGameMarket.CatalogService.API/BoardGameMarket.CatalogService.API.csproj", "src/BoardGameMarket.CatalogService.API/"]
+COPY ["src/BoardGameMarket.CatalogService.Core/BoardGameMarket.CatalogService.Core.csproj", "src/BoardGameMarket.CatalogService.Core/"]
+COPY ["src/BoardGameMarket.CatalogService.Infrastructure/BoardGameMarket.CatalogService.Infrastructure.csproj", "src/BoardGameMarket.CatalogService.Infrastructure/"]
+RUN dotnet restore "./src/BoardGameMarket.CatalogService.API/BoardGameMarket.CatalogService.API.csproj"
 COPY . .
-WORKDIR "/src/BoardGameMarket.CatalogService.API"
+WORKDIR "/src/src/BoardGameMarket.CatalogService.API"
 RUN dotnet build "./BoardGameMarket.CatalogService.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage
