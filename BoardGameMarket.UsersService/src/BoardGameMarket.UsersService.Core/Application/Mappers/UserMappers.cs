@@ -1,26 +1,14 @@
 ﻿
-using BoardGameMarket.UsersService.Core.Application.DTOs;
+using BoardGameMarket.UsersService.Core.Application.Contracts;
 using BoardGameMarket.UsersService.Core.Domain.Entities;
 
 namespace BoardGameMarket.UsersService.Core.Application.Mappers
 {
 	public static class UserMappers
 	{
-		public static UserDto ToDto(this ApplicationUser user)
+		public static UserInfo ToUserInfo(this ApplicationUser user)
 		{
-			return new UserDto(user.UserId, user.Role, user.FirstName, user.LastName, user.DisplayName);
-		}
-
-		public static ApplicationUser ToApplicationUser(this UserDto userDto)
-		{
-			return new ApplicationUser()
-			{
-				UserId = userDto.UserId,
-				DisplayName = userDto.DisplayName,
-				FirstName = userDto.FirstName,
-				LastName = userDto.LastName,
-				Role = userDto.Role,
-			};
+			return new UserInfo(user.Id, user.Role, user.FirstName, user.LastName, user.DisplayName);
 		}
 	}
 }

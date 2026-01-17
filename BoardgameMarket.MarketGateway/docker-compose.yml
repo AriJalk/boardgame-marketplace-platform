@@ -9,6 +9,8 @@ services:
       LISTINGS_SERVICE_PORT: 8080
       CATALOG_SERVICE_HOST: catalog-microservice
       CATALOG_SERVICE_PORT: 8080
+      USERS_SERVICE_HOST: users-microservice
+      USERS_SERVICE_PORT: 8080
     networks:
     - microservices-network
     ports:
@@ -30,6 +32,16 @@ services:
     - microservices-network
     volumes:
     - ../BoardGameMarket.CatalogService/src/BoardGameMarket.CatalogService.API/SeedData:/app/SeedData:ro
+    environment:
+      IN_MEMORY: true
+      IS_SEEDING: true
+
+  users-microservice:
+    image: arieljalkiver/boardgame-market:users
+    networks:
+    - microservices-network
+    volumes:
+    - ../BoardGameMarket.UsersService/src/BoardGameMarket.UsersService.API/SeedData:/app/SeedData:ro
     environment:
       IN_MEMORY: true
       IS_SEEDING: true

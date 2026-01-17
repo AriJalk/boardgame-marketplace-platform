@@ -1,4 +1,5 @@
-﻿using BoardGameMarket.UsersService.Core.Domain.Entities;
+﻿using BoardGameMarket.UsersService.Core.Application.Commands;
+using BoardGameMarket.UsersService.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace BoardGameMarket.UsersService.Core.Application.ServiceContracts.Applica
 {
 	public interface IUserAdderService
 	{
-		Task<ApplicationUser?> AddUserAsync(ApplicationUser user);
+		Task<ApplicationUser> AddUserAsync(CreateUserCommand createUserCommand);
 	}
 }

@@ -2,6 +2,7 @@
 using BoardGameMarket.MarketGateway.API.Application.CatalogItems.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients;
 using Microsoft.Extensions.Hosting;
+using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -21,10 +22,12 @@ namespace BoardGameMarket.MarketGateway.API.Application.CatalogItems.Services
 
 			HttpResponseMessage response = await _httpClient.GetAsync(uri);
 
-			if (!response.IsSuccessStatusCode)
+			if (response.StatusCode == HttpStatusCode.NotFound)
 			{
 				throw new InvalidOperationException();
 			}
+
+			response.EnsureSuccessStatusCode();
 
 			CatalogItemInfo? catalogItemInfo = await response.Content.ReadFromJsonAsync<CatalogItemInfo>();
 

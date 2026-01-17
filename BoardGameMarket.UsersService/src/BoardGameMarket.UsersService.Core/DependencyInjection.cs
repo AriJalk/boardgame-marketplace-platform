@@ -15,9 +15,7 @@ namespace BoardGameMarket.UsersService.Core
 			services.AddScoped<IUserDeleterService, UserDeleterService>();
 			services.AddScoped<IUserAdderService, UserAdderService>();
 
-			services.AddScoped<DeleteUserUseCase>();
-			services.AddScoped<UpdateUserDetailsUseCase>();
-			services.AddScoped<UpdateUserRolesUseCase>();
+			services.AddScoped<CreateUserUseCase>();
 
 			services.AddSingleton<UserUpdateDomainService>();
 

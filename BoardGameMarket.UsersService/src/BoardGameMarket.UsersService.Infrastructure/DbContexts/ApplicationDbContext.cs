@@ -15,7 +15,7 @@ namespace BoardGameMarket.UsersService.Infrastructure.DbContexts
 		{
 			base.OnModelCreating(modelBuilder);
 
-			modelBuilder.Entity<ApplicationUser>().HasKey(u => u.UserId);
+			modelBuilder.Entity<ApplicationUser>().HasKey(u => u.Id);
 		}
 	}
 }

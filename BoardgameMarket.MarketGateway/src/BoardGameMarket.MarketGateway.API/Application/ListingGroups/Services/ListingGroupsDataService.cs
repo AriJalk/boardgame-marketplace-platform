@@ -3,6 +3,7 @@ using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Filters;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.Shared;
 using System.Collections.Specialized;
+using System.Net;
 using System.Web;
 
 namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
@@ -34,10 +35,12 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
 			HttpResponseMessage response = await _httpClient.GetAsync(uri);
 
-			if (!response.IsSuccessStatusCode)
+			if (response.StatusCode == HttpStatusCode.NotFound)
 			{
-				throw new InvalidOperationException();
+				throw new KeyNotFoundException();
 			}
+
+			response.EnsureSuccessStatusCode();
 
 			PagedResult<ListingGroupSummary>? pagedResult = await response.Content.ReadFromJsonAsync<PagedResult<ListingGroupSummary>>();
 
@@ -54,10 +57,12 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
 			HttpResponseMessage response = await _httpClient.GetAsync(uri);
 
-			if (!response.IsSuccessStatusCode)
+			if (response.StatusCode == HttpStatusCode.NotFound)
 			{
-				throw new InvalidOperationException();
+				throw new KeyNotFoundException();
 			}
+
+			response.EnsureSuccessStatusCode();
 
 			ListingGroupDetail? listingGroup = await response.Content.ReadFromJsonAsync<ListingGroupDetail>();
 

@@ -25,7 +25,7 @@ namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 			services.AddSingleton(jsonOptions);
 
 			// Users microservice
-			services.AddSingleton<UsersDataService>();
+			services.AddScoped<UsersDataService>();
 
 			// Catalog microservice
 			services.AddScoped<CatalogDataService>();
@@ -56,6 +56,10 @@ namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 			services.AddHttpClient<CatalogHttpClient>(config =>
 			{
 				config.BaseAddress = new Uri($"http://{configuration["CATALOG_SERVICE_HOST"]}:{configuration["CATALOG_SERVICE_PORT"]}");
+			});
+			services.AddHttpClient<UsersHttpClient>(config =>
+			{
+				config.BaseAddress = new Uri($"http://{configuration["USERS_SERVICE_HOST"]}:{configuration["USERS_SERVICE_PORT"]}");
 			});
 
 			return services;

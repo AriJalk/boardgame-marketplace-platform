@@ -6,8 +6,7 @@ namespace BoardGameMarket.UsersMicroservice.Core.Domain.RepositoryContracts
 	{
 		Task<ApplicationUser?> GetUserByIdAsync(Guid userId);
 		Task<IEnumerable<ApplicationUser>> GetUsersByIdsAsync(IEnumerable<Guid> userIds);
-		Task<ApplicationUser?> AddUserAsync(ApplicationUser user);
-		Task<bool> DeleteUserAsync(Guid userId);
-		Task<ApplicationUser?> UpdateUserAsync(ApplicationUser user);
+		Task AddUserAsync(ApplicationUser user);
+		void DeleteUserAsync(ApplicationUser user);
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using BoardGameMarket.UsersMicroservice.Core.Domain.RepositoryContracts;
 using BoardGameMarket.UsersService.Core.Domain.RepositoryContracts;
 using BoardGameMarket.UsersService.Infrastructure.DbContexts;
+using BoardGameMarket.UsersService.Infrastructure.InMemorySeeding;
 using BoardGameMarket.UsersService.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -34,7 +35,15 @@ namespace BoardGameMarket.UsersService.Infrastructure
 			});
 
 			services.AddScoped<IUserRepository, UserRepository>();
-			services.AddScoped<IUnitOfWork, UnitOfWork>();
+			services.AddScoped<IUnitOfWork, InMemoryUnitOfWork>();
+
+			return services;
+		}
+
+		public static IServiceCollection AddInMemorySeeding(this IServiceCollection services)
+		{
+			services.AddTransient<SeedRunner>();
+			services.AddTransient<ISeeder, UsersSeeder>();
 
 			return services;
 		}

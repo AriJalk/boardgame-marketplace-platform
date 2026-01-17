@@ -7,16 +7,16 @@ namespace BoardGameMarket.UsersService.Core.Application.Services.ApplicationUser
 {
 	public class UserGetterService : IUserGetterService
 	{
-		private readonly IUserRepository _usersRepository;
+		private readonly IUserRepository _repository;
 
 		public UserGetterService(IUserRepository usersRepository, ILogger<UserGetterService> logger)
 		{
-			_usersRepository = usersRepository;
+			_repository = usersRepository;
 		}
 
 		public async Task<ApplicationUser?> GetUserByUserIdAsync(Guid userId)
 		{
-			return await _usersRepository.GetUserByIdAsync(userId);
+			return await _repository.GetUserByIdAsync(userId);
 		}
 	}
 }

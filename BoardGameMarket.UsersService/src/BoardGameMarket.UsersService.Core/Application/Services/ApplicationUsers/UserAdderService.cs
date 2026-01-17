@@ -1,7 +1,9 @@
 ﻿using BoardGameMarket.UsersMicroservice.Core.Domain.RepositoryContracts;
+using BoardGameMarket.UsersService.Core.Application.Commands;
 using BoardGameMarket.UsersService.Core.Application.ServiceContracts.ApplicationUsers;
 using BoardGameMarket.UsersService.Core.Domain.Entities;
 using BoardGameMarket.UsersService.Core.Domain.Enums;
+using BoardGameMarket.UsersService.Core.Domain.RepositoryContracts;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -13,29 +15,30 @@ namespace BoardGameMarket.UsersService.Core.Application.Services.ApplicationUser
 {
 	public class UserAdderService : IUserAdderService
 	{
-		private readonly Guid _moderatorId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa6");
-		private readonly Guid _adminId = Guid.Parse("3fa85f64-5717-4562-b3fc-2c963f66afa7");
-		private ILogger<UserAdderService> _logger;
-		private readonly IUserRepository _userRepository;
+		private readonly IUserRepository _repository;
+		private readonly IUnitOfWork _unitOfWork;
 
-		public UserAdderService(ILogger<UserAdderService> logger, IUserRepository userRepository)
+		public UserAdderService(IUserRepository userRepository, IUnitOfWork unitOfWork)
 		{
-			_logger = logger;
-			_userRepository = userRepository;
+			_repository = userRepository;
+			_unitOfWork = unitOfWork;
 		}
 
-		public async Task<ApplicationUser?> AddUserAsync(ApplicationUser user)
+		public async Task<ApplicationUser> AddUserAsync(CreateUserCommand createUserCommand)
 		{
-			if (user.UserId == _adminId)
+			ApplicationUser user = new ApplicationUser()
 			{
-				user.Role = RoleType.Admin;
-			}
-			else if (user.UserId == _moderatorId)
-			{
-				user.Role = RoleType.Moderator;
-			}
+				Id = createUserCommand.UserId,
+				Role = createUserCommand.Role,
+				FirstName = createUserCommand.FirstName,
+				LastName = createUserCommand.LastName,
+				DisplayName = createUserCommand.DisplayName,
+			};
 
-			return await _userRepository.AddUserAsync(user);
+			await _repository.AddUserAsync(user);
+			await _unitOfWork.SaveChangesAsync();
+			return user;
+
 		}
 	}
 }

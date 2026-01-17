@@ -4,6 +4,6 @@ namespace BoardGameMarket.UsersService.Core.Application.ServiceContracts.Applica
 {
 	public interface IUserDeleterService
 	{
-		Task<bool> DeleteUserAsync(Guid targetUserId);
+		Task DeleteUserAsync(Guid targetUserId);
 	}
 }

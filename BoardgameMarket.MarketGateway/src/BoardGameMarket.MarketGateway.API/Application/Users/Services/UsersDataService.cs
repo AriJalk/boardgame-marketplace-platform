@@ -1,30 +1,40 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.Users.ServiceClients;
+using System.Net;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace BoardGameMarket.MarketGateway.API.Application.Users.Services
 {
 	public class UsersDataService
 	{
-		private Dictionary<Guid, UserInfo> _users = new Dictionary<Guid, UserInfo>();
-		public UsersDataService(IWebHostEnvironment hostEnvironment, JsonSerializerOptions jsonOptions)
-		{
-			string json = File.ReadAllText(Path.Combine(hostEnvironment.ContentRootPath, "SeedData", "USERS_MOCK_DATA.json"));
+		private readonly HttpClient _httpClient;
 
-			IEnumerable<UserInfo>? users = JsonSerializer.Deserialize<IEnumerable<UserInfo>>(json, jsonOptions);
-			if (users == null)
-			{
-				return;
-			}
-			foreach (UserInfo user in users)
-			{
-				_users[user.Id] = user;
-			}
+		public UsersDataService(UsersHttpClient httpClient)
+		{
+			_httpClient = httpClient.HttpClient;
 		}
 
 		public async Task<UserInfo> GetUser(Guid userId)
 		{
-			return _users[userId];
+			string uri = $"api/Users/{userId}";
+
+			HttpResponseMessage response = await _httpClient.GetAsync(uri);
+
+			if (response.StatusCode == HttpStatusCode.NotFound)
+			{
+				throw new KeyNotFoundException();
+			}
+
+			response.EnsureSuccessStatusCode();
+
+			UserInfo? userInfo = await response.Content.ReadFromJsonAsync<UserInfo>();
+
+			if (userInfo == null)
+			{
+				throw new InvalidDataException();
+			}
+			return userInfo;
 		}
 	}
 }
