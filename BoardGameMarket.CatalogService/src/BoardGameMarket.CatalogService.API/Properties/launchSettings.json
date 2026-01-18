@@ -6,7 +6,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "IN_MEMORY": "true",
-        "IS_SEEDING": "true"
+        "IS_SEEDING": "true",
+        "SEED_ROOT": "../../../SeedData"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5127"

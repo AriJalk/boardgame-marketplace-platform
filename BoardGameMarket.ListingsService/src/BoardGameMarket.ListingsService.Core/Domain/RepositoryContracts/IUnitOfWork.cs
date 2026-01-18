@@ -8,7 +8,7 @@ namespace BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts
 {
 	public interface IUnitOfWork
 	{
-		Task<int> SaveChangesAsync();
+		//Task<int> SaveChangesAsync();
 		Task BeginTransactionAsync();
 		Task CommitTransactionAsync();
 		Task RollBackTransactionAsync();

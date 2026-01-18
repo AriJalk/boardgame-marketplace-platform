@@ -2,7 +2,7 @@
 {
 	public class UserSummaryDto
 	{
-		public Guid Id { get; set; }
+		public Guid UserId { get; set; }
 		public string? DisplayName { get; set; }
 	}
 }

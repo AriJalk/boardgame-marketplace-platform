@@ -1,14 +1,8 @@
-﻿using BoardGameMarket.MarketGateway.API.Application.CatalogItems.Services;
-using BoardGameMarket.MarketGateway.API.Application.Common;
-using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Assemblers;
+﻿using BoardGameMarket.MarketGateway.API.Application.Common;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Dtos;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Filters;
-using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Mappers;
-using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.UseCases;
-using BoardGameMarket.MarketGateway.API.Application.Listings.Services;
-using BoardGameMarket.MarketGateway.API.Application.Users.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers

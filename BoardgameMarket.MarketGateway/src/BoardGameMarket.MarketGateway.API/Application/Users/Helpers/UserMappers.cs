@@ -9,7 +9,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.Users.Helpers
 		{
 			return new UserSummaryDto()
 			{
-				Id = userInfo.Id,
+				UserId = userInfo.UserId,
 				DisplayName = userInfo.DisplayName,
 			};
 		}

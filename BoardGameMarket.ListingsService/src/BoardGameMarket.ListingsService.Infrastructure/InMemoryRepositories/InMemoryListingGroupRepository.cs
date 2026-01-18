@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositories
+namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 {
 	internal class InMemoryListingGroupRepository : IListingGroupRepository
 	{

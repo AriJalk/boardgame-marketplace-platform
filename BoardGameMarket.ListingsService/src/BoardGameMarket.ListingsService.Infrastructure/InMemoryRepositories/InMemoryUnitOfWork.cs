@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositories
+namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 {
 	internal class InMemoryUnitOfWork : IUnitOfWork
 	{
@@ -24,9 +24,9 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositorie
 			return Task.CompletedTask;
 		}
 
-		public Task<int> SaveChangesAsync()
-		{
-			return Task.FromResult(1);
-		}
+		//public Task<int> SaveChangesAsync()
+		//{
+		//	return Task.FromResult(1);
+		//}
 	}
 }

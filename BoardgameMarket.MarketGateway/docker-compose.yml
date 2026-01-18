@@ -21,30 +21,33 @@ services:
     networks:
     - microservices-network
     volumes:
-    - ../BoardGameMarket.ListingsService/src/BoardGameMarket.ListingsService.API/SeedData:/app/SeedData:ro
+    - ../SeedData:/app/SeedData:ro
     environment:
       IN_MEMORY: true
       IS_SEEDING: true
+      SEED_ROOT: /app/SeedData
 
   catalog-microservice:
     image: arieljalkiver/boardgame-market:catalog
     networks:
     - microservices-network
     volumes:
-    - ../BoardGameMarket.CatalogService/src/BoardGameMarket.CatalogService.API/SeedData:/app/SeedData:ro
+    - ../SeedData:/app/SeedData:ro
     environment:
       IN_MEMORY: true
       IS_SEEDING: true
+      SEED_ROOT: /app/SeedData
 
   users-microservice:
     image: arieljalkiver/boardgame-market:users
     networks:
     - microservices-network
     volumes:
-    - ../BoardGameMarket.UsersService/src/BoardGameMarket.UsersService.API/SeedData:/app/SeedData:ro
+    - ../SeedData:/app/SeedData:ro
     environment:
       IN_MEMORY: true
       IS_SEEDING: true
+      SEED_ROOT: /app/SeedData
 
 networks:
   microservices-network:

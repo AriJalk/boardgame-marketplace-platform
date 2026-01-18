@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositories
+namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 {
 	internal class InMemoryListingRepository : IListingRepository
 	{
@@ -46,6 +46,11 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositorie
 		public Task<Listing?> GetListingByIdAsync(Guid listingId)
 		{
 			return Task.FromResult(_listings.FirstOrDefault(l => l.Id == listingId));
+		}
+
+		public async Task<IEnumerable<Listing>> GetListings()
+		{
+			return _listings;
 		}
 
 		public Task<IEnumerable<Listing>> GetListingsByGroupIdAsync(Guid groupId)

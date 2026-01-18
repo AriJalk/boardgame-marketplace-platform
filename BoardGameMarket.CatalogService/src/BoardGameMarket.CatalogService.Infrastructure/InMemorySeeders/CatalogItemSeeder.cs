@@ -20,7 +20,7 @@ namespace BoardGameMarket.CatalogService.Infrastructure.InMemorySeeders
 
 		public async Task SeedAsync(string seedPath)
 		{
-			string json = File.ReadAllText(Path.Combine(seedPath, "CATALOG_ITEMS_MOCK_DATA.json"));
+			string json = File.ReadAllText(Path.Combine(seedPath, "Catalog", "CATALOG_ITEMS_MOCK_DATA.json"));
 
 			IEnumerable<CatalogItem>? catalogItems = JsonSerializer.Deserialize<IEnumerable<CatalogItem>>(json, _jsonOptions);
 

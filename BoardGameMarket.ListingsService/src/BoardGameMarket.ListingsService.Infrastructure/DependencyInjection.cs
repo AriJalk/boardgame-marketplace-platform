@@ -1,16 +1,12 @@
 ﻿using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
-using BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositories;
-using BoardGameMarket.ListingsService.Infrastructure.InMemoryTestRepositories.Seeders;
+using BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories;
+using BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories.Seeders;
 using BoardGameMarket.ListingsService.Infrastructure.Repositories;
+using BoardGameMarket.ListingsService.Infrastructure.Repositories.DbContext;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Infrastructure
 {
@@ -23,6 +19,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure
 			services.AddScoped<IListingItemRepository, ListingItemRepository>();
 			services.AddScoped<IListingQueueEntryRepository, ListingQueueEntryRepository>();
 			services.AddScoped<IListingSoldRepository, ListingSoldRepository>();
+			services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 			return services;
 		}
@@ -41,10 +38,16 @@ namespace BoardGameMarket.ListingsService.Infrastructure
 
 		public static IServiceCollection AddInMemorySeeding(this IServiceCollection services)
 		{
+			JsonSerializerOptions jsonOptions = new JsonSerializerOptions();
+			jsonOptions.PropertyNameCaseInsensitive = true;
+			jsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+			services.AddSingleton(jsonOptions);
+
 			services.AddTransient<InMemorySeedRunner>();
 			services.AddTransient<ISeeder, ListingGroupsSeeder>();
 			services.AddTransient<ISeeder, ListingsSeeder>();
 			services.AddTransient<ISeeder, ListingItemsSeeder>();
+			services.AddTransient<QueueSeeder>();
 
 			return services;
 		}

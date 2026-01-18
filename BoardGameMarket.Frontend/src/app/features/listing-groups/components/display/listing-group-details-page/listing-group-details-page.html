@@ -1,5 +1,5 @@
 @if (listingGroup$ | async; as listingGroup) {
-  @if (user?.id === listingGroup.seller.id) {
+  @if (user?.userId === listingGroup.seller.userId) {
     <bgm-edit-listing-group [listingId]="listingGroup.id"></bgm-edit-listing-group>
   } @else {
     <bgm-listing-group-details-card
@@ -9,7 +9,7 @@
   }
 
   <ng-template #subscriptionPanelTemplate let-listing>
-    @if (user?.id) {
+    @if (user?.userId) {
       <bgm-queue-buyer-panel
         [listingId]="listing.id"
         [isSubscribed]="false"

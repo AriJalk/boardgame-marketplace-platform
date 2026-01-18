@@ -1,10 +1,10 @@
 export interface UserSummary {
-    id: string;
+    userId: string;
     displayName: string;
 }
 
 export interface UserLogin {
-    id: string;
+    userId: string;
     displayName: string;
     role: RoleType;
     token: string;

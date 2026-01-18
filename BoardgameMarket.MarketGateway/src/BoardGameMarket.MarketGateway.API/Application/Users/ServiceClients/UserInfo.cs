@@ -2,5 +2,5 @@
 
 namespace BoardGameMarket.MarketGateway.API.Application.Users.ServiceClients
 {
-	public record UserInfo(Guid Id, RoleType Role, string? FirstName, string? LastName, string? DisplayName) { };
+	public record UserInfo(Guid UserId, RoleType Role, string? FirstName, string? LastName, string? DisplayName) { };
 }

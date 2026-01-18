@@ -44,10 +44,12 @@ namespace BoardGameMarket.MarketGateway.API.Application.CatalogItems.Services
 
 			HttpResponseMessage response = await _httpClient.GetAsync(uri);
 
-			if (!response.IsSuccessStatusCode)
+			if (response.StatusCode == HttpStatusCode.NotFound)
 			{
-				throw new InvalidOperationException();
+				throw new KeyNotFoundException();
 			}
+
+			response.EnsureSuccessStatusCode();
 
 			CatalogItemInfo? catalogItemInfo = await response.Content.ReadFromJsonAsync<CatalogItemInfo>();
 

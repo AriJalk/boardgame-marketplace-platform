@@ -18,7 +18,7 @@ export class QueueService {
 
   getQueues(listingId: string): Observable<QueuePageResponse> {
     const headers = new HttpHeaders();
-    headers.set('jwtToken', this.authService.loggedInUser?.id ?? '');
+    headers.set('jwtToken', this.authService.loggedInUser?.userId ?? '');
     return this.httpClient.get<QueuePageResponse>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queues`,
       { headers: headers },

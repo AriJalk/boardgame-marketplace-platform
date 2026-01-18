@@ -41,7 +41,7 @@ if (inMemory && isSeeding)
 	using (var scope = app.Services.CreateScope())
 	{
 		InMemorySeedRunner seeder = scope.ServiceProvider.GetRequiredService<InMemorySeedRunner>();
-		string seedPath = Path.Combine(builder.Environment.ContentRootPath, "SeedData");
+		string seedPath = builder.Configuration["SEED_ROOT"] ?? throw new InvalidOperationException("Seed root not configured");
 		await seeder.SeedAsync(seedPath);
 	}
 }
