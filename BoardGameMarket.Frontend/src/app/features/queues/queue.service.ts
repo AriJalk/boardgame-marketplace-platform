@@ -23,6 +23,8 @@ export class QueueService {
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue`,
       { headers: headers },
     );
+
+    // response.subscribe(data => console.log(data));
     return response;
   }
 
