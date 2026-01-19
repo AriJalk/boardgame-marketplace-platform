@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { Inject, Injectable } from '@angular/core';
-import { QueuePageResponse } from './models/quque-entry.model';
+import { QueuePageResponse as ListingQueueResponse } from './models/quque-entry.model';
 import { API_CONFIG_SERVICE } from '../../core/api-config/api-config.service';
 import { ApiConfig } from '../../core/api-config/api-config.interface';
 import { AuthStubService } from '../../core/auth/auth-stub.service';
@@ -16,13 +16,14 @@ export class QueueService {
     @Inject(API_CONFIG_SERVICE) private apiConfig: ApiConfig,
   ) {}
 
-  getQueues(listingId: string): Observable<QueuePageResponse> {
+  getQueues(listingId: string): Observable<ListingQueueResponse> {
     const headers = new HttpHeaders();
     headers.set('jwtToken', this.authService.loggedInUser?.userId ?? '');
-    return this.httpClient.get<QueuePageResponse>(
-      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queues`,
+    const response = this.httpClient.get<ListingQueueResponse>(
+      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue`,
       { headers: headers },
     );
+    return response;
   }
 
   /**
@@ -38,7 +39,7 @@ export class QueueService {
     requestedIndex: number,
   ): Observable<void> {
     return this.httpClient.post<void>(
-      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queues/${queueEntryId}`,
+      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/${queueEntryId}`,
       { requestedIndex },
     );
   }

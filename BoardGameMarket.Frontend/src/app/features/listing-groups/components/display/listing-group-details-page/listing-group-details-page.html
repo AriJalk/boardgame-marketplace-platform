@@ -2,18 +2,6 @@
   @if (user?.userId === listingGroup.seller.userId) {
     <bgm-edit-listing-group [listingId]="listingGroup.id"></bgm-edit-listing-group>
   } @else {
-    <bgm-listing-group-details-card
-      [listingGroup]="listingGroup"
-      [listingExtraTemplate]="subscriptionPanelTemplate"
-    ></bgm-listing-group-details-card>
+    <bgm-listing-group-details-card [listingGroup]="listingGroup"></bgm-listing-group-details-card>
   }
-
-  <ng-template #subscriptionPanelTemplate let-listing>
-    @if (user?.userId) {
-      <bgm-queue-buyer-panel
-        [listingId]="listing.id"
-        [isSubscribed]="false"
-      ></bgm-queue-buyer-panel>
-    }
-  </ng-template>
 }

@@ -13,9 +13,7 @@
       >
         @for (item of queues.queueByTime; track item.id) {
           <div cdkDrag [cdkDragData]="item">
-            <ng-container
-              *ngTemplateOutlet="queuePanelTemplate; context: { $implicit: item }"
-            ></ng-container>
+            <bgm-queue-entry-card [queueEntry]="item"></bgm-queue-entry-card>
           </div>
         }
       </div>
@@ -31,31 +29,10 @@
       >
         @for (item of queues.queueByPriority; track item.id) {
           <div cdkDrag [cdkDragData]="item">
-            <ng-container
-              *ngTemplateOutlet="queuePanelTemplate; context: { $implicit: item }"
-            ></ng-container>
+            <bgm-queue-entry-card [queueEntry]="item"></bgm-queue-entry-card>
           </div>
         }
       </div>
     </div>
   </div>
 }
-
-<ng-template #queuePanelTemplate let-item>
-  @if (toQueueEntry(item); as queueEntry) {
-    @if (item.priority !== null) {
-      <mat-card class="example-box" style="color: salmon">
-        <h4>{{ queueEntry.createdAt | date: 'short' }}</h4>
-        <h4>{{ queueEntry.status }}</h4>
-        <h4>{{ queueEntry.buyer.displayName }}</h4>
-        <h4>:: {{ queueEntry.priority }}</h4>
-      </mat-card>
-    } @else {
-      <mat-card class="example-box">
-        <h4>{{ queueEntry.createdAt | date: 'short' }}</h4>
-        <h4>{{ queueEntry.status }}</h4>
-        <h4>{{ queueEntry.buyer.displayName }}</h4>
-      </mat-card>
-    }
-  }
-</ng-template>

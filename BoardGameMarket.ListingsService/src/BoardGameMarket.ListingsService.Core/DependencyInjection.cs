@@ -10,6 +10,7 @@ using BoardGameMarket.ListingsService.Core.Application.Services.ListingItems;
 using BoardGameMarket.ListingsService.Core.Application.Services.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.Services.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Services.ListingsSold;
+using BoardGameMarket.ListingsService.Core.Application.UseCases;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BoardGameMarket.ListingsService.Core
@@ -55,6 +56,9 @@ namespace BoardGameMarket.ListingsService.Core
 
 			// Context
 			services.AddScoped<ICurrentUserContext, CurrentUserContext>();
+
+			//Use Cases
+			services.AddScoped<GetQueueUseCase>();
 
 			return services;
 		}

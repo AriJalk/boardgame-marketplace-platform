@@ -1,15 +1,14 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { CdkDragDrop, CdkDropList, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { castTo } from '../../../../../core/utilities';
-import { AsyncPipe, CommonModule, DatePipe, NgTemplateOutlet } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { QueueService } from '../../../queue.service';
-import { QueueEntry, QueuePageResponse } from '../../../models/quque-entry.model';
-import { Observable, startWith, Subject, switchMap } from 'rxjs';
+import { startWith, Subject, switchMap } from 'rxjs';
+import { QueueEntryCard } from '../queue-entry-card/queue-entry-card';
 
 @Component({
   selector: 'bgm-queue-seller-panel',
-  imports: [DatePipe, DragDropModule, NgTemplateOutlet, MatCardModule, AsyncPipe, CommonModule],
+  imports: [DragDropModule, MatCardModule, AsyncPipe, CommonModule, QueueEntryCard],
   templateUrl: './queue-seller-panel.html',
   styleUrl: './queue-seller-panel.css',
 })
@@ -32,13 +31,9 @@ export class QueueSellerPanel {
     this.reload$.next();
   }
 
-  toQueueEntry(item: any): QueueEntry {
-    return castTo(item);
-  }
-
   priorityChangeRequest<QueueEntry>($event: CdkDragDrop<QueueEntry>) {
     let requestedIndex = $event.currentIndex;
-    const data = this.toQueueEntry($event.item.data);
+    const data = $event.item.data;
     // Removal
     if ($event.container !== this.priorityContainer) {
       if ($event.previousContainer === this.priorityContainer) {
@@ -51,7 +46,6 @@ export class QueueSellerPanel {
     ) {
       return;
     }
-
     this.queueService.updatePriority(this.listingsId, data.id, requestedIndex).subscribe({
       next: () => {
         this.reload$.next();

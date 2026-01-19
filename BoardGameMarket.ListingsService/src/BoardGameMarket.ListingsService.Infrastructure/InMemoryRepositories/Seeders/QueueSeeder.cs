@@ -23,7 +23,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories.Se
 
 		private struct UserInfo
 		{
-			public Guid Id;
+			public Guid Id { get; set; }
 		}
 
 		public QueueSeeder(IListingGroupRepository listingGroupRepository, IListingRepository listingRepository, IListingQueueEntryRepository listingQueueEntryRepository, JsonSerializerOptions jsonOptions, IEnumerable<Guid> userIds)

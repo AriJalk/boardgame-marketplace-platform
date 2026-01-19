@@ -2,18 +2,18 @@
   <h3>Seller: {{ listingGroup.seller.displayName }}</h3>
   <h3>Location: {{ listingGroup.location }}</h3>
   <h3>Pickup Options: {{ listingGroup.pickupOptions }}</h3>
-  <H3>Details: {{listingGroup.details}}</H3>
+  <H3>Details: {{ listingGroup.details }}</H3>
 
   <div class="grid">
     @for (listing of listingGroup.listings; track $index) {
       <mat-card class="margin-5">
-        <bgm-listing-details-card
-          class="padding-2"
-          [listing]="listing"
-        ></bgm-listing-details-card>
-        <ng-container
-          *ngTemplateOutlet="listingExtraTemplate; context: { $implicit: listing }"
-        ></ng-container>
+        <bgm-listing-details-card class="padding-2" [listing]="listing"></bgm-listing-details-card>
+        @if (isLoggedIn) {
+          <bgm-queue-buyer-panel
+            [listingId]="listing.id"
+            [isSubscribed]="false"
+          ></bgm-queue-buyer-panel>
+        }
       </mat-card>
     }
   </div>

@@ -1,26 +1,18 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ListingGroupDetails } from '../../../models/listing-group.model';
 import { ActivatedRoute } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { ListingGroupService } from '../../../services/listing-group.service';
 import { ListingGroupDetailsCard } from '../listing-group-details-card/listing-group-details-card';
-import { QueueBuyerPanel } from '../../../../queues/components/queue-buyer/queue-buyer-panel/queue-buyer-panel';
 import { AuthStubService } from '../../../../../core/auth/auth-stub.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { UserSummary } from '../../../../../core/users/models/user.model';
-import { QueueSellerPanel } from '../../../../queues/components/queue-seller/queue-seller-panel/queue-seller-panel';
 import { EditListingGroupPage } from '../../edit-listing-group-page/edit-listing-group-page';
 
 @Component({
   selector: 'bgm-listing-group-details-page',
-  imports: [
-    MatCardModule,
-    ListingGroupDetailsCard,
-    QueueBuyerPanel,
-    AsyncPipe,
-    EditListingGroupPage,
-  ],
+  imports: [MatCardModule, ListingGroupDetailsCard, AsyncPipe, EditListingGroupPage],
   templateUrl: './listing-group-details-page.html',
   styleUrl: './listing-group-details-page.css',
 })

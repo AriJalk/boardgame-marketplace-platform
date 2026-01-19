@@ -36,8 +36,4 @@
 		
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Application\UseCases\" />
-	</ItemGroup>
-
 </Project>
