@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ListingFormsFactory } from '../services/listing-forms-factory.service';
 import { ListingForm } from '../listing-form/listing-form';
+import { CdkAriaLive } from "../../../../../node_modules/@angular/cdk/types/_a11y-module-chunk";
 
 @Component({
   selector: 'bgm-listing-group-form',
@@ -16,7 +17,7 @@ import { ListingForm } from '../listing-form/listing-form';
     MatInputModule,
     MatCardModule,
     ListingForm,
-  ],
+],
 
   templateUrl: './listing-group-form.html',
   styleUrl: './listing-group-form.css',

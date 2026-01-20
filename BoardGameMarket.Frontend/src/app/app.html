@@ -1,17 +1,17 @@
 <div class="full-height-layout">
-    <mat-toolbar>
-        <button matMiniFab (click)="drawer.toggle()">
-            <mat-icon>menu</mat-icon>
-        </button>
-    </mat-toolbar>
-    <mat-drawer-container class="flex-1">
-        <mat-drawer #drawer mode="side" style="width: 10%; min-width: 200px;">
-            <div class="margin-10">
-                <bgm-side-nav [drawer]="drawer"></bgm-side-nav>
-            </div>
-        </mat-drawer>
-        <div class="main-content">
-            <router-outlet></router-outlet>
-        </div>
-    </mat-drawer-container>
+  <mat-toolbar>
+    <button matMiniFab (click)="drawer.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+  </mat-toolbar>
+  <mat-drawer-container class="flex-1">
+    <mat-drawer #drawer mode="side" style="width: 10%; min-width: 200px">
+      <div class="margin-10">
+        <bgm-side-nav [drawer]="drawer"></bgm-side-nav>
+      </div>
+    </mat-drawer>
+    <div class="main-content">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-drawer-container>
 </div>

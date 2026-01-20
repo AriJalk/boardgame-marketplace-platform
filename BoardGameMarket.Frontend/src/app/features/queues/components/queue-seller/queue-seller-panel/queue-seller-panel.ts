@@ -5,10 +5,19 @@ import { MatCardModule } from '@angular/material/card';
 import { QueueService } from '../../../queue.service';
 import { startWith, Subject, switchMap } from 'rxjs';
 import { QueueEntryCard } from '../queue-entry-card/queue-entry-card';
+import { QueueEntry } from '../../../models/quque-entry.model';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'bgm-queue-seller-panel',
-  imports: [DragDropModule, MatCardModule, AsyncPipe, CommonModule, QueueEntryCard],
+  imports: [
+    DragDropModule,
+    MatCardModule,
+    AsyncPipe,
+    CommonModule,
+    QueueEntryCard,
+    MatButtonModule,
+  ],
   templateUrl: './queue-seller-panel.html',
   styleUrl: './queue-seller-panel.css',
 })
@@ -21,8 +30,6 @@ export class QueueSellerPanel {
     startWith(void 0),
     switchMap(() => this.queueService.getQueues(this.listingsId)),
   );
-
-  @ViewChild('queueByTime') timeContainer?: CdkDropList;
   @ViewChild('queueByPriority') priorityContainer?: CdkDropList;
 
   constructor(private queueService: QueueService) {}
@@ -31,22 +38,21 @@ export class QueueSellerPanel {
     this.reload$.next();
   }
 
-  priorityChangeRequest<QueueEntry>($event: CdkDragDrop<QueueEntry>) {
+  priorityChangeRequest($event: CdkDragDrop<QueueEntry[]>) {
     let requestedIndex = $event.currentIndex;
-    const data = $event.item.data;
-    // Removal
-    if ($event.container !== this.priorityContainer) {
-      if ($event.previousContainer === this.priorityContainer) {
-        requestedIndex = -1;
-      }
-    } else if (
-      // Same entry
-      $event.previousContainer === this.priorityContainer &&
-      $event.currentIndex === $event.previousIndex
-    ) {
+    const data = $event.item.data as QueueEntry;
+    if ($event.currentIndex == $event.previousIndex) {
       return;
     }
-    this.queueService.updatePriority(this.listingsId, data.id, requestedIndex).subscribe({
+    this.subscribeAndReloadUpdate(data, $event.currentIndex);
+  }
+
+  onRemovePriority($event: QueueEntry) {
+    this.subscribeAndReloadUpdate($event, null);
+  }
+
+  private subscribeAndReloadUpdate(queueEntry: QueueEntry, requestedIndex: number | null) {
+    this.queueService.updatePriority(this.listingsId, queueEntry.id, requestedIndex).subscribe({
       next: () => {
         this.reload$.next();
       },

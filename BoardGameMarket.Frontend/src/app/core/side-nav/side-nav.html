@@ -1,3 +1,5 @@
+<h3 style="justify-self: center;">Boardgame Market</h3>
+<img src="images/powered-by-bgg.webp" style="width: 100%" />
 <div style="text-align: center">
   <button
     class="margin-5"
@@ -14,5 +16,13 @@
     (click)="drawer.toggle()"
   >
     Add Listings
+  </button>
+  <button
+    class="margin-5"
+    matButton="elevated"
+    [routerLink]="['/sandbox']"
+    (click)="drawer.toggle()"
+  >
+    Sandbox
   </button>
 </div>

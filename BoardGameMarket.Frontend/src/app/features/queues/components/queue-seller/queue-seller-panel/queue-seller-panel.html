@@ -1,19 +1,16 @@
 @if (queues$ | async; as queues) {
-  <div class="flex-container justify-center-evenly">
+  <div class="flex-container justify-content-center">
     <div class="flex-container-column">
       <h4>Time-based queue</h4>
-      <div
-        #queueByTime="cdkDropList"
-        cdkDropList
-        [cdkDropListConnectedTo]="queueByPriority"
-        [cdkDropListData]="queues.queueByTime"
-        cdkDropListSortingDisabled
-        cdkDropListHasAnchor
-        (cdkDropListDropped)="priorityChangeRequest($event)"
-      >
+      <div>
         @for (item of queues.queueByTime; track item.id) {
-          <div cdkDrag [cdkDragData]="item">
-            <bgm-queue-entry-card [queueEntry]="item"></bgm-queue-entry-card>
+          <div class="flex-container" style="flex-wrap: nowrap">
+            <h3 class="margin-5 align-self-center">{{ $index + 1 }}</h3>
+            <bgm-queue-entry-card
+              [queueEntry]="item"
+              class=""
+              style="align-items: flex-start; justify-content: center; margin: 5"
+            ></bgm-queue-entry-card>
           </div>
         }
       </div>
@@ -22,14 +19,20 @@
       <h4>Priority-based queue</h4>
       <div
         cdkDropList
-        #queueByPriority="cdkDropList"
-        [cdkDropListConnectedTo]="queueByTime"
         (cdkDropListDropped)="priorityChangeRequest($event)"
         [cdkDropListData]="queues.queueByPriority"
       >
         @for (item of queues.queueByPriority; track item.id) {
-          <div cdkDrag [cdkDragData]="item">
-            <bgm-queue-entry-card [queueEntry]="item"></bgm-queue-entry-card>
+          <div class="flex-container" style="flex-wrap: nowrap">
+            <h3 class="margin-5 align-self-center">{{ $index + 1 }}</h3>
+            <div cdkDrag [cdkDragData]="item">
+              <bgm-queue-entry-card
+                [queueEntry]="item"
+                (removePriority)="onRemovePriority($event)"
+                class="flex-container-column"
+                style="align-items: flex-start; justify-content: center; margin: 5"
+              ></bgm-queue-entry-card>
+            </div>
           </div>
         }
       </div>

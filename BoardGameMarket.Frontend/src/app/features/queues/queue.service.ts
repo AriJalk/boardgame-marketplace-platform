@@ -18,7 +18,7 @@ export class QueueService {
 
   getQueues(listingId: string): Observable<ListingQueueResponse> {
     const headers = new HttpHeaders();
-    headers.set('jwtToken', this.authService.loggedInUser?.userId ?? '');
+    headers.set('Atuhorization', this.authService.loggedInUser?.userId ?? '');
     const response = this.httpClient.get<ListingQueueResponse>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue`,
       { headers: headers },
@@ -38,11 +38,22 @@ export class QueueService {
   updatePriority(
     listingId: string,
     queueEntryId: string,
-    requestedIndex: number,
+    requestedIndex: number | null,
   ): Observable<void> {
-    return this.httpClient.post<void>(
+    return this.httpClient.patch<void>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/${queueEntryId}`,
       { requestedIndex },
     );
+  }
+
+  isSubscribed(listingId: string): Observable<boolean> {
+    const headers = new HttpHeaders();
+    headers.set('Authorization', this.authService.loggedInUser?.userId ?? '');
+    const response = this.httpClient.get<boolean>(
+      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/isQueued`,
+      { headers: headers },
+    );
+    // response.subscribe(data => console.log(data));
+    return response;
   }
 }

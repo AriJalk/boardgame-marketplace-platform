@@ -9,7 +9,7 @@
   </mat-form-field>
   <div class="flex-container children-margin-1">
     @for (listing of listingFormGroups.controls; track listing; let i = $index) {
-      <mat-card class="card-container center-container padding-2">
+      <mat-card>
         <h3>Listing {{ i + 1 }}</h3>
         <bgm-listing-form [formGroup]="listing"></bgm-listing-form>
         <button class="half-width" matButton="elevated" type="button" (click)="removeListing(i)">

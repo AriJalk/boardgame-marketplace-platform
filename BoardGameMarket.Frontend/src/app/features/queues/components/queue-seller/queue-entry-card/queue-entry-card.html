@@ -1,14 +1,15 @@
 @if (queueEntry.priority !== null) {
   <mat-card class="example-box" style="color: cornflowerblue">
-    <h4>{{ queueEntry.createdAt | date: 'short' }}</h4>
+    <h4>Subscription time: {{ queueEntry.createdAt | date: 'short' }}</h4>
     <!-- <h4>{{ queueEntry.status }}</h4> -->
-    <h4>{{ queueEntry.buyer.displayName }}</h4>
-    <h4>{{ queueEntry.priority }}</h4>
+    <h4>User: {{ queueEntry.buyer.displayName }}</h4>
+    <!-- <h4>Priority: {{ queueEntry.priority }}</h4> -->
+    <button matButton="elevated" type="button" (click)="onRemovePriority()">Remove priority</button>
   </mat-card>
 } @else {
   <mat-card class="example-box">
-    <h4>{{ queueEntry.createdAt | date: 'short' }}</h4>
+    <h4>Subscription time: {{ queueEntry.createdAt | date: 'short' }}</h4>
     <!-- <h4>{{ queueEntry.status }}</h4> -->
-    <h4>{{ queueEntry.buyer.displayName }}</h4>
+    <h4>User: {{ queueEntry.buyer.displayName }}</h4>
   </mat-card>
 }

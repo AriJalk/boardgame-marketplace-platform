@@ -16,5 +16,9 @@ export const routes: Routes = [
         (m) => m.ListingGroupDetailsPage,
       ),
   },
+  {
+    path: 'sandbox',
+    loadComponent: () => import('./features/sandbox/sandbox').then((m) => m.Sandbox),
+  },
   { path: '', redirectTo: 'listing-groups', pathMatch: 'full' },
 ];
