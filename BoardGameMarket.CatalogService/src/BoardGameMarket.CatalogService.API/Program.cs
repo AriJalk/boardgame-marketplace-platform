@@ -35,7 +35,7 @@ else
 	builder.Services.AddInfrastructure(builder.Configuration);
 }
 
-if (isLocalBggClient)
+if(isLocalBggClient)
 {
 	builder.Services.ConfigureLocalBggClient();
 }
@@ -44,8 +44,7 @@ else
 	builder.Services.ConfigureBggClient(builder.Configuration);
 }
 
-
-var app = builder.Build();
+	var app = builder.Build();
 
 if (inMemory && isSeeding)
 {

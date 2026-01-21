@@ -16,6 +16,8 @@ namespace BoardGameMarket.CatalogService.Infrastructure
 		public static IServiceCollection AddInMemoryInfrastructure(this IServiceCollection services, IConfiguration configuration)
 		{
 			services.AddSingleton<ICatalogItemsRepository, CatalogItemsInMemoryRepository>();
+			//services.AddSingleton<IBggClient, BggClientInMemory>();
+			ConfigureBggClient(services, configuration);
 
 			return services;
 		}
@@ -41,6 +43,8 @@ namespace BoardGameMarket.CatalogService.Infrastructure
 			});
 
 			services.AddScoped<ICatalogItemsRepository, CatalogItemsMongoDbRepository>();
+
+			ConfigureBggClient(services, configuration);
 
 			return services;
 		}
