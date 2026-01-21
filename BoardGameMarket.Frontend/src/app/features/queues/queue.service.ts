@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { Inject, Injectable } from '@angular/core';
-import { QueuePageResponse as ListingQueueResponse } from './models/quque-entry.model';
+import { QueuePageResponse as ListingQueueResponse, QueueEntry } from './models/quque-entry.model';
 import { API_CONFIG_SERVICE } from '../../core/api-config/api-config.service';
 import { ApiConfig } from '../../core/api-config/api-config.interface';
 import { AuthStubService } from '../../core/auth/auth-stub.service';
@@ -46,14 +46,33 @@ export class QueueService {
     );
   }
 
-  isSubscribed(listingId: string): Observable<boolean> {
-    const headers = new HttpHeaders();
-    headers.set('Authorization', this.authService.loggedInUser?.userId ?? '');
-    const response = this.httpClient.get<boolean>(
-      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/isQueued`,
+  getSubscription(listingId: string): Observable<QueueEntry> {
+    const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
+    const response = this.httpClient.get<QueueEntry>(
+      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription`,
       { headers: headers },
     );
     // response.subscribe(data => console.log(data));
+    return response;
+  }
+
+  subscribe(listingId: string): Observable<QueueEntry> {
+    const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
+    const response = this.httpClient.put<QueueEntry>(
+      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription`,
+      null,
+      { headers: headers },
+    );
+    // response.subscribe(data => console.log(data));
+    return response;
+  }
+
+  unsubscribe(listingId: string): Observable<void> {
+    const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
+    const response = this.httpClient.delete<void>(
+      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription`,
+      { headers: headers },
+    );
     return response;
   }
 }

@@ -9,6 +9,7 @@ namespace BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts
 		Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesByListingIdAsync(Guid listingId);
 		Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesByListingIdsAsync(IEnumerable<Guid> listingIds);
 		Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesByBuyerUserId(Guid buyerUserId);
+		Task<ListingQueueEntry?> GetListingQueueEntryByListingIdAndBuyerUserId(Guid listingId,  Guid buyerUserId);
 		Task<ListingQueueEntry?> AddListingQueueEntryAsync(ListingQueueEntry listingQueueEntry);
 		Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntry);
 		Task<bool> DeleteListingQueueEntryAsync(Guid listingQueueEntryId);

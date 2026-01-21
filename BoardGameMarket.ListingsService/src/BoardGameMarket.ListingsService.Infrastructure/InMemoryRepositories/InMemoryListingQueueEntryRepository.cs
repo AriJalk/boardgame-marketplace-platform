@@ -49,6 +49,11 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 			return Task.FromResult(_listingQueueEntries.FirstOrDefault(qe => qe.Id == listingQueueEntryId));
 		}
 
+		public Task<ListingQueueEntry?> GetListingQueueEntryByListingIdAndBuyerUserId(Guid listingId, Guid buyerUserId)
+		{
+			return Task.FromResult(_listingQueueEntries.FirstOrDefault(qe => qe.ListingId == listingId && qe.BuyerUserId == buyerUserId));
+		}
+
 		public Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntry)
 		{
 			ListingQueueEntry? originalListingQueueEntry = _listingQueueEntries.FirstOrDefault(qe => qe.Id == listingQueueEntry.Id);

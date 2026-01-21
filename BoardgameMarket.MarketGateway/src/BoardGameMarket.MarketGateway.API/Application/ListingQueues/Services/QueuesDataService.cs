@@ -1,7 +1,4 @@
-﻿
-
-using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients;
-using BoardGameMarket.MarketGateway.API.Application.ListingQueues.ServiceClients;
+﻿using BoardGameMarket.MarketGateway.API.Application.ListingQueues.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.Shared;
 using System.Net;
 
@@ -36,6 +33,22 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 				throw new InvalidDataException();
 			}
 			return queue;
+		}
+
+		public async Task<ListingQueueEntryInfo?> GetSubscriptionAsync(Guid listingId, Guid buyerId)
+		{
+			string uri = $"api/listings/{listingId}/queue/subscription";
+
+			HttpResponseMessage response = await _httpClient.GetAsync(uri);
+
+			response.EnsureSuccessStatusCode();
+
+			if (response.StatusCode == HttpStatusCode.NoContent)
+			{
+				return null;
+			}
+
+			return await response.Content.ReadFromJsonAsync<ListingQueueEntryInfo>();
 		}
 	}
 }

@@ -42,5 +42,10 @@ namespace BoardGameMarket.ListingsService.Core.Application.Services.ListingQueue
 		{
 			return await _listingQueueEntryRepository.GetListingQueueEntryByIdAsync(listingQueueId);
 		}
+
+		public async Task<ListingQueueEntry?> GetListingQueueEntryByListingIdAndBuyerUserId(Guid listingId, Guid buyerId)
+		{
+			return await _listingQueueEntryRepository.GetListingQueueEntryByListingIdAndBuyerUserId(listingId, buyerId);
+		}
 	}
 }
