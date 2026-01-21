@@ -1,17 +1,20 @@
 ﻿using BoardGameMarket.CatalogService.Core.Application.AdapterContracts;
 using BoardGameMarket.CatalogService.Core.Domain.Entities;
 using BoardGameMarket.CatalogService.Core.Domain.ValueObjects;
+using Microsoft.Extensions.Options;
+using System.Net.Http.Headers;
 using System.Xml.Linq;
 
 namespace BoardGameMarket.CatalogService.Infrastructure.Adapters
 {
 	internal class BggClient : IBggClient
 	{
-		private HttpClient _httpClient;
+		private readonly HttpClient _httpClient;
 
-		public BggClient(HttpClient httpClient)
+		public BggClient(HttpClient httpClient, IOptions<BggClientConfiguration> configuration)
 		{
 			_httpClient = httpClient;
+			_httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", configuration.Value.ServiceApiKey);
 		}
 
 		private IReadOnlyCollection<string> CreateCategories(IEnumerable<XElement> categoryElements)

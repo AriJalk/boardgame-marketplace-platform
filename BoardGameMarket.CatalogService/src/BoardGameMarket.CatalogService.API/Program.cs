@@ -20,10 +20,11 @@ builder.Services.AddCore();
 
 bool inMemory = builder.Configuration.GetValue<bool>("IN_MEMORY");
 bool isSeeding = builder.Configuration.GetValue<bool>("IS_SEEDING");
+bool isLocalBggClient = builder.Configuration.GetValue<bool>("LOCAL_BGG_CLIENT");
 
 if (inMemory)
 {
-	builder.Services.AddInMemoryInfrastructure();
+	builder.Services.AddInMemoryInfrastructure(builder.Configuration);
 	if (isSeeding)
 	{
 		builder.Services.AddInMemorySeeding();
@@ -33,6 +34,16 @@ else
 {
 	builder.Services.AddInfrastructure(builder.Configuration);
 }
+
+if (isLocalBggClient)
+{
+	builder.Services.ConfigureLocalBggClient();
+}
+else
+{
+	builder.Services.ConfigureBggClient(builder.Configuration);
+}
+
 
 var app = builder.Build();
 

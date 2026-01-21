@@ -7,6 +7,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development",
         "IN_MEMORY": "true",
         "IS_SEEDING": "true",
+        "LOCAL_BGG_CLIENT": "true",
         "SEED_ROOT": "../../../SeedData"
       },
       "dotnetRunMessages": true,
