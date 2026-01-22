@@ -13,11 +13,15 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 	{
 		private GetQueueUseCase _getQueueUseCase;
 		private IListingQueueEntryGetterService _queueGetterService;
+		private IListingQueueEntryAdderService _queueAdderService;
+		private AddListingQueueEntryUseCase _addListingQueueEntryUseCase;
 
-		public QueueController(GetQueueUseCase getQueueUseCase, IListingQueueEntryGetterService queueGetterService)
+		public QueueController(GetQueueUseCase getQueueUseCase, IListingQueueEntryGetterService queueGetterService, IListingQueueEntryAdderService queueAdderService, AddListingQueueEntryUseCase addListingQueueEntryUseCase)
 		{
 			_getQueueUseCase = getQueueUseCase;
 			_queueGetterService = queueGetterService;
+			_queueAdderService = queueAdderService;
+			_addListingQueueEntryUseCase = addListingQueueEntryUseCase;
 		}
 
 		[HttpGet()]
@@ -29,14 +33,21 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		}
 
 		[HttpGet("subscription")]
-		public async Task<ActionResult<ListingQueueEntryInfo?>> GetSubscription(Guid listingId, Guid buyerId)
+		public async Task<ActionResult<ListingQueueEntryInfo>> GetSubscription(Guid listingId, Guid userId)
 		{
-			ListingQueueEntry? queueEntry = await _queueGetterService.GetListingQueueEntryByListingIdAndBuyerUserId(listingId, buyerId);
+			ListingQueueEntry? queueEntry = await _queueGetterService.GetListingQueueEntryByListingIdAndUserId(listingId, userId);
 			if (queueEntry == null)
 			{
 				return NoContent();
 			}
 			return Ok(queueEntry.ToListingQueueEntryInfo());
+		}
+
+		[HttpPost("subscription")]
+		public async Task<ActionResult<ListingQueueEntryInfo>> AddListingQueueEntry(Guid listingId, AddListingQueueEntryRequest request)
+		{
+			ListingQueueEntryInfo listingQueueEntry = await _addListingQueueEntryUseCase.ExecuteAsync(listingId, request);
+			return Ok(listingQueueEntry);
 		}
 	}
 }

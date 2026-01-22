@@ -1,4 +1,5 @@
-﻿using BoardGameMarket.ListingsService.Core.Domain.Entities;
+﻿using BoardGameMarket.ListingsService.Core.Application.Commands;
+using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.ServiceContracts.List
 {
 	public interface IListingQueueEntryAdderService
 	{
-		Task<ListingQueueEntry?> AddListingQueueEntryAsync(ListingQueueEntry listingQueueEntryToAdd);
+		Task<ListingQueueEntry?> AddListingQueueEntryAsync(CreateListingQueueEntryCommand command);
 	}
 }

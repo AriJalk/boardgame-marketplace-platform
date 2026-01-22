@@ -35,9 +35,9 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			return queue;
 		}
 
-		public async Task<ListingQueueEntryInfo?> GetSubscriptionAsync(Guid listingId, Guid buyerId)
+		public async Task<ListingQueueEntryInfo?> GetSubscriptionByUserAsync(Guid listingId, Guid userId)
 		{
-			string uri = $"api/listings/{listingId}/queue/subscription";
+			string uri = $"api/listings/{listingId}/queue/subscription?byUser={userId}";
 
 			HttpResponseMessage response = await _httpClient.GetAsync(uri);
 

@@ -1,4 +1,5 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.Identity;
+using BoardGameMarket.ListingsService.Core.Application.Queries;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingItems;
 using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries;
@@ -59,6 +60,10 @@ namespace BoardGameMarket.ListingsService.Core
 
 			//Use Cases
 			services.AddScoped<GetQueueUseCase>();
+			services.AddScoped<AddListingQueueEntryUseCase>();
+
+			// Queries
+			services.AddScoped<ListingOwnershipQuery>();
 
 			return services;
 		}

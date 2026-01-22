@@ -41,7 +41,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 
 			if (Guid.TryParse(auth, out var buyer))
 			{
-				ListingQueueEntryInfo? queueEntry = await _queuesDataService.GetSubscriptionAsync(listingId, buyer);
+				ListingQueueEntryInfo? queueEntry = await _queuesDataService.GetSubscriptionByUserAsync(listingId, buyer);
 				if (queueEntry == null)
 				{
 					return NoContent();
