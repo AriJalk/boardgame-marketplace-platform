@@ -4,6 +4,7 @@ export interface ListingSummary {
   id: string;
   title: string;
   price: number;
+  status: string;
   details?: string;
 }
 
