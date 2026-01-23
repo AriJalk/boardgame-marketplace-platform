@@ -1,6 +1,7 @@
 ﻿using BoardGameMarket.MarketGateway.API.Application.ListingQueues.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.Shared;
 using System.Net;
+using System.Text.Json;
 
 namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 {
@@ -37,7 +38,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 
 		public async Task<ListingQueueEntryInfo?> GetSubscriptionByUserAsync(Guid listingId, Guid userId)
 		{
-			string uri = $"api/listings/{listingId}/queue/subscription?byUser={userId}";
+			string uri = $"api/listings/{listingId}/queue/subscription?userId={userId}";
 
 			HttpResponseMessage response = await _httpClient.GetAsync(uri);
 
@@ -49,6 +50,28 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			}
 
 			return await response.Content.ReadFromJsonAsync<ListingQueueEntryInfo>();
+		}
+
+		public async Task<ListingQueueEntryInfo> SubscribeToListingAsync(Guid listingId, Guid userId)
+		{
+			string uri = $"api/listings/{listingId}/queue/subscription";
+			AddListingQueueEntryRequest addRequest = new AddListingQueueEntryRequest(userId);
+			HttpResponseMessage response = await _httpClient.PostAsJsonAsync(uri, addRequest);
+
+			response.EnsureSuccessStatusCode();
+
+			ListingQueueEntryInfo queueEntry = await response.Content.ReadFromJsonAsync<ListingQueueEntryInfo>() ??
+				throw new InvalidOperationException("Expected subscription payload");
+
+			return queueEntry;
+		}
+
+		public async Task UnsubscribeFromListingAsync(Guid listingId, Guid subscriptionId)
+		{
+			string uri = $"api/listings/{listingId}/queue/subscription/{subscriptionId}";
+			HttpResponseMessage response = await _httpClient.DeleteAsync(uri);
+
+			response.EnsureSuccessStatusCode();
 		}
 	}
 }

@@ -1,7 +1,7 @@
 <div class="flex-container">
-  @if (!(queueEntry$ | async)) {
-    <button matButton class="flex-1" (click)="onSubscribed()">Subscribe</button>
+  @if (queueEntry$ | async; as queueEntry) {
+    <button matButton class="flex-1" (click)="onUnsubscribed(queueEntry.id)">Unsubscribe</button>
   } @else {
-    <button matButton class="flex-1" (click)="onUnsubscribed()">Unsubscribe</button>
+    <button matButton class="flex-1" (click)="onSubscribed()">Subscribe</button>
   }
 </div>

@@ -4,9 +4,9 @@ using BoardGameMarket.ListingsService.Core.Domain.Enums;
 
 namespace BoardGameMarket.ListingsService.Core.Domain.Services
 {
-	public class QueueDomainService
+	public static class QueueDomainService
 	{
-		private Result ValidateHeadEntry(IEnumerable<ListingQueueEntry> queueEntries, QueueStatus requiredStatus, out ListingQueueEntry? headEntry)
+		private static Result ValidateHeadEntry(IEnumerable<ListingQueueEntry> queueEntries, QueueStatus requiredStatus, out ListingQueueEntry? headEntry)
 		{
 			List<string> errors = new List<string>();
 			Queue<ListingQueueEntry> queue = new Queue<ListingQueueEntry>(SortQueue(queueEntries));
@@ -25,7 +25,10 @@ namespace BoardGameMarket.ListingsService.Core.Domain.Services
 			}
 			return Result.Success();
 		}
-		public Result CanEnqueue(Guid sellerUserId, Guid buyerUserId, IEnumerable<ListingQueueEntry> queueEntries)
+
+
+		// TODO: remove
+		public static Result CanEnqueue(Guid sellerUserId, Guid buyerUserId, IEnumerable<ListingQueueEntry> queueEntries)
 		{
 			List<string> errors = new List<string>();
 			if (buyerUserId == sellerUserId)
@@ -43,17 +46,17 @@ namespace BoardGameMarket.ListingsService.Core.Domain.Services
 			return Result.Success();
 		}
 
-		public Result CanApproveHead(IEnumerable<ListingQueueEntry> queueEntries, out ListingQueueEntry? headEntry)
+		public static Result CanApproveHead(IEnumerable<ListingQueueEntry> queueEntries, out ListingQueueEntry? headEntry)
 		{
 			return ValidateHeadEntry(queueEntries, QueueStatus.Queued, out headEntry);
 		}
 
-		public Result CanSellHead(IEnumerable<ListingQueueEntry> queueEntries, out ListingQueueEntry? headEntry)
+		public static Result CanSellHead(IEnumerable<ListingQueueEntry> queueEntries, out ListingQueueEntry? headEntry)
 		{
 			return ValidateHeadEntry(queueEntries, QueueStatus.Approved, out headEntry);
 		}
 
-		public IEnumerable<ListingQueueEntry> SortQueue(IEnumerable<ListingQueueEntry> listingQueueEntries)
+		public static IEnumerable<ListingQueueEntry> SortQueue(IEnumerable<ListingQueueEntry> listingQueueEntries)
 		{
 			return listingQueueEntries.OrderByDescending(qe => qe.Priority).ThenBy(qe => qe.CreatedAt);
 		}

@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
 {
+	// TODO: buyer facing subscription dto is it's own type so no user calls + priority outside GetQueue from seller
+
 	[Route("api/listings/{listingId:guid}/[controller]")]
 	[ApiController]
 	public class QueueController : ControllerBase
@@ -39,24 +41,48 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		{
 			string? auth = Request.Headers.Authorization;
 
-			if (Guid.TryParse(auth, out var buyer))
+			if (!Guid.TryParse(auth, out var userId))
 			{
-				ListingQueueEntryInfo? queueEntry = await _queuesDataService.GetSubscriptionByUserAsync(listingId, buyer);
-				if (queueEntry == null)
-				{
-					return NoContent();
-				}
-				// TODO: its own dto
-				UserSummaryDto user = (await _usersDataService.GetUser(buyer)).ToUserSummaryDto();
-				return Ok(new ListingQueueEntryResponseDto(queueEntry.Id, queueEntry.Status, user, queueEntry.CreatedAt, queueEntry.ModifiedAt, null));
+				return BadRequest();
 			}
-			return BadRequest();
+
+			ListingQueueEntryInfo? queueEntry = await _queuesDataService.GetSubscriptionByUserAsync(listingId, userId);
+			if (queueEntry == null)
+			{
+				return NoContent();
+			}
+			UserSummaryDto user = (await _usersDataService.GetUser(userId)).ToUserSummaryDto();
+			return Ok(new ListingQueueEntryResponseDto(queueEntry.Id, queueEntry.Status, user, queueEntry.CreatedAt, queueEntry.ModifiedAt, null));
 		}
 
+		// TODO: validate subscription user
 		[HttpPut("subscription")]
-		public async Task<ActionResult<ListingQueueEntryResponseDto>> Subscribe(Guid listingId)
+		public async Task<ActionResult<ListingQueueEntryResponseDto>> SubscribeToListing(Guid listingId)
 		{
-			return Ok(new ListingQueueEntryResponseDto(Guid.NewGuid(), QueueStatus.Queued, new UserSummaryDto() { DisplayName = "X", UserId = Guid.NewGuid() }, DateTime.Now, DateTime.Now, null));
+			if (!Guid.TryParse(Request.Headers.Authorization, out var userId))
+			{
+				return BadRequest();
+			}
+
+			ListingQueueEntryInfo queueEntry = await _queuesDataService.SubscribeToListingAsync(listingId, userId);
+			UserSummaryDto user = (await _usersDataService.GetUser(userId)).ToUserSummaryDto();
+			return Ok(new ListingQueueEntryResponseDto(queueEntry.Id, queueEntry.Status, user, queueEntry.CreatedAt, queueEntry.ModifiedAt, null));
 		}
+
+		// TODO: validate subscription user
+		[HttpDelete("subscription/{subscriptionId:guid}")]
+		public async Task<IActionResult> UnsubscribeFromListing(Guid listingId, Guid subscriptionId)
+		{
+			if (!Guid.TryParse(Request.Headers.Authorization, out var userId))
+			{
+				return BadRequest();
+			}
+
+			await _queuesDataService.UnsubscribeFromListingAsync(listingId, subscriptionId);
+
+			return NoContent();
+		}
+
+
 	}
 }

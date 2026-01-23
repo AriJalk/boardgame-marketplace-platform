@@ -67,10 +67,10 @@ export class QueueService {
     return response;
   }
 
-  unsubscribe(listingId: string): Observable<void> {
+  unsubscribe(listingId: string, subscriptionId: string): Observable<void> {
     const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     const response = this.httpClient.delete<void>(
-      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription`,
+      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription/${subscriptionId}`,
       { headers: headers },
     );
     return response;

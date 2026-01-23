@@ -35,8 +35,8 @@ export class QueueBuyerPanel implements OnInit {
     });
   }
 
-  onUnsubscribed() {
-    this.queueService.unsubscribe(this.listingId).subscribe({
+  onUnsubscribed(subscriptionId: string) {
+    this.queueService.unsubscribe(this.listingId, subscriptionId).subscribe({
       next: () => {
         this._queueEntry.next(undefined);
       },

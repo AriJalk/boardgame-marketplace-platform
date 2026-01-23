@@ -13,14 +13,14 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 	{
 		private GetQueueUseCase _getQueueUseCase;
 		private IListingQueueEntryGetterService _queueGetterService;
-		private IListingQueueEntryAdderService _queueAdderService;
+		private IListingQueueEntryDeleterService _queueDeleterService;
 		private AddListingQueueEntryUseCase _addListingQueueEntryUseCase;
 
-		public QueueController(GetQueueUseCase getQueueUseCase, IListingQueueEntryGetterService queueGetterService, IListingQueueEntryAdderService queueAdderService, AddListingQueueEntryUseCase addListingQueueEntryUseCase)
+		public QueueController(GetQueueUseCase getQueueUseCase, IListingQueueEntryGetterService queueGetterService, IListingQueueEntryDeleterService queueDeleterService, AddListingQueueEntryUseCase addListingQueueEntryUseCase)
 		{
 			_getQueueUseCase = getQueueUseCase;
 			_queueGetterService = queueGetterService;
-			_queueAdderService = queueAdderService;
+			_queueDeleterService = queueDeleterService;
 			_addListingQueueEntryUseCase = addListingQueueEntryUseCase;
 		}
 
@@ -33,7 +33,7 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		}
 
 		[HttpGet("subscription")]
-		public async Task<ActionResult<ListingQueueEntryInfo>> GetSubscription(Guid listingId, Guid userId)
+		public async Task<ActionResult<ListingQueueEntryInfo>> GetSubscription(Guid listingId, [FromQuery] Guid userId)
 		{
 			ListingQueueEntry? queueEntry = await _queueGetterService.GetListingQueueEntryByListingIdAndUserId(listingId, userId);
 			if (queueEntry == null)
@@ -44,10 +44,17 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		}
 
 		[HttpPost("subscription")]
-		public async Task<ActionResult<ListingQueueEntryInfo>> AddListingQueueEntry(Guid listingId, AddListingQueueEntryRequest request)
+		public async Task<ActionResult<ListingQueueEntryInfo>> AddListingQueueEntry(Guid listingId, [FromBody] AddListingQueueEntryRequest request)
 		{
 			ListingQueueEntryInfo listingQueueEntry = await _addListingQueueEntryUseCase.ExecuteAsync(listingId, request);
 			return Ok(listingQueueEntry);
+		}
+
+		[HttpDelete("subscription/{queueEntryId:guid}")]
+		public async Task<IActionResult> DeleteListingQueueEntry(Guid queueEntryId)
+		{
+			await _queueDeleterService.DeleteListingQueueEntryAsync(queueEntryId);
+			return NoContent();
 		}
 	}
 }
