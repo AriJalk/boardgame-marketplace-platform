@@ -1,10 +1,10 @@
-﻿using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Dtos;
-using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Enums;
+﻿using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Assemblers;
+using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Dtos;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.UseCases;
 using BoardGameMarket.MarketGateway.API.Application.Users.Dtos;
-using BoardGameMarket.MarketGateway.API.Application.Users.Helpers;
+using BoardGameMarket.MarketGateway.API.Application.Users.Mappers;
 using BoardGameMarket.MarketGateway.API.Application.Users.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,16 +18,24 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 	public class QueueController : ControllerBase
 	{
 		private readonly GetListingQueueUseCase _getListingQueueUseCase;
+		private readonly GetListingQueueEntryUseCase _getListingQueueEntryUseCase;
+		private readonly ListingQueueEntryDtoAssembler _listingQueueEntryDtoAssembler;
 		private readonly QueuesDataService _queuesDataService;
 		private readonly UsersDataService _usersDataService;
 
-		public QueueController(GetListingQueueUseCase getListingQueueUseCase, QueuesDataService queuesDataService, UsersDataService usersDataService)
+		public QueueController(GetListingQueueUseCase getListingQueueUseCase, GetListingQueueEntryUseCase getListingQueueEntryUseCase, ListingQueueEntryDtoAssembler listingQueueEntryDtoAssembler, QueuesDataService queuesDataService, UsersDataService usersDataService)
 		{
 			_getListingQueueUseCase = getListingQueueUseCase;
+			_getListingQueueEntryUseCase = getListingQueueEntryUseCase;
+			_listingQueueEntryDtoAssembler = listingQueueEntryDtoAssembler;
 			_queuesDataService = queuesDataService;
 			_usersDataService = usersDataService;
 		}
 
+
+
+
+		// TODO: Validate seller
 		[HttpGet()]
 		public async Task<ActionResult<ListingQueueResponseDto>> GetQueue(Guid listingId)
 		{
@@ -45,14 +53,14 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 			{
 				return BadRequest();
 			}
-
-			ListingQueueEntryInfo? queueEntry = await _queuesDataService.GetSubscriptionByUserAsync(listingId, userId);
-			if (queueEntry == null)
+			ListingQueueEntryResponseDto? queueEntryResponse = await _getListingQueueEntryUseCase.ExecuteAsync(listingId, userId);
+			
+			if (queueEntryResponse == null)
 			{
 				return NoContent();
 			}
-			UserSummaryDto user = (await _usersDataService.GetUser(userId)).ToUserSummaryDto();
-			return Ok(new ListingQueueEntryResponseDto(queueEntry.Id, queueEntry.Status, user, queueEntry.CreatedAt, queueEntry.ModifiedAt, null));
+
+			return Ok(queueEntryResponse);
 		}
 
 		// TODO: validate subscription user
@@ -65,8 +73,8 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 			}
 
 			ListingQueueEntryInfo queueEntry = await _queuesDataService.SubscribeToListingAsync(listingId, userId);
-			UserSummaryDto user = (await _usersDataService.GetUser(userId)).ToUserSummaryDto();
-			return Ok(new ListingQueueEntryResponseDto(queueEntry.Id, queueEntry.Status, user, queueEntry.CreatedAt, queueEntry.ModifiedAt, null));
+			ListingQueueEntryResponseDto response = await _listingQueueEntryDtoAssembler.BuildQueueEntryResponseDto(queueEntry);
+			return Ok(response);
 		}
 
 		// TODO: validate subscription user

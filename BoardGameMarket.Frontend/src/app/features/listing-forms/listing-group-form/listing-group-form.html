@@ -1,22 +1,31 @@
-<div [formGroup]="formGroup">
-  <mat-form-field class="full-width">
+<div [formGroup]="formGroup" class="flex-column">
+  <mat-form-field>
     <mat-label>Pickup Options</mat-label>
     <input type="text" matInput formControlName="pickupOptions" placeholder="Pickup Options" />
   </mat-form-field>
-  <mat-form-field class="full-width">
+  <mat-form-field>
     <mat-label>Location</mat-label>
     <input type="text" matInput formControlName="location" placeholder="Location" />
   </mat-form-field>
-  <div class="flex-container children-margin-1">
+  <div class="flex-column gap-1">
+    <h3>Listings</h3>
     @for (listing of listingFormGroups.controls; track listing; let i = $index) {
-      <mat-card>
-        <h3>Listing {{ i + 1 }}</h3>
-        <bgm-listing-form [formGroup]="listing"></bgm-listing-form>
-        <button class="half-width" matButton="elevated" type="button" (click)="removeListing(i)">
-          Remove Listing
-        </button>
-      </mat-card>
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title> {{ getListingTitle(listing) }} </mat-panel-title>
+          </mat-expansion-panel-header>
+          <mat-card>
+            <bgm-listing-form [formGroup]="listing"></bgm-listing-form>
+            <button class="margin-5" matButton="elevated" type="button" (click)="removeListing(i)">
+              Remove Listing
+            </button>
+          </mat-card>
+        </mat-expansion-panel>
+      </mat-accordion>
     }
   </div>
-  <button matButton="elevated" type="button" (click)="addListing()">Add listing</button>
+  <button class="margin-1" matButton="elevated" type="button" (click)="addListing()">
+    Add listing
+  </button>
 </div>

@@ -1,5 +1,6 @@
-<div class="flex-container">
+<div class="flex-container-column">
   @if (queueEntry$ | async; as queueEntry) {
+    <h4>Subscribed at: {{ queueEntry.createdAt | date: 'short' }}</h4>
     <button matButton class="flex-1" (click)="onUnsubscribed(queueEntry.id)">Unsubscribe</button>
   } @else {
     <button matButton class="flex-1" (click)="onSubscribed()">Subscribe</button>

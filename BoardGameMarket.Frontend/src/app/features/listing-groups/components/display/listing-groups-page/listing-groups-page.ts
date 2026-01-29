@@ -6,6 +6,8 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
 import { ListingGroupSummaryCard } from '../listing-group-summary-card/listing-group-summary-card';
 import { PagedResult } from '../../../../../common/paged-result';
+import { AuthStubService } from '../../../../../core/auth/auth-stub.service';
+import { UserSummary } from '../../../../../core/users/models/user.model';
 
 @Component({
   selector: 'bgm-listing-groups-page',
@@ -19,10 +21,15 @@ export class ListingGroupsPage implements OnInit {
 
   listingGroups$!: Observable<PagedResult<ListingGroupSummary>>;
 
-  constructor(private listingGroupService: ListingGroupService) {}
+  user?: UserSummary;
+  constructor(
+    private listingGroupService: ListingGroupService,
+    private authService: AuthStubService,
+  ) {}
 
   ngOnInit(): void {
     this.listingGroups$ = this.listingGroupService.getListingGroupSummariesPage();
+    this.user = this.authService.loggedInUser;
   }
 
   previous_clicked() {

@@ -1,19 +1,24 @@
 <div [formGroup]="formGroup">
-  <mat-form-field class="full-width">
+  <mat-form-field>
     <mat-label>Title</mat-label>
     <input type="text" matInput formControlName="title" placeholder="Title" />
   </mat-form-field>
-  <mat-form-field class="full-width">
+  <mat-form-field>
     <mat-label>Price</mat-label>
     <input type="number" matInput formControlName="price" placeholder="Price" />
   </mat-form-field>
-  <div class="flex-container-column children-margin-5">
+  <div class="flex-column gap-1">
     @for (listingItem of listingItemFormGroups.controls; track listingItem; let i = $index) {
-      <mat-card class="card-container padding-2">
-        <div class="flex-container-column">
+      <mat-card>
+        <div class="mat-secondary-container">
           <h4>Item {{ i + 1 }}</h4>
           <bgm-listing-item-form [formGroup]="listingItem"></bgm-listing-item-form>
-          <button matButton="elevated" type="button" (click)="removeListingItem(i)">
+          <button
+            class="full-width margin-1"
+            matButton="elevated"
+            type="button"
+            (click)="removeListingItem(i)"
+          >
             Remove Item
           </button>
         </div>
@@ -21,7 +26,7 @@
     }
   </div>
 </div>
-<div class="flex-container children-margin-5">
+<div class="flex">
   <button class="flex-1" matButton="elevated" type="button" (click)="addBggListingItem()">
     Add BGG Item
   </button>
@@ -29,4 +34,9 @@
     Add Custom Item
   </button>
 </div>
-<bgm-queue-seller-panel [listingsId]="listingId"></bgm-queue-seller-panel>
+
+@if (listingId !== null) {
+  <div>
+    <bgm-queue-seller-panel [listingsId]="listingId"></bgm-queue-seller-panel>
+  </div>
+}

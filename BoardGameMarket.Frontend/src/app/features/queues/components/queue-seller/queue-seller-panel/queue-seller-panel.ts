@@ -7,6 +7,8 @@ import { startWith, Subject, switchMap } from 'rxjs';
 import { QueueEntryCard } from '../queue-entry-card/queue-entry-card';
 import { QueueEntry } from '../../../models/quque-entry.model';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { CdkAriaLive } from '@angular/cdk/a11y';
 
 @Component({
   selector: 'bgm-queue-seller-panel',
@@ -17,6 +19,7 @@ import { MatButtonModule } from '@angular/material/button';
     CommonModule,
     QueueEntryCard,
     MatButtonModule,
+    MatIconModule,
   ],
   templateUrl: './queue-seller-panel.html',
   styleUrl: './queue-seller-panel.css',

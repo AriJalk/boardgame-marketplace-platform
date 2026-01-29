@@ -3,11 +3,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { QueueService } from '../../../queue.service';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { QueueEntry } from '../../../models/quque-entry.model';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'bgm-queue-buyer-panel',
-  imports: [MatButtonModule, AsyncPipe],
+  imports: [MatButtonModule, AsyncPipe, DatePipe],
   templateUrl: './queue-buyer-panel.html',
   styleUrl: './queue-buyer-panel.css',
 })

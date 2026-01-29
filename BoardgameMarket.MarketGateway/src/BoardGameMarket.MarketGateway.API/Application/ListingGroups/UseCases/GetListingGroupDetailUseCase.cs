@@ -4,7 +4,7 @@ using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services;
 using BoardGameMarket.MarketGateway.API.Application.Listings.Assemblers;
 using BoardGameMarket.MarketGateway.API.Application.Listings.Dtos.Listings;
-using BoardGameMarket.MarketGateway.API.Application.Users.Helpers;
+using BoardGameMarket.MarketGateway.API.Application.Users.Mappers;
 using BoardGameMarket.MarketGateway.API.Application.Users.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.Users.Services;
 

@@ -1,9 +1,16 @@
-<div class="grid">
+<div class="grid gap-1">
   @for (listingGroup of (listingGroups$ | async)?.items; track listingGroup.id) {
-    <bgm-listing-group-summary-card
-      class="margin-5"
-      [listingGroup]="listingGroup"
-    ></bgm-listing-group-summary-card>
+    @if (listingGroup.seller.userId === user?.userId) {
+      <div class="border-solid padding-2 mat-tertiary-container">
+        <bgm-listing-group-summary-card
+          [listingGroup]="listingGroup"
+        ></bgm-listing-group-summary-card>
+      </div>
+    } @else {
+      <bgm-listing-group-summary-card
+        [listingGroup]="listingGroup"
+      ></bgm-listing-group-summary-card>
+    }
   }
 </div>
 

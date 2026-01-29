@@ -1,10 +1,10 @@
 <div [formGroup]="formGroup">
   <bgm-retrieve-bgg-item-id (catalogItemRetrieved)="attachItem($event)"></bgm-retrieve-bgg-item-id>
-  <mat-form-field class="full-width">
+  <mat-form-field>
     <mat-label>Details</mat-label>
     <input type="text" matInput formControlName="details" placeholder="Details" />
   </mat-form-field>
 </div>
 @if (catalogItem?.get('id')?.invalid && formGroup.touched) {
-  <h4 class="text-red">Missing bgg info</h4>
+  <h4>Missing bgg info</h4>
 }

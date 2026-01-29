@@ -3,10 +3,11 @@ import { QueueEntry } from '../../../models/quque-entry.model';
 import { MatCardModule } from '@angular/material/card';
 import { DatePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'bgm-queue-entry-card',
-  imports: [MatCardModule, DatePipe, MatButtonModule],
+  imports: [MatCardModule, DatePipe, MatButtonModule, MatIconModule],
   templateUrl: './queue-entry-card.html',
   styleUrl: './queue-entry-card.css',
 })

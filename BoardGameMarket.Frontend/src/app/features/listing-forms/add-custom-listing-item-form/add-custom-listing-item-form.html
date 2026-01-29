@@ -1,6 +1,6 @@
 <div [formGroup]="itemForm">
   <div [formGroup]="catalogItem">
-    <mat-form-field class="full-width">
+    <mat-form-field>
       <mat-label>Name</mat-label>
       <input type="text" matInput formControlName="name" placeholder="Name" />
       @if (catalogItem.get('name')?.invalid && itemForm.touched) {
@@ -8,7 +8,7 @@
       }
     </mat-form-field>
   </div>
-  <mat-form-field class="full-width">
+  <mat-form-field>
     <mat-label>Details</mat-label>
     <input type="text" matInput formControlName="details" placeholder="Details" />
   </mat-form-field>

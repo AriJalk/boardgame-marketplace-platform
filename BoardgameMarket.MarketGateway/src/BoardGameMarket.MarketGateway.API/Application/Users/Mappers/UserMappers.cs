@@ -1,7 +1,7 @@
 ﻿using BoardGameMarket.MarketGateway.API.Application.Users.Dtos;
 using BoardGameMarket.MarketGateway.API.Application.Users.ServiceClients;
 
-namespace BoardGameMarket.MarketGateway.API.Application.Users.Helpers
+namespace BoardGameMarket.MarketGateway.API.Application.Users.Mappers
 {
 	public static class UserMappers
 	{
