@@ -1,5 +1,5 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
-using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
+﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingGroups;
+using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -9,23 +9,23 @@ namespace BoardGameMarket.ListingsService.Core.Application.Queries
 {
 	public class ListingOwnershipQuery
 	{
-		private readonly IListingGetterService _listingGetterService;
-		private readonly IListingGroupGetterService _listingGroupGetterService;
+		private readonly IListingReadService _listingReadService;
+		private readonly IListingGroupReadService _listingGroupReadService;
 
-		public ListingOwnershipQuery(IListingGetterService listingGetterService, IListingGroupGetterService listingGroupGetterService)
+		public ListingOwnershipQuery(IListingReadService listingReadService, IListingGroupReadService listingGroupReadService)
 		{
-			_listingGetterService = listingGetterService;
-			_listingGroupGetterService = listingGroupGetterService;
+			_listingReadService = listingReadService;
+			_listingGroupReadService = listingGroupReadService;
 		}
 
 		public async Task<Guid> GetSellerUserIdByListingId(Guid listingId)
 		{
-			Listing? listing = await _listingGetterService.GetListingByIdAsync(listingId);
+			Listing? listing = await _listingReadService.GetListingByIdAsync(listingId);
 			if (listing == null)
 			{
 				throw new KeyNotFoundException("Listing not found");
 			}
-			ListingGroup? listingGroup = await _listingGroupGetterService.GetListingGroupByIdAsync(listing.ListingGroupId);
+			ListingGroup? listingGroup = await _listingGroupReadService.GetListingGroupByIdAsync(listing.ListingGroupId);
 			if (listingGroup == null)
 			{
 				throw new KeyNotFoundException();

@@ -22,6 +22,11 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 			throw new NotImplementedException();
 		}
 
+		public Task<IEnumerable<ListingGroup>> GetListingGroupsByIds(IEnumerable<Guid> listingGroupIds)
+		{
+			throw new NotImplementedException();
+		}
+
 		public Task<IEnumerable<ListingGroup>> GetListingGroupsBySellerUserId(Guid sellerUserId)
 		{
 			throw new NotImplementedException();
@@ -32,7 +37,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 			throw new NotImplementedException();
 		}
 
-		public Task<ListingGroup?> GetListingsGroupByListingIdAsync(Guid listingId)
+		public Task<ListingGroup?> GetListingGroupByListingIdAsync(Guid listingId)
 		{
 			throw new NotImplementedException();
 		}

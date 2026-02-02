@@ -83,7 +83,8 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 
 				if (filter.ListingGroupIds != null)
 				{
-					query = query.Where(g => filter.ListingGroupIds.Contains(g.Id));
+					IEnumerable<Guid> distinctIds = filter.ListingGroupIds.Distinct();
+					query = query.Where(g => distinctIds.Contains(g.Id));
 				}
 			}
 
@@ -91,7 +92,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 			return Task.FromResult(GetGroupsPage(ordered, cursor, pageSize));
 		}
 
-		public Task<ListingGroup?> GetListingsGroupByListingIdAsync(Guid listingId)
+		public Task<ListingGroup?> GetListingGroupByListingIdAsync(Guid listingId)
 		{
 			throw new NotImplementedException();
 		}
@@ -102,6 +103,11 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 			_listingGroups.Remove(originalListingGroup);
 			_listingGroups.Add(listingGroup);
 			return Task.FromResult(listingGroup);
+		}
+
+		public Task<IEnumerable<ListingGroup>> GetListingGroupsByIds(IEnumerable<Guid> listingGroupIds)
+		{
+			return Task.FromResult(_listingGroups.Where(lg => listingGroupIds.Contains(lg.Id)));
 		}
 	}
 }

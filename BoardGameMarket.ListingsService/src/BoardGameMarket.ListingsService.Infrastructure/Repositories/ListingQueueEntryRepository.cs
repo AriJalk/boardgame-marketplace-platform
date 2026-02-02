@@ -25,7 +25,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 			throw new NotImplementedException();
 		}
 
-		public Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesByBuyerUserId(Guid buyerUserId)
+		public Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesBySubscribedUserId(Guid buyerUserId)
 		{
 			throw new NotImplementedException();
 		}

@@ -30,7 +30,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 			return Task.FromResult(true);
 		}
 
-		public Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesByBuyerUserId(Guid buyerUserId)
+		public Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesBySubscribedUserId(Guid buyerUserId)
 		{
 			return Task.FromResult(_listingQueueEntries.Where(qe => qe.BuyerUserId == buyerUserId));
 		}

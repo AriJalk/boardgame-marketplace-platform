@@ -22,7 +22,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.UseCases
 			_usersService = usersService;
 		}
 
-		public async Task<PagedResult<ListingGroupSummaryDto>> Execute(int pageSize, string? cursor, ListingGroupFilter? filter)
+		public async Task<PagedResult<ListingGroupSummaryDto>> ExecuteAsync(int pageSize, string? cursor, ListingGroupFilter? filter)
 		{
 			PagedResult<ListingGroupSummary> listingGroupPagedResult = await _listingGroupsService.GetListingGroupsSummaryPage(pageSize, cursor, filter);
 

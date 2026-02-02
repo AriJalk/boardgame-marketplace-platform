@@ -18,7 +18,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.UseCases
 
 		public async Task<ListingQueueEntryResponseDto?> ExecuteAsync(Guid listingId, Guid userId)
 		{
-			ListingQueueEntryInfo? queueEntry = await _queuesDataService.GetSubscriptionByUserAsync(listingId, userId);
+			ListingQueueEntryInfo? queueEntry = await _queuesDataService.GetSubscriptionForListing(listingId, userId);
 			if (queueEntry == null)
 			{
 				return null;

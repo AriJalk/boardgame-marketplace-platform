@@ -37,14 +37,10 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 			return Ok();
 		}
 
-
-
-
-
 		[HttpGet()]
 		public async Task<ActionResult<PagedResult<ListingGroupSummaryDto>>> GetSummaryPage([FromQuery] int pageSize = 10, [FromQuery] string? cursor = null, [FromQuery] ListingGroupFilter? filter = null)
 		{
-			PagedResult<ListingGroupSummaryDto> page = await _getListingGroupSummaryPageUseCase.Execute(pageSize, cursor, filter);
+			PagedResult<ListingGroupSummaryDto> page = await _getListingGroupSummaryPageUseCase.ExecuteAsync(pageSize, cursor, filter);
 
 			return Ok(page);
 		}

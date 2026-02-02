@@ -1,10 +1,10 @@
 ﻿using BoardGameMarket.ListingsService.API.Helpers;
+using BoardGameMarket.ListingsService.Core.Application.Access.ListingGroups;
+using BoardGameMarket.ListingsService.Core.Application.Aggregates;
 using BoardGameMarket.ListingsService.Core.Application.Common;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
-using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
-using BoardGameMarket.ListingsService.Core.Application.Services.AggregateServices;
 using BoardGameMarket.ListingsService.Core.Domain.Aggragates;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using Microsoft.AspNetCore.Http;
@@ -16,20 +16,20 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 	[ApiController]
 	public class ListingGroupsController : ControllerBase
 	{
-		private IListingGroupGetterService _listingGroupGetterService;
-		private ListingGroupAggregateService _listingGroupAggregateService;
+		private IListingGroupReadService _listingGroupReadService;
+		private ListingGroupAggregateBuilder _listingGroupAggregateBuilder;
 
-		public ListingGroupsController(IListingGroupGetterService listingGroupGetterService, ListingGroupAggregateService listingGroupAggregateService)
+		public ListingGroupsController(IListingGroupReadService listingGroupReadService, ListingGroupAggregateBuilder listingGroupAggregateBuilder)
 		{
-			_listingGroupGetterService = listingGroupGetterService;
-			_listingGroupAggregateService = listingGroupAggregateService;
+			_listingGroupReadService = listingGroupReadService;
+			_listingGroupAggregateBuilder = listingGroupAggregateBuilder;
 		}
 
 		[HttpGet()]
 		public async Task<ActionResult<PagedResult<ListingGroupSummary>>> Get([FromQuery] string? cursor, [FromQuery] int pageSize = 10, [FromQuery] ListingGroupFilter? filter = null)
 		{
 			Cursor? cursorObject = CursorParser.Parse(cursor);
-			PagedResult<ListingGroupAggregate> listingGroups = await _listingGroupAggregateService.GetSummaryPageAsync(cursorObject, pageSize, filter);
+			PagedResult<ListingGroupAggregate> listingGroups = await _listingGroupAggregateBuilder.GetSummaryPageAsync(cursorObject, pageSize, filter);
 			IEnumerable<ListingGroupSummary> summaries = listingGroups.Items.Select(i => i.ToListingGroupSummary());
 
 			PagedResult<ListingGroupSummary> pagedResult = new PagedResult<ListingGroupSummary>()
@@ -48,7 +48,7 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 			ListingGroupAggregate? listingGroupAggregate;
 			try
 			{
-				listingGroupAggregate = await _listingGroupAggregateService.GetListingGroupAggregateAsync(listingGroupId, loadItems: true, loadQueues: false);
+				listingGroupAggregate = await _listingGroupAggregateBuilder.GetListingGroupAggregateAsync(listingGroupId, loadItems: true, loadQueues: false);
 
 
 				return Ok(listingGroupAggregate.ToListingGroupDetail());
@@ -62,7 +62,7 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		[HttpGet("{listingGroupId:guid}/ownership")]
 		public async Task<ActionResult<ListingGroupOwnershipInfo>> GetListingGroupOwnership(Guid listingGroupId)
 		{
-			ListingGroup? listingGroup = await _listingGroupGetterService.GetListingGroupByIdAsync(listingGroupId);
+			ListingGroup? listingGroup = await _listingGroupReadService.GetListingGroupByIdAsync(listingGroupId);
 			if (listingGroup == null)
 			{
 				return NotFound();

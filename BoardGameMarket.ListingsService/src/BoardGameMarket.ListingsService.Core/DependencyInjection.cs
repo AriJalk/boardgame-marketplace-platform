@@ -1,16 +1,11 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.Identity;
+﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingGroups;
+using BoardGameMarket.ListingsService.Core.Application.Access.ListingItems;
+using BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries;
+using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
+using BoardGameMarket.ListingsService.Core.Application.Access.ListingsSold;
+using BoardGameMarket.ListingsService.Core.Application.Aggregates;
+using BoardGameMarket.ListingsService.Core.Application.Identity;
 using BoardGameMarket.ListingsService.Core.Application.Queries;
-using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingGroups;
-using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingItems;
-using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingQueueEntries;
-using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
-using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.ListingsSold;
-using BoardGameMarket.ListingsService.Core.Application.Services.AggregateServices;
-using BoardGameMarket.ListingsService.Core.Application.Services.ListingGroups;
-using BoardGameMarket.ListingsService.Core.Application.Services.ListingItems;
-using BoardGameMarket.ListingsService.Core.Application.Services.ListingQueueEntries;
-using BoardGameMarket.ListingsService.Core.Application.Services.Listings;
-using BoardGameMarket.ListingsService.Core.Application.Services.ListingsSold;
 using BoardGameMarket.ListingsService.Core.Application.UseCases;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,38 +17,32 @@ namespace BoardGameMarket.ListingsService.Core
 		{
 
 			// Listing services
-			services.AddTransient<IListingAdderService, ListingAdderService>();
-			services.AddTransient<IListingGetterService, ListingGetterService>();
-			services.AddTransient<IListingUpdaterService, ListingUpdaterService>();
-			services.AddTransient<IListingDeleterService, ListingDeleterService>();
+			services.AddTransient<IListingWriteService, ListingWriteService>();
+			services.AddTransient<IListingReadService, ListingReadService>();
 
 			// ListingGroup services
-			services.AddTransient<IListingGroupAdderService, ListingGroupAdderService>();
-			services.AddTransient<IListingGroupGetterService, ListingGroupGetterService>();
-			services.AddTransient<IListingGroupUpdaterService, ListingGroupUpdaterService>();
-			services.AddTransient<IListingGroupDeleterService, ListingGroupDeleterService>();
+			services.AddTransient<IListingGroupReadService, ListingGroupReadService>();
+			services.AddTransient<IListingGroupWriteService, ListingGroupWriteService>();
 
 			// ListingItemInfo services
-			services.AddTransient<IListingItemAdderService, ListingItemAdderService>();
-			services.AddTransient<IListingItemGetterService, ListingItemGetterService>();
-			services.AddTransient<IListingItemDeleterService, ListingItemDeleterService>();
+			services.AddTransient<IListingItemWriteService, ListingItemWriteService>();
+			services.AddTransient<IListingItemReadService, ListingItemReadService>();
 
 			// ListingQueueEntry services
-			services.AddTransient<IListingQueueEntryAdderService, ListingQueueEntryAdderService>();
-			services.AddTransient<IListingQueueEntryGetterService, ListingQueueEntryGetterService>();
-			services.AddTransient<IListingQueueEntryUpdaterService, ListingQueueEntryUpdaterService>();
-			services.AddTransient<IListingQueueEntryDeleterService, ListingQueueEntryDeleterService>();
+			services.AddTransient<IListingQueueEntryWriteService, ListingQueueEntryWriteService>();
+			services.AddTransient<IListingQueueEntryReadService, ListingQueueEntryReadService>();
+
 
 			// ListingSold services
-			services.AddTransient<IListingSoldAdderService, ListingSoldAdderService>();
-			services.AddTransient<IListingSoldGetterService, ListingSoldGetterService>();
-			services.AddTransient<IListingSoldDeleterService, ListingSoldDeleterService>();
+			services.AddTransient<IListingSoldWriteService, ListingSoldWriteService>();
+			services.AddTransient<IListingSoldReadService, ListingSoldReadService>();
 
 
 			// Aggregates
-			services.AddScoped<ListingAggregateService>();
-			services.AddScoped<ListingGroupAggregateService>();
-			services.AddScoped<ListingQueueAggregateService>();
+			services.AddScoped<ListingAggregateBuilder>();
+			services.AddScoped<ListingGroupAggregateBuilder>();
+			services.AddScoped<ListingQueueAggregateBuilder>();
+
 
 			// Context
 			services.AddScoped<ICurrentUserContext, CurrentUserContext>();
@@ -64,6 +53,7 @@ namespace BoardGameMarket.ListingsService.Core
 
 			// Queries
 			services.AddScoped<ListingOwnershipQuery>();
+			services.AddScoped<SubscriptionQueries>();
 
 			return services;
 		}

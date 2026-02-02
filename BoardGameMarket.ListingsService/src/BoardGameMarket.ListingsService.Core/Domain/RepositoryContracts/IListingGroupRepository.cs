@@ -7,7 +7,8 @@ namespace BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts
 	public interface IListingGroupRepository
 	{
 		Task<ListingGroup?> GetListingGroupByIdAsync(Guid listingGroupId);
-		Task<ListingGroup?> GetListingsGroupByListingIdAsync(Guid listingId);
+		Task<IEnumerable<ListingGroup>> GetListingGroupsByIds(IEnumerable<Guid> listingGroupIds);
+		Task<ListingGroup?> GetListingGroupByListingIdAsync(Guid listingId);
 		Task<IEnumerable<ListingGroup>> GetListingGroupsBySellerUserId(Guid sellerUserId);
 		Task<ListingGroup?> AddListingGroupAsync(ListingGroup listingGroup);
 		Task<ListingGroup?> UpdateListingGroupAsync(ListingGroup listingGroup);

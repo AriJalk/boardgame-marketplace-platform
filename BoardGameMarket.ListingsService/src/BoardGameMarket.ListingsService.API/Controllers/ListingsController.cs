@@ -1,5 +1,5 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.ServiceContracts.Listings;
-using BoardGameMarket.ListingsService.Core.Application.Services.AggregateServices;
+﻿using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
+using BoardGameMarket.ListingsService.Core.Application.Aggregates;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.ListingsService.API.Controllers
@@ -8,13 +8,13 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 	[ApiController]
 	public class ListingsController : ControllerBase
 	{
-		private IListingGetterService _listingGetterService;
-		private ListingQueueAggregateService _listingQueueAggregateService;
+		private IListingReadService _listingReadService;
+		private ListingQueueAggregateBuilder _listingQueueAggregateBuilder;
 
-		public ListingsController(IListingGetterService listingGetterService, ListingQueueAggregateService listingQueueAggregateService)
+		public ListingsController(IListingReadService listingReadService, ListingQueueAggregateBuilder listingQueueAggregateBuilder)
 		{
-			_listingGetterService = listingGetterService;
-			_listingQueueAggregateService = listingQueueAggregateService;
+			_listingReadService = listingReadService;
+			_listingQueueAggregateBuilder = listingQueueAggregateBuilder;
 		}
 	}
 }

@@ -36,7 +36,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			return queue;
 		}
 
-		public async Task<ListingQueueEntryInfo?> GetSubscriptionByUserAsync(Guid listingId, Guid userId)
+		public async Task<ListingQueueEntryInfo?> GetSubscriptionForListing(Guid listingId, Guid userId)
 		{
 			string uri = $"api/listings/{listingId}/queue/subscription?userId={userId}";
 
@@ -72,6 +72,19 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			HttpResponseMessage response = await _httpClient.DeleteAsync(uri);
 
 			response.EnsureSuccessStatusCode();
+		}
+
+		public async Task<Guid[]> GetListingIdsBySubscribedUser(Guid userId)
+		{
+			string uri = $"api/subscriptions/listingGroups/subscribedUser/{userId}";
+
+			HttpResponseMessage response = await _httpClient.GetAsync(uri);
+
+			response.EnsureSuccessStatusCode();
+
+			Guid[] listingGuids = await response.Content.ReadFromJsonAsync<Guid[]>() ?? throw new InvalidOperationException("Listing Ids payload expected");
+
+			return listingGuids;
 		}
 	}
 }

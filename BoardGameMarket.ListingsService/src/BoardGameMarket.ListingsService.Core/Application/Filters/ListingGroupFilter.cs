@@ -12,5 +12,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.Filters
 		public Guid? CatalogId { get; set; }
 		public string? Location { get; set; }
 		public IEnumerable<Guid>? ListingGroupIds { get; set; }
+		public IEnumerable<Guid>? ListingIds { get; set; }
 	}
 }
