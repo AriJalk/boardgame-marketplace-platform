@@ -17,10 +17,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingGroups
 			_listingGroupRepository = listingGroupRepository;
 		}
 
-		public Task<PagedResult<ListingGroup>> GetFilteredListingGroupsPageAsync(Cursor? cursor, int pageSize, ListingGroupFilter? filter)
+		public async Task<IEnumerable<ListingGroup>> GetFilteredListingGroups(ListingGroupFilter filter)
 		{
-			throw new NotImplementedException();
+			return await _listingGroupRepository.GetFilteredListingGroupsAsync(filter);
 		}
+
 
 		public async Task<ListingGroup?> GetListingGroupByIdAsync(Guid listingGroupId)
 		{

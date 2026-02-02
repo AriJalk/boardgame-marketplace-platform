@@ -1,6 +1,7 @@
 ﻿using BoardGameMarket.MarketGateway.API.Application.Common;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Dtos;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Filters;
+using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Mappers;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.UseCases;
 using Microsoft.AspNetCore.Mvc;
@@ -11,15 +12,15 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 	[ApiController]
 	public class ListingGroupsController : ControllerBase
 	{
-		private readonly ListingGroupsDataService _listingGroupsService;
 		private readonly GetListingGroupDetailUseCase _getListingGroupDetailUseCase;
 		private readonly GetListingGroupSummaryPageUseCase _getListingGroupSummaryPageUseCase;
+		private readonly GetFilteredListingGroupSummariesUseCase _getFilteredListingGroupSummaries;
 
-		public ListingGroupsController(ListingGroupsDataService listingGroupsService, GetListingGroupDetailUseCase getListingGroupDetailUseCase, GetListingGroupSummaryPageUseCase getListingGroupSummaryPageUseCase)
+		public ListingGroupsController(GetListingGroupDetailUseCase getListingGroupDetailUseCase, GetListingGroupSummaryPageUseCase getListingGroupSummaryPageUseCase, GetFilteredListingGroupSummariesUseCase getFilteredListingGroupSummaries)
 		{
-			_listingGroupsService = listingGroupsService;
 			_getListingGroupDetailUseCase = getListingGroupDetailUseCase;
 			_getListingGroupSummaryPageUseCase = getListingGroupSummaryPageUseCase;
+			_getFilteredListingGroupSummaries = getFilteredListingGroupSummaries;
 		}
 
 		[HttpGet("{listingGroupId:guid}/detail")]
@@ -30,19 +31,19 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		}
 
 
-
-		[HttpGet("{listingGroupId:guid}/summary")]
-		public IActionResult GetListingGroupSummary(Guid listingGroupId)
+		[HttpPost("page")]
+		public async Task<ActionResult<PagedResult<ListingGroupSummaryDto>>> GetSummaryPage([FromBody] PagedListingGroupQuery query)
 		{
-			return Ok();
-		}
-
-		[HttpGet()]
-		public async Task<ActionResult<PagedResult<ListingGroupSummaryDto>>> GetSummaryPage([FromQuery] int pageSize = 10, [FromQuery] string? cursor = null, [FromQuery] ListingGroupFilter? filter = null)
-		{
-			PagedResult<ListingGroupSummaryDto> page = await _getListingGroupSummaryPageUseCase.ExecuteAsync(pageSize, cursor, filter);
+			PagedResult<ListingGroupSummaryDto> page = await _getListingGroupSummaryPageUseCase.ExecuteAsync(query);
 
 			return Ok(page);
+		}
+
+		[HttpPost("filtered")]
+		public async Task<ActionResult<ListingGroupSummaryDto[]>> GetFilteredListingGroupos([FromBody] ListingGroupFilter filter)
+		{
+			ListingGroupSummaryDto[] listingGroups = await _getFilteredListingGroupSummaries.ExecuteAsync(filter);
+			return Ok(listingGroups);
 		}
 	}
 }

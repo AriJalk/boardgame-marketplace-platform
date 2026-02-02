@@ -25,7 +25,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingGroups
 
 		public async Task<bool> DeleteListingGroup(Guid listingGroupId)
 		{
-			return await _listingGroupRepository.DeleteListingGroup(listingGroupId);
+			return await _listingGroupRepository.DeleteListingGroupAsync(listingGroupId);
 		}
 
 

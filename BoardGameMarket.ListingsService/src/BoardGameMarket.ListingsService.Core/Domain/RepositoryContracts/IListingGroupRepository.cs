@@ -12,7 +12,8 @@ namespace BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts
 		Task<IEnumerable<ListingGroup>> GetListingGroupsBySellerUserId(Guid sellerUserId);
 		Task<ListingGroup?> AddListingGroupAsync(ListingGroup listingGroup);
 		Task<ListingGroup?> UpdateListingGroupAsync(ListingGroup listingGroup);
-		Task<bool> DeleteListingGroup(Guid listingGroupId);
+		Task<bool> DeleteListingGroupAsync(Guid listingGroupId);
 		Task<PagedResult<ListingGroup>> GetListingGroupsPageAsync(Cursor? cursor, int pageSize, ListingGroupFilter? filter);
+		Task<IEnumerable<ListingGroup>> GetFilteredListingGroupsAsync(ListingGroupFilter filter);
 	}
 }

@@ -6,6 +6,7 @@ import { ListingGroupDetails, ListingGroupSummary } from '../models/listing-grou
 import { Observable } from 'rxjs';
 import { PagedResult } from '../../../common/paged-result';
 import { AuthStubService } from '../../../core/auth/auth-stub.service';
+import { PagedListingGroupQuery } from '../models/listing-group-queries';
 
 @Injectable({
   providedIn: 'root',
@@ -23,14 +24,18 @@ export class ListingGroupService {
   }
 
   getListingGroupSummariesPage(): Observable<PagedResult<ListingGroupSummary>> {
-    return this.httpClient.get<PagedResult<ListingGroupSummary>>(
-      `${this.apiConfig.apiEndpoint}/listingGroups?pageSize=50`,
+    const query: PagedListingGroupQuery = {
+      pageSize: 10,
+    };
+    return this.httpClient.post<PagedResult<ListingGroupSummary>>(
+      `${this.apiConfig.apiEndpoint}/listingGroups/page`,
+      query,
     );
   }
 
-  getSubscribedListingGroupsPage(): Observable<PagedResult<ListingGroupSummary>> {
+  getSubscribedListingGroups(): Observable<ListingGroupSummary[]> {
     const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
-    return this.httpClient.get<PagedResult<ListingGroupSummary>>(
+    return this.httpClient.get<ListingGroupSummary[]>(
       `${this.apiConfig.apiEndpoint}/subscriptions/listingGroups`,
       { headers: headers },
     );

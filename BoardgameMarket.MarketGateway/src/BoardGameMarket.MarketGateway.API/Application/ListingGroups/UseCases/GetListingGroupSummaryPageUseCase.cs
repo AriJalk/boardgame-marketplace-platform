@@ -22,9 +22,9 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.UseCases
 			_usersService = usersService;
 		}
 
-		public async Task<PagedResult<ListingGroupSummaryDto>> ExecuteAsync(int pageSize, string? cursor, ListingGroupFilter? filter)
+		public async Task<PagedResult<ListingGroupSummaryDto>> ExecuteAsync(PagedListingGroupQuery query)
 		{
-			PagedResult<ListingGroupSummary> listingGroupPagedResult = await _listingGroupsService.GetListingGroupsSummaryPage(pageSize, cursor, filter);
+			PagedResult<ListingGroupSummary> listingGroupPagedResult = await _listingGroupsService.GetListingGroupsSummaryPage(query);
 
 			List<ListingGroupSummaryDto> listingGroupDtos = new List<ListingGroupSummaryDto>();
 			foreach (ListingGroupSummary listingGroup in listingGroupPagedResult.Items)

@@ -25,11 +25,11 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 			_listingGroupAggregateBuilder = listingGroupAggregateBuilder;
 		}
 
-		[HttpGet()]
-		public async Task<ActionResult<PagedResult<ListingGroupSummary>>> Get([FromQuery] string? cursor, [FromQuery] int pageSize = 10, [FromQuery] ListingGroupFilter? filter = null)
+		[HttpPost("page")]
+		public async Task<ActionResult<PagedResult<ListingGroupSummary>>> GetPagedListingGroups([FromBody] PagedListingGroupQuery query)
 		{
-			Cursor? cursorObject = CursorParser.Parse(cursor);
-			PagedResult<ListingGroupAggregate> listingGroups = await _listingGroupAggregateBuilder.GetSummaryPageAsync(cursorObject, pageSize, filter);
+			Cursor? cursorObject = CursorParser.Parse(query.Cursor);
+			PagedResult<ListingGroupAggregate> listingGroups = await _listingGroupAggregateBuilder.GetSummaryPageAsync(cursorObject, query.PageSize, query.Filter);
 			IEnumerable<ListingGroupSummary> summaries = listingGroups.Items.Select(i => i.ToListingGroupSummary());
 
 			PagedResult<ListingGroupSummary> pagedResult = new PagedResult<ListingGroupSummary>()
@@ -39,6 +39,15 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 			};
 
 			return Ok(pagedResult);
+		}
+
+		[HttpPost("filtered")]
+		public async Task<ActionResult<ListingGroupSummary>> GetFilteredListingGroups([FromBody] ListingGroupFilter filter)
+		{
+			IReadOnlyCollection<ListingGroupAggregate> listingGroups = await _listingGroupAggregateBuilder.GetFilteredListingGroups(filter);
+			IEnumerable<ListingGroupSummary> summaries = listingGroups.Select(lg => lg.ToListingGroupSummary());
+
+			return Ok(summaries);
 		}
 
 

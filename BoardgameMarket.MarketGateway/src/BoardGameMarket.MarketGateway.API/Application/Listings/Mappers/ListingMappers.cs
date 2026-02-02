@@ -8,17 +8,17 @@ namespace BoardGameMarket.MarketGateway.API.Application.Listings.Mappers
 	{
 		public static ListingSummaryDto ToListingSummaryDto(this ListingInGroupSummary listing)
 		{
-			return new ListingSummaryDto(listing.Id, listing.Title, listing.Price, listing.Details, listing.Status);
+			return new ListingSummaryDto(listing.Id, listing.Title, listing.Price, listing.Details, listing.Status, null);
 		}
 
 		public static ListingDetailDto ToListingDetailDto(this ListingInGroupDetail listing, IEnumerable<ListingItemDto> listingItems)
 		{
-			return new ListingDetailDto(listing.Id, listing.Title, listing.Price, listing.Details, listingItems.ToArray(), listing.Status);
+			return new ListingDetailDto(listing.Id, listing.Title, listing.Price, listing.Details, listingItems.ToArray(), listing.Status, null);
 		}
 
 		public static ListingDetailDto ToListingDetailDto(this ListingDetail listing, IEnumerable<ListingItemDto> listingItems)
 		{
-			return new ListingDetailDto(listing.Id, listing.Title, listing.Price, listing.Details, listingItems.ToArray(), listing.Status);
+			return new ListingDetailDto(listing.Id, listing.Title, listing.Price, listing.Details, listingItems.ToArray(), listing.Status, null);
 		}
 	}
 }

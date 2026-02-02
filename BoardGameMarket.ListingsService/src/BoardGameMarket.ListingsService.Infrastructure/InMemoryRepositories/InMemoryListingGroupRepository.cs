@@ -1,8 +1,9 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.Filters;
-using BoardGameMarket.ListingsService.Core.Application.Common;
+﻿using BoardGameMarket.ListingsService.Core.Application.Common;
+using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,13 +40,35 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 				NextCursor = nextCursor
 			};
 		}
+
+		private IEnumerable<ListingGroup> QueryListingGroup(IEnumerable<ListingGroup> query, ListingGroupFilter filter)
+		{
+			if (filter.SellerUserId.HasValue)
+			{
+				query = query.Where(g => g.SellerUserId == filter.SellerUserId.Value);
+			}
+
+			if (!string.IsNullOrEmpty(filter.Location))
+			{
+				query = query.Where(g => g.Location == filter.Location);
+			}
+
+			if (filter.ListingGroupIds != null)
+			{
+				IEnumerable<Guid> distinctIds = filter.ListingGroupIds.Distinct();
+				query = query.Where(g => distinctIds.Contains(g.Id));
+			}
+
+			return query;
+		}
+
 		public Task<ListingGroup?> AddListingGroupAsync(ListingGroup listingGroup)
 		{
 			_listingGroups.Add(listingGroup);
 			return Task.FromResult(listingGroup);
 		}
 
-		public Task<bool> DeleteListingGroup(Guid listingGroupId)
+		public Task<bool> DeleteListingGroupAsync(Guid listingGroupId)
 		{
 			ListingGroup? listingGroup = _listingGroups.FirstOrDefault(l => l.Id == listingGroupId);
 			if (listingGroup == null)
@@ -71,21 +94,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 			IEnumerable<ListingGroup> query = _listingGroups;
 			if (filter != null)
 			{
-				if (filter.SellerUserId.HasValue)
-				{
-					query = query.Where(g => g.SellerUserId == filter.SellerUserId.Value);
-				}
-
-				if (!string.IsNullOrEmpty(filter.Location))
-				{
-					query = query.Where(g => g.Location == filter.Location);
-				}
-
-				if (filter.ListingGroupIds != null)
-				{
-					IEnumerable<Guid> distinctIds = filter.ListingGroupIds.Distinct();
-					query = query.Where(g => distinctIds.Contains(g.Id));
-				}
+				query = QueryListingGroup(query, filter);
 			}
 
 			List<ListingGroup> ordered = query.OrderByDescending(g => g.CreatedAt).ThenByDescending(g => g.Id).ToList();
@@ -108,6 +117,13 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 		public Task<IEnumerable<ListingGroup>> GetListingGroupsByIds(IEnumerable<Guid> listingGroupIds)
 		{
 			return Task.FromResult(_listingGroups.Where(lg => listingGroupIds.Contains(lg.Id)));
+		}
+
+		public Task<IEnumerable<ListingGroup>> GetFilteredListingGroupsAsync(ListingGroupFilter filter)
+		{
+			IEnumerable<ListingGroup> query = QueryListingGroup(_listingGroups, filter);
+			List<ListingGroup> ordered = query.OrderByDescending(g => g.CreatedAt).ThenByDescending(g => g.Id).ToList();
+			return Task.FromResult(query);
 		}
 	}
 }

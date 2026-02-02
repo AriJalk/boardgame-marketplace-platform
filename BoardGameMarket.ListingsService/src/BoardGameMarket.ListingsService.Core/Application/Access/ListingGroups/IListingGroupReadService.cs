@@ -10,5 +10,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingGroups
 		Task<IEnumerable<ListingGroup>> GetListingGroupsByIdsAsync(IEnumerable<Guid> listingGroupIds);
 		Task<IEnumerable<ListingGroup>> GetListingGroupsBySellerUserIdAsync(Guid sellerUserId);
 		Task<PagedResult<ListingGroup>> GetListingGroupsPageAsync(Cursor? cursor, int pageSize, ListingGroupFilter? filter = null);
+		Task<IEnumerable<ListingGroup>> GetFilteredListingGroups(ListingGroupFilter filter);
 	}
 }

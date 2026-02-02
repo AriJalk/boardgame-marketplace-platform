@@ -42,6 +42,7 @@ namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 			// Use Cases
 			services.AddScoped<GetListingGroupDetailUseCase>();
 			services.AddScoped<GetListingGroupSummaryPageUseCase>();
+			services.AddScoped<GetFilteredListingGroupSummariesUseCase>();
 
 			services.AddScoped<GetListingQueueUseCase>();
 			services.AddScoped<GetListingQueueEntryUseCase>();

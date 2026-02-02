@@ -12,7 +12,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 			throw new NotImplementedException();
 		}
 
-		public Task<bool> DeleteListingGroup(Guid listingGroupId)
+		public Task<bool> DeleteListingGroupAsync(Guid listingGroupId)
 		{
 			throw new NotImplementedException();
 		}
@@ -43,6 +43,11 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 		}
 
 		public Task<ListingGroup?> UpdateListingGroupAsync(ListingGroup listingGroup)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<IEnumerable<ListingGroup>> GetFilteredListingGroupsAsync(ListingGroupFilter filter)
 		{
 			throw new NotImplementedException();
 		}

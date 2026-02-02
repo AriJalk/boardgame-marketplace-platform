@@ -62,5 +62,29 @@ namespace BoardGameMarket.ListingsService.Core.Application.Aggregates
 
 			return new PagedResult<ListingGroupAggregate>() { Items = listingGroupAggregates, NextCursor = page.NextCursor };
 		}
+
+		public async Task<IReadOnlyCollection<ListingGroupAggregate>> GetFilteredListingGroups(ListingGroupFilter filter)
+		{
+			if (filter.ListingIds != null && filter.ListingIds.Any())
+			{
+				IEnumerable<Guid> listingGroupIdsFromListings = await _listingReadService
+					.GetListingsByIdsAsync(filter.ListingIds)
+					.ContinueWith(t => t.Result.Select(l => l.ListingGroupId));
+				filter.ListingGroupIds = (filter.ListingGroupIds ?? Enumerable.Empty<Guid>())
+					.Concat(listingGroupIdsFromListings)
+					.Distinct();
+			}
+
+			 IEnumerable<ListingGroup> filteredListingGroups = await _listingGroupReadService.GetFilteredListingGroups(filter);
+
+			ListingGroupAggregate[] listingGroupAggregates = await Task.WhenAll(filteredListingGroups.Select(async lg => 
+			{
+				IEnumerable<ListingAggregate> listingAggregates = await _listingAggregateBuilder.GetListingAggregatesByListingGroupIdAsync(lg.Id, loadItems: false, loadQueue: false);
+
+				return new ListingGroupAggregate(lg, listingAggregates.ToArray());
+			}));
+
+			return listingGroupAggregates;
+		}
 	}
 }

@@ -31,7 +31,7 @@ export class ListingGroupsPage implements OnInit {
     this.listingGroups$ = this.listingGroupService.getListingGroupSummariesPage();
     this.user = this.authService.loggedInUser;
 
-    this.listingGroupService.getSubscribedListingGroupsPage().subscribe((data) => {
+    this.listingGroupService.getSubscribedListingGroups().subscribe((data) => {
       console.log(data);
     });
   }

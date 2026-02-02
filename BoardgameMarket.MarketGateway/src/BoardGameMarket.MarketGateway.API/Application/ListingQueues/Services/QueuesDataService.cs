@@ -74,9 +74,9 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			response.EnsureSuccessStatusCode();
 		}
 
-		public async Task<Guid[]> GetListingIdsBySubscribedUser(Guid userId)
+		public async Task<Guid[]> GetSubscribedListingIds(Guid userId)
 		{
-			string uri = $"api/subscriptions/listingGroups/subscribedUser/{userId}";
+			string uri = $"api/subscriptions/users/{userId}/listings";
 
 			HttpResponseMessage response = await _httpClient.GetAsync(uri);
 

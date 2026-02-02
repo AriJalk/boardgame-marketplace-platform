@@ -17,23 +17,12 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 			_httpClient = httpClient.HttpClient;
 		}
 
-		public async Task<PagedResult<ListingGroupSummary>> GetListingGroupsSummaryPage(int pageSize = 10, string? cursor = null, ListingGroupFilter? filter = null)
+		public async Task<PagedResult<ListingGroupSummary>> GetListingGroupsSummaryPage(PagedListingGroupQuery query)
 		{
-			NameValueCollection query = HttpUtility.ParseQueryString(string.Empty);
 
-			query["pageSize"] = pageSize.ToString();
-			if (cursor != null)
-			{
-				query["cursor"] = cursor;
-			}
-			if (filter?.SellerUserId != null)
-			{
-				query["sellerUserId"] = filter.SellerUserId.ToString();
-			}
+			string uri = $"api/listingGroups/page";
 
-			string uri = $"api/listingGroups?{query.ToString()}";
-
-			HttpResponseMessage response = await _httpClient.GetAsync(uri);
+			HttpResponseMessage response = await _httpClient.PostAsJsonAsync(uri, query);
 
 			if (response.StatusCode == HttpStatusCode.NotFound)
 			{
@@ -49,6 +38,28 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 				throw new InvalidDataException();
 			}
 			return pagedResult;
+		}
+
+		public async Task<ListingGroupSummary[]> GetFilteredListingGroupSummaries(ListingGroupFilter filter)
+		{
+			string uri = $"api/listingGroups/filtered";
+
+			HttpResponseMessage response = await _httpClient.PostAsJsonAsync(uri, filter);
+
+			if (response.StatusCode == HttpStatusCode.NotFound)
+			{
+				throw new KeyNotFoundException();
+			}
+
+			response.EnsureSuccessStatusCode();
+
+			ListingGroupSummary[]? result = await response.Content.ReadFromJsonAsync<ListingGroupSummary[]>();
+
+			if (result == null)
+			{
+				throw new InvalidDataException();
+			}
+			return result;
 		}
 
 		public async Task<ListingGroupDetail> GetListingGroupDetail(Guid listingGroupId)

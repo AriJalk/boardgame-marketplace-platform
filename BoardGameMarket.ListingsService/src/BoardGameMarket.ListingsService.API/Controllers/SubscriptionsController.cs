@@ -1,4 +1,5 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries;
+using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.Queries;
 using BoardGameMarket.ListingsService.Core.Domain.Aggragates;
@@ -21,10 +22,10 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 			_logger = logger;
 		}
 
-		[HttpGet("listingGroups/subscribedUser/{userId:guid}")]
-		public async Task<ActionResult<Guid[]>> GetListingIdsBySubscribedUserId(Guid userId)
+		[HttpGet("users/{userId:guid}/listings")]
+		public async Task<ActionResult<Guid[]>> GetSubscribedListingIds(Guid userId)
 		{
-			_logger.LogInformation($"{nameof(SubscriptionsController)}/{nameof(GetListingIdsBySubscribedUserId)}: user-{userId}");
+			_logger.LogInformation($"{nameof(SubscriptionsController)}/{nameof(GetSubscribedListingIds)}: user-{userId}");
 			IReadOnlyCollection<Guid> listingIds = await _subscriptionQueries.GetListingsBySubscribedUser(userId);
 
 			return Ok(listingIds);
