@@ -24,12 +24,14 @@ export class ListingGroupService {
   }
 
   getListingGroupSummariesPage(): Observable<PagedResult<ListingGroupSummary>> {
+    const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     const query: PagedListingGroupQuery = {
       pageSize: 10,
     };
     return this.httpClient.post<PagedResult<ListingGroupSummary>>(
       `${this.apiConfig.apiEndpoint}/listingGroups/page`,
       query,
+      { headers: headers },
     );
   }
 

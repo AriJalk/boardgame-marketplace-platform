@@ -7,8 +7,11 @@ using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.UseCases;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services;
 using BoardGameMarket.MarketGateway.API.Application.Listings.Dtos.Listings;
+using BoardGameMarket.MarketGateway.API.Application.Listings.Enums;
+using BoardGameMarket.MarketGateway.API.Application.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
 {
@@ -16,16 +19,15 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 	[ApiController]
 	public class SubscriptionsController : ControllerBase
 	{
-		private QueuesDataService _queueService;
-		private readonly GetListingGroupSummaryPageUseCase _getListingGroupSummaryPageUseCase;
+		private readonly QueuesDataService _queueService;
 		private readonly GetFilteredListingGroupSummariesUseCase _getFilteredListingGroupSummariesUseCase;
 
-		public SubscriptionsController(QueuesDataService queueService, GetListingGroupSummaryPageUseCase getListingGroupSummaryPageUseCase, GetFilteredListingGroupSummariesUseCase getFilteredListingGroupSummariesUseCase)
+		public SubscriptionsController(QueuesDataService queueService, GetFilteredListingGroupSummariesUseCase getFilteredListingGroupSummariesUseCase)
 		{
 			_queueService = queueService;
-			_getListingGroupSummaryPageUseCase = getListingGroupSummaryPageUseCase;
 			_getFilteredListingGroupSummariesUseCase = getFilteredListingGroupSummariesUseCase;
 		}
+
 
 		[HttpGet("listingGroups")]
 		public async Task<ActionResult<ListingGroupSummaryDto[]>> GetListingGroupsBySubscriber()
@@ -37,13 +39,26 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 				return BadRequest();
 			}
 
-			Guid[] listingIds = await _queueService.GetSubscribedListingIds(userId);
+			Guid[] subscribedListingIds = await _queueService.GetSubscribedListingIdsAsync(userId);
+			HashSet<Guid> hashedSubscribedListingIds = subscribedListingIds.ToHashSet();
+
 			ListingGroupFilter filter = new ListingGroupFilter()
 			{
-				ListingIds = listingIds,
+				ListingIds = subscribedListingIds,
 			};
 
 			ListingGroupSummaryDto[] listingGroups = await _getFilteredListingGroupSummariesUseCase.ExecuteAsync(filter);
+
+			listingGroups = listingGroups.Select(lg =>
+			{
+				ListingSummaryDto[] enrichedListings = ListingGroupEnricher.EnrichListingDtosWithSubscription(lg.Listings, hashedSubscribedListingIds);
+				return (
+				Group: lg with { Listings = enrichedListings },
+				HasSubscribed: enrichedListings.Any(l => l.IsSubscribed == true && l.Status == ListingStatus.Active));
+			})
+				.Where(x => x.HasSubscribed)
+				.Select(x => x.Group)
+				.ToArray();
 
 			return Ok(listingGroups);
 		}

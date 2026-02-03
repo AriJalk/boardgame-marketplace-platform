@@ -1,4 +1,5 @@
-﻿using BoardGameMarket.ListingsService.Core.Domain.Entities;
+﻿using BoardGameMarket.ListingsService.Core.Application.Filters;
+using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using System;
 using System.Collections.Generic;
@@ -25,32 +26,17 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 			throw new NotImplementedException();
 		}
 
-		public Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesBySubscribedUserId(Guid buyerUserId)
-		{
-			throw new NotImplementedException();
-		}
-
-		public Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesByListingIdAsync(Guid listingId)
-		{
-			throw new NotImplementedException();
-		}
-
-		public Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesByListingIdsAsync(IEnumerable<Guid> listingIds)
-		{
-			throw new NotImplementedException();
-		}
-
 		public Task<ListingQueueEntry?> GetListingQueueEntryByIdAsync(Guid listingQueueEntryId)
 		{
 			throw new NotImplementedException();
 		}
 
-		public Task<ListingQueueEntry?> GetListingQueueEntryByListingIdAndBuyerUserId(Guid listingId, Guid buyerUserId)
+		public Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntry)
 		{
 			throw new NotImplementedException();
 		}
 
-		public Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntry)
+		public Task<IEnumerable<ListingQueueEntry>> GetFilteredListingQueueEntriesAsync(ListingQueueEntryFilter filter)
 		{
 			throw new NotImplementedException();
 		}

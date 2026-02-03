@@ -12,10 +12,10 @@ namespace BoardGameMarket.ListingsService.Core.Domain.Aggragates
 		private readonly IReadOnlyCollection<ListingItem>? _items;
 		public IReadOnlyCollection<ListingItem> Items => _items ?? throw new InvalidOperationException("Listing items not loaded");
 
-		private readonly IReadOnlyCollection<ListingQueueEntry>? _queue;
-		public IReadOnlyCollection<ListingQueueEntry> Queue => _queue ?? throw new InvalidOperationException("Queue not loaded");
+		private readonly ListingQueueAggregate? _queue;
+		public ListingQueueAggregate Queue => _queue ?? throw new InvalidOperationException("Queue not loaded");
 
-		public ListingAggregate(Listing listing, IReadOnlyCollection<ListingItem>? items = null, IReadOnlyCollection<ListingQueueEntry>? queue = null)
+		public ListingAggregate(Listing listing, IReadOnlyCollection<ListingItem>? items = null, ListingQueueAggregate? queue = null)
 		{
 			Listing = listing;
 			_items = items;

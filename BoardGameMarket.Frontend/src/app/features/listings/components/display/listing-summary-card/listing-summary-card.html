@@ -1,2 +1,9 @@
-<h3>{{ listing.title }}</h3>
-<h3>{{ listing.price | currency }}</h3>
+@if (listing.isSubscribed === true && listing.status == 'active') {
+  <div style="color: coral;">
+    <h3>{{ listing.title }}</h3>
+    <h3>{{ listing.price | currency }}</h3>
+  </div>
+} @else {
+  <h3>{{ listing.title }}</h3>
+  <h3>{{ listing.price | currency }}</h3>
+}

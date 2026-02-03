@@ -1,6 +1,8 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries;
+using BoardGameMarket.ListingsService.Core.Application.Aggregates;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
+using BoardGameMarket.ListingsService.Core.Domain.Aggragates;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,27 +12,19 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases
 {
 	public class GetQueueUseCase
 	{
-		private readonly IListingQueueEntryReadService _listingQueueEntryReadService;
+		private readonly ListingQueueAggregateBuilder _listingQueueAggregateBuilder;
 
-		public GetQueueUseCase(IListingQueueEntryReadService listingQueueEntryReadService)
+		public GetQueueUseCase(ListingQueueAggregateBuilder listingQueueAggregateBuilder)
 		{
-			_listingQueueEntryReadService = listingQueueEntryReadService;
+			_listingQueueAggregateBuilder = listingQueueAggregateBuilder;
 		}
 
 		public async Task<ListingQueueInfo> Execute(Guid listingId)
 		{
-			IEnumerable<ListingQueueEntry> allEntries = await _listingQueueEntryReadService.GetListingQueueEntriesByListingIdAsync(listingId);
+			ListingQueueAggregate listingQueueAggregate = await _listingQueueAggregateBuilder.GetListingQueueAggregate(listingId);
 
-			ListingQueueEntryInfo[] queueByTime = allEntries
-				.OrderBy(qe => qe.CreatedAt)
-				.Select(qe => qe.ToListingQueueEntryInfo())
-				.ToArray();
-
-			ListingQueueEntryInfo[] queueByPriority = allEntries
-				.Where(qe => qe.Priority != null)
-				.OrderBy(qe => qe.Priority)
-				.Select(qe => qe.ToListingQueueEntryInfo())
-				.ToArray();
+			ListingQueueEntryInfo[] queueByTime = listingQueueAggregate.QueueByTime.Select(qe => qe.ToListingQueueEntryInfo()).ToArray();
+			ListingQueueEntryInfo[] queueByPriority = listingQueueAggregate.QueueByPriority.Select(qe => qe.ToListingQueueEntryInfo()).ToArray();
 
 			return new ListingQueueInfo(queueByTime, queueByPriority);
 		}

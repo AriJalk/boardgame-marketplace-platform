@@ -2,6 +2,7 @@
 using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Commands;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingQueueEntries;
+using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.Queries;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
@@ -46,7 +47,12 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases
 				throw new InvalidOperationException("Listing is not active");
 			}
 
-			ListingQueueEntry? queueEntryFromService = await _listingQueueEntryReadService.GetListingQueueEntryByListingIdAndUserId(listingId, request.UserId);
+			ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
+			{
+				UserId = request.UserId,
+				ListingIds = new List<Guid> { listingId }
+			};
+			ListingQueueEntry? queueEntryFromService = (await _listingQueueEntryReadService.GetFilteredListingQueueEntriesAsync(filter)).FirstOrDefault();
 			if (queueEntryFromService != null)
 			{
 				return queueEntryFromService.ToListingQueueEntryInfo();

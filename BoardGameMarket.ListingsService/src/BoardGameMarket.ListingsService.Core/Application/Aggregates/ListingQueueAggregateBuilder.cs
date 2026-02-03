@@ -1,4 +1,5 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries;
+using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Domain.Aggragates;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using System;
@@ -17,9 +18,14 @@ namespace BoardGameMarket.ListingsService.Core.Application.Aggregates
 			_listingQueueEntryReadService = listingQueueEntryReadService;
 		}
 
+		//TODO: batch with grouping
 		public async Task<ListingQueueAggregate> GetListingQueueAggregate(Guid listingId)
 		{
-			IEnumerable<ListingQueueEntry> allEntries = await _listingQueueEntryReadService.GetListingQueueEntriesByListingIdAsync(listingId);
+			ListingQueueEntryFilter filter = new ListingQueueEntryFilter() 
+			{
+				ListingIds = new List<Guid> { listingId },
+			};
+			IEnumerable<ListingQueueEntry> allEntries = await _listingQueueEntryReadService.GetFilteredListingQueueEntriesAsync(filter);
 
 			IReadOnlyCollection<ListingQueueEntry> queueByTime = allEntries.OrderBy(qe => qe.CreatedAt).ToList().AsReadOnly();
 

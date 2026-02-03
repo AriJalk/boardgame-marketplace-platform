@@ -13,33 +13,34 @@ namespace BoardGameMarket.ListingsService.Core.Application.Aggregates
 	{
 		private IListingReadService _listingReadService;
 		private IListingItemReadService _listingItemReadService;
-		private IListingQueueEntryReadService _listingQueueEntryReadService;
+		private ListingQueueAggregateBuilder _listingQueueAggregateBuilder;
 
-		public ListingAggregateBuilder(IListingReadService listingReadService, IListingItemReadService listingItemReadService, IListingQueueEntryReadService listingQueueEntryReadService)
+		public ListingAggregateBuilder(IListingReadService listingReadService, IListingItemReadService listingItemReadService, ListingQueueAggregateBuilder listingQueueAggregateBuilder)
 		{
 			_listingReadService = listingReadService;
 			_listingItemReadService = listingItemReadService;
-			_listingQueueEntryReadService = listingQueueEntryReadService;
+			_listingQueueAggregateBuilder = listingQueueAggregateBuilder;
 		}
 
 		async Task<IEnumerable<ListingItem>> LoadItemsAsync(Guid listingId)
 		{
-			return (await _listingItemReadService.GetListingItemsByListingIdAsync(listingId));
+			return await _listingItemReadService.GetListingItemsByListingIdAsync(listingId);
 		}
 
-		async Task<IEnumerable<ListingQueueEntry>> LoadQueueAsync(Guid listingId) {
-			return (await _listingQueueEntryReadService.GetListingQueueEntriesByListingIdAsync(listingId));
+		async Task<ListingQueueAggregate> LoadQueueAsync(Guid listingId)
+		{
+			return (await _listingQueueAggregateBuilder.GetListingQueueAggregate(listingId));
 		}
 
 		private async Task<ListingAggregate> BuildListingAggregateAsync(Listing listing, bool loadItems, bool loadQueue)
 		{
 			Task<IEnumerable<ListingItem>>? itemsTask = loadItems ? LoadItemsAsync(listing.Id) : null;
 
-			Task<IEnumerable<ListingQueueEntry>>? queueTask = loadQueue ? LoadQueueAsync(listing.Id) : null;
+			Task<ListingQueueAggregate>? queueTask = loadQueue ? LoadQueueAsync(listing.Id) : null;
 
 			await Task.WhenAll(itemsTask ?? Task.CompletedTask, queueTask ?? Task.CompletedTask);
 
-			return new ListingAggregate(listing, itemsTask?.Result.ToList().AsReadOnly(), queueTask?.Result.ToList().AsReadOnly());
+			return new ListingAggregate(listing, itemsTask?.Result.ToList().AsReadOnly(), queueTask?.Result);
 		}
 
 
@@ -75,7 +76,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Aggregates
 				}
 				finally
 				{
-					semaphore.Release(); 
+					semaphore.Release();
 				}
 			});
 

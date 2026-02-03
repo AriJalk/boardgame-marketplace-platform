@@ -1,5 +1,6 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingQueueEntries;
+using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.UseCases;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
@@ -35,7 +36,12 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		[HttpGet("subscription")]
 		public async Task<ActionResult<ListingQueueEntryInfo>> GetSubscription(Guid listingId, [FromQuery] Guid userId)
 		{
-			ListingQueueEntry? queueEntry = await _listingQueueReadService.GetListingQueueEntryByListingIdAndUserId(listingId, userId);
+			ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
+			{
+				UserId = userId,
+				ListingIds = new List<Guid> { listingId },
+			};
+			ListingQueueEntry? queueEntry = (await _listingQueueReadService.GetFilteredListingQueueEntriesAsync(filter)).FirstOrDefault();
 			if (queueEntry == null)
 			{
 				return NoContent();

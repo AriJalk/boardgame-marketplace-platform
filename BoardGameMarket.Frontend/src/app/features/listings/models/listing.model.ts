@@ -6,7 +6,7 @@ export interface ListingSummary {
   price: number;
   status: string;
   details?: string;
-  isSubscribe?: boolean;
+  isSubscribed?: boolean;
 }
 
 export interface ListingDetail extends ListingSummary {

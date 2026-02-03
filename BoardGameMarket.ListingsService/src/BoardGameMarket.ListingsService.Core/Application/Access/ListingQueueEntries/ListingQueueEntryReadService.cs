@@ -1,4 +1,5 @@
-﻿using BoardGameMarket.ListingsService.Core.Domain.Entities;
+﻿using BoardGameMarket.ListingsService.Core.Application.Filters;
+using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,33 +19,14 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEn
 			_listingQueueEntryRepository = listingQueueEntryRepository;
 		}
 
-
-		public async Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesBySubscribedUserIdAsync(Guid buyerUserId)
+		public async Task<IEnumerable<ListingQueueEntry>> GetFilteredListingQueueEntriesAsync(ListingQueueEntryFilter filter)
 		{
-			return await _listingQueueEntryRepository.GetListingQueueEntriesBySubscribedUserId(buyerUserId);
-		}
-
-		public async Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesByListingIdAsync(Guid listingId)
-		{
-			IEnumerable<ListingQueueEntry> queueEntries = await _listingQueueEntryRepository.GetListingQueueEntriesByListingIdAsync(listingId);
-
-			return queueEntries.OrderBy(qe => qe.CreatedAt);
-		}
-
-		public async Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesByListingIdsAsync(IEnumerable<Guid> listingIds)
-		{
-			IEnumerable<ListingQueueEntry> queueEntries = await _listingQueueEntryRepository.GetListingQueueEntriesByListingIdsAsync(listingIds);
-			return queueEntries.OrderBy(qe => qe.CreatedAt);
+			return await _listingQueueEntryRepository.GetFilteredListingQueueEntriesAsync(filter);
 		}
 
 		public async Task<ListingQueueEntry?> GetListingQueueEntryByIdAsync(Guid listingQueueId)
 		{
 			return await _listingQueueEntryRepository.GetListingQueueEntryByIdAsync(listingQueueId);
-		}
-
-		public async Task<ListingQueueEntry?> GetListingQueueEntryByListingIdAndUserId(Guid listingId, Guid buyerId)
-		{
-			return await _listingQueueEntryRepository.GetListingQueueEntryByListingIdAndBuyerUserId(listingId, buyerId);
 		}
 	}
 }

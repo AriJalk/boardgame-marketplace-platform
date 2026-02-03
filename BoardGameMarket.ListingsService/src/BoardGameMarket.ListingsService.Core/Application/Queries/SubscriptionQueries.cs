@@ -18,7 +18,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.Queries
 
 		public async Task<IReadOnlyCollection<Guid>> GetListingsBySubscribedUser(Guid userId)
 		{
-			IEnumerable<ListingQueueEntry> queueEntries = await _listingQueueEntryReadService.GetListingQueueEntriesBySubscribedUserIdAsync(userId);
+			ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
+			{
+				UserId = userId,
+			};
+			IEnumerable<ListingQueueEntry> queueEntries = await _listingQueueEntryReadService.GetFilteredListingQueueEntriesAsync(filter);
 
 			return queueEntries.Select(qe => qe.ListingId).ToList().AsReadOnly();
 		}

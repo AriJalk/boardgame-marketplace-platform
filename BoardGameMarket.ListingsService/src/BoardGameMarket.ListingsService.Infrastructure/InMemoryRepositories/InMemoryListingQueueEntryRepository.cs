@@ -1,4 +1,5 @@
-﻿using BoardGameMarket.ListingsService.Core.Domain.Entities;
+﻿using BoardGameMarket.ListingsService.Core.Application.Filters;
+using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using System;
 using System.Collections.Generic;
@@ -22,38 +23,32 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 			int removed = _listingQueueEntries.RemoveAll(qe => qe.ListingId == listingId);
 			return Task.CompletedTask;
 		}
-
-
 		public Task<bool> DeleteListingQueueEntryAsync(Guid listingQueueEntryId)
 		{
 			_listingQueueEntries.Remove(_listingQueueEntries.FirstOrDefault(l => l.Id == listingQueueEntryId));
 			return Task.FromResult(true);
 		}
 
-		public Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesBySubscribedUserId(Guid buyerUserId)
+		public Task<IEnumerable<ListingQueueEntry>> GetFilteredListingQueueEntriesAsync(ListingQueueEntryFilter filter)
 		{
-			return Task.FromResult(_listingQueueEntries.Where(qe => qe.BuyerUserId == buyerUserId));
-		}
-		public Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesByListingIdAsync(Guid listingId)
-		{
-			return Task.FromResult(_listingQueueEntries.Where(qe => qe.ListingId == listingId));
-		}
+			IEnumerable<ListingQueueEntry> query = _listingQueueEntries;
+			if (filter.UserId != null)
+			{
+				query = query.Where(qe => qe.BuyerUserId == filter.UserId);
+			}
+			if (filter.ListingIds != null)
+			{
+				HashSet<Guid> listingIds = filter.ListingIds.ToHashSet();
+				query = query.Where(qe => listingIds.Contains(qe.ListingId));
+			}
 
-		public Task<IEnumerable<ListingQueueEntry>> GetListingQueueEntriesByListingIdsAsync(IEnumerable<Guid> listingIds)
-		{
-			return Task.FromResult(_listingQueueEntries.Where(qe => listingIds.Contains(qe.ListingId)));
+			return Task.FromResult(query);
 		}
 
 		public Task<ListingQueueEntry?> GetListingQueueEntryByIdAsync(Guid listingQueueEntryId)
 		{
 			return Task.FromResult(_listingQueueEntries.FirstOrDefault(qe => qe.Id == listingQueueEntryId));
 		}
-
-		public Task<ListingQueueEntry?> GetListingQueueEntryByListingIdAndBuyerUserId(Guid listingId, Guid buyerUserId)
-		{
-			return Task.FromResult(_listingQueueEntries.FirstOrDefault(qe => qe.ListingId == listingId && qe.BuyerUserId == buyerUserId));
-		}
-
 		public Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntry)
 		{
 			ListingQueueEntry? originalListingQueueEntry = _listingQueueEntries.FirstOrDefault(qe => qe.Id == listingQueueEntry.Id);

@@ -1,9 +1,10 @@
 ﻿using BoardGameMarket.MarketGateway.API.Application.Common;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Dtos;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Filters;
-using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Mappers;
-using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services;
+using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.UseCases;
+using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services;
+using BoardGameMarket.MarketGateway.API.Application.Shared;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
@@ -15,12 +16,30 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		private readonly GetListingGroupDetailUseCase _getListingGroupDetailUseCase;
 		private readonly GetListingGroupSummaryPageUseCase _getListingGroupSummaryPageUseCase;
 		private readonly GetFilteredListingGroupSummariesUseCase _getFilteredListingGroupSummaries;
+		private readonly QueuesDataService _queueService;
 
-		public ListingGroupsController(GetListingGroupDetailUseCase getListingGroupDetailUseCase, GetListingGroupSummaryPageUseCase getListingGroupSummaryPageUseCase, GetFilteredListingGroupSummariesUseCase getFilteredListingGroupSummaries)
+		public ListingGroupsController(GetListingGroupDetailUseCase getListingGroupDetailUseCase, GetListingGroupSummaryPageUseCase getListingGroupSummaryPageUseCase, GetFilteredListingGroupSummariesUseCase getFilteredListingGroupSummaries, QueuesDataService queueService)
 		{
 			_getListingGroupDetailUseCase = getListingGroupDetailUseCase;
 			_getListingGroupSummaryPageUseCase = getListingGroupSummaryPageUseCase;
 			_getFilteredListingGroupSummaries = getFilteredListingGroupSummaries;
+			_queueService = queueService;
+		}
+
+		private async Task<ListingGroupSummaryDto[]> EnrichListingGroups(ListingGroupSummaryDto[] listingGroups)
+		{
+			string? auth = Request.Headers.Authorization;
+
+			if (Guid.TryParse(auth, out var userId))
+			{
+				HashSet<Guid> subscribedListingIds = (await _queueService.GetSubscribedListingIdsAsync(userId)).ToHashSet();
+				listingGroups = listingGroups.Select(lg => lg with
+				{
+					Listings = ListingGroupEnricher.EnrichListingDtosWithSubscription(lg.Listings, subscribedListingIds)
+				}).ToArray();
+			}
+
+			return listingGroups;
 		}
 
 		[HttpGet("{listingGroupId:guid}/detail")]
@@ -30,12 +49,12 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 			return Ok(dto);
 		}
 
-
 		[HttpPost("page")]
 		public async Task<ActionResult<PagedResult<ListingGroupSummaryDto>>> GetSummaryPage([FromBody] PagedListingGroupQuery query)
 		{
 			PagedResult<ListingGroupSummaryDto> page = await _getListingGroupSummaryPageUseCase.ExecuteAsync(query);
 
+			page.Items = await EnrichListingGroups(page.Items);
 			return Ok(page);
 		}
 
@@ -43,6 +62,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		public async Task<ActionResult<ListingGroupSummaryDto[]>> GetFilteredListingGroupos([FromBody] ListingGroupFilter filter)
 		{
 			ListingGroupSummaryDto[] listingGroups = await _getFilteredListingGroupSummaries.ExecuteAsync(filter);
+			listingGroups = await EnrichListingGroups(listingGroups);
 			return Ok(listingGroups);
 		}
 	}
