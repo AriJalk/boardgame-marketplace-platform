@@ -30,10 +30,6 @@ export class ListingGroupsPage implements OnInit {
   ngOnInit(): void {
     this.listingGroups$ = this.listingGroupService.getListingGroupSummariesPage();
     this.user = this.authService.loggedInUser;
-
-    this.listingGroupService.getSubscribedListingGroups().subscribe((data) => {
-      console.log(data);
-    });
   }
 
   previous_clicked() {

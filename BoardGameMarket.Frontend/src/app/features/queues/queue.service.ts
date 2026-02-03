@@ -46,6 +46,7 @@ export class QueueService {
     );
   }
 
+  // TODO: batch fetching
   getSubscription(listingId: string): Observable<QueueEntry> {
     const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     const response = this.httpClient.get<QueueEntry>(

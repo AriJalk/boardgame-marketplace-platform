@@ -35,17 +35,34 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 				HashSet<Guid> subscribedListingIds = (await _queueService.GetSubscribedListingIdsAsync(userId)).ToHashSet();
 				listingGroups = listingGroups.Select(lg => lg with
 				{
-					Listings = ListingGroupEnricher.EnrichListingDtosWithSubscription(lg.Listings, subscribedListingIds)
+					Listings = ListingEnricher.EnrichListingDtosWithSubscription(lg.Listings, subscribedListingIds)
 				}).ToArray();
 			}
 
 			return listingGroups;
 		}
 
+		private async Task<ListingGroupDetailDto> EnrichListingGroup(ListingGroupDetailDto listingGroup)
+		{
+			string? auth = Request.Headers.Authorization;
+
+			if (Guid.TryParse(auth, out var userId))
+			{
+				HashSet<Guid> subscribedListingIds = (await _queueService.GetSubscribedListingIdsAsync(userId)).ToHashSet();
+				listingGroup = listingGroup with
+				{
+					Listings = ListingEnricher.EnrichListingDtosWithSubscription(listingGroup.Listings, subscribedListingIds)
+				};
+			}
+
+			return listingGroup;
+		}
+
 		[HttpGet("{listingGroupId:guid}/detail")]
 		public async Task<ActionResult<ListingGroupDetailDto>> GetListingGroupDetail(Guid listingGroupId)
 		{
 			ListingGroupDetailDto dto = await _getListingGroupDetailUseCase.Execute(listingGroupId);
+			dto = await EnrichListingGroup(dto);
 			return Ok(dto);
 		}
 

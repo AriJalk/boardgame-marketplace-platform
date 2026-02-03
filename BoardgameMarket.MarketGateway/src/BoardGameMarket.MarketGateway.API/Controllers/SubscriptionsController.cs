@@ -51,7 +51,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 
 			listingGroups = listingGroups.Select(lg =>
 			{
-				ListingSummaryDto[] enrichedListings = ListingGroupEnricher.EnrichListingDtosWithSubscription(lg.Listings, hashedSubscribedListingIds);
+				ListingSummaryDto[] enrichedListings = ListingEnricher.EnrichListingDtosWithSubscription(lg.Listings, hashedSubscribedListingIds);
 				return (
 				Group: lg with { Listings = enrichedListings },
 				HasSubscribed: enrichedListings.Any(l => l.IsSubscribed == true && l.Status == ListingStatus.Active));
