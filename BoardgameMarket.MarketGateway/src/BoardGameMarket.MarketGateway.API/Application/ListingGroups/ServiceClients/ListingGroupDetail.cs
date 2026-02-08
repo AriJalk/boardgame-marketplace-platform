@@ -10,7 +10,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceCli
 		string? Details,
 		string? PickupOptions,
 		string Location,
-		ListingInGroupDetail[] Listings)
+		ListingDetail[] Listings)
 	{
 	}
 }

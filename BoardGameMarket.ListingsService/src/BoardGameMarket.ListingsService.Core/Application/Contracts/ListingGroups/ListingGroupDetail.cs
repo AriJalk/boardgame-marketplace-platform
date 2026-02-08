@@ -10,7 +10,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Contracts.ListingGrou
 		string? Details,
 		string? PickupOptions,
 		string Location,
-		ListingInGroupDetail[] Listings)
+		ListingDetail[] Listings)
 	{
 	}
 }

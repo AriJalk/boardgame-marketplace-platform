@@ -7,39 +7,18 @@ import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'bgm-queue-buyer-panel',
-  imports: [MatButtonModule, AsyncPipe, DatePipe],
+  imports: [MatButtonModule, DatePipe],
   templateUrl: './queue-buyer-panel.html',
   styleUrl: './queue-buyer-panel.css',
 })
-export class QueueBuyerPanel implements OnInit {
-  @Input({ required: true }) listingId!: string;
-
-  private _queueEntry = new BehaviorSubject<QueueEntry | undefined>(undefined);
-  queueEntry$ = this._queueEntry.asObservable();
+export class QueueBuyerPanel {
+  @Input({ required: true }) queueEntry!: QueueEntry | null;
 
   constructor(private queueService: QueueService) {}
 
-  ngOnInit(): void {
-    this.queueService.getSubscription(this.listingId).subscribe({
-      next: (data) => {
-        this._queueEntry.next(data);
-      },
-    });
-  }
-
-  onSubscribed() {
-    this.queueService.subscribe(this.listingId).subscribe({
-      next: (data) => {
-        this._queueEntry.next(data);
-      },
-    });
-  }
+  onSubscribed() {}
 
   onUnsubscribed(subscriptionId: string) {
-    this.queueService.unsubscribe(this.listingId, subscriptionId).subscribe({
-      next: () => {
-        this._queueEntry.next(undefined);
-      },
-    });
+    
   }
 }

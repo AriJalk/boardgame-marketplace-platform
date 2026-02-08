@@ -17,9 +17,12 @@ export class ListingGroupService {
     @Inject(API_CONFIG_SERVICE) private apiConfig: ApiConfig,
     private authService: AuthStubService,
   ) {}
+
   getListingGroupDetails(listingGroupId: string) {
+    const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     return this.httpClient.get<ListingGroupDetails>(
       `${this.apiConfig.apiEndpoint}/listingGroups/${listingGroupId}/detail`,
+      { headers: headers },
     );
   }
 

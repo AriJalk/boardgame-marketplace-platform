@@ -37,11 +37,5 @@ namespace BoardGameMarket.MarketGateway.API.Application.Listings.Assemblers
 			return listing.ToListingDetailDto(listingItemDtos);
 			
 		}
-
-		public async Task<ListingDetailDto> BuildListingDetailDto(ListingInGroupDetail listing)
-		{
-			IEnumerable<ListingItemDto> listingItemDtos = await BuildListingItemDtos(listing.ListingItems);
-			return listing.ToListingDetailDto(listingItemDtos);
-		}
 	}
 }

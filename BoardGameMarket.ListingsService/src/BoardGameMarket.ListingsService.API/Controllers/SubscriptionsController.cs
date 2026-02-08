@@ -35,11 +35,11 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		}
 
 		[HttpPost("query")]
-		public async Task<ActionResult<Guid[]>> GetFilteredListingIds([FromBody] ListingQueueEntryFilter filter)
+		public async Task<ActionResult<ListingQueueEntryInfo[]>> GetFilteredQueueEntries([FromBody] ListingQueueEntryFilter filter)
 		{
 			IEnumerable<ListingQueueEntry> queueEntries = await _listingQueueEntryReadService.GetFilteredListingQueueEntriesAsync(filter);
 
-			return Ok(queueEntries.Select(qe => qe.ListingId));
+			return Ok(queueEntries.Select(qe => qe.ToListingQueueEntryInfo()));
 		}
 	}
 }

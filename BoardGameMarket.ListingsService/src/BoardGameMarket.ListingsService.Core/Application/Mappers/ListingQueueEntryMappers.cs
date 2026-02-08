@@ -10,7 +10,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 	{
 		public static ListingQueueEntryInfo ToListingQueueEntryInfo(this ListingQueueEntry listingQueueEntry)
 		{
-			return new ListingQueueEntryInfo(listingQueueEntry.Id, listingQueueEntry.Status, listingQueueEntry.BuyerUserId, listingQueueEntry.CreatedAt, listingQueueEntry.ModifiedAt, listingQueueEntry.Priority);
+			return new ListingQueueEntryInfo(listingQueueEntry.Id, listingQueueEntry.ListingId, listingQueueEntry.Status, listingQueueEntry.BuyerUserId, listingQueueEntry.CreatedAt, listingQueueEntry.ModifiedAt, listingQueueEntry.Priority);
 		}
 	}
 }

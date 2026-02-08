@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.ServiceClients
 {
-	public record ListingQueueEntryInfo(Guid Id, QueueStatus Status, Guid BuyerUserId, DateTime CreatedAt, DateTime ModifiedAt, decimal? Priority)
+	public record ListingQueueEntryInfo(Guid Id, Guid ListingId, QueueStatus Status, Guid BuyerUserId, DateTime CreatedAt, DateTime ModifiedAt, decimal? Priority)
 	{
 	}
 }
