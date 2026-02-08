@@ -8,9 +8,6 @@
     @for (listing of listingGroup.listings; track $index) {
       <mat-card>
         <bgm-listing-details-card [listing]="listing"></bgm-listing-details-card>
-        @if (isLoggedIn && listing.status === 'active') {
-          <bgm-queue-buyer-panel [queueEntry]="listing.queueEntry"></bgm-queue-buyer-panel>
-        }
       </mat-card>
     }
   </div>

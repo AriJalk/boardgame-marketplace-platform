@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { QueueService } from '../../../queue.service';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -12,13 +12,18 @@ import { AsyncPipe, DatePipe } from '@angular/common';
   styleUrl: './queue-buyer-panel.css',
 })
 export class QueueBuyerPanel {
-  @Input({ required: true }) queueEntry!: QueueEntry | null;
+  @Input() queueEntry: QueueEntry | null | undefined;
+
+  @Output() subscribeClicked = new EventEmitter();
+  @Output() unsubscribeClicked = new EventEmitter();
 
   constructor(private queueService: QueueService) {}
 
-  onSubscribed() {}
+  onSubscribed() {
+    this.subscribeClicked.emit();
+  }
 
-  onUnsubscribed(subscriptionId: string) {
-    
+  onUnsubscribed() {
+    this.unsubscribeClicked.emit();
   }
 }

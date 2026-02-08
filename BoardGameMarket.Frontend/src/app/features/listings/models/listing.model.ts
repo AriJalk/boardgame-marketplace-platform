@@ -12,5 +12,5 @@ export interface ListingSummary {
 
 export interface ListingDetail extends ListingSummary {
   items: ListingItem[];
-  queueEntry: QueueEntry;
+  queueEntry?: QueueEntry;
 }

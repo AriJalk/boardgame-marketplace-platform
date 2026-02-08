@@ -7,7 +7,7 @@ import { AuthStubService } from '../../../../../core/auth/auth-stub.service';
 
 @Component({
   selector: 'bgm-listing-group-details-card',
-  imports: [MatCardModule, ListingDetailsCard, QueueBuyerPanel],
+  imports: [MatCardModule, ListingDetailsCard],
   templateUrl: './listing-group-details-card.html',
   styleUrl: './listing-group-details-card.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

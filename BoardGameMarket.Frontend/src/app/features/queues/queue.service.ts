@@ -57,7 +57,7 @@ export class QueueService {
     return response;
   }
 
-  subscribe(listingId: string): Observable<QueueEntry> {
+  subscribeToListing(listingId: string): Observable<QueueEntry> {
     const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     const response = this.httpClient.put<QueueEntry>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription`,
@@ -68,7 +68,7 @@ export class QueueService {
     return response;
   }
 
-  unsubscribe(listingId: string, subscriptionId: string): Observable<void> {
+  unsubscribeFromListing(listingId: string, subscriptionId: string): Observable<void> {
     const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     const response = this.httpClient.delete<void>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription/${subscriptionId}`,
