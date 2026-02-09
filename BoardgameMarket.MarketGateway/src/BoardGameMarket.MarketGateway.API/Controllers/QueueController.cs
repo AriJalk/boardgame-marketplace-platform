@@ -19,15 +19,15 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		private readonly GetListingQueueEntryUseCase _getListingQueueEntryUseCase;
 		private readonly ListingQueueEntryDtoAssembler _listingQueueEntryDtoAssembler;
 		private readonly QueuesDataService _queuesDataService;
-		private readonly UsersDataService _usersDataService;
+		private readonly LoginService _loginService;
 
-		public QueueController(GetListingQueueUseCase getListingQueueUseCase, GetListingQueueEntryUseCase getListingQueueEntryUseCase, ListingQueueEntryDtoAssembler listingQueueEntryDtoAssembler, QueuesDataService queuesDataService, UsersDataService usersDataService)
+		public QueueController(GetListingQueueUseCase getListingQueueUseCase, GetListingQueueEntryUseCase getListingQueueEntryUseCase, ListingQueueEntryDtoAssembler listingQueueEntryDtoAssembler, QueuesDataService queuesDataService, LoginService loginService)
 		{
 			_getListingQueueUseCase = getListingQueueUseCase;
 			_getListingQueueEntryUseCase = getListingQueueEntryUseCase;
 			_listingQueueEntryDtoAssembler = listingQueueEntryDtoAssembler;
 			_queuesDataService = queuesDataService;
-			_usersDataService = usersDataService;
+			_loginService = loginService;
 		}
 
 
@@ -45,13 +45,12 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		[HttpGet("subscription")]
 		public async Task<ActionResult<ListingQueueEntryResponseDto>> GetSubscription(Guid listingId)
 		{
-			string? auth = Request.Headers.Authorization;
-
-			if (!Guid.TryParse(auth, out var userId))
+			if (_loginService.LoggedInUser == null)
 			{
-				return BadRequest();
+				return BadRequest("No user logged in");
 			}
-			ListingQueueEntryResponseDto? queueEntryResponse = await _getListingQueueEntryUseCase.ExecuteAsync(listingId, userId);
+
+			ListingQueueEntryResponseDto? queueEntryResponse = await _getListingQueueEntryUseCase.ExecuteAsync(listingId, _loginService.LoggedInUser.UserId);
 			
 			if (queueEntryResponse == null)
 			{
@@ -65,12 +64,12 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		[HttpPut("subscription")]
 		public async Task<ActionResult<ListingQueueEntryResponseDto>> SubscribeToListing(Guid listingId)
 		{
-			if (!Guid.TryParse(Request.Headers.Authorization, out var userId))
+			if (_loginService.LoggedInUser == null)
 			{
-				return BadRequest();
+				return BadRequest("No user logged in");
 			}
 
-			ListingQueueEntryInfo queueEntry = await _queuesDataService.SubscribeToListingAsync(listingId, userId);
+			ListingQueueEntryInfo queueEntry = await _queuesDataService.SubscribeToListingAsync(listingId, _loginService.LoggedInUser.UserId);
 			ListingQueueEntryResponseDto response = await _listingQueueEntryDtoAssembler.BuildQueueEntryResponseDto(queueEntry);
 			return Ok(response);
 		}

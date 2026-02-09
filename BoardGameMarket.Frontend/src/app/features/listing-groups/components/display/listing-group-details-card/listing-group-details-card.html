@@ -7,7 +7,10 @@
   <div class="grid gap-1">
     @for (listing of listingGroup.listings; track $index) {
       <mat-card>
-        <bgm-listing-details-card [listing]="listing"></bgm-listing-details-card>
+        <bgm-listing-details-card
+          class="flex-1 flex-column"
+          [listing]="listing"
+        ></bgm-listing-details-card>
       </mat-card>
     }
   </div>

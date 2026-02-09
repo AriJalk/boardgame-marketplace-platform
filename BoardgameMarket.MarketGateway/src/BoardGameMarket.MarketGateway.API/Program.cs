@@ -3,6 +3,7 @@ using BoardGameMarket.MarketGateway.API.Configuration;
 using BoardGameMarket.MarketGateway.API.Application.CatalogItems.Services;
 using BoardGameMarket.MarketGateway.API.Application.Users.Services;
 using BoardGameMarket.MarketGateway.API.StartupExtensions;
+using BoardGameMarket.MarketGateway.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,8 @@ app.UseCors(policy =>
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+app.UseMiddleware<LoginMiddleware>();
 
 app.MapControllers();
 

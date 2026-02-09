@@ -9,6 +9,7 @@ using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services;
 using BoardGameMarket.MarketGateway.API.Application.Listings.Dtos.Listings;
 using BoardGameMarket.MarketGateway.API.Application.Listings.Enums;
 using BoardGameMarket.MarketGateway.API.Application.Shared;
+using BoardGameMarket.MarketGateway.API.Application.Users.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
@@ -21,25 +22,25 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 	{
 		private readonly QueuesDataService _queueService;
 		private readonly GetFilteredListingGroupSummariesUseCase _getFilteredListingGroupSummariesUseCase;
+		private readonly LoginService _loginService;
 
-		public SubscriptionsController(QueuesDataService queueService, GetFilteredListingGroupSummariesUseCase getFilteredListingGroupSummariesUseCase)
+		public SubscriptionsController(QueuesDataService queueService, GetFilteredListingGroupSummariesUseCase getFilteredListingGroupSummariesUseCase, LoginService loginService)
 		{
 			_queueService = queueService;
 			_getFilteredListingGroupSummariesUseCase = getFilteredListingGroupSummariesUseCase;
+			_loginService = loginService;
 		}
 
 
 		[HttpGet("listingGroups")]
 		public async Task<ActionResult<ListingGroupSummaryDto[]>> GetListingGroupsBySubscriber()
 		{
-			string? auth = Request.Headers.Authorization;
-
-			if (!Guid.TryParse(auth, out var userId))
+			if (_loginService.LoggedInUser == null)
 			{
 				return BadRequest();
 			}
 
-			Guid[] subscribedListingIds = await _queueService.GetSubscribedListingIdsAsync(userId);
+			Guid[] subscribedListingIds = await _queueService.GetSubscribedListingIdsAsync(_loginService.LoggedInUser.UserId);
 			HashSet<Guid> hashedSubscribedListingIds = subscribedListingIds.ToHashSet();
 
 			ListingGroupFilter filter = new ListingGroupFilter()

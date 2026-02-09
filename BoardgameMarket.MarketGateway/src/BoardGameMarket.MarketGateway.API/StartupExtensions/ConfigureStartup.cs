@@ -28,6 +28,7 @@ namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 
 			// Users microservice
 			services.AddScoped<UsersDataService>();
+			services.AddScoped<LoginService>();
 
 			// Catalog microservice
 			services.AddScoped<CatalogDataService>();
@@ -68,6 +69,8 @@ namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 			{
 				config.BaseAddress = new Uri($"http://{configuration["USERS_SERVICE_HOST"]}:{configuration["USERS_SERVICE_PORT"]}");
 			});
+
+
 
 			return services;
 		}

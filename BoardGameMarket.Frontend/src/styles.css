@@ -78,6 +78,12 @@
   padding: 5%;
 }
 
+.snap-bottom{
+  margin-top: auto;
+}
+
+/* Self sizing */
+
 .full-width {
   width: 100%;
 }

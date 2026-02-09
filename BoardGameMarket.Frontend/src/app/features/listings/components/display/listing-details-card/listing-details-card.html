@@ -1,4 +1,4 @@
-<div class="flex-column">
+<div class="flex-column flex-1">
   <h3>Status: {{ listing.status }}</h3>
   <h3>Listing title: {{ listing.title }}</h3>
   <h3>Price: {{ listing.price }}</h3>
@@ -12,6 +12,7 @@
   @let queueEntry = queueEntry$ | async;
   @if (listing.status === 'active') {
     <bgm-queue-buyer-panel
+      class="snap-bottom"
       [queueEntry]="queueEntry"
       (subscribeClicked)="onSubscribeClicked()"
       (unsubscribeClicked)="onUnsubscribeClicked()"
