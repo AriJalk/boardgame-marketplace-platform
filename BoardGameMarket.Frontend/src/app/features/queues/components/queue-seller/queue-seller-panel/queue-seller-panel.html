@@ -1,7 +1,11 @@
 @if (queues$ | async; as queues) {
   <div class="flex-column">
     Time-Queue
-    <bgm-time-queue-entry-table [queue]="queues.queueByTime"> </bgm-time-queue-entry-table>
+    <bgm-time-queue-entry-table
+      [queue]="queues.queueByTime"
+      (priorityRequested)="onPriorityAddRequest($event)"
+    >
+    </bgm-time-queue-entry-table>
 
     PriorityQueue
     <bgm-priority-queue-entry-table> </bgm-priority-queue-entry-table>

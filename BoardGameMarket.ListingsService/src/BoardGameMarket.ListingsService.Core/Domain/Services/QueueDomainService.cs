@@ -6,6 +6,8 @@ namespace BoardGameMarket.ListingsService.Core.Domain.Services
 {
 	public static class QueueDomainService
 	{
+		public const int INITIAL_PRIORITY = 0;
+		public const int PRIORITY_GAP = 1000;
 		private static Result ValidateHeadEntry(IEnumerable<ListingQueueEntry> queueEntries, QueueStatus requiredStatus, out ListingQueueEntry? headEntry)
 		{
 			List<string> errors = new List<string>();

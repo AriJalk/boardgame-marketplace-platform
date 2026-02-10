@@ -58,6 +58,14 @@ export class QueueSellerPanel implements OnInit {
     this.subscribeAndReloadUpdate(data, $event.currentIndex);
   }
 
+  onPriorityAddRequest(queueEntry: QueueEntry) {
+    this.queueService.addPriority(this.listingsId, queueEntry.id).subscribe({
+      next: (data) => {
+        console.log(data);
+      },
+    });
+  }
+
   onRemovePriority($event: QueueEntry) {
     this.subscribeAndReloadUpdate($event, null);
   }

@@ -42,6 +42,13 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 			return Ok(response);
 		}
 
+		// TODO: Implement
+		[HttpPost("subscription")]
+		public async Task<ActionResult<ListingQueueEntryResponseDto>> AddPriority(AddQueuePriorityRequest request)
+		{
+			return Ok();
+		}
+
 		[HttpGet("subscription")]
 		public async Task<ActionResult<ListingQueueEntryResponseDto>> GetSubscription(Guid listingId)
 		{
