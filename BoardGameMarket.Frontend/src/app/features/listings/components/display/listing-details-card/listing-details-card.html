@@ -9,11 +9,11 @@
       <bgm-listing-item-card [listingItem]="item"></bgm-listing-item-card>
     </mat-card>
   }
-  @let queueEntry = queueEntry$ | async;
+  @let listingSubscription = listingSubscription$ | async;
   @if (listing.status === 'active') {
     <bgm-queue-buyer-panel
       class="snap-bottom"
-      [queueEntry]="queueEntry"
+      [listingSubscription]="listingSubscription"
       (subscribeClicked)="onSubscribeClicked()"
       (unsubscribeClicked)="onUnsubscribeClicked()"
     ></bgm-queue-buyer-panel>

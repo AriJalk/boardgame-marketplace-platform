@@ -1,18 +1,13 @@
 ﻿using BoardGameMarket.MarketGateway.API.Application.Common;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Dtos;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Filters;
-using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Mappers;
-using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients;
-using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.UseCases;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services;
 using BoardGameMarket.MarketGateway.API.Application.Listings.Dtos.Listings;
 using BoardGameMarket.MarketGateway.API.Application.Listings.Enums;
 using BoardGameMarket.MarketGateway.API.Application.Shared;
 using BoardGameMarket.MarketGateway.API.Application.Users.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.RegularExpressions;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
 {
@@ -52,7 +47,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 
 			listingGroups = listingGroups.Select(lg =>
 			{
-				ListingSummaryDto[] enrichedListings = ListingEnricher.EnrichListingDtosWithSubscriptions(lg.Listings, hashedSubscribedListingIds);
+				ListingSummaryDto[] enrichedListings = ListingEnricher.EnrichListingDtosWithIsSubscribed(lg.Listings, hashedSubscribedListingIds);
 				return (
 				Group: lg with { Listings = enrichedListings },
 				HasSubscribed: enrichedListings.Any(l => l.IsSubscribed == true && l.Status == ListingStatus.Active));

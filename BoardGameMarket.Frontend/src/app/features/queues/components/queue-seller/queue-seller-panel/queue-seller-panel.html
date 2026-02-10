@@ -1,48 +1,9 @@
 @if (queues$ | async; as queues) {
-  <div class="flex jc-spacearound">
-    <div class="flex-column">
-      <h4>Time-based queue</h4>
-      <div>
-        @for (item of queues.queueByTime; track item.id) {
-          <div class="flex align-center padding-1px mat-primary-container">
-            <h3>{{ $index + 1 }}</h3>
-            <bgm-queue-entry-card [queueEntry]="item"></bgm-queue-entry-card>
-          </div>
-        }
-      </div>
-    </div>
-    <div class="flex-column">
-      <h4>Priority-based queue</h4>
-      <div
-        cdkDropList
-        (cdkDropListDropped)="priorityChangeRequest($event)"
-        [cdkDropListData]="queues.queueByPriority"
-      >
-        @for (item of queues.queueByPriority; track item.id) {
-          <div class="flex align-center margin-1 mat-tertiary-container">
-            <h3>{{ $index + 1 }}</h3>
-            <div cdkDrag [cdkDragData]="item">
-              <bgm-queue-entry-card
-                [queueEntry]="item"
-                (removePriority)="onRemovePriority($event)"
-              ></bgm-queue-entry-card>
-            </div>
+  <div class="flex-column">
+    Time-Queue
+    <bgm-time-queue-entry-table [queue]="queues.queueByTime"> </bgm-time-queue-entry-table>
 
-            <div class="flex align-center">
-              <div class="example-button-row">
-                <div class="example-flex-container">
-                  <button matFab aria-label="Example icon button with a delete icon">
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                  <button matFab disabled aria-label="Example icon button with a heart icon">
-                    <mat-icon>favorite</mat-icon>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        }
-      </div>
-    </div>
+    PriorityQueue
+    <bgm-priority-queue-entry-table> </bgm-priority-queue-entry-table>
   </div>
 }

@@ -16,5 +16,14 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Mappers
 				queueEntry.ModifiedAt,
 				queueEntry.Priority);
 		}
+
+		public static ListingSubscriptionResponseDto ToListingSubscriptionResponseDto(this ListingQueueEntryInfo queueEntry)
+		{
+			return new ListingSubscriptionResponseDto(
+				queueEntry.Id, 
+				queueEntry.Status, 
+				queueEntry.CreatedAt, 
+				queueEntry.ModifiedAt);
+		}
 	}
 }

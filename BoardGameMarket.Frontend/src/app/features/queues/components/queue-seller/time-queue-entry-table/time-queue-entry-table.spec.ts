@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { QueueEntryTable } from './queue-entry-table';
+import { TimeQueueEntryTable } from './time-queue-entry-table';
 
-describe('QueueEntryTable', () => {
-  let component: QueueEntryTable;
-  let fixture: ComponentFixture<QueueEntryTable>;
+describe('TimeQueueEntryTable', () => {
+  let component: TimeQueueEntryTable;
+  let fixture: ComponentFixture<TimeQueueEntryTable>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [QueueEntryTable]
+      imports: [TimeQueueEntryTable]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(QueueEntryTable);
+    fixture = TestBed.createComponent(TimeQueueEntryTable);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

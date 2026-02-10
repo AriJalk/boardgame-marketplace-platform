@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { QueueService } from '../../../queue.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { QueueEntry } from '../../../models/quque-entry.model';
+import { ListingSubscription, QueueEntry } from '../../../models/quque-entry.model';
 import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({
@@ -12,7 +12,7 @@ import { AsyncPipe, DatePipe } from '@angular/common';
   styleUrl: './queue-buyer-panel.css',
 })
 export class QueueBuyerPanel {
-  @Input() queueEntry: QueueEntry | null | undefined;
+  @Input() listingSubscription: ListingSubscription | null | undefined;
 
   @Output() subscribeClicked = new EventEmitter();
   @Output() unsubscribeClicked = new EventEmitter();

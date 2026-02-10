@@ -1,5 +1,5 @@
 import { ListingItem } from '../../listing-items/models/listing-item.model';
-import { QueueEntry } from '../../queues/models/quque-entry.model';
+import { ListingSubscription, QueueEntry } from '../../queues/models/quque-entry.model';
 
 export interface ListingSummary {
   id: string;
@@ -12,5 +12,5 @@ export interface ListingSummary {
 
 export interface ListingDetail extends ListingSummary {
   items: ListingItem[];
-  queueEntry?: QueueEntry;
+  subscription?: ListingSubscription;
 }

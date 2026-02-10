@@ -12,3 +12,9 @@ export interface QueuePageResponse {
   queueByTime: QueueEntry[];
   queueByPriority: QueueEntry[];
 }
+
+export interface ListingSubscription {
+  id: string;
+  status: string;
+  createdAt: Date;
+}

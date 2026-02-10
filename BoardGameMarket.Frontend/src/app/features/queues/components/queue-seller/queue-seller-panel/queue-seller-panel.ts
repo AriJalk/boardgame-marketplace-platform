@@ -1,14 +1,16 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { CdkDragDrop, CdkDropList, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { QueueService } from '../../../queue.service';
-import { startWith, Subject, switchMap } from 'rxjs';
+import { BehaviorSubject, startWith, Subject, switchMap } from 'rxjs';
 import { QueueEntryCard } from '../queue-entry-card/queue-entry-card';
-import { QueueEntry } from '../../../models/quque-entry.model';
+import { QueueEntry, QueuePageResponse } from '../../../models/quque-entry.model';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CdkAriaLive } from '@angular/cdk/a11y';
+import { TimeQueueEntryTable } from '../time-queue-entry-table/time-queue-entry-table';
+import { PriorityQueueEntryTable } from '../priority-queue-entry-table/priority-queue-entry-table';
 
 @Component({
   selector: 'bgm-queue-seller-panel',
@@ -17,28 +19,34 @@ import { CdkAriaLive } from '@angular/cdk/a11y';
     MatCardModule,
     AsyncPipe,
     CommonModule,
-    QueueEntryCard,
     MatButtonModule,
     MatIconModule,
+    TimeQueueEntryTable,
+    PriorityQueueEntryTable,
   ],
   templateUrl: './queue-seller-panel.html',
   styleUrl: './queue-seller-panel.css',
 })
-export class QueueSellerPanel {
+export class QueueSellerPanel implements OnInit {
   @Input({ required: true }) listingsId!: string;
 
-  private reload$ = new Subject<void>();
+  private queuesBehaviorSubject = new BehaviorSubject<QueuePageResponse | null>(null);
 
-  readonly queues$ = this.reload$.pipe(
-    startWith(void 0),
-    switchMap(() => this.queueService.getQueues(this.listingsId)),
-  );
-  @ViewChild('queueByPriority') priorityContainer?: CdkDropList;
+  queues$ = this.queuesBehaviorSubject.asObservable();
 
   constructor(private queueService: QueueService) {}
 
   ngOnInit(): void {
-    this.reload$.next();
+    this.loadQueues();
+  }
+
+  private loadQueues() {
+    this.queueService.getQueues(this.listingsId).subscribe({
+      next: (data) => {
+        this.queuesBehaviorSubject.next(data);
+        // console.log("QUEUEDATA", data);
+      },
+    });
   }
 
   priorityChangeRequest($event: CdkDragDrop<QueueEntry[]>) {
@@ -57,7 +65,7 @@ export class QueueSellerPanel {
   private subscribeAndReloadUpdate(queueEntry: QueueEntry, requestedIndex: number | null) {
     this.queueService.updatePriority(this.listingsId, queueEntry.id, requestedIndex).subscribe({
       next: () => {
-        this.reload$.next();
+        this.loadQueues();
       },
       error: (value) => {
         console.log(value);

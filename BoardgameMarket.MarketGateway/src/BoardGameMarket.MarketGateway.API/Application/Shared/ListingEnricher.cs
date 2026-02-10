@@ -9,7 +9,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.Shared
 {
 	public static class ListingEnricher
 	{
-		public static ListingSummaryDto[] EnrichListingDtosWithSubscriptions(ListingSummaryDto[] listings, HashSet<Guid> subscribedListingIds)
+		public static ListingSummaryDto[] EnrichListingDtosWithIsSubscribed(ListingSummaryDto[] listings, HashSet<Guid> subscribedListingIds)
 		{
 			ListingSummaryDto[] enrichedListings = listings.Select(l => l with
 			{
@@ -28,7 +28,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.Shared
 				subscriptionsDictionary.TryGetValue(l.Id, out var queueEntry);
 				return l with
 				{
-					QueueEntry = queueEntry != null ? queueEntry.ToListingQueueEntryResponseDto(null) : null,
+					Subscription = queueEntry?.ToListingSubscriptionResponseDto(),
 				};
 			}).ToArray();
 
