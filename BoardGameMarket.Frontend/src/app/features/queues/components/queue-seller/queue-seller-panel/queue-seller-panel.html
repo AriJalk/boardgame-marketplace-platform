@@ -3,11 +3,16 @@
     Time-Queue
     <bgm-time-queue-entry-table
       [queue]="queues.queueByTime"
-      (priorityRequested)="onPriorityAddRequest($event)"
+      (priorityRequested)="onPriorityAddRequested($event)"
     >
     </bgm-time-queue-entry-table>
 
     PriorityQueue
-    <bgm-priority-queue-entry-table> </bgm-priority-queue-entry-table>
+    <bgm-priority-queue-entry-table
+      [queue]="queues.queueByPriority"
+      (updatePriorityRequested)="onPriorityUpdateRequested($event)"
+      (deletePriorityRequested)="onPriorityRemoveRequested($event)"
+    >
+    </bgm-priority-queue-entry-table>
   </div>
 }

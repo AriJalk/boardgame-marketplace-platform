@@ -5,7 +5,11 @@ import { MatCardModule } from '@angular/material/card';
 import { QueueService } from '../../../queue.service';
 import { BehaviorSubject, startWith, Subject, switchMap } from 'rxjs';
 import { QueueEntryCard } from '../queue-entry-card/queue-entry-card';
-import { QueueEntry, QueuePageResponse } from '../../../models/quque-entry.model';
+import {
+  QueueEntry,
+  QueuePageResponse,
+  UpdatePriorityRequest,
+} from '../../../models/quque-entry.model';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CdkAriaLive } from '@angular/cdk/a11y';
@@ -49,16 +53,11 @@ export class QueueSellerPanel implements OnInit {
     });
   }
 
-  priorityChangeRequest($event: CdkDragDrop<QueueEntry[]>) {
-    let requestedIndex = $event.currentIndex;
-    const data = $event.item.data as QueueEntry;
-    if ($event.currentIndex == $event.previousIndex) {
-      return;
-    }
-    this.subscribeAndReloadUpdate(data, $event.currentIndex);
+  onPriorityUpdateRequested($event: UpdatePriorityRequest) {
+    this.subscribeAndReloadUpdate($event.queueEntry, $event.requestedIndex);
   }
 
-  onPriorityAddRequest(queueEntry: QueueEntry) {
+  onPriorityAddRequested(queueEntry: QueueEntry) {
     this.queueService.addPriority(this.listingsId, queueEntry.id).subscribe({
       next: (data) => {
         console.log(data);
@@ -66,7 +65,7 @@ export class QueueSellerPanel implements OnInit {
     });
   }
 
-  onRemovePriority($event: QueueEntry) {
+  onPriorityRemoveRequested($event: QueueEntry) {
     this.subscribeAndReloadUpdate($event, null);
   }
 

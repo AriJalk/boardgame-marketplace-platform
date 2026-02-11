@@ -1,38 +1,57 @@
-<mat-table #table [dataSource]="dataSource" class="mat-elevation-z8" cdkDropList (cdkDropListDropped)="drop($event)"
-  cdkDropListData="dataSource">
+<mat-table
+  #table
+  [dataSource]="queue"
+  class="mat-elevation-z8"
+  cdkDropList
+  (cdkDropListDropped)="drop($event)"
+  [cdkDropListData]="queue"
+>
   <!-- Position Column -->
   <ng-container matColumnDef="position" sticky>
-    <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+    <mat-header-cell *matHeaderCellDef></mat-header-cell>
     <mat-cell *matCellDef="let element">
       <mat-icon class="example-drag-cursor">reorder</mat-icon>
-      <span>{{element.position}}</span>
     </mat-cell>
   </ng-container>
 
-  <!-- Name Column -->
-  <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
-    <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+  <!-- CreatedAt Column -->
+  <ng-container matColumnDef="createdAt">
+    <mat-header-cell *matHeaderCellDef>Subscribed time</mat-header-cell>
+    <mat-cell mat-cell *matCellDef="let element">{{ element.createdAt | date: 'medium' }}</mat-cell>
   </ng-container>
 
-  <!-- Weight Column -->
-  <ng-container matColumnDef="weight">
-    <mat-header-cell *matHeaderCellDef> Weight </mat-header-cell>
-    <mat-cell *matCellDef="let element"> {{element.weight}} </mat-cell>
+  <!-- Buyer Column -->
+  <ng-container matColumnDef="buyer">
+    <mat-header-cell *matHeaderCellDef>Buyer</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      <a href="">{{ element.buyer.displayName }}</a>
+    </mat-cell>
   </ng-container>
 
-  <!-- Symbol Column -->
-  <ng-container matColumnDef="symbol">
-    <mat-header-cell *matHeaderCellDef> Symbol </mat-header-cell>
-    <mat-cell *matCellDef="let element"> {{element.symbol}} </mat-cell>
+  <!-- Status Column -->
+  <ng-container matColumnDef="status">
+    <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{ element.status }}</mat-cell>
   </ng-container>
 
-  <!-- Quantity Column -->
-  <ng-container matColumnDef="quantity">
-    <mat-header-cell *matHeaderCellDef> Quantity of Element </mat-header-cell>
-    <mat-cell *matCellDef="let element">{{element.quantity}}</mat-cell>
+  <!-- Priority Column -->
+  <ng-container matColumnDef="priority">
+    <mat-header-cell *matHeaderCellDef>Priority</mat-header-cell>
+    <mat-cell *matCellDef="let element">{{ element.priority }}</mat-cell>
+  </ng-container>
+
+  <!-- Options Column -->
+  <ng-container matColumnDef="options">
+    <mat-header-cell *matHeaderCellDef>Options</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      <div class="flex-container">
+        <button type="button" matMiniFab (click)="onDeleteClicked(element)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </mat-cell>
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns;" cdkDrag [cdkDragData]="row"></mat-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns" cdkDrag [cdkDragData]="row"></mat-row>
 </mat-table>

@@ -18,3 +18,8 @@ export interface ListingSubscription {
   status: string;
   createdAt: Date;
 }
+
+export interface UpdatePriorityRequest {
+  queueEntry: QueueEntry;
+  requestedIndex: number;
+}

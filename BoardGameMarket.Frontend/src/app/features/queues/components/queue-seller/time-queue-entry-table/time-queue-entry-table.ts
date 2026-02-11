@@ -20,7 +20,6 @@ export class TimeQueueEntryTable {
   trackBy = (index: number, el: QueueEntry) => el.id;
 
   onPriorityClicked(queueEntry: QueueEntry) {
-    console.log(queueEntry);
     this.priorityRequested.emit(queueEntry);
   }
 }
