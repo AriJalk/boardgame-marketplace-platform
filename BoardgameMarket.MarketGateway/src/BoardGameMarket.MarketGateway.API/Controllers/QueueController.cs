@@ -136,6 +136,9 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
             ListingQueueEntryResponseDto response = await _listingQueueEntryDtoAssembler.BuildQueueEntryResponseDto(queueEntry);
             return Ok(response);
         }
+        #endregion
+
+        #region Shared
 
         [HttpDelete("subscription/{subscriptionId:guid}")]
         public async Task<IActionResult> UnsubscribeFromListing(Guid listingId, Guid subscriptionId)
@@ -145,7 +148,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
                 return BadRequest("User not logged in");
             }
 
-            ListingQueueEntryInfo? queueEntry = await _queuesDataService.GetListingSubscriptionByUserAsync(listingId, subscriptionId);
+            ListingQueueEntryInfo? queueEntry = await _queuesDataService.GetListingQueueEntryByIdAsync(listingId, subscriptionId);
 
             if (queueEntry == null)
             {
@@ -163,7 +166,6 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 
             return NoContent();
         }
-
         #endregion
 
     }

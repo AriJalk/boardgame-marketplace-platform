@@ -43,6 +43,7 @@
       <th mat-header-cell *matHeaderCellDef>Options</th>
       <td mat-cell *matCellDef="let element">
         <div class="flex-container">
+          <!-- Promote button -->
           <button
             type="button"
             (click)="onPriorityClicked(element)"
@@ -51,7 +52,8 @@
           >
             <mat-icon>star</mat-icon>
           </button>
-          <button type="button" matMiniFab>
+          <!-- Delete button -->
+          <button type="button" (click)="onDeleteClicked(element)" matMiniFab>
             <mat-icon>delete</mat-icon>
           </button>
         </div>

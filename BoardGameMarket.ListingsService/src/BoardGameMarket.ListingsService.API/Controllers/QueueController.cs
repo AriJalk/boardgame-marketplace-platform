@@ -86,7 +86,7 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		}
 
 		[HttpDelete("subscription/{listingQueueEntryId:guid}/priority")]
-		public async Task<ActionResult> RemovePriorityFromEntry(Guid listingId, Guid listingQueueEntryId)
+		public async Task<ActionResult<ListingQueueEntryInfo>> RemovePriorityFromEntry(Guid listingId, Guid listingQueueEntryId)
 		{
 			ListingQueueEntry? queueEntry = await _listingQueueReadService.GetListingQueueEntryByIdAsync(listingQueueEntryId);
 
@@ -102,7 +102,7 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 			{
 				return BadRequest();
 			}
-			return NoContent();
+			return Ok(queueEntryResponse.ToListingQueueEntryInfo());
 		}
 
 

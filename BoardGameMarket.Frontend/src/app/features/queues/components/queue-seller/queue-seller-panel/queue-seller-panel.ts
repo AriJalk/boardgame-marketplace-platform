@@ -53,8 +53,23 @@ export class QueueSellerPanel implements OnInit {
     });
   }
 
+  onDeleteRequested($event: QueueEntry) {
+    // console.log($event);
+    this.queueService.unsubscribeFromListing(this.listingsId, $event.id).subscribe({
+      next: (data) => {
+        this.loadQueues();
+      },
+    });
+  }
+
   onPriorityUpdateRequested($event: UpdatePriorityRequest) {
-    this.subscribeAndReloadUpdate($event.queueEntry, $event.requestedIndex);
+    this.queueService
+      .updatePriority(this.listingsId, $event.queueEntry.id, $event.requestedIndex)
+      .subscribe({
+        next: (data) => {
+          this.loadQueues();
+        },
+      });
   }
 
   onPriorityAddRequested(queueEntry: QueueEntry) {
@@ -67,16 +82,9 @@ export class QueueSellerPanel implements OnInit {
   }
 
   onPriorityRemoveRequested($event: QueueEntry) {
-    this.subscribeAndReloadUpdate($event, null);
-  }
-
-  private subscribeAndReloadUpdate(queueEntry: QueueEntry, requestedIndex: number | null) {
-    this.queueService.updatePriority(this.listingsId, queueEntry.id, requestedIndex).subscribe({
-      next: () => {
+    this.queueService.removePriority(this.listingsId, $event.id).subscribe({
+      next: (data) => {
         this.loadQueues();
-      },
-      error: (value) => {
-        console.log(value);
       },
     });
   }

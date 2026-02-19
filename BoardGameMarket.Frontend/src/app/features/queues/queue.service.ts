@@ -56,6 +56,13 @@ export class QueueService {
     );
   }
 
+  removePriority(listingId: string, queueEntryId: string): Observable<QueueEntry> {
+    return this.httpClient.delete<QueueEntry>(
+      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription/${queueEntryId}/priority`,
+      { headers: this.headers },
+    );
+  }
+
   // TODO: batch fetching
   getSubscription(listingId: string): Observable<QueueEntry> {
     const response = this.httpClient.get<QueueEntry>(

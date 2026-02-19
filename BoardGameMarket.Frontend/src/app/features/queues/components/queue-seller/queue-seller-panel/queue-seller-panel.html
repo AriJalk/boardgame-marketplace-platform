@@ -4,6 +4,7 @@
     <bgm-time-queue-entry-table
       [queue]="queues.queueByTime"
       (priorityRequested)="onPriorityAddRequested($event)"
+      (deleteRequested)="onDeleteRequested($event)"
     >
     </bgm-time-queue-entry-table>
 

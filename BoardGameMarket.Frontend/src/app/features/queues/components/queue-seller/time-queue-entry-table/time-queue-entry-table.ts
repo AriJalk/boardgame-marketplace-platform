@@ -15,11 +15,16 @@ import { MatButtonModule } from '@angular/material/button';
 export class TimeQueueEntryTable {
   @Input({ required: true }) queue!: QueueEntry[];
   @Output() priorityRequested = new EventEmitter<QueueEntry>();
+  @Output() deleteRequested = new EventEmitter<QueueEntry>();
 
   displayedColumns: string[] = ['createdAt', 'buyer', 'status', 'priority', 'options'];
   trackBy = (index: number, el: QueueEntry) => el.id;
 
   onPriorityClicked(queueEntry: QueueEntry) {
     this.priorityRequested.emit(queueEntry);
+  }
+
+  onDeleteClicked(queueEntry: QueueEntry) {
+    this.deleteRequested.emit(queueEntry);
   }
 }

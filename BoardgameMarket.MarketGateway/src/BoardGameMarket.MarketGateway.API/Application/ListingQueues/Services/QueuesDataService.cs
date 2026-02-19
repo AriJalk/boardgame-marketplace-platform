@@ -102,7 +102,16 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			return queueEntry;
 		}
 
-		public async Task<ListingQueueEntryInfo[]> GetFilteredQueueEntries(ListingQueueEntryFilter filter)
+        public async Task DeleteListingQueueEntryAsync(Guid listingId, Guid listingQueueEntryId)
+        {
+            string uri = $"api/listings/{listingId}/queue/subscription/{listingQueueEntryId}";
+
+            HttpResponseMessage response = await _httpClient.DeleteAsync(uri);
+
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task<ListingQueueEntryInfo[]> GetFilteredQueueEntries(ListingQueueEntryFilter filter)
 		{
 			string uri = $"api/subscriptions/query";
 			HttpResponseMessage response = await _httpClient.PostAsJsonAsync(uri, filter);
