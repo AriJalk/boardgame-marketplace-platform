@@ -10,17 +10,19 @@ import { AuthStubService } from '../../core/auth/auth-stub.service';
   providedIn: 'root',
 })
 export class QueueService {
+  private headers: HttpHeaders;
   constructor(
     private httpClient: HttpClient,
     private authService: AuthStubService,
     @Inject(API_CONFIG_SERVICE) private apiConfig: ApiConfig,
-  ) {}
+  ) {
+    this.headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
+  }
 
   getQueues(listingId: string): Observable<ListingQueueResponse> {
-    const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     const response = this.httpClient.get<ListingQueueResponse>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue`,
-      { headers: headers },
+      { headers: this.headers },
     );
     // console.log(headers);
     // response.subscribe(data => console.log(data));
@@ -40,47 +42,44 @@ export class QueueService {
     requestedIndex: number | null,
   ): Observable<void> {
     return this.httpClient.patch<void>(
-      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/${queueEntryId}`,
+      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription/${queueEntryId}/priority`,
       { requestedIndex },
+      { headers: this.headers },
     );
   }
 
   addPriority(listingId: string, queueEntryId: string): Observable<QueueEntry> {
-    const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     return this.httpClient.post<QueueEntry>(
-      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/${queueEntryId}/priority`,
+      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription/${queueEntryId}/priority`,
       null,
-      { headers: headers },
+      { headers: this.headers },
     );
   }
 
   // TODO: batch fetching
   getSubscription(listingId: string): Observable<QueueEntry> {
-    const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     const response = this.httpClient.get<QueueEntry>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription`,
-      { headers: headers },
+      { headers: this.headers },
     );
     // response.subscribe(data => console.log(data));
     return response;
   }
 
   subscribeToListing(listingId: string): Observable<QueueEntry> {
-    const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     const response = this.httpClient.put<QueueEntry>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription`,
       null,
-      { headers: headers },
+      { headers: this.headers },
     );
     // response.subscribe(data => console.log(data));
     return response;
   }
 
   unsubscribeFromListing(listingId: string, subscriptionId: string): Observable<void> {
-    const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     const response = this.httpClient.delete<void>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription/${subscriptionId}`,
-      { headers: headers },
+      { headers: this.headers },
     );
     return response;
   }

@@ -28,6 +28,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases
 			_listingQueueEntryAdderService = listingQueueEntryAdderService;
 		}
 
+		// NOTE: not concurrency safe, need to make atomic in DB
 		public async Task<ListingQueueEntryInfo> ExecuteAsync(Guid listingId, AddListingQueueEntryRequest request)
 		{
 

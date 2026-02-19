@@ -41,6 +41,10 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 				HashSet<Guid> listingIds = filter.ListingIds.ToHashSet();
 				query = query.Where(qe => listingIds.Contains(qe.ListingId));
 			}
+			if (filter.ListingQueueEntryIds != null)
+			{
+				query = query.Where(qe => filter.ListingQueueEntryIds.Contains(qe.Id));
+			}
 
 			return Task.FromResult(query);
 		}

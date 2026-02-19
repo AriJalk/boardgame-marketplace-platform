@@ -27,8 +27,8 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases
 			_unitOfWork = unitOfWork;
 		}
 
-		// TODO: Through SQL atomic concurrency safe
-		public async Task<ListingQueueEntryInfo> ExecuteAsync(Guid listingId, Guid requestedQueueEntryId)
+        // NOTE: not concurrency safe, need to make atomic in DB
+        public async Task<ListingQueueEntryInfo> ExecuteAsync(Guid listingId, Guid requestedQueueEntryId)
 		{
 			try
 			{

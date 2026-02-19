@@ -1,7 +1,7 @@
 ﻿namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Dtos
 {
-	public class UpdateQueuePriorityRequest
+	public record AddQueueEntryPriorityRequest(Guid ListingId, Guid ListingQueueEntryId)
 	{
-		public int RequestedIndex { get; init; }
+
 	}
 }

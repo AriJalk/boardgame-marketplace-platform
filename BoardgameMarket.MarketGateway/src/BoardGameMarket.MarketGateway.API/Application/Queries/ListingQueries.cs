@@ -12,7 +12,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.Queries
             _httpClient = listingHttpClient.HttpClient;
         }
 
-        public async Task<Guid> GetSellerUserIdByListingGroupId(Guid listingGroupId)
+        public async Task<Guid> GetSellerUserIdByListingGroupIdAsync(Guid listingGroupId)
         {
             string uri = $"api/query/seller/byListingGroup/{listingGroupId}";
             HttpResponseMessage response = await _httpClient.GetAsync(uri);
@@ -23,7 +23,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.Queries
             return sellerId;
         }
 
-        public async Task<Guid> GetSellerUserIdByListingId(Guid listingId)
+        public async Task<Guid> GetSellerUserIdByListingIdAsync(Guid listingId)
         {
             string uri = $"api/query/seller/byListing/{listingId}";
             HttpResponseMessage response = await _httpClient.GetAsync(uri);

@@ -24,9 +24,9 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEn
 			return await _listingQueueEntryRepository.GetFilteredListingQueueEntriesAsync(filter);
 		}
 
-		public async Task<ListingQueueEntry?> GetListingQueueEntryByIdAsync(Guid listingQueueId)
+		public async Task<ListingQueueEntry?> GetListingQueueEntryByIdAsync(Guid listingQueueEntryId)
 		{
-			return await _listingQueueEntryRepository.GetListingQueueEntryByIdAsync(listingQueueId);
+			return await _listingQueueEntryRepository.GetListingQueueEntryByIdAsync(listingQueueEntryId);
 		}
 	}
 }

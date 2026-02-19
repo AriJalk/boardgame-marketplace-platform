@@ -3,6 +3,7 @@ using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Assemblers;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Dtos;
+using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Mappers;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.UseCases;
@@ -38,10 +39,12 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         }
 
 
+        #region Seller
+
         [HttpGet()]
         public async Task<ActionResult<ListingQueueResponseDto>> GetQueue(Guid listingId)
         {
-            Guid sellerId = await _listingQueries.GetSellerUserIdByListingId(listingId);
+            Guid sellerId = await _listingQueries.GetSellerUserIdByListingIdAsync(listingId);
             if (sellerId != _loginService.LoggedInUser?.UserId)
             {
                 return Unauthorized();
@@ -49,12 +52,14 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
             ListingQueueResponseDto response = await _getListingQueueUseCase.ExecuteAsync(listingId);
 
             return Ok(response);
+
         }
 
-        [HttpPost("{listingQueueEntryId:guid}/priority")]
+
+        [HttpPost("subscription/{listingQueueEntryId:guid}/priority")]
         public async Task<ActionResult<ListingQueueEntryResponseDto>> AddPriority(Guid listingId, Guid listingQueueEntryId)
         {
-            Guid sellerId = await _listingQueries.GetSellerUserIdByListingId(listingId);
+            Guid sellerId = await _listingQueries.GetSellerUserIdByListingIdAsync(listingId);
 
             if (sellerId != _loginService?.LoggedInUser?.UserId)
             {
@@ -64,6 +69,41 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
             ListingQueueEntryInfo queueEntry = await _queuesDataService.AddPriorityToQueueEntry(listingId, listingQueueEntryId);
             return Ok(queueEntry);
         }
+
+
+        [HttpPatch("subscription/{listingQueueEntryId:guid}/priority")]
+        public async Task<ActionResult<ListingQueueEntryResponseDto>> UpdateListingQueueEntryPriority(Guid listingId, Guid listingQueueEntryId, [FromBody] UpdateListingQueueEntryPriorityRequestDto request)
+        {
+            Guid sellerId = await _listingQueries.GetSellerUserIdByListingIdAsync(listingId);
+            if (sellerId != _loginService.LoggedInUser?.UserId)
+            {
+                return Unauthorized();
+            }
+            //ListingQueueEntryInfo queueEntry = await _queuesDataService.GetListingQueueEntryByIdAsync(listingId, listingQueueEntryId);
+
+            ListingQueueEntryInfo queueEntryResponse = await _queuesDataService.UpdateListingQueueEntryPriorityAsync(listingId, listingQueueEntryId, request);
+
+            return Ok(queueEntryResponse.ToListingQueueEntryResponseDto(null));
+        }
+
+        [HttpDelete("subscription/{listingQueueEntryId:guid}/priority")]
+        public async Task<ActionResult<ListingQueueEntryResponseDto>> RemoveListingQueueEntryPriority(Guid listingId, Guid listingQueueEntryId)
+        {
+            Guid sellerId = await _listingQueries.GetSellerUserIdByListingIdAsync(listingId);
+
+            if (sellerId != _loginService.LoggedInUser?.UserId)
+            {
+                return Unauthorized();
+            }
+
+            ListingQueueEntryInfo queueEntry = await _queuesDataService.RemoveListingQueueEntryPriorityAsync(listingId, listingQueueEntryId);
+
+            return queueEntry.ToListingQueueEntryResponseDto(null);
+        }
+
+        #endregion
+
+        #region Buyer
 
 
         [HttpGet("subscription")]
@@ -105,14 +145,14 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
                 return BadRequest("User not logged in");
             }
 
-            ListingQueueEntryInfo? queueEntry = await _queuesDataService.GetSubscriptionForListingAsync(listingId, subscriptionId);
+            ListingQueueEntryInfo? queueEntry = await _queuesDataService.GetListingSubscriptionByUserAsync(listingId, subscriptionId);
 
             if (queueEntry == null)
             {
                 return NoContent();
             }
 
-            Guid sellerId = await _listingQueries.GetSellerUserIdByListingId(listingId);
+            Guid sellerId = await _listingQueries.GetSellerUserIdByListingIdAsync(listingId);
 
             if (queueEntry.BuyerUserId != _loginService.LoggedInUser.UserId && _loginService.LoggedInUser.UserId != sellerId)
             {
@@ -124,6 +164,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
             return NoContent();
         }
 
+        #endregion
 
     }
 }

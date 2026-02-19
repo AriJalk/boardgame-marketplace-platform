@@ -5,7 +5,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEn
 {
 	public interface IListingQueueEntryReadService
 	{
-		Task<ListingQueueEntry?> GetListingQueueEntryByIdAsync(Guid listingQueueId);
+		Task<ListingQueueEntry?> GetListingQueueEntryByIdAsync(Guid listingQueueEntryId);
 		Task<IEnumerable<ListingQueueEntry>> GetFilteredListingQueueEntriesAsync(ListingQueueEntryFilter filter);
 	}
 }

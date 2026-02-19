@@ -38,9 +38,9 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			return queue;
 		}
 
-		public async Task<ListingQueueEntryInfo?> GetSubscriptionForListingAsync(Guid listingId, Guid userId)
+		public async Task<ListingQueueEntryInfo?> GetListingSubscriptionByUserAsync(Guid listingId, Guid userId)
 		{
-			string uri = $"api/listings/{listingId}/queue/subscription?userId={userId}";
+			string uri = $"api/listings/{listingId}/queue/subscription/user/{userId}";
 
 			HttpResponseMessage response = await _httpClient.GetAsync(uri);
 
@@ -89,6 +89,19 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			return listingIds;
 		}
 
+		public async Task<ListingQueueEntryInfo> GetListingQueueEntryByIdAsync(Guid listingId, Guid listingQueueEntryId)
+		{
+			string uri = $"api/listings/{listingId}/queue/subscription/{listingQueueEntryId}";
+
+			HttpResponseMessage response = await _httpClient.GetAsync(uri);
+
+			response.EnsureSuccessStatusCode();
+
+			ListingQueueEntryInfo queueEntry = await response.Content.ReadFromJsonAsync<ListingQueueEntryInfo>() ?? throw new InvalidOperationException($"{nameof(ListingQueueEntryInfo)} payload expected");
+
+			return queueEntry;
+		}
+
 		public async Task<ListingQueueEntryInfo[]> GetFilteredQueueEntries(ListingQueueEntryFilter filter)
 		{
 			string uri = $"api/subscriptions/query";
@@ -118,5 +131,39 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 
 			return queueEntry;
 		}
+
+
+		public async Task<ListingQueueEntryInfo> UpdateListingQueueEntryPriorityAsync(Guid listingId, Guid listingQueueEntryId, UpdateListingQueueEntryPriorityRequestDto requestDto)
+		{
+			UpdateListingQueueEntryPriorityRequestDto request = new UpdateListingQueueEntryPriorityRequestDto(requestDto.RequestedIndex);
+
+			string uri = $"api/listings/{listingId}/queue/subscription/{listingQueueEntryId}/priority";
+			
+			HttpResponseMessage response = await _httpClient.PatchAsJsonAsync(uri, request);
+
+			response.EnsureSuccessStatusCode();
+
+			ListingQueueEntryInfo? queueEntry = await response.Content.ReadFromJsonAsync<ListingQueueEntryInfo>();
+
+			if (queueEntry == null)
+			{
+				throw new InvalidOperationException($"{nameof(ListingQueueEntryInfo)} payload expected");
+			}
+
+			return queueEntry;
+		}
+
+		public async Task<ListingQueueEntryInfo> RemoveListingQueueEntryPriorityAsync(Guid listingId, Guid listingQueueEntryId)
+		{
+			string uri = $"api/listings/{listingId}/queue/subscription/{listingQueueEntryId}/priority";
+			HttpResponseMessage response = await _httpClient.DeleteAsync(uri);
+
+			response.EnsureSuccessStatusCode();
+
+			ListingQueueEntryInfo listingQueueEntryInfo = await response.Content.ReadFromJsonAsync<ListingQueueEntryInfo>() ?? throw new InvalidOperationException($"{nameof(ListingQueueEntryInfo)} payload expectred");
+
+			return listingQueueEntryInfo;
+		}
+
 	}
 }
