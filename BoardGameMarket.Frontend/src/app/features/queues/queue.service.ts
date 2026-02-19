@@ -17,13 +17,12 @@ export class QueueService {
   ) {}
 
   getQueues(listingId: string): Observable<ListingQueueResponse> {
-    const headers = new HttpHeaders();
-    headers.set('Atuhorization', this.authService.loggedInUser?.userId ?? '');
+    const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     const response = this.httpClient.get<ListingQueueResponse>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue`,
       { headers: headers },
     );
-
+    // console.log(headers);
     // response.subscribe(data => console.log(data));
     return response;
   }

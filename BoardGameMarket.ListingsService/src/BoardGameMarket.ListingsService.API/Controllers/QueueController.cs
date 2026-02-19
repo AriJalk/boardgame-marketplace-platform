@@ -18,7 +18,7 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		private AddListingQueueEntryUseCase _addListingQueueEntryUseCase;
 		private AddListingQueueEntryPriorityUseCase _addListingQueueEntryPriorityUseCase;
 
-		public QueueController(GetQueueUseCase getQueueUseCase, IListingQueueEntryReadService listingQueueReadService, IListingQueueEntryWriteService listingQueueWriteService, AddListingQueueEntryUseCase addListingQueueEntryUseCase, AddListingQueueEntryPriorityUseCase addListingQueueEntryPriorityUseCase)
+        public QueueController(GetQueueUseCase getQueueUseCase, IListingQueueEntryReadService listingQueueReadService, IListingQueueEntryWriteService listingQueueWriteService, AddListingQueueEntryUseCase addListingQueueEntryUseCase, AddListingQueueEntryPriorityUseCase addListingQueueEntryPriorityUseCase)
 		{
 			_getQueueUseCase = getQueueUseCase;
 			_listingQueueReadService = listingQueueReadService;
