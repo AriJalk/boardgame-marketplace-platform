@@ -60,7 +60,8 @@ export class QueueSellerPanel implements OnInit {
   onPriorityAddRequested(queueEntry: QueueEntry) {
     this.queueService.addPriority(this.listingsId, queueEntry.id).subscribe({
       next: (data) => {
-        console.log(data);
+        // console.log(data);
+        this.loadQueues();
       },
     });
   }

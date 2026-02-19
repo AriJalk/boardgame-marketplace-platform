@@ -49,8 +49,9 @@ export class QueueService {
   addPriority(listingId: string, queueEntryId: string): Observable<QueueEntry> {
     const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     return this.httpClient.post<QueueEntry>(
-      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription`,
-      { listingId: listingId, listingQueueEntryId: queueEntryId },
+      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/${queueEntryId}/priority`,
+      null,
+      { headers: headers },
     );
   }
 

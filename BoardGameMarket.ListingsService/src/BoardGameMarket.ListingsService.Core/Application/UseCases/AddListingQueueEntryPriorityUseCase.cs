@@ -27,7 +27,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases
 			_unitOfWork = unitOfWork;
 		}
 
-		// TODO: Through SQL
+		// TODO: Through SQL atomic concurrency safe
 		public async Task<ListingQueueEntryInfo> ExecuteAsync(Guid listingId, Guid requestedQueueEntryId)
 		{
 			try
@@ -60,7 +60,8 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases
 
 				if (requestedPriorityEntry.Priority != null)
 				{
-					throw new InvalidOperationException($"QueueEntry {requestedQueueEntryId} already has priority");
+					await _unitOfWork.CommitTransactionAsync();
+					return requestedPriorityEntry.ToListingQueueEntryInfo();
 				}
 
 				ListingQueueEntry? lastPriorityEntry = queue.FirstOrDefault();

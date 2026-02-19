@@ -16,13 +16,15 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		private IListingQueueEntryReadService _listingQueueReadService;
 		private IListingQueueEntryWriteService _listingQueueWriteService;
 		private AddListingQueueEntryUseCase _addListingQueueEntryUseCase;
+		private AddListingQueueEntryPriorityUseCase _addListingQueueEntryPriorityUseCase;
 
-		public QueueController(GetQueueUseCase getQueueUseCase, IListingQueueEntryReadService listingQueueReadService, IListingQueueEntryWriteService listingQueueWriteService, AddListingQueueEntryUseCase addListingQueueEntryUseCase)
+		public QueueController(GetQueueUseCase getQueueUseCase, IListingQueueEntryReadService listingQueueReadService, IListingQueueEntryWriteService listingQueueWriteService, AddListingQueueEntryUseCase addListingQueueEntryUseCase, AddListingQueueEntryPriorityUseCase addListingQueueEntryPriorityUseCase)
 		{
 			_getQueueUseCase = getQueueUseCase;
 			_listingQueueReadService = listingQueueReadService;
 			_listingQueueWriteService = listingQueueWriteService;
 			_addListingQueueEntryUseCase = addListingQueueEntryUseCase;
+			_addListingQueueEntryPriorityUseCase = addListingQueueEntryPriorityUseCase;
 		}
 
 		[HttpGet()]
@@ -61,6 +63,13 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		{
 			await _listingQueueWriteService.DeleteListingQueueEntryAsync(queueEntryId);
 			return NoContent();
+		}
+
+		[HttpPost("subscription/{queueEntryId:guid}/priority")]
+		public async Task<ActionResult<ListingQueueEntryInfo>> AddPriorityToEntry(Guid listingId, Guid queueEntryId)
+		{
+			ListingQueueEntryInfo queueEntry = await _addListingQueueEntryPriorityUseCase.ExecuteAsync(listingId, queueEntryId);
+			return Ok(queueEntry);
 		}
 	}
 }

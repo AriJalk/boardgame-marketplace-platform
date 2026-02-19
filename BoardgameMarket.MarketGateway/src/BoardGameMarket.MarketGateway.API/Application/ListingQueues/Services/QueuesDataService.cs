@@ -1,4 +1,5 @@
-﻿using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Filters;
+﻿using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Dtos;
+using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Filters;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.Shared;
 using System.Net;
@@ -100,6 +101,22 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			return queueEntries;
 		}
 
+		public async Task<ListingQueueEntryInfo> AddPriorityToQueueEntry(Guid listingId, Guid listingQueueEntryId)
+		{
+			string uri = $"api/listings/{listingId}/queue/subscription/{listingQueueEntryId}/priority";
 
+			HttpResponseMessage response = await _httpClient.PostAsync(uri, null);
+
+			response.EnsureSuccessStatusCode();
+
+			ListingQueueEntryInfo? queueEntry = await response.Content.ReadFromJsonAsync<ListingQueueEntryInfo>();
+
+			if (queueEntry == null)
+			{
+				throw new InvalidOperationException($"Can't add priority to entry {listingQueueEntryId}");
+			}
+
+			return queueEntry;
+		}
 	}
 }

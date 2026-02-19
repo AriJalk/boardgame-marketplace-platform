@@ -1,8 +1,12 @@
-﻿using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Assemblers;
+﻿using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Filters;
+using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients;
+using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services;
+using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Assemblers;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Dtos;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.UseCases;
+using BoardGameMarket.MarketGateway.API.Application.Listings.Services;
 using BoardGameMarket.MarketGateway.API.Application.Users.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,16 +24,20 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		private readonly ListingQueueEntryDtoAssembler _listingQueueEntryDtoAssembler;
 		private readonly QueuesDataService _queuesDataService;
 		private readonly LoginService _loginService;
+		private readonly ListingGroupsDataService _listingGroupDataService;
+		private readonly ListingsDataService _listingDataService;
 
-		public QueueController(GetListingQueueUseCase getListingQueueUseCase, GetListingQueueEntryUseCase getListingQueueEntryUseCase, ListingQueueEntryDtoAssembler listingQueueEntryDtoAssembler, QueuesDataService queuesDataService, LoginService loginService)
+
+		public QueueController(GetListingQueueUseCase getListingQueueUseCase, GetListingQueueEntryUseCase getListingQueueEntryUseCase, ListingQueueEntryDtoAssembler listingQueueEntryDtoAssembler, QueuesDataService queuesDataService, LoginService loginService, ListingGroupsDataService listingGroupDataService, ListingsDataService listingDataService)
 		{
 			_getListingQueueUseCase = getListingQueueUseCase;
 			_getListingQueueEntryUseCase = getListingQueueEntryUseCase;
 			_listingQueueEntryDtoAssembler = listingQueueEntryDtoAssembler;
 			_queuesDataService = queuesDataService;
 			_loginService = loginService;
+			_listingGroupDataService = listingGroupDataService;
+			_listingDataService = listingDataService;
 		}
-
 
 
 
@@ -43,11 +51,27 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		}
 
 		// TODO: Implement
-		[HttpPost("subscription")]
-		public async Task<ActionResult<ListingQueueEntryResponseDto>> AddPriority(AddQueuePriorityRequest request)
+		[HttpPost("{listingQueueEntryId:guid}/priority")]
+		public async Task<ActionResult<ListingQueueEntryResponseDto>> AddPriority(Guid listingId, Guid listingQueueEntryId)
 		{
-			return Ok();
+			ListingGroupFilter filter = new ListingGroupFilter()
+			{
+				ListingIds = [listingId]
+			};
+			ListingGroupSummary? lg = (await _listingGroupDataService.GetFilteredListingGroupSummaries(filter)).FirstOrDefault();
+			if (lg == null)
+			{
+				return BadRequest($"Listing {listingId} not found");
+			}
+			if (lg.SellerUserId != _loginService.LoggedInUser?.UserId)
+			{
+				return Unauthorized("Unauthorized");
+			}
+
+			ListingQueueEntryInfo queueEntry = await _queuesDataService.AddPriorityToQueueEntry(listingId, listingQueueEntryId);
+			return Ok(queueEntry);
 		}
+
 
 		[HttpGet("subscription")]
 		public async Task<ActionResult<ListingQueueEntryResponseDto>> GetSubscription(Guid listingId)
@@ -58,7 +82,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 			}
 
 			ListingQueueEntryResponseDto? queueEntryResponse = await _getListingQueueEntryUseCase.ExecuteAsync(listingId, _loginService.LoggedInUser.UserId);
-			
+
 			if (queueEntryResponse == null)
 			{
 				return NoContent();

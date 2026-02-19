@@ -50,6 +50,7 @@ namespace BoardGameMarket.ListingsService.Core
 			//Use Cases
 			services.AddScoped<GetQueueUseCase>();
 			services.AddScoped<AddListingQueueEntryUseCase>();
+			services.AddScoped<AddListingQueueEntryPriorityUseCase>();
 
 			// Queries
 			services.AddScoped<ListingOwnershipQuery>();
