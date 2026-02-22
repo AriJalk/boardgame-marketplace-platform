@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
 {
-	[Route("api/subscription")]
+	[Route("api/subscriptions")]
 	[ApiController]
 	public class SubscriptionsController : ControllerBase
 	{

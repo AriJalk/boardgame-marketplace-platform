@@ -21,10 +21,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/sandbox/sandbox').then((m) => m.Sandbox),
   },
   {
-    path: 'my-subscriptions',
+    path: 'my-listings',
     loadComponent: () =>
-      import('./features/queues/components/buyer-subscriptions-page/buyer-subscriptions-page').then(
-        (m) => m.BuyerSubscriptionsPage,
+      import('./features/user/my-listings-page/my-listings-page').then(
+        (m) => m.MyListingsPage,
       ),
   },
   { path: '', redirectTo: 'listing-groups', pathMatch: 'full' },

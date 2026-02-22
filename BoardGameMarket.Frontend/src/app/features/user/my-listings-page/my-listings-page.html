@@ -1,0 +1,28 @@
+<div class="flex">
+  <div class="flex-1">
+    <h3>My listing groups</h3>
+    @for (listingGroup of myListingGroups$ | async; track listingGroup.id) {
+      <bgm-listing-group-summary-card [listingGroup]="listingGroup">
+      </bgm-listing-group-summary-card>
+    }
+  </div>
+  <div class="flex-1">
+    <h3>Listings I'm subscribed to</h3>
+    <div class="flex-column">
+      @for (listingGroup of mySubscribedListingGroups$ | async; track listingGroup.id) {
+        <mat-card>
+          @for (listing of listingGroup.listings; track listing.id) {
+            @if (listing.status === 'active' && listing.isSubscribed) {
+              <mat-card>
+                <bgm-listing-summary-card [listing]="listing"></bgm-listing-summary-card>
+              </mat-card>
+            }
+          }
+          <button matButton type="button" [routerLink]="['/listing-groups', listingGroup.id]">
+            Details
+          </button>
+        </mat-card>
+      }
+    </div>
+  </div>
+</div>

@@ -38,11 +38,18 @@ export class ListingGroupService {
     );
   }
 
+  getMyListingGroups(): Observable<ListingGroupSummary[]> {
+    return this.httpClient.post<ListingGroupSummary[]>(
+      `${this.apiConfig.apiEndpoint}/listing-groups/filtered`,
+      { sellerUserId: this.authService.loggedInUser?.userId },
+      { headers: this.authService.headers },
+    );
+  }
+
   getSubscribedListingGroups(): Observable<ListingGroupSummary[]> {
-    const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     return this.httpClient.get<ListingGroupSummary[]>(
       `${this.apiConfig.apiEndpoint}/subscriptions/listing-groups`,
-      { headers: headers },
+      { headers: this.authService.headers },
     );
   }
 }
