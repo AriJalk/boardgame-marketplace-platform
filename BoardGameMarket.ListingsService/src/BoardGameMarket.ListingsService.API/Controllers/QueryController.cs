@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.ListingsService.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/query")]
     [ApiController]
     public class QueryController : ControllerBase
     {
@@ -16,14 +16,14 @@ namespace BoardGameMarket.ListingsService.API.Controllers
             _listingOwnershipQuery = listingOwnershipQuery;
         }
 
-        [HttpGet("seller/byListing/{listingId:guid}")]
+        [HttpGet("seller/by-listing/{listingId:guid}")]
         public async Task<ActionResult<Guid>> GetSellerIdByListingId(Guid listingId)
         {
             Guid sellerId = await _listingOwnershipQuery.GetSellerUserIdByListingId(listingId);
             return Ok(sellerId);
         }
 
-        [HttpGet("seller/byListingGroupId/{listingGroupId:guid}")]
+        [HttpGet("seller/by-listing-group-id/{listingGroupId:guid}")]
         public async Task<ActionResult<Guid>> GetSellerIdByListingGroupId(Guid listingGroupId)
         {
             Guid sellerId = await _listingOwnershipQuery.GetSellerUserIdByListingGroupId(listingGroupId);

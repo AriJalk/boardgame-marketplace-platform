@@ -3,12 +3,11 @@ using BoardGameMarket.UsersService.Core.Application.Mappers;
 using BoardGameMarket.UsersService.Core.Application.ServiceContracts.ApplicationUsers;
 using BoardGameMarket.UsersService.Core.Application.UseCases;
 using BoardGameMarket.UsersService.Core.Domain.Entities;
-using BoardGameMarket.UsersService.Core.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.UsersService.API.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/users")]
 	[ApiController]
 	public class UsersController : ControllerBase
 	{
@@ -45,7 +44,18 @@ namespace BoardGameMarket.UsersService.API.Controllers
 			return Ok(user);
 		}
 
+		[HttpGet("{userId:guid}/contact-email")]
+		public async Task<ActionResult<string>> GetEmail(Guid userId)
+		{
+			ApplicationUser? user = await _userGetterService.GetUserByUserIdAsync(userId);
 
+			if (user == null)
+			{
+				return NotFound();
+			}
+
+			return Ok(user.Email);
+		}
 
 	}
 }

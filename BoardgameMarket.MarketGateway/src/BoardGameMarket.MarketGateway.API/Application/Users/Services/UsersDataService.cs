@@ -17,7 +17,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.Users.Services
 
 		public async Task<UserInfo> GetUser(Guid userId)
 		{
-			string uri = $"api/Users/{userId}";
+			string uri = $"api/users/{userId}";
 
 			HttpResponseMessage response = await _httpClient.GetAsync(uri);
 
@@ -35,6 +35,24 @@ namespace BoardGameMarket.MarketGateway.API.Application.Users.Services
 				throw new InvalidDataException();
 			}
 			return userInfo;
+		}
+
+		public async Task<string> GetEmail(Guid userId)
+		{
+			string uri = $"api/users/{userId}/contact-email";
+
+			HttpResponseMessage response = await _httpClient.GetAsync(uri);
+
+			response.EnsureSuccessStatusCode();
+
+			string? email = await response.Content.ReadAsStringAsync();
+
+			if (email == null)
+			{
+				throw new InvalidDataException();
+			}
+
+			return email;
 		}
 	}
 }

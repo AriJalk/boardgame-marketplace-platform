@@ -21,7 +21,7 @@ export class ListingGroupService {
   getListingGroupDetails(listingGroupId: string) {
     const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     return this.httpClient.get<ListingGroupDetails>(
-      `${this.apiConfig.apiEndpoint}/listingGroups/${listingGroupId}/detail`,
+      `${this.apiConfig.apiEndpoint}/listing-groups/${listingGroupId}/detail`,
       { headers: headers },
     );
   }
@@ -32,7 +32,7 @@ export class ListingGroupService {
       pageSize: 10,
     };
     return this.httpClient.post<PagedResult<ListingGroupSummary>>(
-      `${this.apiConfig.apiEndpoint}/listingGroups/page`,
+      `${this.apiConfig.apiEndpoint}/listing-groups/page`,
       query,
       { headers: headers },
     );
@@ -41,7 +41,7 @@ export class ListingGroupService {
   getSubscribedListingGroups(): Observable<ListingGroupSummary[]> {
     const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     return this.httpClient.get<ListingGroupSummary[]>(
-      `${this.apiConfig.apiEndpoint}/subscriptions/listingGroups`,
+      `${this.apiConfig.apiEndpoint}/subscriptions/listing-groups`,
       { headers: headers },
     );
   }

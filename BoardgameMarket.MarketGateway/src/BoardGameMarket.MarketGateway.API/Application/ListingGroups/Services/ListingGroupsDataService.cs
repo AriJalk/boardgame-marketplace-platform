@@ -20,7 +20,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 		public async Task<PagedResult<ListingGroupSummary>> GetListingGroupsSummaryPage(PagedListingGroupQuery query)
 		{
 
-			string uri = $"api/listingGroups/page";
+			string uri = $"api/listing-groups/page";
 
 			HttpResponseMessage response = await _httpClient.PostAsJsonAsync(uri, query);
 
@@ -42,7 +42,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
 		public async Task<ListingGroupSummary[]> GetFilteredListingGroupSummaries(ListingGroupFilter filter)
 		{
-			string uri = $"api/listingGroups/filtered";
+			string uri = $"api/listing-groups/filtered";
 
 			HttpResponseMessage response = await _httpClient.PostAsJsonAsync(uri, filter);
 
@@ -64,7 +64,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
 		public async Task<ListingGroupDetail> GetListingGroupDetail(Guid listingGroupId)
 		{
-			string uri = $"api/ListingGroups/{listingGroupId}";
+			string uri = $"api/listing-groups/{listingGroupId}";
 
 			HttpResponseMessage response = await _httpClient.GetAsync(uri);
 

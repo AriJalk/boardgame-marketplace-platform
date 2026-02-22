@@ -18,7 +18,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.CatalogItems.Services
 
 		public async Task<CatalogItemInfo> GetCatalogItemByInternalId(Guid catalogItemId)
 		{
-			string uri = $"api/Catalog/{catalogItemId}";
+			string uri = $"api/catalog/{catalogItemId}";
 
 			HttpResponseMessage response = await _httpClient.GetAsync(uri);
 
@@ -40,7 +40,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.CatalogItems.Services
 
 		public async Task<CatalogItemInfo> GetBggCatalogItemByBggId(int bggId)
 		{
-			string uri = $"api/Catalog/bgg/{bggId}";
+			string uri = $"api/catalog/bgg/{bggId}";
 
 			HttpResponseMessage response = await _httpClient.GetAsync(uri);
 

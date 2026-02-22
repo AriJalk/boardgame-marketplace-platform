@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.ListingsService.API.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/listings")]
 	[ApiController]
 	public class ListingsController : ControllerBase
 	{

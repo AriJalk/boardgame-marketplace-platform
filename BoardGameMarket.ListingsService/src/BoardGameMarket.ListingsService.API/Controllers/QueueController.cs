@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.ListingsService.API.Controllers
 {
-	[Route("api/listings/{listingId:guid}/[controller]")]
+	[Route("api/listings/{listingId:guid}/queue")]
 	[ApiController]
 	public class QueueController : ControllerBase
 	{

@@ -33,6 +33,7 @@ namespace BoardGameMarket.UsersService.Core.Application.Services.ApplicationUser
 				FirstName = createUserCommand.FirstName,
 				LastName = createUserCommand.LastName,
 				DisplayName = createUserCommand.DisplayName,
+				Email = createUserCommand.Email,
 			};
 
 			await _repository.AddUserAsync(user);

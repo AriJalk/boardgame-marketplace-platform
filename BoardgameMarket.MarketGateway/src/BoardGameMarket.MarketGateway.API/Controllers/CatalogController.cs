@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/catalog")]
 	[ApiController]
 	public class CatalogController : ControllerBase
 	{

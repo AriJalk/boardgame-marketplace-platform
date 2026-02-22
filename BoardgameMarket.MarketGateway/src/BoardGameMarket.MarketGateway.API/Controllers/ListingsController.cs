@@ -2,7 +2,7 @@
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/listings")]
 	[ApiController]
 	public class ListingsController : ControllerBase
 	{

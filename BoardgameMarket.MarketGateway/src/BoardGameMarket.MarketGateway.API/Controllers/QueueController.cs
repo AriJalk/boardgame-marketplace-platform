@@ -17,7 +17,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 {
     // TODO: buyer facing subscription dto is it's own type so no user calls + priority outside GetQueue from seller
 
-    [Route("api/listings/{listingId:guid}/[controller]")]
+    [Route("api/listings/{listingId:guid}/queue")]
     [ApiController]
     public class QueueController : ControllerBase
     {

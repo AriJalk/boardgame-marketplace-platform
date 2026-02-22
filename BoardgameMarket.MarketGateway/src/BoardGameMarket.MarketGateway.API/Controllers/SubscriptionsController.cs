@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/subscription")]
 	[ApiController]
 	public class SubscriptionsController : ControllerBase
 	{
@@ -27,7 +27,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		}
 
 
-		[HttpGet("listingGroups")]
+		[HttpGet("listing-groups")]
 		public async Task<ActionResult<ListingGroupSummaryDto[]>> GetListingGroupsBySubscriber()
 		{
 			if (_loginService.LoggedInUser == null)

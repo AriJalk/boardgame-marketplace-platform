@@ -3,14 +3,12 @@ using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingQueueEnt
 using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.Queries;
-using BoardGameMarket.ListingsService.Core.Domain.Aggragates;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.ListingsService.API.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/subscriptions")]
 	[ApiController]
 	public class SubscriptionsController : ControllerBase
 	{
