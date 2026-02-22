@@ -14,5 +14,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEn
 		Task<bool> DeleteListingQueueEntryAsync(Guid listingQueueEntryId);
 		Task DeleteListingQueueEntriesByListingIdAsync(Guid listingId);
 		Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntryToUpdate);
+		Task<IEnumerable<ListingQueueEntry>> UpdateListingQueueEntriesAsync(IEnumerable<ListingQueueEntry> listingQueueEntries);
 	}
 }

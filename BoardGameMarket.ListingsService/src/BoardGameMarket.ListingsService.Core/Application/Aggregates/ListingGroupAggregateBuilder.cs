@@ -1,6 +1,6 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
-using BoardGameMarket.ListingsService.Core.Application.Common;
+using BoardGameMarket.ListingsService.Core.Application.Pagination;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;

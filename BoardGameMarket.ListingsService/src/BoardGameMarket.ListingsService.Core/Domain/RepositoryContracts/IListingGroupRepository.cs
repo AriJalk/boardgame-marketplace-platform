@@ -1,5 +1,5 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.Filters;
-using BoardGameMarket.ListingsService.Core.Application.Common;
+using BoardGameMarket.ListingsService.Core.Application.Pagination;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 
 namespace BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts

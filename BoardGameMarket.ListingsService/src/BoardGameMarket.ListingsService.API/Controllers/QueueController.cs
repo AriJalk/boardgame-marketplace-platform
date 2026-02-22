@@ -49,7 +49,7 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		}
 
 		[HttpGet("subscription/user/{userId:guid}")]
-		public async Task<ActionResult<ListingQueueEntryInfo>> GetSubscriptionByUserId(Guid listingId, Guid userId)
+		public async Task<ActionResult<ListingQueueEntryInfo>> GetListingQueueEntryByUserId(Guid listingId, Guid userId)
 		{
 			ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
 			{

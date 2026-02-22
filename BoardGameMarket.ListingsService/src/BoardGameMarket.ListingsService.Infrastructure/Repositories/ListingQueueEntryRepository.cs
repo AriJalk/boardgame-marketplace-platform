@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 {
-	internal class ListingQueueEntryRepository : IListingQueueEntryRepository
+    internal class ListingQueueEntryRepository : IListingQueueEntryRepository
 	{
 		public Task<ListingQueueEntry?> AddListingQueueEntryAsync(ListingQueueEntry listingQueueEntry)
 		{
@@ -40,5 +40,10 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 		{
 			throw new NotImplementedException();
 		}
-	}
+
+        public Task<IEnumerable<ListingQueueEntry>> UpdateListingQueueEntriesAsync(IEnumerable<ListingQueueEntry> listingQueueEntries)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

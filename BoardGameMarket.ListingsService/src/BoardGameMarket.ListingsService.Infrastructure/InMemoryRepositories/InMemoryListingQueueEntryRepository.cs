@@ -53,7 +53,16 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 		{
 			return Task.FromResult(_listingQueueEntries.FirstOrDefault(qe => qe.Id == listingQueueEntryId));
 		}
-		public Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntry)
+
+        public Task<IEnumerable<ListingQueueEntry>> UpdateListingQueueEntriesAsync(IEnumerable<ListingQueueEntry> listingQueueEntries)
+        {
+			HashSet<Guid> updateIds = listingQueueEntries.Select(qe => qe.Id).ToHashSet();
+            _listingQueueEntries.RemoveAll(qe => updateIds.Contains(qe.Id));
+			_listingQueueEntries.AddRange(listingQueueEntries);
+			return Task.FromResult(listingQueueEntries);
+        }
+
+        public Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntry)
 		{
 			ListingQueueEntry? originalListingQueueEntry = _listingQueueEntries.FirstOrDefault(qe => qe.Id == listingQueueEntry.Id);
 			_listingQueueEntries.Remove(originalListingQueueEntry);

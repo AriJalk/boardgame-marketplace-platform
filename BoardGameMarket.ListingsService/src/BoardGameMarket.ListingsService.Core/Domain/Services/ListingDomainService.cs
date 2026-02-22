@@ -1,4 +1,4 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.Common;
+﻿using BoardGameMarket.ListingsService.Core.Application.Pagination;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.Enums;
 using System;

@@ -1,4 +1,4 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.Common;
+﻿using BoardGameMarket.ListingsService.Core.Application.Pagination;
 
 namespace BoardGameMarket.ListingsService.API.Helpers
 {

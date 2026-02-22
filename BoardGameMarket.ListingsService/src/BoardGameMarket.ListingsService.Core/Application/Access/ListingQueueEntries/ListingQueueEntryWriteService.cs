@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries
 {
-	internal class ListingQueueEntryWriteService : IListingQueueEntryWriteService
+    internal class ListingQueueEntryWriteService : IListingQueueEntryWriteService
 	{
 		private readonly IListingQueueEntryRepository _listingQueueEntryRepository;
 
@@ -40,10 +40,17 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEn
 			return await _listingQueueEntryRepository.DeleteListingQueueEntryAsync(listingQueueEntryId);
 		}
 
-		public async Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntryToUpdate)
+
+        public async Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntryToUpdate)
 		{
 			listingQueueEntryToUpdate.ModifiedAt = DateTime.UtcNow;
 			return await _listingQueueEntryRepository.UpdateListingQueueEntryAsync(listingQueueEntryToUpdate);
 		}
-	}
+
+
+        public async Task<IEnumerable<ListingQueueEntry>> UpdateListingQueueEntriesAsync(IEnumerable<ListingQueueEntry> listingQueueEntries)
+        {
+            return await _listingQueueEntryRepository.UpdateListingQueueEntriesAsync(listingQueueEntries);
+        }
+    }
 }

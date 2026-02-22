@@ -43,15 +43,16 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases
                 orderedPriorityQueue.Remove(requestedEntry);
                 orderedPriorityQueue.Insert(request.RequestedIndex, requestedEntry);
 
-                for (int i = 0; i < orderedPriorityQueue.Count; i++)
+                IEnumerable<ListingQueueEntry> normalizedQueue = orderedPriorityQueue.Normalize();
+                IList<ListingQueueEntry> updateResult = (await _listingQueueEntryWriteService.UpdateListingQueueEntriesAsync(normalizedQueue)).ToList();
+                if (!updateResult.Any())
                 {
-                    orderedPriorityQueue[i].Priority = QueueDomainService.PRIORITY_GAP * i;
-                    await _listingQueueEntryWriteService.UpdateListingQueueEntryAsync(orderedPriorityQueue[i]);
+                    throw new InvalidOperationException("Can't update queue");
                 }
 
                 await _unitOfWork.CommitTransactionAsync();
 
-                return requestedEntry.ToListingQueueEntryInfo();
+                return updateResult[request.RequestedIndex].ToListingQueueEntryInfo();
             }
             catch
             {
