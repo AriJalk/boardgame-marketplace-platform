@@ -1,0 +1,14 @@
+@if (user$ | async; as user) {
+  <h3>{{ user.displayName }}</h3>
+  @if (contactInfo$ | async; as contactInfo) {
+    <h4>
+      Email:
+      <span
+        ><a [href]="'mailto:' + contactInfo">{{ contactInfo }}</a></span
+      >
+    </h4>
+  }
+  <button matButton type="button" (click)="onContactDetailsRequested()" [disabled]="contactInfo$">
+    Contact info
+  </button>
+}

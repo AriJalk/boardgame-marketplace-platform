@@ -26,6 +26,7 @@ export class ListingGroupService {
     );
   }
 
+  // TODO: actual pagination support, psize + cursor
   getListingGroupSummariesPage(): Observable<PagedResult<ListingGroupSummary>> {
     const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     const query: PagedListingGroupQuery = {

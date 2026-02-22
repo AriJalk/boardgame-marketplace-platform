@@ -1,6 +1,10 @@
 <mat-card class="padding-5">
   <div>
-    <h3>Seller: {{ listingGroup.seller.displayName }}</h3>
+    <h3>
+      <a [routerLink]="['/users', listingGroup.seller.userId]">
+        Seller: {{ listingGroup.seller.displayName }}
+      </a>
+    </h3>
     <h3>Location: {{ listingGroup.location }}</h3>
     <h3>Posting Date: {{ listingGroup.postingTime | date }}</h3>
     <h3>Pickup Options: {{ listingGroup.pickupOptions }}</h3>

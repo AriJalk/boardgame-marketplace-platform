@@ -23,9 +23,12 @@ export const routes: Routes = [
   {
     path: 'my-listings',
     loadComponent: () =>
-      import('./features/user/my-listings-page/my-listings-page').then(
-        (m) => m.MyListingsPage,
-      ),
+      import('./features/users/my-listings-page/my-listings-page').then((m) => m.MyListingsPage),
+  },
+  {
+    path: 'users/:userId',
+    loadComponent: () =>
+      import('./features/users/user-details-page/user-details-page').then((m) => m.UserDetailsPage),
   },
   { path: '', redirectTo: 'listing-groups', pathMatch: 'full' },
 ];
