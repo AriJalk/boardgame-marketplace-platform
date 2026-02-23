@@ -6,7 +6,7 @@ import { ListingGroupDetails, ListingGroupSummary } from '../models/listing-grou
 import { Observable } from 'rxjs';
 import { PagedResult } from '../../../common/paged-result';
 import { AuthStubService } from '../../../core/auth/auth-stub.service';
-import { PagedListingGroupQuery } from '../models/listing-group-queries';
+import { ListingGroupFilter, PagedListingGroupQuery } from '../models/listing-group-queries';
 
 @Injectable({
   providedIn: 'root',
@@ -47,9 +47,26 @@ export class ListingGroupService {
     );
   }
 
-  getSubscribedListingGroups(): Observable<ListingGroupSummary[]> {
+  getFilteredListingGroups(filter: ListingGroupFilter): Observable<ListingGroupSummary[]> {
+    return this.httpClient.post<ListingGroupSummary[]>(
+      `${this.apiConfig.apiEndpoint}/listing-groups/filtered`,
+      filter,
+      { headers: this.authService.headers },
+    );
+  }
+
+  getMySubscribedListingGroups(): Observable<ListingGroupSummary[]> {
     return this.httpClient.get<ListingGroupSummary[]>(
       `${this.apiConfig.apiEndpoint}/subscriptions/listing-groups`,
+      { headers: this.authService.headers },
+    );
+  }
+
+  getMyListingGroupsWithSubscriptionOfUser(
+    subscriberUserId: string,
+  ): Observable<ListingGroupSummary[]> {
+    return this.httpClient.get<ListingGroupSummary[]>(
+      `${this.apiConfig.apiEndpoint}/subscriptions/my-listing-groups/subscriber/${subscriberUserId}`,
       { headers: this.authService.headers },
     );
   }

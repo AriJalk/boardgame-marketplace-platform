@@ -33,6 +33,6 @@ export class MyListingsPage implements OnInit {
 
   ngOnInit(): void {
     this.myListingGroups$ = this.listingGroupService.getMyListingGroups();
-    this.mySubscribedListingGroups$ = this.listingGroupService.getSubscribedListingGroups();
+    this.mySubscribedListingGroups$ = this.listingGroupService.getMySubscribedListingGroups();
   }
 }

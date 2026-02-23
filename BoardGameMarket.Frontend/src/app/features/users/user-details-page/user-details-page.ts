@@ -9,21 +9,27 @@ import { MatAnchor, MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
+import { ListingGroupSummary } from '../../listing-groups/models/listing-group.model';
+import { ListingGroupService } from '../../listing-groups/services/listing-group.service';
+import { ListingGroupSummaryCard } from '../../listing-groups/components/display/listing-group-summary-card/listing-group-summary-card';
 
 @Component({
   selector: 'bgm-user-details-page',
-  imports: [MatButtonModule, AsyncPipe],
+  imports: [MatButtonModule, AsyncPipe, ListingGroupSummaryCard],
   templateUrl: './user-details-page.html',
   styleUrl: './user-details-page.css',
 })
 export class UserDetailsPage implements OnInit {
   userId!: string;
   user$!: Observable<UserSummary>;
+  userlistingGroups$!: Observable<ListingGroupSummary[]>;
+  myListingGroupsWithUserSubscription$!: Observable<ListingGroupSummary[]>;
   contactInfo$?: Observable<string>;
 
   constructor(
     private router: ActivatedRoute,
     private usersService: UsersService,
+    private listingGroupsService: ListingGroupService,
   ) {}
 
   ngOnInit(): void {
@@ -32,6 +38,11 @@ export class UserDetailsPage implements OnInit {
       if (id) {
         this.user$ = this.usersService.getUserSummary(id);
         this.userId = id;
+        this.userlistingGroups$ = this.listingGroupsService.getFilteredListingGroups({
+          sellerUserId: this.userId,
+        });
+        this.myListingGroupsWithUserSubscription$ =
+          this.listingGroupsService.getMyListingGroupsWithSubscriptionOfUser(id);
       }
     });
   }

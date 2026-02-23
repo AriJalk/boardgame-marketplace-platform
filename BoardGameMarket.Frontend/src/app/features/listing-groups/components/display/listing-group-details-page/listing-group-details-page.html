@@ -1,7 +1,14 @@
 @if (listingGroup$ | async; as listingGroup) {
   @if (user?.userId === listingGroup.seller.userId) {
+    <h3>Edit listing group</h3>
     <bgm-edit-listing-group [listingId]="listingGroup.id"></bgm-edit-listing-group>
   } @else {
+    <h3>Listing group details</h3>
+    <h3>
+      <a [routerLink]="['/users', listingGroup.seller.userId]">
+        Seller: {{ listingGroup.seller.displayName }}
+      </a>
+    </h3>
     <bgm-listing-group-details-card [listingGroup]="listingGroup"></bgm-listing-group-details-card>
   }
 }

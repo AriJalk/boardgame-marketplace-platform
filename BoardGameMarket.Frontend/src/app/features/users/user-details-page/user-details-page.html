@@ -11,4 +11,25 @@
   <button matButton type="button" (click)="onContactDetailsRequested()" [disabled]="contactInfo$">
     Contact info
   </button>
+
+  @if (userlistingGroups$ | async; as listingGroups) {
+    <h3>User's listing groups</h3>
+    <div class="grid gap-1">
+      @for (listingGroup of listingGroups; track listingGroup.id) {
+        <bgm-listing-group-summary-card
+          [listingGroup]="listingGroup"
+        ></bgm-listing-group-summary-card>
+      }
+    </div>
+    @if (myListingGroupsWithUserSubscription$ | async; as myListingGroups) {
+      <h3>My listing groups with user subscription</h3>
+      <div class="grid gap-1">
+        @for (listingGroup of myListingGroups; track listingGroup.id) {
+          <bgm-listing-group-summary-card
+            [listingGroup]="listingGroup"
+          ></bgm-listing-group-summary-card>
+        }
+      </div>
+    }
+  }
 }

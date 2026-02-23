@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ListingGroupDetails } from '../../../models/listing-group.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { ListingGroupService } from '../../../services/listing-group.service';
 import { ListingGroupDetailsCard } from '../listing-group-details-card/listing-group-details-card';
@@ -12,7 +12,7 @@ import { EditListingGroupPage } from '../../edit-listing-group-page/edit-listing
 
 @Component({
   selector: 'bgm-listing-group-details-page',
-  imports: [MatCardModule, ListingGroupDetailsCard, AsyncPipe, EditListingGroupPage],
+  imports: [MatCardModule, ListingGroupDetailsCard, AsyncPipe, EditListingGroupPage, RouterLink],
   templateUrl: './listing-group-details-page.html',
   styleUrl: './listing-group-details-page.css',
 })
