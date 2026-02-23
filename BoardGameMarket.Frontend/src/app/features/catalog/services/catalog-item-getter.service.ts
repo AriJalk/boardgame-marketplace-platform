@@ -46,4 +46,10 @@ export class CatalogItemGetterService {
     }
     return of(null);
   }
+
+  getCustomCatalogItemsByNames(names: string[]): Observable<CatalogItem[]> {
+    return this.httpClient.post<CatalogItem[]>(`${this.apiConfig.apiEndpoint}/catalog/custom`, {
+      names: names,
+    });
+  }
 }

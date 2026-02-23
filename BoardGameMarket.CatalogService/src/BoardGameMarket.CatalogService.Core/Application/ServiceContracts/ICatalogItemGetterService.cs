@@ -10,6 +10,7 @@ namespace BoardGameMarket.CatalogService.Core.Application.ServiceContracts
 		Task<CatalogItem?> GetCatalogItemByInternalIdASync(Guid internalId);
 		Task<CatalogItem?> GetBggItemByBggIdAsync(int bggId);
 		Task<CatalogItem?> GetCustomItemByNameAsync(string name);
+		Task<IEnumerable<CatalogItem>> GetCustomItemsByNamesAsync(IEnumerable<string> names);
 		Task<IEnumerable<CatalogItem>> GetCatalogItemsAsync();
 	}
 }

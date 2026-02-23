@@ -7,7 +7,7 @@ using MongoDB.Driver;
 
 namespace BoardGameMarket.CatalogService.Infrastructure.Repositories
 {
-	internal class CatalogItemsMongoDbRepository : ICatalogItemsRepository
+    internal class CatalogItemsMongoDbRepository : ICatalogItemsRepository
 	{
 		private readonly IMongoCollection<CatalogItem> _items;
 
@@ -44,5 +44,10 @@ namespace BoardGameMarket.CatalogService.Infrastructure.Repositories
 		{
 			throw new NotImplementedException();
 		}
-	}
+
+        public Task<IEnumerable<CatalogItem>> GetCustomItemsByNamesAsync(IEnumerable<string> names)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

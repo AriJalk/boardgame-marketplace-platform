@@ -59,5 +59,17 @@ namespace BoardGameMarket.MarketGateway.API.Application.CatalogItems.Services
 			}
 			return catalogItemInfo;
 		}
+
+		public async Task<CatalogItemInfo[]> GetCustomCatalogItemsByNames(CustomCatalogItemsRequest request)
+		{
+			string uri = $"api/catalog/custom";
+			HttpResponseMessage response = await _httpClient.PostAsJsonAsync(uri, request);
+
+			response.EnsureSuccessStatusCode();
+
+			CatalogItemInfo[]? items = await response.Content.ReadFromJsonAsync<CatalogItemInfo[]>();
+
+			return items ?? throw new InvalidDataException();
+		}
 	}
 }

@@ -35,5 +35,10 @@ namespace BoardGameMarket.CatalogService.Core.Application.Services
 		{
 			return await _repository.GetCustomItemByNameAsync(name);
 		}
-	}
+
+        public async Task<IEnumerable<CatalogItem>> GetCustomItemsByNamesAsync(IEnumerable<string> names)
+        {
+			return await _repository.GetCustomItemsByNamesAsync(names);
+        }
+    }
 }

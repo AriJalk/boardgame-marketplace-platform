@@ -19,6 +19,7 @@ namespace BoardGameMarket.CatalogService.Core
 
 			services.AddScoped<GetBggItemUseCase>();
 			services.AddScoped<GetCustomItemUseCase>();
+			services.AddScoped<GetCustomItemsUseCase>();
 
 			return services;
 		}

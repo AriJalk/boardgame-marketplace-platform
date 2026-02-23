@@ -7,6 +7,7 @@ namespace BoardGameMarket.CatalogService.Core.Domain.RepositoryContracts
 		Task<CatalogItem?> GetItemByDatabaseIdAsync(Guid id);
 		Task<CatalogItem?> GetBggItemByBggIdAsync(int id);
 		Task<CatalogItem?> GetCustomItemByNameAsync(string name);
+		Task<IEnumerable<CatalogItem>> GetCustomItemsByNamesAsync(IEnumerable<string> names);
 		Task<CatalogItem?> AddCatalogItemToDatabaseAsync(CatalogItem bggItem);
 		Task<IEnumerable<CatalogItem>> GetCatalogItemsAsync();
 	}

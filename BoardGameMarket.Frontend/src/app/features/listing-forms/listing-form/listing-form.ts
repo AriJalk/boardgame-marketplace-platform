@@ -11,7 +11,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { requireControl } from '../../../common/validators/require-control.validator';
 import { ListingFormsFactory } from '../services/listing-forms-factory.service';
 import { ListingItemForm } from '../listing-item-form/listing-item-form';
 import { QueueSellerPanel } from "../../queues/components/queue-seller/queue-seller-panel/queue-seller-panel";
