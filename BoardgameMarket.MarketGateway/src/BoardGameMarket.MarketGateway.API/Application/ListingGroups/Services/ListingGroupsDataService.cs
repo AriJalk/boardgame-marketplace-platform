@@ -33,11 +33,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
 			PagedResult<ListingGroupSummary>? pagedResult = await response.Content.ReadFromJsonAsync<PagedResult<ListingGroupSummary>>();
 
-			if (pagedResult == null)
-			{
-				throw new InvalidDataException();
-			}
-			return pagedResult;
+			return pagedResult ?? throw new InvalidDataException();
 		}
 
 		public async Task<ListingGroupSummary[]> GetFilteredListingGroupSummaries(ListingGroupFilter filter)
@@ -53,13 +49,9 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
 			response.EnsureSuccessStatusCode();
 
-			ListingGroupSummary[]? result = await response.Content.ReadFromJsonAsync<ListingGroupSummary[]>();
+			ListingGroupSummary[]? listingGroup = await response.Content.ReadFromJsonAsync<ListingGroupSummary[]>();
 
-			if (result == null)
-			{
-				throw new InvalidDataException();
-			}
-			return result;
+			return listingGroup ?? throw new InvalidDataException();
 		}
 
 		public async Task<ListingGroupDetail> GetListingGroupDetail(Guid listingGroupId)
@@ -77,11 +69,20 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
 			ListingGroupDetail? listingGroup = await response.Content.ReadFromJsonAsync<ListingGroupDetail>();
 
-			if (listingGroup == null)
-			{
-				throw new InvalidDataException();
-			}
-			return listingGroup;
+			return listingGroup ?? throw new InvalidDataException();
+		}
+
+		public async Task<ListingGroupDetail> AddListingGroup(CreateListingGroupRequest request)
+		{
+			string uri = $"api/listing-groups";
+
+			HttpResponseMessage response = await _httpClient.PostAsJsonAsync(uri, request);
+
+			response.EnsureSuccessStatusCode();
+
+			ListingGroupDetail? listingGroup = await response.Content.ReadFromJsonAsync<ListingGroupDetail>();
+
+			return listingGroup ?? throw new InvalidDataException();
 		}
 	}
 }

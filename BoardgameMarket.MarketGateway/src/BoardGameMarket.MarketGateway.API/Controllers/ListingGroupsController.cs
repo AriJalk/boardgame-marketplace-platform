@@ -1,6 +1,8 @@
 ﻿using BoardGameMarket.MarketGateway.API.Application.Common;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Dtos;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Filters;
+using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Mappers;
+using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.UseCases;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Filters;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.ServiceClients;
@@ -21,17 +23,19 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		private readonly GetFilteredListingGroupSummariesUseCase _getFilteredListingGroupSummariesUseCase;
 		private readonly QueuesDataService _queueDataService;
 		private readonly LoginService _loginService;
+		private readonly AddListingGroupUseCase _addListingGroupUseCase;
 
-		public ListingGroupsController(GetListingGroupDetailUseCase getListingGroupDetailUseCase, GetListingGroupSummaryPageUseCase getListingGroupSummaryPageUseCase, GetFilteredListingGroupSummariesUseCase getFilteredListingGroupSummariesUseCase, QueuesDataService queueDataService, LoginService loginService)
-		{
-			_getListingGroupDetailUseCase = getListingGroupDetailUseCase;
-			_getListingGroupSummaryPageUseCase = getListingGroupSummaryPageUseCase;
-			_getFilteredListingGroupSummariesUseCase = getFilteredListingGroupSummariesUseCase;
-			_queueDataService = queueDataService;
-			_loginService = loginService;
-		}
+        public ListingGroupsController(GetListingGroupDetailUseCase getListingGroupDetailUseCase, GetListingGroupSummaryPageUseCase getListingGroupSummaryPageUseCase, GetFilteredListingGroupSummariesUseCase getFilteredListingGroupSummariesUseCase, QueuesDataService queueDataService, LoginService loginService, AddListingGroupUseCase addListingGroupUseCase)
+        {
+            _getListingGroupDetailUseCase = getListingGroupDetailUseCase;
+            _getListingGroupSummaryPageUseCase = getListingGroupSummaryPageUseCase;
+            _getFilteredListingGroupSummariesUseCase = getFilteredListingGroupSummariesUseCase;
+            _queueDataService = queueDataService;
+            _loginService = loginService;
+            _addListingGroupUseCase = addListingGroupUseCase;
+        }
 
-		private async Task<ListingGroupSummaryDto[]> WithIsSubscribedAsync(ListingGroupSummaryDto[] listingGroups)
+        private async Task<ListingGroupSummaryDto[]> WithIsSubscribedAsync(ListingGroupSummaryDto[] listingGroups)
 		{
 			if (_loginService.LoggedInUser != null)
 			{
@@ -93,6 +97,18 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 			ListingGroupSummaryDto[] listingGroups = await _getFilteredListingGroupSummariesUseCase.ExecuteAsync(filter);
 			listingGroups = await WithIsSubscribedAsync(listingGroups);
 			return Ok(listingGroups);
+		}
+
+		[HttpPost()]
+		public async Task<ActionResult<ListingGroupDetailDto>> CreateListingGroup(CreateListingGroupRequestDto request)
+		{
+			if (_loginService.LoggedInUser == null)
+			{
+				return BadRequest();
+			}
+			ListingGroupDetailDto listingGroup = await _addListingGroupUseCase.ExecuteAsync(request.ToCreateListingGroupRequest(_loginService.LoggedInUser.UserId));
+
+			return Ok(listingGroup);
 		}
 	}
 }

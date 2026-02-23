@@ -4,5 +4,5 @@ using System.Text;
 
 namespace BoardGameMarket.MarketGateway.API.Application.Listings.ServiceClients.ListingItems
 {
-	public record CreateListingItem(Guid CatalogId, string? Details) { }
+	public record CreateListingItemRequest(Guid CatalogId, string? Details) { }
 }

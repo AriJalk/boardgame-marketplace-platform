@@ -1,6 +1,5 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
-using BoardGameMarket.ListingsService.Core.Application.Commands;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
@@ -11,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BoardGameMarket.ListingsService.Core.Application.UseCases
+namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 {
 	public class AddListingQueueEntryUseCase
 	{
@@ -59,9 +58,18 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases
 				return queueEntryFromService.ToListingQueueEntryInfo();
 			}
 
-			CreateListingQueueEntryCommand command = new CreateListingQueueEntryCommand(listingId, request.UserId);
+			ListingQueueEntry listingQueueEntry = new ListingQueueEntry()
+			{
+				Id = Guid.NewGuid(),
+				ListingId = listingId,
+				BuyerUserId = request.UserId,
+				CreatedAt = DateTime.UtcNow,
+				ModifiedAt = DateTime.UtcNow,
+				Status = QueueStatus.Queued,
+				Priority = null,
+			};
 
-			ListingQueueEntry? queueEntryFromAdd = await _listingQueueEntryAdderService.AddListingQueueEntryAsync(command);
+			ListingQueueEntry? queueEntryFromAdd = await _listingQueueEntryAdderService.AddListingQueueEntryAsync(listingQueueEntry);
 			if (queueEntryFromAdd == null)
 			{
 				throw new InvalidOperationException("Can't subscribe");

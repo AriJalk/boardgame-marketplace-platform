@@ -14,22 +14,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.Listings
 
 		public async Task<Listing?> AddListingAsync(Listing listingToAdd)
 		{
-			listingToAdd.Id = Guid.NewGuid();
-			listingToAdd.CreatedAt = DateTime.UtcNow;
-			listingToAdd.ModifiedAt = DateTime.UtcNow;
 			return await _listingRepository.AddListingAsync(listingToAdd);
 		}
 
 		public async Task<IEnumerable<Listing>> AddListingsAsync(IEnumerable<Listing> listingsToAdd)
 		{
-
-			foreach (Listing listing in listingsToAdd)
-			{
-				listing.Id = Guid.NewGuid();
-				listing.CreatedAt = DateTime.UtcNow;
-				listing.ModifiedAt = DateTime.UtcNow;
-			}
-
 			return await _listingRepository.AddListingsAsync(listingsToAdd);
 		}
 

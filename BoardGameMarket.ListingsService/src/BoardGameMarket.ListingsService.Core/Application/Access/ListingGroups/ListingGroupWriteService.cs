@@ -17,9 +17,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingGroups
 
 		public async Task<ListingGroup?> AddListingGroup(ListingGroup listingGroupToAdd)
 		{
-			listingGroupToAdd.Id = Guid.NewGuid();
-			listingGroupToAdd.CreatedAt = DateTime.UtcNow;
-			listingGroupToAdd.ModifiedAt = DateTime.UtcNow;
 			return await _listingGroupRepository.AddListingGroupAsync(listingGroupToAdd);
 		}
 

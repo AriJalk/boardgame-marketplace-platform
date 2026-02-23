@@ -45,9 +45,11 @@ namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 			services.AddScoped<GetListingGroupDetailUseCase>();
 			services.AddScoped<GetListingGroupSummaryPageUseCase>();
 			services.AddScoped<GetFilteredListingGroupSummariesUseCase>();
+			services.AddScoped<AddListingGroupUseCase>();
 
 			services.AddScoped<GetListingQueueUseCase>();
 			services.AddScoped<GetListingQueueEntryUseCase>();
+
 
 			// Dto assemblers
 			services.AddScoped<ListingDetailDtoAssembler>();

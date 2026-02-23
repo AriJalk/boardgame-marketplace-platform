@@ -5,11 +5,10 @@ using System.Text;
 
 namespace BoardGameMarket.MarketGateway.API.Application.Listings.ServiceClients.Listings
 {
-	public record CreateListing(
+	public record CreateListingRequest(
 	string Title,
-	Guid ListingGroupId,
 	decimal Price,
-	CreateListingItem[] ListingItems,
+	CreateListingItemRequest[] ListingItems,
 	string? Details)
 	{ }
 }

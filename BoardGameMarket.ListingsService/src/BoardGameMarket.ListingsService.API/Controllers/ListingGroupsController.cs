@@ -9,74 +9,85 @@ using BoardGameMarket.ListingsService.Core.Domain.Aggragates;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroups;
 
 namespace BoardGameMarket.ListingsService.API.Controllers
 {
-	[Route("api/listing-groups")]
-	[ApiController]
-	public class ListingGroupsController : ControllerBase
-	{
-		private IListingGroupReadService _listingGroupReadService;
-		private ListingGroupAggregateBuilder _listingGroupAggregateBuilder;
+    [Route("api/listing-groups")]
+    [ApiController]
+    public class ListingGroupsController : ControllerBase
+    {
+        private readonly IListingGroupReadService _listingGroupReadService;
+        private readonly ListingGroupAggregateBuilder _listingGroupAggregateBuilder;
+        private readonly AddListingGroupUseCase _addListingGroupUseCase;
 
-		public ListingGroupsController(IListingGroupReadService listingGroupReadService, ListingGroupAggregateBuilder listingGroupAggregateBuilder)
-		{
-			_listingGroupReadService = listingGroupReadService;
-			_listingGroupAggregateBuilder = listingGroupAggregateBuilder;
-		}
+        public ListingGroupsController(IListingGroupReadService listingGroupReadService, ListingGroupAggregateBuilder listingGroupAggregateBuilder, AddListingGroupUseCase addListingGroupUseCase)
+        {
+            _listingGroupReadService = listingGroupReadService;
+            _listingGroupAggregateBuilder = listingGroupAggregateBuilder;
+            _addListingGroupUseCase = addListingGroupUseCase;
+        }
 
-		[HttpPost("page")]
-		public async Task<ActionResult<PagedResult<ListingGroupSummary>>> GetPagedListingGroups([FromBody] PagedListingGroupQuery query)
-		{
-			Cursor? cursorObject = CursorParser.Parse(query.Cursor);
-			PagedResult<ListingGroupAggregate> listingGroups = await _listingGroupAggregateBuilder.GetSummaryPageAsync(cursorObject, query.PageSize, query.Filter);
-			IEnumerable<ListingGroupSummary> summaries = listingGroups.Items.Select(i => i.ToListingGroupSummary());
+        [HttpPost("page")]
+        public async Task<ActionResult<PagedResult<ListingGroupSummary>>> GetPagedListingGroups([FromBody] PagedListingGroupQuery query)
+        {
+            Cursor? cursorObject = CursorParser.Parse(query.Cursor);
+            PagedResult<ListingGroupAggregate> listingGroups = await _listingGroupAggregateBuilder.GetSummaryPageAsync(cursorObject, query.PageSize, query.Filter);
+            IEnumerable<ListingGroupSummary> summaries = listingGroups.Items.Select(i => i.ToListingGroupSummary());
 
-			PagedResult<ListingGroupSummary> pagedResult = new PagedResult<ListingGroupSummary>()
-			{
-				Items = summaries.ToArray(),
-				NextCursor = listingGroups.NextCursor,
-			};
+            PagedResult<ListingGroupSummary> pagedResult = new PagedResult<ListingGroupSummary>()
+            {
+                Items = summaries.ToArray(),
+                NextCursor = listingGroups.NextCursor,
+            };
 
-			return Ok(pagedResult);
-		}
+            return Ok(pagedResult);
+        }
 
-		[HttpPost("filtered")]
-		public async Task<ActionResult<ListingGroupSummary>> GetFilteredListingGroups([FromBody] ListingGroupFilter filter)
-		{
-			IReadOnlyCollection<ListingGroupAggregate> listingGroups = await _listingGroupAggregateBuilder.GetFilteredListingGroups(filter);
-			IEnumerable<ListingGroupSummary> summaries = listingGroups.Select(lg => lg.ToListingGroupSummary());
+        [HttpPost("filtered")]
+        public async Task<ActionResult<ListingGroupSummary>> GetFilteredListingGroups([FromBody] ListingGroupFilter filter)
+        {
+            IReadOnlyCollection<ListingGroupAggregate> listingGroups = await _listingGroupAggregateBuilder.GetFilteredListingGroups(filter);
+            IEnumerable<ListingGroupSummary> summaries = listingGroups.Select(lg => lg.ToListingGroupSummary());
 
-			return Ok(summaries);
-		}
-
-
-		[HttpGet("{listingGroupId:guid}")]
-		public async Task<ActionResult<ListingGroupDetail>> GetListingGroup(Guid listingGroupId)
-		{
-			ListingGroupAggregate? listingGroupAggregate;
-			try
-			{
-				listingGroupAggregate = await _listingGroupAggregateBuilder.GetListingGroupAggregateAsync(listingGroupId, loadItems: true, loadQueues: false);
+            return Ok(summaries);
+        }
 
 
-				return Ok(listingGroupAggregate.ToListingGroupDetail());
-			}
-			catch (KeyNotFoundException ex)
-			{
-				return NotFound(ex.Message);
-			}
-		}
+        [HttpGet("{listingGroupId:guid}")]
+        public async Task<ActionResult<ListingGroupDetail>> GetListingGroup(Guid listingGroupId)
+        {
+            ListingGroupAggregate? listingGroupAggregate;
+            try
+            {
+                listingGroupAggregate = await _listingGroupAggregateBuilder.GetListingGroupAggregateAsync(listingGroupId, loadItems: true, loadQueues: false);
 
-		[HttpGet("{listingGroupId:guid}/ownership")]
-		public async Task<ActionResult<ListingGroupOwnershipInfo>> GetListingGroupOwnership(Guid listingGroupId)
-		{
-			ListingGroup? listingGroup = await _listingGroupReadService.GetListingGroupByIdAsync(listingGroupId);
-			if (listingGroup == null)
-			{
-				return NotFound();
-			}
-			return Ok(new ListingGroupOwnershipInfo(listingGroupId, listingGroup.SellerUserId));
-		}
-	}
+
+                return Ok(listingGroupAggregate.ToListingGroupDetail());
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpGet("{listingGroupId:guid}/ownership")]
+        public async Task<ActionResult<ListingGroupOwnershipInfo>> GetListingGroupOwnership(Guid listingGroupId)
+        {
+            ListingGroup? listingGroup = await _listingGroupReadService.GetListingGroupByIdAsync(listingGroupId);
+            if (listingGroup == null)
+            {
+                return NotFound();
+            }
+            return Ok(new ListingGroupOwnershipInfo(listingGroupId, listingGroup.SellerUserId));
+        }
+
+        [HttpPost()]
+        public async Task<ActionResult<ListingGroupDetail>> CreateListingGroup([FromBody] CreateListingGroupRequest request)
+        {
+            ListingGroupDetail listingGroup = await _addListingGroupUseCase.ExecuteAsync(request);
+
+            return Ok(listingGroup);
+        }
+    }
 }

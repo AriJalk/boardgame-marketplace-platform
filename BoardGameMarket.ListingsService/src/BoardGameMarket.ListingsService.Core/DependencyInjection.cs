@@ -6,7 +6,8 @@ using BoardGameMarket.ListingsService.Core.Application.Access.ListingsSold;
 using BoardGameMarket.ListingsService.Core.Application.Aggregates;
 using BoardGameMarket.ListingsService.Core.Application.Identity;
 using BoardGameMarket.ListingsService.Core.Application.Queries;
-using BoardGameMarket.ListingsService.Core.Application.UseCases;
+using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroups;
+using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BoardGameMarket.ListingsService.Core
@@ -52,6 +53,7 @@ namespace BoardGameMarket.ListingsService.Core
 			services.AddScoped<AddListingQueueEntryUseCase>();
 			services.AddScoped<AddListingQueueEntryPriorityUseCase>();
 			services.AddScoped<UpdateListingQueueEntryPriorityUseCase>();
+			services.AddScoped<AddListingGroupUseCase>();
 
 			// Queries
 			services.AddScoped<ListingOwnershipQuery>();

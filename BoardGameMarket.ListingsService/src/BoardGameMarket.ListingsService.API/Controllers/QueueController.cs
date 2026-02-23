@@ -2,7 +2,7 @@
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
-using BoardGameMarket.ListingsService.Core.Application.UseCases;
+using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,12 +12,12 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 	[ApiController]
 	public class QueueController : ControllerBase
 	{
-		private GetQueueUseCase _getQueueUseCase;
-		private IListingQueueEntryReadService _listingQueueReadService;
-		private IListingQueueEntryWriteService _listingQueueWriteService;
-		private AddListingQueueEntryUseCase _addListingQueueEntryUseCase;
-		private AddListingQueueEntryPriorityUseCase _addListingQueueEntryPriorityUseCase;
-		private UpdateListingQueueEntryPriorityUseCase _updateListingQueueEntryPriorityUseCase;
+		private readonly GetQueueUseCase _getQueueUseCase;
+		private readonly IListingQueueEntryReadService _listingQueueReadService;
+		private readonly IListingQueueEntryWriteService _listingQueueWriteService;
+		private readonly AddListingQueueEntryUseCase _addListingQueueEntryUseCase;
+		private readonly AddListingQueueEntryPriorityUseCase _addListingQueueEntryPriorityUseCase;
+		private readonly UpdateListingQueueEntryPriorityUseCase _updateListingQueueEntryPriorityUseCase;
 
         public QueueController(GetQueueUseCase getQueueUseCase, IListingQueueEntryReadService listingQueueReadService, IListingQueueEntryWriteService listingQueueWriteService, AddListingQueueEntryUseCase addListingQueueEntryUseCase, AddListingQueueEntryPriorityUseCase addListingQueueEntryPriorityUseCase, UpdateListingQueueEntryPriorityUseCase updateListingQueueEntryPriorityUseCase)
         {

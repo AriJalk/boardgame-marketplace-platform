@@ -2,7 +2,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { API_CONFIG_SERVICE } from '../../../core/api-config/api-config.service';
 import { ApiConfig } from '../../../core/api-config/api-config.interface';
-import { ListingGroupDetails, ListingGroupSummary } from '../models/listing-group.model';
+import {
+  CreateListingGroupRequest,
+  ListingGroupDetails,
+  ListingGroupSummary,
+} from '../models/listing-group.model';
 import { Observable } from 'rxjs';
 import { PagedResult } from '../../../common/paged-result';
 import { AuthStubService } from '../../../core/auth/auth-stub.service';
@@ -67,6 +71,14 @@ export class ListingGroupService {
   ): Observable<ListingGroupSummary[]> {
     return this.httpClient.get<ListingGroupSummary[]>(
       `${this.apiConfig.apiEndpoint}/subscriptions/my-listing-groups/subscriber/${subscriberUserId}`,
+      { headers: this.authService.headers },
+    );
+  }
+
+  postListingGroup(request: CreateListingGroupRequest): Observable<ListingGroupDetails> {
+    return this.httpClient.post<ListingGroupDetails>(
+      `${this.apiConfig.apiEndpoint}/listing-groups`,
+      request,
       { headers: this.authService.headers },
     );
   }

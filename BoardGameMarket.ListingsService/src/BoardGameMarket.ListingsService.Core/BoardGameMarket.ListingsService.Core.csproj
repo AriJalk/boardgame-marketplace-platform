@@ -39,4 +39,9 @@
 		
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Application\Commands\" />
+	  <Folder Include="Application\UseCases\Listings\" />
+	</ItemGroup>
+
 </Project>
