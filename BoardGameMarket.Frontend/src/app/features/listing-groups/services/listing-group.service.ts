@@ -6,6 +6,7 @@ import {
   CreateListingGroupRequest,
   ListingGroupDetails,
   ListingGroupSummary,
+  UpdateListingGroupRequest,
 } from '../models/listing-group.model';
 import { Observable } from 'rxjs';
 import { PagedResult } from '../../../common/paged-result';
@@ -78,6 +79,14 @@ export class ListingGroupService {
   postListingGroup(request: CreateListingGroupRequest): Observable<ListingGroupDetails> {
     return this.httpClient.post<ListingGroupDetails>(
       `${this.apiConfig.apiEndpoint}/listing-groups`,
+      request,
+      { headers: this.authService.headers },
+    );
+  }
+
+  updateListingGroup(request: UpdateListingGroupRequest): Observable<ListingGroupDetails> {
+    return this.httpClient.put<ListingGroupDetails>(
+      `${this.apiConfig.apiEndpoint}/listing-groups/${request.id}`,
       request,
       { headers: this.authService.headers },
     );

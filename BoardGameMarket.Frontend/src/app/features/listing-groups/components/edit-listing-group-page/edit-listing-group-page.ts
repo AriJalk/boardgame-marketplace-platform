@@ -3,9 +3,14 @@ import { ListingGroupForm } from '../../../listing-forms/listing-group-form/list
 import { ListingGroupService } from '../../services/listing-group.service';
 import { ListingFormsFactory } from '../../../listing-forms/services/listing-forms-factory.service';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { BehaviorSubject, map, Observable, take } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, map, Observable, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { CatalogItemGetterService } from '../../../catalog/services/catalog-item-getter.service';
+import { Router } from '@angular/router';
+import { UpdateListingGroupRequest } from '../../models/listing-group.model';
+import { UpdateListingRequest as UpdateListingRequest } from '../../../listings/models/listing.model';
+import { UpdateListingItemRequest } from '../../../listing-items/models/listing-item.model';
 
 @Component({
   selector: 'bgm-edit-listing-group',
@@ -22,6 +27,8 @@ export class EditListingGroupPage implements OnInit {
   constructor(
     private listingGroupService: ListingGroupService,
     private formFactory: ListingFormsFactory,
+    private catalogService: CatalogItemGetterService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -34,12 +41,55 @@ export class EditListingGroupPage implements OnInit {
       });
   }
 
-  submitForm() {
-    const formGroup = this.formGroupSubject.value;
-    if (!formGroup) {
+  async submitForm() {
+    const fg = this.formGroupSubject.value?.getRawValue();
+    if (fg == null || fg.invalid) {
+      console.log('invalid');
       return;
     }
-    console.log(formGroup.valid ? 'Valid' : 'Invalid');
-    console.log(formGroup.getRawValue());
+
+    const customNames = fg.listings
+      .flatMap((l: any) =>
+        l.listingItems.filter(
+          (li: any) => li.catalogItem.type === 'custom' && li.catalogItem.id == null,
+        ),
+      )
+      .map((li: any) => li.catalogItem.name);
+
+    const customItems = await firstValueFrom(
+      this.catalogService.getCustomCatalogItemsByNames(customNames),
+    );
+
+    const customItemsByName = new Map(customItems.map((item) => [item.name, item]));
+
+    const request: UpdateListingGroupRequest = {
+      id: fg.id,
+      details: fg.details,
+      pickupOptions: fg.pickupOptions,
+      location: fg.location,
+      listings: fg.listings.map(
+        (l: any): UpdateListingRequest => ({
+          id: l.id,
+          title: l.title,
+          price: l.price,
+          details: l.details,
+          listingItems: l.listingItems.map(
+            (li: any): UpdateListingItemRequest => ({
+              id: li.id,
+              catalogId:
+                li.catalogItem.id ?? customItemsByName.get(li.catalogItem.name)?.id ?? null,
+              details: li.details,
+            }),
+          ),
+        }),
+      ),
+    };
+
+    this.listingGroupService.updateListingGroup(request).subscribe({
+      next: (data) => {
+        console.log(data);
+        this.router.navigate(['/listing-groups', data.id]);
+      },
+    });
   }
 }

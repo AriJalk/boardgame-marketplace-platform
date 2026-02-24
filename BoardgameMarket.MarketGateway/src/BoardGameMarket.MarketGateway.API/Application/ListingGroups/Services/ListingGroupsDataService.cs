@@ -1,6 +1,7 @@
 ﻿using BoardGameMarket.MarketGateway.API.Application.Common;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Filters;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients;
+using BoardGameMarket.MarketGateway.API.Application.Listings.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.Shared;
 using System.Collections.Specialized;
 using System.Net;
@@ -84,5 +85,17 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
 			return listingGroup ?? throw new InvalidDataException();
 		}
-	}
+
+        public async Task<ListingGroupOwnershipInfo> GetListingGroupOwnershipInfo(Guid listingGroupId)
+        {
+            string uri = $"api/listing-groups/{listingGroupId}/ownership";
+            HttpResponseMessage response = await _httpClient.GetAsync(uri);
+
+            response.EnsureSuccessStatusCode();
+
+            ListingGroupOwnershipInfo? ownership = await response.Content.ReadFromJsonAsync<ListingGroupOwnershipInfo>();
+
+            return ownership ?? throw new InvalidDataException();
+        }
+    }
 }

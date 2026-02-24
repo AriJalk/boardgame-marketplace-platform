@@ -2,11 +2,11 @@
 
 namespace BoardGameMarket.MarketGateway.API.Application.Listings.ServiceClients.Listings
 {
-	public record UpdateListing(
+	public record UpdateListingRequest(
 		Guid Id,
 		string Title,
 		decimal Price,
-		UpdateListingItem[] ListingItems,
+		UpdateListingItemRequest[] ListingItems,
 		string? Details)
 	{ }
 }

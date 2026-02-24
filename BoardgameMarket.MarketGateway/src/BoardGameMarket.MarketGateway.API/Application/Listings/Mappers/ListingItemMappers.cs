@@ -15,5 +15,10 @@ namespace BoardGameMarket.MarketGateway.API.Application.Listings.Mappers
 		{
 			return new CreateListingItemRequest(dto.CatalogId, dto.Details);
 		}
+
+		public static UpdateListingItemRequest ToUpdateListingItemRequest(this UpdateListingItemRequestDto dto)
+		{
+			return new UpdateListingItemRequest(dto.Id, dto.CatalogId, dto.Details);
+		}
 	}
 }

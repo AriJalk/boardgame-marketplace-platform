@@ -11,7 +11,6 @@ using BoardGameMarket.MarketGateway.API.Application.Listings.Assemblers;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Assemblers;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.UseCases;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Assemblers;
-using BoardGameMarket.MarketGateway.API.Application.Queries;
 
 namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 {
@@ -46,6 +45,7 @@ namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 			services.AddScoped<GetListingGroupSummaryPageUseCase>();
 			services.AddScoped<GetFilteredListingGroupSummariesUseCase>();
 			services.AddScoped<AddListingGroupUseCase>();
+			services.AddScoped<UpdateListingGroupUseCase>();
 
 			services.AddScoped<GetListingQueueUseCase>();
 			services.AddScoped<GetListingQueueEntryUseCase>();
@@ -56,9 +56,6 @@ namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 			services.AddScoped<ListingGroupSummaryDtoAssembler>();
 			services.AddScoped<ListingQueueEntryDtoAssembler>();
 
-
-			//Queries
-			services.AddScoped<ListingQueries>();
 
 			services.ConfigureHttpJsonOptions(options => options.SerializerOptions.ConfigureJson());
 

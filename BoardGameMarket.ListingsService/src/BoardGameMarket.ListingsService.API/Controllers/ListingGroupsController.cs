@@ -6,10 +6,9 @@ using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Domain.Aggragates;
-using BoardGameMarket.ListingsService.Core.Domain.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroups;
+using BoardGameMarket.ListingsService.Core.Application.Queries;
 
 namespace BoardGameMarket.ListingsService.API.Controllers
 {
@@ -20,12 +19,14 @@ namespace BoardGameMarket.ListingsService.API.Controllers
         private readonly IListingGroupReadService _listingGroupReadService;
         private readonly ListingGroupAggregateBuilder _listingGroupAggregateBuilder;
         private readonly AddListingGroupUseCase _addListingGroupUseCase;
+        private readonly ListingOwnershipQuery _listingOwnershipQuery;
 
-        public ListingGroupsController(IListingGroupReadService listingGroupReadService, ListingGroupAggregateBuilder listingGroupAggregateBuilder, AddListingGroupUseCase addListingGroupUseCase)
+        public ListingGroupsController(IListingGroupReadService listingGroupReadService, ListingGroupAggregateBuilder listingGroupAggregateBuilder, AddListingGroupUseCase addListingGroupUseCase, ListingOwnershipQuery listingOwnershipQuery)
         {
             _listingGroupReadService = listingGroupReadService;
             _listingGroupAggregateBuilder = listingGroupAggregateBuilder;
             _addListingGroupUseCase = addListingGroupUseCase;
+            _listingOwnershipQuery = listingOwnershipQuery;
         }
 
         [HttpPost("page")]
@@ -74,12 +75,8 @@ namespace BoardGameMarket.ListingsService.API.Controllers
         [HttpGet("{listingGroupId:guid}/ownership")]
         public async Task<ActionResult<ListingGroupOwnershipInfo>> GetListingGroupOwnership(Guid listingGroupId)
         {
-            ListingGroup? listingGroup = await _listingGroupReadService.GetListingGroupByIdAsync(listingGroupId);
-            if (listingGroup == null)
-            {
-                return NotFound();
-            }
-            return Ok(new ListingGroupOwnershipInfo(listingGroupId, listingGroup.SellerUserId));
+            Guid userId = await _listingOwnershipQuery.GetSellerUserIdByListingGroupId(listingGroupId);
+            return Ok(new ListingGroupOwnershipInfo(listingGroupId, userId));
         }
 
         [HttpPost()]

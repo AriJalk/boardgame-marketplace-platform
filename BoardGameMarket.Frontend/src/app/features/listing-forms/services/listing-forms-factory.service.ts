@@ -45,8 +45,8 @@ export class ListingFormsFactory {
 
     return this.fb.group({
       id: [value?.id ?? null],
-      title: [value?.title ?? ''],
-      price: [value?.price ?? ''],
+      title: [value?.title ?? '', [Validators.required]],
+      price: [value?.price ?? '', [Validators.required]],
       details: [value?.details ?? ''],
       listingItems: this.fb.array(listingItemsArray, { validators: [minArrayLength(1)] }),
     });
@@ -63,8 +63,8 @@ export class ListingFormsFactory {
     }
     return this.fb.group({
       id: [value?.id ?? null],
-      pickupOptions: [value?.pickupOptions ?? ''],
-      location: [value?.location ?? ''],
+      pickupOptions: [value?.pickupOptions ?? '', [Validators.required]],
+      location: [value?.location ?? '', [Validators.required]],
       details: [value?.details ?? ''],
       listings: this.fb.array(listingsArray, { validators: [minArrayLength(1)] }),
     });

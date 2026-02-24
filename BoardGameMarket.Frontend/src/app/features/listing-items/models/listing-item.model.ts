@@ -10,3 +10,9 @@ export interface CreateListingItemRequest {
   catalogId: string;
   details?: string;
 }
+
+export interface UpdateListingItemRequest {
+  id?: string;
+  catalogId: string;
+  details?: string;
+}

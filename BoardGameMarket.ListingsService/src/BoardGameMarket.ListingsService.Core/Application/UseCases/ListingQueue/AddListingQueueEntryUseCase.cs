@@ -28,11 +28,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 		}
 
 		// NOTE: not concurrency safe, need to make atomic in DB
-		public async Task<ListingQueueEntryInfo> ExecuteAsync(Guid listingId, AddListingQueueEntryRequest request)
+		public async Task<ListingQueueEntryInfo> ExecuteAsync(Guid listingId, Guid requesterUserId)
 		{
 
-			Guid sellerUserId = await _listingOwnershipQuery.GetSellerUserIdByListingId(listingId);
-			if (request.UserId == sellerUserId)
+			Guid sellerUserId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
+			if (requesterUserId == sellerUserId)
 			{
 				throw new InvalidOperationException("Subscriber can't be seller");
 			}
@@ -49,7 +49,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 
 			ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
 			{
-				UserId = request.UserId,
+				UserId = requesterUserId,
 				ListingIds = new List<Guid> { listingId }
 			};
 			ListingQueueEntry? queueEntryFromService = (await _listingQueueEntryReadService.GetFilteredListingQueueEntriesAsync(filter)).FirstOrDefault();
@@ -62,7 +62,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 			{
 				Id = Guid.NewGuid(),
 				ListingId = listingId,
-				BuyerUserId = request.UserId,
+				BuyerUserId = requesterUserId,
 				CreatedAt = DateTime.UtcNow,
 				ModifiedAt = DateTime.UtcNow,
 				Status = QueueStatus.Queued,

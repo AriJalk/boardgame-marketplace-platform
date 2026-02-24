@@ -1,13 +1,5 @@
-﻿using BoardGameMarket.MarketGateway.API.Application.Common;
-using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Filters;
-using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients;
-using BoardGameMarket.MarketGateway.API.Application.Listings.ServiceClients.Listings;
+﻿using BoardGameMarket.MarketGateway.API.Application.Listings.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.Shared;
-using BoardGameMarket.MarketGateway.API.Application.Users.Dtos;
-using System.Collections.Specialized;
-using System.Text;
-using System.Text.Json;
-using System.Web;
 
 namespace BoardGameMarket.MarketGateway.API.Application.Listings.Services
 {
@@ -18,6 +10,18 @@ namespace BoardGameMarket.MarketGateway.API.Application.Listings.Services
 		public ListingsDataService(ListingsHttpClient httpClient)
 		{
 			_httpClient = httpClient.HttpClient;
+		}
+
+		public async Task<ListingOwnershipInfo> GetListingOwnershipInfo(Guid listingId)
+		{
+			string uri = $"api/listings/{listingId}/ownership";
+			HttpResponseMessage response = await _httpClient.GetAsync(uri);
+
+			response.EnsureSuccessStatusCode();
+
+			ListingOwnershipInfo? ownership = await response.Content.ReadFromJsonAsync<ListingOwnershipInfo>();
+
+			return ownership ?? throw new InvalidDataException();
 		}
 
 	}

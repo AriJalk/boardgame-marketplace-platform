@@ -7,10 +7,11 @@ import { BehaviorSubject, firstValueFrom, map, Observable, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { CreateListingGroupRequest } from '../../models/listing-group.model';
-import { CreateListingRequestDto as CreateListingRequest } from '../../../listings/models/listing.model';
+import { CreateListingRequest as CreateListingRequest } from '../../../listings/models/listing.model';
 import { CreateListingItemRequest } from '../../../listing-items/models/listing-item.model';
 import { ListingForm } from '../../../listing-forms/listing-form/listing-form';
 import { CatalogItemGetterService } from '../../../catalog/services/catalog-item-getter.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'bgm-create-listing-group',
@@ -27,6 +28,7 @@ export class CreateListingGroupPage implements OnInit {
     private listingGroupService: ListingGroupService,
     private formFactory: ListingFormsFactory,
     private catalogService: CatalogItemGetterService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -36,14 +38,12 @@ export class CreateListingGroupPage implements OnInit {
   async submitForm() {
     if (this.formGroup.invalid) {
       console.log('invalid');
+      return;
     }
-    const fg = this.formGroup;
+    const fg = this.formGroup.getRawValue();
 
-    const customNames = fg
-      .get('listings')
-      ?.value.flatMap((l: any) =>
-        l.listingItems.filter((li: any) => li.catalogItem.type === 'custom'),
-      )
+    const customNames = fg.listings
+      .flatMap((l: any) => l.listingItems.filter((li: any) => li.catalogItem.type === 'custom'))
       .map((li: any) => li.catalogItem.name);
 
     const customItems = await firstValueFrom(
@@ -53,10 +53,10 @@ export class CreateListingGroupPage implements OnInit {
     const customItemsByName = new Map(customItems.map((item) => [item.name, item]));
 
     const request: CreateListingGroupRequest = {
-      location: fg.get('location')?.value,
-      details: fg.get('details')?.value,
-      pickupOptions: fg.get('pickupOptions')?.value,
-      listings: fg.get('listings')?.value.map(
+      location: fg.location,
+      details: fg.details,
+      pickupOptions: fg.pickupOptions,
+      listings: fg.listings.map(
         (l: any): CreateListingRequest => ({
           title: l.title,
           price: l.price,
@@ -75,6 +75,7 @@ export class CreateListingGroupPage implements OnInit {
     this.listingGroupService.postListingGroup(request).subscribe({
       next: (data) => {
         console.log(data);
+        this.router.navigate(['/listing-groups', data.id]);
       },
     });
   }

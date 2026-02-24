@@ -1,5 +1,5 @@
 import {
-  CreateListingRequestDto as CreateListingRequest,
+  CreateListingRequest as CreateListingRequest,
   ListingDetail,
   ListingSummary,
 } from '../../listings/models/listing.model';
@@ -27,4 +27,12 @@ export interface CreateListingGroupRequest {
   pickupOptions?: string;
   location: string;
   listings: CreateListingRequest[];
+}
+
+export interface UpdateListingGroupRequest {
+  id: string;
+  details?: string;
+  pickupOptions?: string;
+  location: string;
+  listings: UpdateListingGroupRequest[];
 }

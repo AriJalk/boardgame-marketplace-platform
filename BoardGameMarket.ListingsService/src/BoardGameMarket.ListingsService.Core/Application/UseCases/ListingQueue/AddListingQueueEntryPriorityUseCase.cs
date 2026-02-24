@@ -1,8 +1,10 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingQueueEntries;
+using BoardGameMarket.ListingsService.Core.Application.Contracts.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
+using BoardGameMarket.ListingsService.Core.Application.Queries;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using BoardGameMarket.ListingsService.Core.Domain.Services;
@@ -18,18 +20,27 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 		private readonly IListingQueueEntryReadService _listingQueueEntryReadService;
 		private readonly IListingQueueEntryWriteService _listingQueueEntryWriteService;
 		private readonly IUnitOfWork _unitOfWork;
+		private readonly ListingOwnershipQuery _listingOwnershipQuery;
 
-		public AddListingQueueEntryPriorityUseCase(IListingReadService listingReadService, IListingQueueEntryReadService listingQueueEntryReadService, IListingQueueEntryWriteService listingQueueEntryWriteService, IUnitOfWork unitOfWork)
-		{
-			_listingReadService = listingReadService;
-			_listingQueueEntryReadService = listingQueueEntryReadService;
-			_listingQueueEntryWriteService = listingQueueEntryWriteService;
-			_unitOfWork = unitOfWork;
-		}
+        public AddListingQueueEntryPriorityUseCase(IListingReadService listingReadService, IListingQueueEntryReadService listingQueueEntryReadService, IListingQueueEntryWriteService listingQueueEntryWriteService, IUnitOfWork unitOfWork, ListingOwnershipQuery listingOwnershipQuery)
+        {
+            _listingReadService = listingReadService;
+            _listingQueueEntryReadService = listingQueueEntryReadService;
+            _listingQueueEntryWriteService = listingQueueEntryWriteService;
+            _unitOfWork = unitOfWork;
+            _listingOwnershipQuery = listingOwnershipQuery;
+        }
+
+
 
         // NOTE: not concurrency safe, need to make atomic in DB
-        public async Task<ListingQueueEntryInfo> ExecuteAsync(Guid listingId, Guid requestedQueueEntryId)
+        public async Task<ListingQueueEntryInfo> ExecuteAsync(Guid listingId, Guid requestedQueueEntryId, Guid requesterUserId)
 		{
+			Guid sellerId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
+			if (sellerId != requesterUserId)
+			{
+				throw new UnauthorizedAccessException();
+			}
 			try
 			{
 				await _unitOfWork.BeginTransactionAsync();

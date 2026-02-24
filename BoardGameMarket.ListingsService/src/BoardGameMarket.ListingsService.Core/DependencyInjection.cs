@@ -14,6 +14,19 @@ namespace BoardGameMarket.ListingsService.Core
 {
 	public static class DependencyInjection
 	{
+		private static IServiceCollection AddListingQueueUseCases(this IServiceCollection services)
+		{
+			services.AddScoped<AddListingQueueEntryPriorityUseCase>();
+			services.AddScoped<AddListingQueueEntryUseCase>();
+			services.AddScoped<DeleteListingQueueEntryUseCase>();
+			services.AddScoped<GetListingQueueEntryByIdUseCase>();
+			services.AddScoped<GetListingQueueEntryByUserIdUseCase>();
+			services.AddScoped<GetQueueUseCase>();
+			services.AddScoped<RemovePriorityFromQueueEntryUseCase>();
+			services.AddScoped<UpdateListingQueueEntryPriorityUseCase>();
+
+			return services;
+        }
 		public static IServiceCollection AddCore(this IServiceCollection services)
 		{
 
@@ -49,11 +62,9 @@ namespace BoardGameMarket.ListingsService.Core
 			services.AddScoped<ICurrentUserContext, CurrentUserContext>();
 
 			//Use Cases
-			services.AddScoped<GetQueueUseCase>();
-			services.AddScoped<AddListingQueueEntryUseCase>();
-			services.AddScoped<AddListingQueueEntryPriorityUseCase>();
-			services.AddScoped<UpdateListingQueueEntryPriorityUseCase>();
 			services.AddScoped<AddListingGroupUseCase>();
+
+			AddListingQueueUseCases(services);
 
 			// Queries
 			services.AddScoped<ListingOwnershipQuery>();

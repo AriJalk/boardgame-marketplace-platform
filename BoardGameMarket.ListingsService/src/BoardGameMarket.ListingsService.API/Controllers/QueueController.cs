@@ -1,4 +1,5 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries;
+﻿using BoardGameMarket.ListingsService.API.CustomAttributes;
+using BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
@@ -13,103 +14,91 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 	public class QueueController : ControllerBase
 	{
 		private readonly GetQueueUseCase _getQueueUseCase;
-		private readonly IListingQueueEntryReadService _listingQueueReadService;
-		private readonly IListingQueueEntryWriteService _listingQueueWriteService;
 		private readonly AddListingQueueEntryUseCase _addListingQueueEntryUseCase;
+		private readonly GetListingQueueEntryByIdUseCase _getListingQueueEntryByIdUseCase;
 		private readonly AddListingQueueEntryPriorityUseCase _addListingQueueEntryPriorityUseCase;
 		private readonly UpdateListingQueueEntryPriorityUseCase _updateListingQueueEntryPriorityUseCase;
+		private readonly GetListingQueueEntryByUserIdUseCase _getListingQueueEntryByUserIdUseCase;
+		private readonly DeleteListingQueueEntryUseCase _deleteListingQueueEntryUseCase;
+		private readonly RemovePriorityFromQueueEntryUseCase _removePriorityFromQueueEntryUseCase;
+		private ILogger<QueueController> _logger;
 
-        public QueueController(GetQueueUseCase getQueueUseCase, IListingQueueEntryReadService listingQueueReadService, IListingQueueEntryWriteService listingQueueWriteService, AddListingQueueEntryUseCase addListingQueueEntryUseCase, AddListingQueueEntryPriorityUseCase addListingQueueEntryPriorityUseCase, UpdateListingQueueEntryPriorityUseCase updateListingQueueEntryPriorityUseCase)
+        public QueueController(GetQueueUseCase getQueueUseCase, AddListingQueueEntryUseCase addListingQueueEntryUseCase, GetListingQueueEntryByIdUseCase getListingQueueEntryByIdUseCase, AddListingQueueEntryPriorityUseCase addListingQueueEntryPriorityUseCase, UpdateListingQueueEntryPriorityUseCase updateListingQueueEntryPriorityUseCase, GetListingQueueEntryByUserIdUseCase getListingQueueEntryByUserIdUseCase, DeleteListingQueueEntryUseCase deleteListingQueueEntryUseCase, RemovePriorityFromQueueEntryUseCase removePriorityFromQueueEntryUseCase, ILogger<QueueController> logger)
         {
             _getQueueUseCase = getQueueUseCase;
-            _listingQueueReadService = listingQueueReadService;
-            _listingQueueWriteService = listingQueueWriteService;
             _addListingQueueEntryUseCase = addListingQueueEntryUseCase;
+            _getListingQueueEntryByIdUseCase = getListingQueueEntryByIdUseCase;
             _addListingQueueEntryPriorityUseCase = addListingQueueEntryPriorityUseCase;
             _updateListingQueueEntryPriorityUseCase = updateListingQueueEntryPriorityUseCase;
+            _getListingQueueEntryByUserIdUseCase = getListingQueueEntryByUserIdUseCase;
+            _deleteListingQueueEntryUseCase = deleteListingQueueEntryUseCase;
+            _removePriorityFromQueueEntryUseCase = removePriorityFromQueueEntryUseCase;
+            _logger = logger;
         }
 
         [HttpGet()]
-		public async Task<ActionResult<ListingQueueInfo>> GetQueue(Guid listingId)
-		{
-			ListingQueueInfo queue = await _getQueueUseCase.Execute(listingId);
+		public async Task<ActionResult<ListingQueueInfo>> GetQueue(Guid listingId, [FromRequesterHeader] Guid requesterUserId)
+
+        {
+			ListingQueueInfo queue = await _getQueueUseCase.Execute(listingId, requesterUserId);
 
 			return Ok(queue);
 		}
 
 		[HttpGet("subscription/{listingQueueEntryId:guid}")]
-		public async Task<ActionResult<ListingQueueEntryInfo>> GetListingQueueEntryById(Guid listingQueueEntryId)
+		public async Task<ActionResult<ListingQueueEntryInfo>> GetListingQueueEntryById(Guid listingId, Guid listingQueueEntryId, [FromRequesterHeader] Guid requesterUserId)
 		{
-			ListingQueueEntry? entry = await _listingQueueReadService.GetListingQueueEntryByIdAsync(listingQueueEntryId);
-			if (entry == null)
-			{
-				return NotFound();
-			}
+			ListingQueueEntryInfo entry = await _getListingQueueEntryByIdUseCase.ExecuteAsync(listingId, listingQueueEntryId, requesterUserId);
 			return Ok(entry);
 		}
 
 		[HttpGet("subscription/user/{userId:guid}")]
-		public async Task<ActionResult<ListingQueueEntryInfo>> GetListingQueueEntryByUserId(Guid listingId, Guid userId)
+		public async Task<ActionResult<ListingQueueEntryInfo>> GetListingQueueEntryByUserId(Guid listingId, Guid userId, [FromRequesterHeader] Guid requesterUserId)
 		{
-			ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
-			{
-				UserId = userId,
-				ListingIds = new List<Guid> { listingId },
-			};
-			ListingQueueEntry? queueEntry = (await _listingQueueReadService.GetFilteredListingQueueEntriesAsync(filter)).FirstOrDefault();
+			ListingQueueEntryInfo? queueEntry = await _getListingQueueEntryByUserIdUseCase.ExecuteAsync(listingId, userId, requesterUserId);
 			if (queueEntry == null)
 			{
 				return NoContent();
 			}
-			return Ok(queueEntry.ToListingQueueEntryInfo());
+
+			return Ok(queueEntry);
 		}
 
 		[HttpPost("subscription")]
-		public async Task<ActionResult<ListingQueueEntryInfo>> AddListingQueueEntry(Guid listingId, [FromBody] AddListingQueueEntryRequest request)
+		public async Task<ActionResult<ListingQueueEntryInfo>> AddListingQueueEntry(Guid listingId, [FromRequesterHeader] Guid requesterUserId)
 		{
-			ListingQueueEntryInfo listingQueueEntry = await _addListingQueueEntryUseCase.ExecuteAsync(listingId, request);
+			_logger.LogInformation($"{nameof(QueueController)}/{nameof(AddListingQueueEntry)}: ListingId: {listingId}, RequesterUserId: {requesterUserId}");
+			ListingQueueEntryInfo listingQueueEntry = await _addListingQueueEntryUseCase.ExecuteAsync(listingId, requesterUserId);
 			return Ok(listingQueueEntry);
 		}
 
 		[HttpDelete("subscription/{listingQueueEntryId:guid}")]
-		public async Task<IActionResult> DeleteListingQueueEntry(Guid listingQueueEntryId)
+		public async Task<IActionResult> DeleteListingQueueEntry(Guid listingId, Guid listingQueueEntryId, [FromRequesterHeader] Guid requesterUserId)
 		{
-			await _listingQueueWriteService.DeleteListingQueueEntryAsync(listingQueueEntryId);
+            _logger.LogInformation($"{nameof(QueueController)}/{nameof(DeleteListingQueueEntry)}: ListingId: {listingId}, RequesterUserId: {requesterUserId}");
+            await _deleteListingQueueEntryUseCase.ExecuteAsync(listingId, listingQueueEntryId, requesterUserId);
 			return NoContent();
 		}
 
 		[HttpPost("subscription/{listingQueueEntryId:guid}/priority")]
-		public async Task<ActionResult<ListingQueueEntryInfo>> AddPriorityToListingQueueEntry(Guid listingId, Guid listingQueueEntryId)
+		public async Task<ActionResult<ListingQueueEntryInfo>> AddPriorityToListingQueueEntry(Guid listingId, Guid listingQueueEntryId, [FromRequesterHeader] Guid requesterUserId)
 		{
-			ListingQueueEntryInfo queueEntry = await _addListingQueueEntryPriorityUseCase.ExecuteAsync(listingId, listingQueueEntryId);
+			ListingQueueEntryInfo queueEntry = await _addListingQueueEntryPriorityUseCase.ExecuteAsync(listingId, listingQueueEntryId, requesterUserId);
 			return Ok(queueEntry);
 		}
 
 		[HttpDelete("subscription/{listingQueueEntryId:guid}/priority")]
-		public async Task<ActionResult<ListingQueueEntryInfo>> RemovePriorityFromEntry(Guid listingId, Guid listingQueueEntryId)
+		public async Task<ActionResult<ListingQueueEntryInfo>> RemovePriorityFromEntry(Guid listingId, Guid listingQueueEntryId, [FromRequesterHeader] Guid requesterUserId)
 		{
-			ListingQueueEntry? queueEntry = await _listingQueueReadService.GetListingQueueEntryByIdAsync(listingQueueEntryId);
-
-			if (queueEntry == null)
-			{
-				return NoContent();
-			}
-
-			queueEntry.Priority = null;
-			ListingQueueEntry? queueEntryResponse = await _listingQueueWriteService.UpdateListingQueueEntryAsync(queueEntry);
-
-			if (queueEntryResponse == null || queueEntryResponse.Priority != null)
-			{
-				return BadRequest();
-			}
-			return Ok(queueEntryResponse.ToListingQueueEntryInfo());
+			ListingQueueEntryInfo queueEntryUpdateResult = await _removePriorityFromQueueEntryUseCase.ExecuteAsync(listingId, listingQueueEntryId, requesterUserId);
+			return Ok(queueEntryUpdateResult);
 		}
 
 
         [HttpPatch("subscription/{listingQueueEntryId:guid}/priority")]
-        public async Task<ActionResult<ListingQueueEntryInfo>> UpdateQueueEntryPriority(Guid listingId, Guid listingQueueEntryId, [FromBody] UpdateListingQueueEntryPriorityRequest updateRequest)
+        public async Task<ActionResult<ListingQueueEntryInfo>> UpdateQueueEntryPriority(Guid listingId, Guid listingQueueEntryId, [FromBody] UpdateListingQueueEntryPriorityRequest updateRequest, [FromRequesterHeader] Guid requesterUserId)
         {
-            ListingQueueEntryInfo queueEntry = await _updateListingQueueEntryPriorityUseCase.ExecuteAsync(listingId, listingQueueEntryId, updateRequest);
+            ListingQueueEntryInfo queueEntry = await _updateListingQueueEntryPriorityUseCase.ExecuteAsync(listingId, listingQueueEntryId, updateRequest, requesterUserId);
             return Ok(queueEntry);
         }
     }

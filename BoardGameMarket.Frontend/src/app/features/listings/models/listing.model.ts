@@ -1,6 +1,7 @@
 import {
   CreateListingItemRequest,
   ListingItem,
+  UpdateListingItemRequest,
 } from '../../listing-items/models/listing-item.model';
 import { ListingSubscription, QueueEntry } from '../../queues/models/quque-entry.model';
 
@@ -18,9 +19,17 @@ export interface ListingDetail extends ListingSummary {
   subscription?: ListingSubscription;
 }
 
-export interface CreateListingRequestDto {
+export interface CreateListingRequest {
   title: string;
   price: number;
   listingItems: CreateListingItemRequest[];
+  details?: string;
+}
+
+export interface UpdateListingRequest {
+  id?: string;
+  title: string;
+  price: number;
+  listingItems: UpdateListingItemRequest[];
   details?: string;
 }

@@ -7,5 +7,15 @@ namespace BoardGameMarket.MarketGateway.API.Application.Users.Services
 		public UserInfo? LoggedInUser { get; set; }
 
 		public LoginService() { }
+
+		public Guid GetUserIdOrThrow()
+		{
+			if (LoggedInUser == null)
+			{
+				throw new InvalidOperationException("User not logged in");
+			}
+
+			return LoggedInUser.UserId;
+		}
 	}
 }

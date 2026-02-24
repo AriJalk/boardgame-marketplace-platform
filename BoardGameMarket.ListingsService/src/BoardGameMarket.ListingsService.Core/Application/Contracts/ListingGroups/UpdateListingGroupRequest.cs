@@ -2,14 +2,11 @@
 
 namespace BoardGameMarket.ListingsService.Core.Application.Contracts.ListingGroups
 {
-	public record UpdateListingGroup(Guid Id,
-		Guid SellerUserId,
-		DateTime CreatedAt,
-		DateTime ModifiedAt,
+	public record UpdateListingGroupRequest(Guid Id,
 		string? Details,
 		string? PickupOptions,
 		string Location,
-		UpdateListing[] Listings)
+		UpdateListingRequest[] Listings)
 	{
 	}
 }

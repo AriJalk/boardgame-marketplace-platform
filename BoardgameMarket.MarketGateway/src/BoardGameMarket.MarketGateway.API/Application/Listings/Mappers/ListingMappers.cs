@@ -21,5 +21,10 @@ namespace BoardGameMarket.MarketGateway.API.Application.Listings.Mappers
 		{
 			return new CreateListingRequest(dto.Title, dto.Price, dto.ListingItems.Select(li => li.ToCreateListingItemRequest()).ToArray(), dto.Details);
 		}
+
+		public static UpdateListingRequest ToUpdateListingRequest(this UpdateListingRequestDto dto)
+		{
+			return new UpdateListingRequest(dto.Id, dto.Title, dto.Price, dto.ListingItems.Select(li => li.ToUpdateListingItemRequest()).ToArray(), dto.Details);
+		}
 	}
 }

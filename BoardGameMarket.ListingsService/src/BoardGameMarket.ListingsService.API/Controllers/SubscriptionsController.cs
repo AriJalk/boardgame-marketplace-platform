@@ -26,7 +26,7 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		[HttpGet("users/{userId:guid}/listings")]
 		public async Task<ActionResult<Guid[]>> GetSubscribedListingIds(Guid userId)
 		{
-			_logger.LogInformation($"{nameof(SubscriptionsController)}/{nameof(GetSubscribedListingIds)}: user - {userId}");
+			//_logger.LogInformation($"{nameof(SubscriptionsController)}/{nameof(GetSubscribedListingIds)}: user - {userId}");
 			IReadOnlyCollection<Guid> listingIds = await _subscriptionQueries.GetListingsBySubscribedUser(userId);
 
 			return Ok(listingIds);

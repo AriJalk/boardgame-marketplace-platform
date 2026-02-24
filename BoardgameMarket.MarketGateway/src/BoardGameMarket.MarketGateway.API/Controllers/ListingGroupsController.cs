@@ -24,8 +24,9 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		private readonly QueuesDataService _queueDataService;
 		private readonly LoginService _loginService;
 		private readonly AddListingGroupUseCase _addListingGroupUseCase;
+		private readonly UpdateListingGroupUseCase _updateListingGroupUseCase;
 
-        public ListingGroupsController(GetListingGroupDetailUseCase getListingGroupDetailUseCase, GetListingGroupSummaryPageUseCase getListingGroupSummaryPageUseCase, GetFilteredListingGroupSummariesUseCase getFilteredListingGroupSummariesUseCase, QueuesDataService queueDataService, LoginService loginService, AddListingGroupUseCase addListingGroupUseCase)
+        public ListingGroupsController(GetListingGroupDetailUseCase getListingGroupDetailUseCase, GetListingGroupSummaryPageUseCase getListingGroupSummaryPageUseCase, GetFilteredListingGroupSummariesUseCase getFilteredListingGroupSummariesUseCase, QueuesDataService queueDataService, LoginService loginService, AddListingGroupUseCase addListingGroupUseCase, UpdateListingGroupUseCase updateListingGroupUseCase)
         {
             _getListingGroupDetailUseCase = getListingGroupDetailUseCase;
             _getListingGroupSummaryPageUseCase = getListingGroupSummaryPageUseCase;
@@ -33,6 +34,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
             _queueDataService = queueDataService;
             _loginService = loginService;
             _addListingGroupUseCase = addListingGroupUseCase;
+            _updateListingGroupUseCase = updateListingGroupUseCase;
         }
 
         private async Task<ListingGroupSummaryDto[]> WithIsSubscribedAsync(ListingGroupSummaryDto[] listingGroups)
@@ -109,6 +111,17 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 			ListingGroupDetailDto listingGroup = await _addListingGroupUseCase.ExecuteAsync(request.ToCreateListingGroupRequest(_loginService.LoggedInUser.UserId));
 
 			return Ok(listingGroup);
+		}
+
+		[HttpPut("{listingGroupId}")]
+		public async Task<ActionResult<ListingGroupDetailDto>> UpdateListingGroup(Guid listingGroupId, [FromBody] UpdateListingGroupRequestDto request)
+		{
+			if (_loginService.LoggedInUser == null)
+			{
+				return BadRequest();
+			}
+
+			return Ok();
 		}
 	}
 }

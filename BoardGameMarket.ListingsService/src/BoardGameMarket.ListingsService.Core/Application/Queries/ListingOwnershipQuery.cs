@@ -29,7 +29,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Queries
             return listingGroup.SellerUserId;
         }
 
-        public async Task<Guid> GetSellerUserIdByListingId(Guid listingId)
+        public async Task<Guid> GetSellerUserIdByListingIdAsync(Guid listingId)
 		{
 			Listing? listing = await _listingReadService.GetListingByIdAsync(listingId);
 			if (listing == null)
