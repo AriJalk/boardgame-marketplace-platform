@@ -20,13 +20,15 @@ namespace BoardGameMarket.ListingsService.API.Controllers
         private readonly ListingGroupAggregateBuilder _listingGroupAggregateBuilder;
         private readonly AddListingGroupUseCase _addListingGroupUseCase;
         private readonly ListingOwnershipQuery _listingOwnershipQuery;
+        private readonly UpdateListingGroupUseCase _updateListingGroupUseCase;
 
-        public ListingGroupsController(IListingGroupReadService listingGroupReadService, ListingGroupAggregateBuilder listingGroupAggregateBuilder, AddListingGroupUseCase addListingGroupUseCase, ListingOwnershipQuery listingOwnershipQuery)
+        public ListingGroupsController(IListingGroupReadService listingGroupReadService, ListingGroupAggregateBuilder listingGroupAggregateBuilder, AddListingGroupUseCase addListingGroupUseCase, ListingOwnershipQuery listingOwnershipQuery, UpdateListingGroupUseCase updateListingGroupUseCase)
         {
             _listingGroupReadService = listingGroupReadService;
             _listingGroupAggregateBuilder = listingGroupAggregateBuilder;
             _addListingGroupUseCase = addListingGroupUseCase;
             _listingOwnershipQuery = listingOwnershipQuery;
+            _updateListingGroupUseCase = updateListingGroupUseCase;
         }
 
         [HttpPost("page")]
@@ -85,6 +87,17 @@ namespace BoardGameMarket.ListingsService.API.Controllers
             ListingGroupDetail listingGroup = await _addListingGroupUseCase.ExecuteAsync(request);
 
             return Ok(listingGroup);
+        }
+
+        [HttpPut("{listingGroupId:guid}")]
+        public async Task<ActionResult<ListingGroupDetail>> UpdateListingGroup(Guid listingGroupId, [FromBody] UpdateListingGroupRequest request, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
+        {
+            if (listingGroupId != request.Id)
+            {
+                return BadRequest($"Mismatch between {nameof(listingGroupId)} and {nameof(request.Id)}");
+            }
+            ListingGroupDetail listingGroupFromUpdate = await _updateListingGroupUseCase.ExecuteAsync(request, requesterUserId);
+            return Ok(listingGroupFromUpdate);
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 {
-	internal class InMemoryListingRepository : IListingRepository
+    internal class InMemoryListingRepository : IListingRepository
 	{
 
 		private readonly List<Listing> _listings = new List<Listing>();
@@ -70,5 +70,14 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 			_listings.Add(listing);
 			return Task.FromResult(listing);
 		}
-	}
+
+        public Task<IEnumerable<Listing>> UpdateListingsAsync(IEnumerable<Listing> listings)
+        {
+			HashSet<Guid> listingIds = listings.Select(listings => listings.Id).ToHashSet();
+			IEnumerable<Listing> originalListings = _listings.Where(l => listingIds.Contains(l.Id));
+			_listings.RemoveAll(l => listingIds.Contains(l.Id));
+			_listings.AddRange(listings);
+			return Task.FromResult(listings);
+        }
+    }
 }

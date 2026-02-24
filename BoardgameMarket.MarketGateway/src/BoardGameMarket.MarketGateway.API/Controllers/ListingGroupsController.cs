@@ -120,8 +120,13 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 			{
 				return BadRequest();
 			}
+			if (listingGroupId != request.Id)
+			{
+				return BadRequest();
+			}
 
-			return Ok();
+			ListingGroupDetailDto listingGroupFromUpdate = await _updateListingGroupUseCase.ExecuteAsync(request);
+			return Ok(listingGroupFromUpdate);
 		}
 	}
 }

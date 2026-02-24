@@ -63,6 +63,7 @@ namespace BoardGameMarket.ListingsService.Core
 
 			//Use Cases
 			services.AddScoped<AddListingGroupUseCase>();
+			services.AddScoped<UpdateListingGroupUseCase>();
 
 			AddListingQueueUseCases(services);
 

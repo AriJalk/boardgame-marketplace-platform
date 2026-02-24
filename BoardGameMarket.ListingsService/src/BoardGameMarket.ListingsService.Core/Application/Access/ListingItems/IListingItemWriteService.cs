@@ -12,5 +12,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingItems
 
 		Task<bool> DeleteListingItemAsync(Guid listingItemId);
 		Task DeleteListingItemsByListingIdAsync(Guid listingId);
+		Task<ListingItem?> UpdateListingItemAsync(ListingItem listingItem);
 	}
 }

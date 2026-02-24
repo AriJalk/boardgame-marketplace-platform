@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using BoardGameMarket.MarketGateway.API.Helpers;
+using System.Text;
 using System.Text.Json;
 
 namespace BoardGameMarket.MarketGateway.API.Application.Shared
@@ -19,7 +20,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.Shared
         public static HttpRequestMessage BuildRequest(HttpMethod httpMethod, string uri, Guid requesterUserId)
         {
             HttpRequestMessage requestMessage = new HttpRequestMessage(httpMethod, uri);
-            requestMessage.Headers.Add("X-Requester-UserId", requesterUserId.ToString());
+            requestMessage.Headers.Add(Headers.REQUESTER_USER_ID, requesterUserId.ToString());
 
             return requestMessage;
         }

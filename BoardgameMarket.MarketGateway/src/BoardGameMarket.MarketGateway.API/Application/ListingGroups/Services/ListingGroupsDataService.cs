@@ -3,6 +3,7 @@ using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Filters;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.Listings.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.Shared;
+using BoardGameMarket.MarketGateway.API.Application.Users.Services;
 using System.Collections.Specialized;
 using System.Net;
 using System.Web;
@@ -12,10 +13,12 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 	public class ListingGroupsDataService
 	{
 		private readonly HttpClient _httpClient;
+		private readonly LoginService _loginService;
 
-		public ListingGroupsDataService(ListingsHttpClient httpClient)
+		public ListingGroupsDataService(ListingsHttpClient httpClient, LoginService loginService)
 		{
 			_httpClient = httpClient.HttpClient;
+			_loginService = loginService;
 		}
 
 		public async Task<PagedResult<ListingGroupSummary>> GetListingGroupsSummaryPage(PagedListingGroupQuery query)
@@ -97,5 +100,21 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
             return ownership ?? throw new InvalidDataException();
         }
+
+		public async Task<ListingGroupDetail> UpdateListingGroup(UpdateListingGroupRequest request)
+		{
+			Guid requesterUserId = _loginService.GetUserIdOrThrow();
+
+			string uri = $"api/listing-groups/{request.Id}";
+			HttpRequestMessage httpRequest = HttpClientHelpers.BuildRequest(HttpMethod.Put, uri, requesterUserId, request);
+			
+			HttpResponseMessage response= await _httpClient.SendAsync(httpRequest);
+
+			response.EnsureSuccessStatusCode();
+
+			ListingGroupDetail? listingGroupFromUpdate = await response.Content.ReadFromJsonAsync<ListingGroupDetail>();
+
+			return listingGroupFromUpdate ?? throw new InvalidDataException();
+		}
     }
 }

@@ -58,5 +58,26 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 		{
 			return Task.FromResult(_listingItems.Where(i => i.ListingId == listingId));
 		}
-	}
+
+        public Task<ListingItem?> UpdateListingItemAsync(ListingItem listingItem)
+        {
+			ListingItem? listingItemFromCollection = _listingItems.Where(li => li.Id == listingItem.Id).FirstOrDefault();
+
+			if (listingItemFromCollection != null)
+			{
+                _listingItems.Remove(listingItemFromCollection);
+            }
+			_listingItems.Add(listingItem);
+			return Task.FromResult(listingItem);
+        }
+
+        public async Task<IEnumerable<ListingItem>> UpdateListingItemsAsync(IEnumerable<ListingItem> listingItems)
+        {
+			foreach(ListingItem listingItem in listingItems)
+			{
+				ListingItem? listingItemFromUpdate = await UpdateListingItemAsync(listingItem);
+			}
+			return listingItems;
+        }
+    }
 }

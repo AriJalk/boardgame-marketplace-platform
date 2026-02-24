@@ -4,7 +4,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Contracts.ListingGrou
 {
 	public record UpdateListingGroupRequest(Guid Id,
 		string? Details,
-		string? PickupOptions,
+		string PickupOptions,
 		string Location,
 		UpdateListingRequest[] Listings)
 	{

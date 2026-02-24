@@ -49,5 +49,15 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 		{
 			throw new NotImplementedException();
 		}
-	}
+
+        public Task<ListingItem?> UpdateListingItemAsync(ListingItem listingItem)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<ListingItem>> UpdateListingItemsAsync(IEnumerable<ListingItem> listingItems)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

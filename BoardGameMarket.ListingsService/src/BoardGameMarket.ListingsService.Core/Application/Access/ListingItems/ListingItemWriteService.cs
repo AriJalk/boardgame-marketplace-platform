@@ -43,5 +43,10 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingItems
 		{
 			await _listingItemRepository.DeleteListingItemsByListingIdAsync(listingId);
 		}
-	}
+
+        public async Task<ListingItem?> UpdateListingItemAsync(ListingItem listingItem)
+        {
+            return await _listingItemRepository.UpdateListingItemAsync(listingItem);
+        }
+    }
 }

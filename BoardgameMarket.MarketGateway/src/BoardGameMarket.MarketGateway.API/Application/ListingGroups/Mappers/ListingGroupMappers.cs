@@ -25,9 +25,9 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Mappers
 			return new CreateListingGroupRequest(userId, dto.Details, dto.PickupOptions, dto.Location, dto.Listings.Select(l => l.ToCreateListingRequest()).ToArray());
 		}
 
-		public static UpdateListingGroupRequest ToUpdateListingGroupRequest(this UpdateListingGroupRequestDto dto, Guid requesterUserId)
+		public static UpdateListingGroupRequest ToUpdateListingGroupRequest(this UpdateListingGroupRequestDto dto)
 		{
-			return new UpdateListingGroupRequest(dto.Id, requesterUserId, dto.Details, dto.PickupOptions, dto.Location, dto.Listings.Select(l => l.ToUpdateListingRequest()).ToArray());
+			return new UpdateListingGroupRequest(dto.Id, dto.Details, dto.PickupOptions, dto.Location, dto.Listings.Select(l => l.ToUpdateListingRequest()).ToArray());
 		}
 
 	}

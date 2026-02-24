@@ -87,7 +87,7 @@ export class EditListingGroupPage implements OnInit {
 
     this.listingGroupService.updateListingGroup(request).subscribe({
       next: (data) => {
-        console.log(data);
+        // console.log(data);
         this.router.navigate(['/listing-groups', data.id]);
       },
     });

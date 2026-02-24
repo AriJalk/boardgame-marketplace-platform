@@ -3,7 +3,7 @@
 namespace BoardGameMarket.MarketGateway.API.Application.Listings.Dtos.Listings
 {
     public record UpdateListingRequestDto(
-        Guid Id,
+        Guid? Id,
         string Title,
         decimal Price,
         UpdateListingItemRequestDto[] ListingItems,
