@@ -34,7 +34,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 
 
         // NOTE: not concurrency safe, need to make atomic in DB
-        public async Task<ListingQueueEntryInfo> ExecuteAsync(Guid listingId, Guid requestedQueueEntryId, Guid requesterUserId)
+        public async Task<Guid> ExecuteAsync(Guid listingId, Guid requestedQueueEntryId, Guid requesterUserId)
 		{
 			Guid sellerId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
 			if (sellerId != requesterUserId)
@@ -55,7 +55,8 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 				{
 					ListingIds = [listingId],
 				};
-				IEnumerable<ListingQueueEntry> queue = (await _listingQueueEntryReadService.GetFilteredListingQueueEntriesAsync(filter)).OrderByDescending(qe => qe.Priority);
+				IEnumerable<ListingQueueEntry> queue = (await _listingQueueEntryReadService.GetFilteredListingQueueEntriesAsync(filter));
+				IEnumerable<ListingQueueEntry> priorityQueue = queue.Where(qe => qe.Priority != null).OrderByDescending(qe => qe.Priority);
 
 				ListingQueueEntry? requestedPriorityEntry = queue.Where(qe => qe.Id == requestedQueueEntryId).FirstOrDefault();
 
@@ -72,13 +73,13 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 				if (requestedPriorityEntry.Priority != null)
 				{
 					await _unitOfWork.CommitTransactionAsync();
-					return requestedPriorityEntry.ToListingQueueEntryInfo();
+					return requestedPriorityEntry.Id;
 				}
 
-				ListingQueueEntry? lastPriorityEntry = queue.FirstOrDefault();
+				ListingQueueEntry? lastPriorityEntry = priorityQueue.FirstOrDefault();
 
 				// If no priorities exist in queue
-				if (lastPriorityEntry == null || lastPriorityEntry.Priority == null)
+				if (lastPriorityEntry == null)
 				{
 					requestedPriorityEntry.Priority = QueueDomainService.INITIAL_PRIORITY;
 				}
@@ -87,13 +88,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 					requestedPriorityEntry.Priority = lastPriorityEntry.Priority + QueueDomainService.PRIORITY_GAP;
 				}
 
-				if (await _listingQueueEntryWriteService.UpdateListingQueueEntryAsync(requestedPriorityEntry) == null)
-				{
-					throw new InvalidOperationException($"Can't update entry {requestedQueueEntryId}");
-				} 
+				await _listingQueueEntryWriteService.UpdateListingQueueEntryAsync(requestedPriorityEntry);
+
 				await _unitOfWork.CommitTransactionAsync();
 
-				return requestedPriorityEntry.ToListingQueueEntryInfo();
+				return requestedPriorityEntry.Id;
 			}
 			catch
 			{

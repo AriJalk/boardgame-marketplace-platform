@@ -12,30 +12,42 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.Listings
 			_listingRepository = listingRepository;
 		}
 
-		public async Task<Listing?> AddListingAsync(Listing listingToAdd)
+		public async Task AddListingAsync(Listing listingToAdd)
 		{
-			return await _listingRepository.AddListingAsync(listingToAdd);
+			int rows = await _listingRepository.AddListingAsync(listingToAdd);
+			if (rows == 0)
+			{
+				throw new InvalidOperationException();
+			}
 		}
 
-		public async Task<IEnumerable<Listing>> AddListingsAsync(IEnumerable<Listing> listingsToAdd)
+		public async Task AddListingsAsync(IEnumerable<Listing> listingsToAdd)
 		{
-			return await _listingRepository.AddListingsAsync(listingsToAdd);
+			List<Listing> listings = listingsToAdd.ToList();
+			int rows = await _listingRepository.AddListingsAsync(listings);
+			if (rows != listings.Count)
+			{
+				throw new InvalidOperationException();
+			}
 		}
 
-		public async Task<bool> DeleteListingAsync(Guid listingId)
+		public async Task DeleteListingAsync(Guid listingId)
 		{
-			return await _listingRepository.DeleteListingAsync(listingId);
+			int rows = await _listingRepository.DeleteListingAsync(listingId);
 		}
 
 		public async Task DeleteListingsByListingGroupId(Guid listingGroupId)
 		{
-			await _listingRepository.DeleteListingsByListingGroupIdAsync(listingGroupId);
+			int rows = await _listingRepository.DeleteListingsByListingGroupIdAsync(listingGroupId);
 		}
 
-		public async Task<Listing?> UpdateListingAsync(Listing listingToUpdate)
+		public async Task UpdateListingAsync(Listing listingToUpdate)
 		{
-			listingToUpdate.ModifiedAt = DateTime.Now;
-			return await _listingRepository.UpdateListingAsync(listingToUpdate);
+			int rows = await _listingRepository.UpdateListingAsync(listingToUpdate);
+			if (rows == 0)
+			{
+				throw new InvalidOperationException();
+			}
 		}
 	}
 }

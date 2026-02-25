@@ -7,11 +7,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingItems
 {
 	public interface IListingItemWriteService
 	{
-		Task<ListingItem?> AddListingItemAsync(ListingItem listingItemToAdd);
-		Task<IEnumerable<ListingItem>> AddListingItemsAsync(IEnumerable<ListingItem> listingItemsToAdd);
+		Task AddListingItemAsync(ListingItem listingItemToAdd);
+		Task AddListingItemsAsync(IEnumerable<ListingItem> listingItemsToAdd);
 
-		Task<bool> DeleteListingItemAsync(Guid listingItemId);
+		Task DeleteListingItemAsync(Guid listingItemId);
 		Task DeleteListingItemsByListingIdAsync(Guid listingId);
-		Task<ListingItem?> UpdateListingItemAsync(ListingItem listingItem);
+		Task UpdateListingItemAsync(ListingItem listingItem);
 	}
 }

@@ -37,24 +37,24 @@ export class QueueService {
     listingId: string,
     queueEntryId: string,
     requestedIndex: number | null,
-  ): Observable<void> {
-    return this.httpClient.patch<void>(
+  ): Observable<string> {
+    return this.httpClient.patch<string>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription/${queueEntryId}/priority`,
       { requestedIndex },
       { headers: this.authService.headers },
     );
   }
 
-  addPriority(listingId: string, queueEntryId: string): Observable<QueueEntry> {
-    return this.httpClient.post<QueueEntry>(
+  addPriority(listingId: string, queueEntryId: string): Observable<string> {
+    return this.httpClient.post<string>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription/${queueEntryId}/priority`,
       null,
       { headers: this.authService.headers },
     );
   }
 
-  removePriority(listingId: string, queueEntryId: string): Observable<QueueEntry> {
-    return this.httpClient.delete<QueueEntry>(
+  removePriority(listingId: string, queueEntryId: string): Observable<string> {
+    return this.httpClient.delete<string>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription/${queueEntryId}/priority`,
       { headers: this.authService.headers },
     );
@@ -70,8 +70,8 @@ export class QueueService {
     return response;
   }
 
-  subscribeToListing(listingId: string): Observable<QueueEntry> {
-    const response = this.httpClient.put<QueueEntry>(
+  subscribeToListing(listingId: string): Observable<string> {
+    const response = this.httpClient.put<string>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription`,
       null,
       { headers: this.authService.headers },

@@ -22,11 +22,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
             _listingOwnershipQuery = listingOwnershipQuery;
         }
 
-        public async Task<ListingQueueEntryInfo?> ExecuteAsync(Guid listingId, Guid userId, Guid requesterUserId)
+        public async Task<ListingQueueEntryInfo?> ExecuteAsync(Guid listingId, Guid subscriberUserId, Guid requesterUserId)
         {
             Guid sellerId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
 
-            if (userId != requesterUserId && requesterUserId != sellerId)
+            if (requesterUserId != subscriberUserId && requesterUserId != sellerId)
             {
                 throw new UnauthorizedAccessException();
             }
@@ -34,7 +34,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
             ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
             {
                 ListingIds = [listingId],
-                UserId = userId,
+                UserId = subscriberUserId,
             };
 
             ListingQueueEntry? queueEntry = (await _listingQueueEntryReadService.GetFilteredListingQueueEntriesAsync(filter)).FirstOrDefault();

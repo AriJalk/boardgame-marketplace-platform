@@ -44,11 +44,11 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			return queue;
 		}
 
-		public async Task<ListingQueueEntryInfo?> GetListingSubscriptionByUserAsync(Guid listingId, Guid userId)
+		public async Task<ListingQueueEntryInfo?> GetListingSubscriptionByUserAsync(Guid listingId, Guid subscriberUserId)
 		{
 
 			Guid requesterUserId = _loginService.GetUserIdOrThrow();
-            string uri = $"api/listings/{listingId}/queue/subscription/user/{userId}";
+            string uri = $"api/listings/{listingId}/queue/subscription/user/{subscriberUserId}";
 			HttpRequestMessage request = HttpClientHelpers.BuildRequest(HttpMethod.Get, uri, requesterUserId);
 
 			HttpResponseMessage response = await _httpClient.SendAsync(request);
@@ -63,7 +63,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			return await response.Content.ReadFromJsonAsync<ListingQueueEntryInfo>();
 		}
 
-		public async Task<ListingQueueEntryInfo> SubscribeToListingAsync(Guid listingId)
+		public async Task<Guid> SubscribeToListingAsync(Guid listingId)
 		{
 
 			Guid userId = _loginService.GetUserIdOrThrow();
@@ -76,10 +76,9 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 
 			response.EnsureSuccessStatusCode();
 
-			ListingQueueEntryInfo queueEntry = await response.Content.ReadFromJsonAsync<ListingQueueEntryInfo>() ??
-				throw new InvalidOperationException("Expected subscription payload");
+			Guid? queueEntryId = await response.Content.ReadFromJsonAsync<Guid>();
 
-			return queueEntry;
+			return queueEntryId ?? throw new InvalidDataException();
 		}
 
 		public async Task UnsubscribeFromListingAsync(Guid listingId, Guid subscriptionId)
@@ -150,7 +149,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			return queueEntries;
 		}
 
-		public async Task<ListingQueueEntryInfo> AddPriorityToQueueEntry(Guid listingId, Guid listingQueueEntryId)
+		public async Task<Guid> AddPriorityToQueueEntry(Guid listingId, Guid listingQueueEntryId)
 		{
             Guid requesterUserId = _loginService.GetUserIdOrThrow();
             string uri = $"api/listings/{listingId}/queue/subscription/{listingQueueEntryId}/priority";
@@ -161,18 +160,13 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 
 			response.EnsureSuccessStatusCode();
 
-			ListingQueueEntryInfo? queueEntry = await response.Content.ReadFromJsonAsync<ListingQueueEntryInfo>();
+			Guid? queueEntryFromUpdateId = await response.Content.ReadFromJsonAsync<Guid>();
 
-			if (queueEntry == null)
-			{
-				throw new InvalidOperationException($"Can't add priority to entry {listingQueueEntryId}");
-			}
-
-			return queueEntry;
+			return queueEntryFromUpdateId ?? throw new InvalidDataException();
 		}
 
 
-		public async Task<ListingQueueEntryInfo> UpdateListingQueueEntryPriorityAsync(Guid listingId, Guid listingQueueEntryId, UpdateListingQueueEntryPriorityRequestDto requestDto)
+		public async Task<Guid> UpdateListingQueueEntryPriorityAsync(Guid listingId, Guid listingQueueEntryId, UpdateListingQueueEntryPriorityRequestDto requestDto)
 		{
             Guid requesterUserId = _loginService.GetUserIdOrThrow();
             UpdateListingQueueEntryPriorityRequestDto updateRequest = new UpdateListingQueueEntryPriorityRequestDto(requestDto.RequestedIndex);
@@ -185,14 +179,9 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 
 			response.EnsureSuccessStatusCode();
 
-			ListingQueueEntryInfo? queueEntry = await response.Content.ReadFromJsonAsync<ListingQueueEntryInfo>();
+			Guid? queueEntryFromUpdateId = await response.Content.ReadFromJsonAsync<Guid>();
 
-			if (queueEntry == null)
-			{
-				throw new InvalidOperationException($"{nameof(ListingQueueEntryInfo)} payload expected");
-			}
-
-			return queueEntry;
+			return queueEntryFromUpdateId ?? throw new InvalidDataException();
 		}
 
 		public async Task<ListingQueueEntryInfo> RemoveListingQueueEntryPriorityAsync(Guid listingId, Guid listingQueueEntryId)

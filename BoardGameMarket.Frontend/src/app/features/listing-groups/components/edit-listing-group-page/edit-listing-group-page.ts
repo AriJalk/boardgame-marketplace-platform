@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { UpdateListingGroupRequest } from '../../models/listing-group.model';
 import { UpdateListingRequest as UpdateListingRequest } from '../../../listings/models/listing.model';
 import { UpdateListingItemRequest } from '../../../listing-items/models/listing-item.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'bgm-edit-listing-group',
@@ -29,6 +30,7 @@ export class EditListingGroupPage implements OnInit {
     private formFactory: ListingFormsFactory,
     private catalogService: CatalogItemGetterService,
     private router: Router,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
@@ -88,7 +90,8 @@ export class EditListingGroupPage implements OnInit {
     this.listingGroupService.updateListingGroup(request).subscribe({
       next: (data) => {
         // console.log(data);
-        this.router.navigate(['/listing-groups', data.id]);
+        this.router.navigate(['/listing-groups', data]);
+        this.snackBar.open('Update successful', 'Close', { duration: 2000 });
       },
     });
   }

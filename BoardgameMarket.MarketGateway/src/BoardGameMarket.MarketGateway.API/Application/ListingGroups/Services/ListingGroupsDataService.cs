@@ -76,7 +76,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 			return listingGroup ?? throw new InvalidDataException();
 		}
 
-		public async Task<ListingGroupDetail> AddListingGroup(CreateListingGroupRequest request)
+		public async Task<Guid> AddListingGroup(CreateListingGroupRequest request)
 		{
 			string uri = $"api/listing-groups";
 
@@ -84,9 +84,9 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
 			response.EnsureSuccessStatusCode();
 
-			ListingGroupDetail? listingGroup = await response.Content.ReadFromJsonAsync<ListingGroupDetail>();
+			Guid? listingGroupId = await response.Content.ReadFromJsonAsync<Guid>();
 
-			return listingGroup ?? throw new InvalidDataException();
+			return listingGroupId ?? throw new InvalidDataException();
 		}
 
         public async Task<ListingGroupOwnershipInfo> GetListingGroupOwnershipInfo(Guid listingGroupId)
@@ -101,7 +101,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
             return ownership ?? throw new InvalidDataException();
         }
 
-		public async Task<ListingGroupDetail> UpdateListingGroup(UpdateListingGroupRequest request)
+		public async Task<Guid> UpdateListingGroup(UpdateListingGroupRequest request)
 		{
 			Guid requesterUserId = _loginService.GetUserIdOrThrow();
 
@@ -112,9 +112,9 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
 			response.EnsureSuccessStatusCode();
 
-			ListingGroupDetail? listingGroupFromUpdate = await response.Content.ReadFromJsonAsync<ListingGroupDetail>();
+			Guid? listingGroupIdFromUpdate = await response.Content.ReadFromJsonAsync<Guid>();
 
-			return listingGroupFromUpdate ?? throw new InvalidDataException();
+			return listingGroupIdFromUpdate ?? throw new InvalidDataException();
 		}
     }
 }

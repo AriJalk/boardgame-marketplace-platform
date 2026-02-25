@@ -10,7 +10,7 @@ namespace BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts
 		Task<IEnumerable<ListingSold>> GetListingsSoldByBuyerUserIdAsync(Guid buyerUserId);
 		Task<IEnumerable<ListingSold>> GetListingsSoldBySellerUserIdAsync(Guid sellerUserId);
 		Task<IEnumerable<ListingSold>> GetListingsSoldByDateRange(DateTime startDate, DateTime endDate);
-		Task<ListingSold?> AddListingSoldAsync(ListingSold listingSold);
-		Task<bool> DeleteListingSoldAsync(Guid listingSoldId);
+		Task<int> AddListingSoldAsync(ListingSold listingSold);
+		Task<int> DeleteListingSoldAsync(Guid listingSoldId);
 	}
 }

@@ -12,16 +12,21 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 	{
 		private readonly List<ListingSold> _listingSolds = new List<ListingSold>();
 
-		public Task<ListingSold?> AddListingSoldAsync(ListingSold listingSold)
+		public Task<int> AddListingSoldAsync(ListingSold listingSold)
 		{
 			_listingSolds.Add(listingSold);
-			return Task.FromResult(listingSold);
+			return Task.FromResult(1);
 		}
 
-		public Task<bool> DeleteListingSoldAsync(Guid listingSoldId)
+		public Task<int> DeleteListingSoldAsync(Guid listingSoldId)
 		{
-			_listingSolds.Remove(_listingSolds.FirstOrDefault(l => l.Id == listingSoldId));
-			return Task.FromResult(true);
+			int index = _listingSolds.FindIndex(ls => ls.Id == listingSoldId);
+			if (index == -1)
+			{
+				return Task.FromResult(0);
+			}
+			_listingSolds.RemoveAt(index);
+			return Task.FromResult(1);
 		}
 
 		public Task<ListingSold?> GetListingSoldByIdAsync(Guid listingSoldId)

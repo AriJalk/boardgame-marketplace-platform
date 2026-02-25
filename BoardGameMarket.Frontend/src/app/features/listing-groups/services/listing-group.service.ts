@@ -76,16 +76,16 @@ export class ListingGroupService {
     );
   }
 
-  postListingGroup(request: CreateListingGroupRequest): Observable<ListingGroupDetails> {
-    return this.httpClient.post<ListingGroupDetails>(
+  createListingGroup(request: CreateListingGroupRequest): Observable<string> {
+    return this.httpClient.post<string>(
       `${this.apiConfig.apiEndpoint}/listing-groups`,
       request,
       { headers: this.authService.headers },
     );
   }
 
-  updateListingGroup(request: UpdateListingGroupRequest): Observable<ListingGroupDetails> {
-    return this.httpClient.put<ListingGroupDetails>(
+  updateListingGroup(request: UpdateListingGroupRequest): Observable<string> {
+    return this.httpClient.put<string>(
       `${this.apiConfig.apiEndpoint}/listing-groups/${request.id}`,
       request,
       { headers: this.authService.headers },

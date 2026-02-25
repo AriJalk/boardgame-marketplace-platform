@@ -3,6 +3,7 @@ using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Dtos;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Filters;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Mappers;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients;
+using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.UseCases;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Filters;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.ServiceClients;
@@ -23,18 +24,16 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		private readonly GetFilteredListingGroupSummariesUseCase _getFilteredListingGroupSummariesUseCase;
 		private readonly QueuesDataService _queueDataService;
 		private readonly LoginService _loginService;
-		private readonly AddListingGroupUseCase _addListingGroupUseCase;
-		private readonly UpdateListingGroupUseCase _updateListingGroupUseCase;
+		private readonly ListingGroupsDataService _listingGroupDataService;
 
-        public ListingGroupsController(GetListingGroupDetailUseCase getListingGroupDetailUseCase, GetListingGroupSummaryPageUseCase getListingGroupSummaryPageUseCase, GetFilteredListingGroupSummariesUseCase getFilteredListingGroupSummariesUseCase, QueuesDataService queueDataService, LoginService loginService, AddListingGroupUseCase addListingGroupUseCase, UpdateListingGroupUseCase updateListingGroupUseCase)
+        public ListingGroupsController(GetListingGroupDetailUseCase getListingGroupDetailUseCase, GetListingGroupSummaryPageUseCase getListingGroupSummaryPageUseCase, GetFilteredListingGroupSummariesUseCase getFilteredListingGroupSummariesUseCase, QueuesDataService queueDataService, LoginService loginService, ListingGroupsDataService listingGroupDataService)
         {
             _getListingGroupDetailUseCase = getListingGroupDetailUseCase;
             _getListingGroupSummaryPageUseCase = getListingGroupSummaryPageUseCase;
             _getFilteredListingGroupSummariesUseCase = getFilteredListingGroupSummariesUseCase;
             _queueDataService = queueDataService;
             _loginService = loginService;
-            _addListingGroupUseCase = addListingGroupUseCase;
-            _updateListingGroupUseCase = updateListingGroupUseCase;
+            _listingGroupDataService = listingGroupDataService;
         }
 
         private async Task<ListingGroupSummaryDto[]> WithIsSubscribedAsync(ListingGroupSummaryDto[] listingGroups)
@@ -102,19 +101,16 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		}
 
 		[HttpPost()]
-		public async Task<ActionResult<ListingGroupDetailDto>> CreateListingGroup(CreateListingGroupRequestDto request)
+		public async Task<ActionResult<Guid>> CreateListingGroup(CreateListingGroupRequestDto request)
 		{
-			if (_loginService.LoggedInUser == null)
-			{
-				return BadRequest();
-			}
-			ListingGroupDetailDto listingGroup = await _addListingGroupUseCase.ExecuteAsync(request.ToCreateListingGroupRequest(_loginService.LoggedInUser.UserId));
+			Guid requesterUserId = _loginService.GetUserIdOrThrow();
+			Guid listingGroupFromAddId = await _listingGroupDataService.AddListingGroup(request.ToCreateListingGroupRequest(requesterUserId));
 
-			return Ok(listingGroup);
+			return Ok(listingGroupFromAddId);
 		}
 
 		[HttpPut("{listingGroupId}")]
-		public async Task<ActionResult<ListingGroupDetailDto>> UpdateListingGroup(Guid listingGroupId, [FromBody] UpdateListingGroupRequestDto request)
+		public async Task<ActionResult<Guid>> UpdateListingGroup(Guid listingGroupId, [FromBody] UpdateListingGroupRequestDto request)
 		{
 			if (_loginService.LoggedInUser == null)
 			{
@@ -125,8 +121,8 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 				return BadRequest();
 			}
 
-			ListingGroupDetailDto listingGroupFromUpdate = await _updateListingGroupUseCase.ExecuteAsync(request);
-			return Ok(listingGroupFromUpdate);
+			Guid listingGroupFromUpdateId = await _listingGroupDataService.UpdateListingGroup(request.ToUpdateListingGroupRequest());
+			return Ok(listingGroupFromUpdateId);
 		}
 	}
 }

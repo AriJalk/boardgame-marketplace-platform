@@ -12,29 +12,34 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 	{
 		private readonly List<ListingItem> _listingItems = new List<ListingItem>();
 
-		public Task<ListingItem?> AddListingItemAsync(ListingItem listingItem)
+		public Task<int> AddListingItemAsync(ListingItem listingItem)
 		{
 			_listingItems.Add(listingItem);
-			return Task.FromResult(listingItem);
+			return Task.FromResult(1);
 		}
 
-		public Task<IEnumerable<ListingItem>> AddListingItemsAsync(IEnumerable<ListingItem> listingItems)
+		public Task<int> AddListingItemsAsync(IEnumerable<ListingItem> listingItems)
 		{
 			_listingItems.AddRange(listingItems);
-			return Task.FromResult(listingItems);
+			return Task.FromResult(listingItems.Count());
 		}
 
 
-		public Task<bool> DeleteListingItemAsync(Guid listingItemId)
+		public Task<int> DeleteListingItemAsync(Guid listingItemId)
 		{
-			_listingItems.Remove(_listingItems.FirstOrDefault(l => l.Id == listingItemId));
-			return Task.FromResult(true);
+			int index = _listingItems.FindIndex(li => li.Id == listingItemId);
+			if (index == -1)
+			{
+				return Task.FromResult(0);
+			}
+			_listingItems.RemoveAt(index);
+			return Task.FromResult(1);
 		}
 
-		public Task DeleteListingItemsByListingIdAsync(Guid listingId)
+		public Task<int> DeleteListingItemsByListingIdAsync(Guid listingId)
 		{
-			int removed = _listingItems.RemoveAll(i => i.ListingId == listingId);
-			return Task.CompletedTask;
+			int rows = _listingItems.RemoveAll(li => li.ListingId == listingId);
+			return Task.FromResult(rows);
 		}
 
 
@@ -59,25 +64,29 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 			return Task.FromResult(_listingItems.Where(i => i.ListingId == listingId));
 		}
 
-        public Task<ListingItem?> UpdateListingItemAsync(ListingItem listingItem)
+        public Task<int> UpdateListingItemAsync(ListingItem listingItem)
         {
-			ListingItem? listingItemFromCollection = _listingItems.Where(li => li.Id == listingItem.Id).FirstOrDefault();
-
-			if (listingItemFromCollection != null)
+			int index = _listingItems.FindIndex(li => li.Id == listingItem.Id);
+			if (index == -1)
 			{
-                _listingItems.Remove(listingItemFromCollection);
-            }
-			_listingItems.Add(listingItem);
-			return Task.FromResult(listingItem);
+				return Task.FromResult(0);
+			}
+			_listingItems[index] = listingItem;
+			return Task.FromResult(1);
         }
 
-        public async Task<IEnumerable<ListingItem>> UpdateListingItemsAsync(IEnumerable<ListingItem> listingItems)
+        public Task<int> UpdateListingItemsAsync(IEnumerable<ListingItem> listingItems)
         {
-			foreach(ListingItem listingItem in listingItems)
+			int rows = 0;
+			foreach (ListingItem listingItem in listingItems)
 			{
-				ListingItem? listingItemFromUpdate = await UpdateListingItemAsync(listingItem);
+				int index = _listingItems.FindIndex(li => li.Id == listingItem.Id);
+				if (index == -1)
+					continue;
+				_listingItems[index] = listingItem;
+				rows++;
 			}
-			return listingItems;
+			return Task.FromResult(rows);
         }
     }
 }

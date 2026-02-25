@@ -10,9 +10,9 @@ namespace BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts
 		Task<IEnumerable<ListingGroup>> GetListingGroupsByIds(IEnumerable<Guid> listingGroupIds);
 		Task<ListingGroup?> GetListingGroupByListingIdAsync(Guid listingId);
 		Task<IEnumerable<ListingGroup>> GetListingGroupsBySellerUserId(Guid sellerUserId);
-		Task<ListingGroup?> AddListingGroupAsync(ListingGroup listingGroup);
-		Task<ListingGroup?> UpdateListingGroupAsync(ListingGroup listingGroup);
-		Task<bool> DeleteListingGroupAsync(Guid listingGroupId);
+		Task<int> AddListingGroupAsync(ListingGroup listingGroup);
+		Task<int> UpdateListingGroupAsync(ListingGroup listingGroup);
+		Task<int> DeleteListingGroupAsync(Guid listingGroupId);
 		Task<PagedResult<ListingGroup>> GetListingGroupsPageAsync(Cursor? cursor, int pageSize, ListingGroupFilter? filter);
 		Task<IEnumerable<ListingGroup>> GetFilteredListingGroupsAsync(ListingGroupFilter filter);
 	}

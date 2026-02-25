@@ -27,7 +27,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
             _listingOwnershipQuery = listingOwnershipQuery;
         }
 
-        public async Task<ListingQueueEntryInfo> ExecuteAsync(Guid listingId, Guid listingQueueEntryId, UpdateListingQueueEntryPriorityRequest request, Guid requesterUserId)
+        public async Task<Guid> ExecuteAsync(Guid listingId, Guid listingQueueEntryId, UpdateListingQueueEntryPriorityRequest request, Guid requesterUserId)
         {
             Guid sellerId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
             if (sellerId != requesterUserId)
@@ -44,26 +44,29 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 
 
                 IEnumerable<ListingQueueEntry> queue = await _listingQueueEntryReadService.GetFilteredListingQueueEntriesAsync(filter);
+
+                // Validate index
                 if (request.RequestedIndex < 0 || request.RequestedIndex > queue.Count())
                 {
                     throw new InvalidOperationException($"Index {request.RequestedIndex} not in range");
                 }
+
+
                 List<ListingQueueEntry> orderedPriorityQueue = queue.Where(qe => qe.Priority != null).OrderBy(qe => qe.Priority).ToList();
                 ListingQueueEntry requestedEntry = orderedPriorityQueue.Single(qe => qe.Id == listingQueueEntryId);
 
+                // Reorder requested entry in collection
                 orderedPriorityQueue.Remove(requestedEntry);
                 orderedPriorityQueue.Insert(request.RequestedIndex, requestedEntry);
 
                 IEnumerable<ListingQueueEntry> normalizedQueue = orderedPriorityQueue.Normalize();
-                IList<ListingQueueEntry> updateResult = (await _listingQueueEntryWriteService.UpdateListingQueueEntriesAsync(normalizedQueue)).ToList();
-                if (!updateResult.Any())
-                {
-                    throw new InvalidOperationException("Can't update queue");
-                }
+
+                // Update queue
+                await _listingQueueEntryWriteService.UpdateListingQueueEntriesAsync(normalizedQueue);
 
                 await _unitOfWork.CommitTransactionAsync();
 
-                return updateResult[request.RequestedIndex].ToListingQueueEntryInfo();
+                return requestedEntry.Id;
             }
             catch
             {

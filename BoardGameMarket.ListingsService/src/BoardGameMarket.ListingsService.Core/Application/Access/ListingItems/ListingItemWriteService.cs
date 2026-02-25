@@ -19,24 +19,28 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingItems
 			_listingItemRepository = listingItemRepository;
 		}
 
-		public async Task<ListingItem?> AddListingItemAsync(ListingItem listingItemToAdd)
+		public async Task AddListingItemAsync(ListingItem listingItemToAdd)
 		{
-			listingItemToAdd.Id = Guid.NewGuid();
-			return await _listingItemRepository.AddListingItemAsync(listingItemToAdd);
-		}
-
-		public async Task<IEnumerable<ListingItem>> AddListingItemsAsync(IEnumerable<ListingItem> listingItemsToAdd)
-		{
-			foreach (ListingItem item in listingItemsToAdd)
+			int rows = await _listingItemRepository.AddListingItemAsync(listingItemToAdd);
+			if (rows == 0)
 			{
-				item.Id = Guid.NewGuid();
+				throw new InvalidOperationException();
 			}
-			return await _listingItemRepository.AddListingItemsAsync(listingItemsToAdd);
 		}
 
-		public async Task<bool> DeleteListingItemAsync(Guid listingItemId)
+		public async Task AddListingItemsAsync(IEnumerable<ListingItem> listingItemsToAdd)
 		{
-			return await _listingItemRepository.DeleteListingItemAsync(listingItemId);
+			List<ListingItem> listingItems = listingItemsToAdd.ToList();
+			int rows = await _listingItemRepository.AddListingItemsAsync(listingItems);
+			if (rows != listingItems.Count)
+			{
+				throw new InvalidOperationException();
+			}
+		}
+
+		public async Task DeleteListingItemAsync(Guid listingItemId)
+		{
+			await _listingItemRepository.DeleteListingItemAsync(listingItemId);
 		}
 
 		public async Task DeleteListingItemsByListingIdAsync(Guid listingId)
@@ -44,9 +48,13 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingItems
 			await _listingItemRepository.DeleteListingItemsByListingIdAsync(listingId);
 		}
 
-        public async Task<ListingItem?> UpdateListingItemAsync(ListingItem listingItem)
+        public async Task UpdateListingItemAsync(ListingItem listingItem)
         {
-            return await _listingItemRepository.UpdateListingItemAsync(listingItem);
+            int rows = await _listingItemRepository.UpdateListingItemAsync(listingItem);
+			if (rows == 0)
+			{
+				throw new InvalidOperationException();
+			}
         }
     }
 }

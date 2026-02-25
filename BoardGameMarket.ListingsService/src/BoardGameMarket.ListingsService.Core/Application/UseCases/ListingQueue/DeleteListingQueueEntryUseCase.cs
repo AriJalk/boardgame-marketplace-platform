@@ -34,10 +34,8 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
                 throw new UnauthorizedAccessException();
             }
 
-            if (!await _listingQueueEntryWriteService.DeleteListingQueueEntryAsync(listingQueueEntryId))
-            {
-                throw new InvalidOperationException();
-            }
+            await _listingQueueEntryWriteService.DeleteListingQueueEntryAsync(listingQueueEntryId);
+
         }
     }
 }

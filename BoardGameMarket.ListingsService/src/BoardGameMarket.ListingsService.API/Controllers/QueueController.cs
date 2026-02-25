@@ -52,10 +52,10 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 			return Ok(entry);
 		}
 
-		[HttpGet("subscription/user/{userId:guid}")]
-		public async Task<ActionResult<ListingQueueEntryInfo>> GetListingQueueEntryByUserId(Guid listingId, Guid userId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
+		[HttpGet("subscription/user/{subscriberUserId:guid}")]
+		public async Task<ActionResult<ListingQueueEntryInfo>> GetListingQueueEntryByUserId(Guid listingId, Guid subscriberUserId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
 		{
-			ListingQueueEntryInfo? queueEntry = await _getListingQueueEntryByUserIdUseCase.ExecuteAsync(listingId, userId, requesterUserId);
+			ListingQueueEntryInfo? queueEntry = await _getListingQueueEntryByUserIdUseCase.ExecuteAsync(listingId, subscriberUserId, requesterUserId);
 			if (queueEntry == null)
 			{
 				return NoContent();
@@ -65,11 +65,11 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		}
 
 		[HttpPost("subscription")]
-		public async Task<ActionResult<ListingQueueEntryInfo>> AddListingQueueEntry(Guid listingId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
+		public async Task<ActionResult<Guid>> AddListingQueueEntry(Guid listingId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
 		{
 			_logger.LogInformation($"{nameof(QueueController)}/{nameof(AddListingQueueEntry)}: ListingId: {listingId}, REQUESTER_USER_ID: {requesterUserId}");
-			ListingQueueEntryInfo listingQueueEntry = await _addListingQueueEntryUseCase.ExecuteAsync(listingId, requesterUserId);
-			return Ok(listingQueueEntry);
+			Guid listingQueueEntryId = await _addListingQueueEntryUseCase.ExecuteAsync(listingId, requesterUserId);
+			return Ok(listingQueueEntryId);
 		}
 
 		[HttpDelete("subscription/{listingQueueEntryId:guid}")]
@@ -81,25 +81,25 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		}
 
 		[HttpPost("subscription/{listingQueueEntryId:guid}/priority")]
-		public async Task<ActionResult<ListingQueueEntryInfo>> AddPriorityToListingQueueEntry(Guid listingId, Guid listingQueueEntryId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
+		public async Task<ActionResult<Guid>> AddPriorityToListingQueueEntry(Guid listingId, Guid listingQueueEntryId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
 		{
-			ListingQueueEntryInfo queueEntry = await _addListingQueueEntryPriorityUseCase.ExecuteAsync(listingId, listingQueueEntryId, requesterUserId);
-			return Ok(queueEntry);
+			await _addListingQueueEntryPriorityUseCase.ExecuteAsync(listingId, listingQueueEntryId, requesterUserId);
+			return Ok(listingQueueEntryId);
 		}
 
 		[HttpDelete("subscription/{listingQueueEntryId:guid}/priority")]
-		public async Task<ActionResult<ListingQueueEntryInfo>> RemovePriorityFromEntry(Guid listingId, Guid listingQueueEntryId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
+		public async Task<ActionResult<Guid>> RemovePriorityFromEntry(Guid listingId, Guid listingQueueEntryId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
 		{
-			ListingQueueEntryInfo queueEntryUpdateResult = await _removePriorityFromQueueEntryUseCase.ExecuteAsync(listingId, listingQueueEntryId, requesterUserId);
-			return Ok(queueEntryUpdateResult);
+			await _removePriorityFromQueueEntryUseCase.ExecuteAsync(listingId, listingQueueEntryId, requesterUserId);
+			return Ok(listingQueueEntryId);
 		}
 
 
         [HttpPatch("subscription/{listingQueueEntryId:guid}/priority")]
-        public async Task<ActionResult<ListingQueueEntryInfo>> UpdateQueueEntryPriority(Guid listingId, Guid listingQueueEntryId, [FromBody] UpdateListingQueueEntryPriorityRequest updateRequest, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
+        public async Task<ActionResult<Guid>> UpdateQueueEntryPriority(Guid listingId, Guid listingQueueEntryId, [FromBody] UpdateListingQueueEntryPriorityRequest updateRequest, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
         {
-            ListingQueueEntryInfo queueEntry = await _updateListingQueueEntryPriorityUseCase.ExecuteAsync(listingId, listingQueueEntryId, updateRequest, requesterUserId);
-            return Ok(queueEntry);
+            await _updateListingQueueEntryPriorityUseCase.ExecuteAsync(listingId, listingQueueEntryId, updateRequest, requesterUserId);
+            return Ok(listingQueueEntryId);
         }
     }
 }

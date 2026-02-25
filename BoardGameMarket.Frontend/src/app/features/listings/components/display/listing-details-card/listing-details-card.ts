@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { QueueBuyerPanel } from '../../../../queues/components/queue-buyer/queue-buyer-panel/queue-buyer-panel';
 import { QueueService } from '../../../../queues/queue.service';
 import { ListingSubscription, QueueEntry } from '../../../../queues/models/quque-entry.model';
-import { BehaviorSubject, Observable, of, take } from 'rxjs';
+import { BehaviorSubject, Observable, of, switchMap, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
@@ -35,12 +35,15 @@ export class ListingDetailsCard {
   onSubscribeClicked() {
     this.queueService
       .subscribeToListing(this.listing.id)
-      .pipe(take(1))
+      .pipe(take(1), switchMap((subscriptionId:string) => this.queueService.getSubscription(this.listing.id)))
       .subscribe({
-        next: (data) => {
-          this.listingSubscriptionSubject.next(data);
+        next: (fullSubscription) => {
+          this.listingSubscriptionSubject.next(fullSubscription);
         },
-      });
+        error: (err) =>{
+          console.log('Subscription failed', err);
+        }
+      })
   }
 
   onUnsubscribeClicked() {

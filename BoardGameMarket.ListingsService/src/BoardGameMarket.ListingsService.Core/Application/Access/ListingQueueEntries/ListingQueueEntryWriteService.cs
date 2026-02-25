@@ -6,39 +6,51 @@ using Microsoft.Extensions.Logging;
 namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries
 {
     internal class ListingQueueEntryWriteService : IListingQueueEntryWriteService
-	{
-		private readonly IListingQueueEntryRepository _listingQueueEntryRepository;
+    {
+        private readonly IListingQueueEntryRepository _listingQueueEntryRepository;
 
-		public ListingQueueEntryWriteService(IListingQueueEntryRepository listingQueueEntryRepository)
-		{
-			_listingQueueEntryRepository = listingQueueEntryRepository;
-		}
-
-		public async Task<ListingQueueEntry?> AddListingQueueEntryAsync(ListingQueueEntry listingQueueEntry)
-		{
-			return await _listingQueueEntryRepository.AddListingQueueEntryAsync(listingQueueEntry);
-		}
-		public async Task DeleteListingQueueEntriesByListingIdAsync(Guid listingId)
-		{
-			await _listingQueueEntryRepository.DeleteListingQueueEntiresByListingIdAsync(listingId);
-		}
-
-		public async Task<bool> DeleteListingQueueEntryAsync(Guid listingQueueEntryId)
-		{
-			return await _listingQueueEntryRepository.DeleteListingQueueEntryAsync(listingQueueEntryId);
-		}
-
-
-        public async Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntryToUpdate)
-		{
-			listingQueueEntryToUpdate.ModifiedAt = DateTime.UtcNow;
-			return await _listingQueueEntryRepository.UpdateListingQueueEntryAsync(listingQueueEntryToUpdate);
-		}
-
-
-        public async Task<IEnumerable<ListingQueueEntry>> UpdateListingQueueEntriesAsync(IEnumerable<ListingQueueEntry> listingQueueEntries)
+        public ListingQueueEntryWriteService(IListingQueueEntryRepository listingQueueEntryRepository)
         {
-            return await _listingQueueEntryRepository.UpdateListingQueueEntriesAsync(listingQueueEntries);
+            _listingQueueEntryRepository = listingQueueEntryRepository;
+        }
+
+        public async Task AddListingQueueEntryAsync(ListingQueueEntry listingQueueEntry)
+        {
+            int rows = await _listingQueueEntryRepository.AddListingQueueEntryAsync(listingQueueEntry);
+            if (rows == 0)
+            {
+                throw new InvalidOperationException();
+            }
+        }
+        public async Task DeleteListingQueueEntriesByListingIdAsync(Guid listingId)
+        {
+            await _listingQueueEntryRepository.DeleteListingQueueEntiresByListingIdAsync(listingId);
+        }
+
+        public async Task DeleteListingQueueEntryAsync(Guid listingQueueEntryId)
+        {
+            await _listingQueueEntryRepository.DeleteListingQueueEntryAsync(listingQueueEntryId);
+        }
+
+
+        public async Task UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntryToUpdate)
+        {
+            int rows = await _listingQueueEntryRepository.UpdateListingQueueEntryAsync(listingQueueEntryToUpdate);
+            if (rows == 0)
+            {
+                throw new InvalidOperationException();
+            }
+        }
+
+
+        public async Task UpdateListingQueueEntriesAsync(IEnumerable<ListingQueueEntry> listingQueueEntries)
+        {
+            List<ListingQueueEntry> queueEntries = listingQueueEntries.ToList();
+            int rows = await _listingQueueEntryRepository.UpdateListingQueueEntriesAsync(queueEntries);
+            if (rows != queueEntries.Count)
+            {
+                throw new InvalidOperationException();
+            }
         }
     }
 }

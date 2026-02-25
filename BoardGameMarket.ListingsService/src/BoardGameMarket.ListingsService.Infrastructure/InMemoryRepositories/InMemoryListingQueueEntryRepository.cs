@@ -13,20 +13,26 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 	{
 		private readonly List<ListingQueueEntry> _listingQueueEntries = new List<ListingQueueEntry>();
 
-		public Task<ListingQueueEntry?> AddListingQueueEntryAsync(ListingQueueEntry listingQueueEntry)
+		public Task<int> AddListingQueueEntryAsync(ListingQueueEntry listingQueueEntry)
 		{
 			_listingQueueEntries.Add(listingQueueEntry);
-			return Task.FromResult(listingQueueEntry);
+			return Task.FromResult(1);
 		}
-		public Task DeleteListingQueueEntiresByListingIdAsync(Guid listingId)
+		public Task<int> DeleteListingQueueEntiresByListingIdAsync(Guid listingId)
 		{
-			int removed = _listingQueueEntries.RemoveAll(qe => qe.ListingId == listingId);
-			return Task.CompletedTask;
+			
+			int rows = _listingQueueEntries.RemoveAll(qe => qe.ListingId == listingId);
+			return Task.FromResult(rows);
 		}
-		public Task<bool> DeleteListingQueueEntryAsync(Guid listingQueueEntryId)
+		public Task<int> DeleteListingQueueEntryAsync(Guid listingQueueEntryId)
 		{
-			_listingQueueEntries.Remove(_listingQueueEntries.FirstOrDefault(l => l.Id == listingQueueEntryId));
-			return Task.FromResult(true);
+			int index = _listingQueueEntries.FindIndex(qe => qe.Id == listingQueueEntryId);
+			if (index == -1)
+			{
+				return Task.FromResult(0);
+			}
+			_listingQueueEntries.RemoveAt(index);
+			return Task.FromResult(1);
 		}
 
 		public Task<IEnumerable<ListingQueueEntry>> GetFilteredListingQueueEntriesAsync(ListingQueueEntryFilter filter)
@@ -54,20 +60,29 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 			return Task.FromResult(_listingQueueEntries.FirstOrDefault(qe => qe.Id == listingQueueEntryId));
 		}
 
-        public Task<IEnumerable<ListingQueueEntry>> UpdateListingQueueEntriesAsync(IEnumerable<ListingQueueEntry> listingQueueEntries)
+        public Task<int> UpdateListingQueueEntriesAsync(IEnumerable<ListingQueueEntry> listingQueueEntries)
         {
-			HashSet<Guid> updateIds = listingQueueEntries.Select(qe => qe.Id).ToHashSet();
-            _listingQueueEntries.RemoveAll(qe => updateIds.Contains(qe.Id));
-			_listingQueueEntries.AddRange(listingQueueEntries);
-			return Task.FromResult(listingQueueEntries);
+			int rows = 0;
+			foreach(ListingQueueEntry entry in listingQueueEntries)
+			{
+				int index = _listingQueueEntries.FindIndex(qe => qe.Id == entry.Id);
+				if (index == -1)
+					continue;
+				_listingQueueEntries[index] = entry;
+				rows++;
+			}
+			return Task.FromResult(rows);
         }
 
-        public Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntry)
+        public Task<int> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntry)
 		{
-			ListingQueueEntry? originalListingQueueEntry = _listingQueueEntries.FirstOrDefault(qe => qe.Id == listingQueueEntry.Id);
-			_listingQueueEntries.Remove(originalListingQueueEntry);
-			_listingQueueEntries.Add(listingQueueEntry);
-			return Task.FromResult(listingQueueEntry);
-		}
+            int index = _listingQueueEntries.FindIndex(qe => qe.Id == listingQueueEntry.Id);
+            if (index == -1)
+			{ 
+                return Task.FromResult(0);
+			}
+            _listingQueueEntries[index] = listingQueueEntry;
+			return Task.FromResult(1);
+        }
 	}
 }

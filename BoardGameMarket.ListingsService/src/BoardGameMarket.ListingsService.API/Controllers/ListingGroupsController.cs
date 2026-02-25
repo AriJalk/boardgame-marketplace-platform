@@ -82,22 +82,23 @@ namespace BoardGameMarket.ListingsService.API.Controllers
         }
 
         [HttpPost()]
-        public async Task<ActionResult<ListingGroupDetail>> CreateListingGroup([FromBody] CreateListingGroupRequest request)
+        public async Task<ActionResult<Guid>> CreateListingGroup([FromBody] CreateListingGroupRequest request, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
         {
-            ListingGroupDetail listingGroup = await _addListingGroupUseCase.ExecuteAsync(request);
+            Guid listingGroupId = await _addListingGroupUseCase.ExecuteAsync(request, requesterUserId);
 
-            return Ok(listingGroup);
+            return Ok(listingGroupId);
         }
 
         [HttpPut("{listingGroupId:guid}")]
-        public async Task<ActionResult<ListingGroupDetail>> UpdateListingGroup(Guid listingGroupId, [FromBody] UpdateListingGroupRequest request, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
+        public async Task<ActionResult<Guid>> UpdateListingGroup(Guid listingGroupId, [FromBody] UpdateListingGroupRequest request, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
         {
             if (listingGroupId != request.Id)
             {
                 return BadRequest($"Mismatch between {nameof(listingGroupId)} and {nameof(request.Id)}");
             }
-            ListingGroupDetail listingGroupFromUpdate = await _updateListingGroupUseCase.ExecuteAsync(request, requesterUserId);
-            return Ok(listingGroupFromUpdate);
+            await _updateListingGroupUseCase.ExecuteAsync(request, requesterUserId);
+
+            return Ok(listingGroupId);
         }
     }
 }

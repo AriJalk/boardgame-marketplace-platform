@@ -4,8 +4,8 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingsSold
 {
 	public interface IListingSoldWriteService
 	{
-		Task<ListingSold?> AddListingSoldAsync(ListingSold listingSoldToAdd);
+		Task AddListingSoldAsync(ListingSold listingSoldToAdd);
 
-		Task<bool> DeleteListingSoldAsync(Guid listingSoldId);
+		Task DeleteListingSoldAsync(Guid listingSoldId);
 	}
 }

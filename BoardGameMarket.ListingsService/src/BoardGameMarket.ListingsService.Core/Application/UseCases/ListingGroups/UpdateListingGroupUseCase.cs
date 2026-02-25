@@ -1,5 +1,6 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.Access.ListingItems;
+using BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingItems;
@@ -22,8 +23,9 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
         private readonly IListingItemReadService _listingItemReadService;
         private readonly IListingItemWriteService _listingItemWriteService;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IListingQueueEntryWriteService _listingQueueEntryWriteService;
 
-        public UpdateListingGroupUseCase(IListingGroupReadService listingGroupReadService, IListingGroupWriteService listingGroupWriteService, IListingReadService listingReadService, IListingWriteService listingWriteService, IListingItemReadService listingItemReadService, IListingItemWriteService listingItemWriteService, IUnitOfWork unitOfWork)
+        public UpdateListingGroupUseCase(IListingGroupReadService listingGroupReadService, IListingGroupWriteService listingGroupWriteService, IListingReadService listingReadService, IListingWriteService listingWriteService, IListingItemReadService listingItemReadService, IListingItemWriteService listingItemWriteService, IUnitOfWork unitOfWork, IListingQueueEntryWriteService listingQueueEntryWriteService)
         {
             _listingGroupReadService = listingGroupReadService;
             _listingGroupWriteService = listingGroupWriteService;
@@ -32,6 +34,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
             _listingItemReadService = listingItemReadService;
             _listingItemWriteService = listingItemWriteService;
             _unitOfWork = unitOfWork;
+            _listingQueueEntryWriteService = listingQueueEntryWriteService;
         }
 
         private async Task<ListingItem> UpdateListingItem(Guid listingId, UpdateListingItemRequest request)
@@ -45,14 +48,9 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                     CatalogId = request.CatalogId,
                     Details = request.Details,
                 };
-                ListingItem? listingItemFromCreate = await _listingItemWriteService.AddListingItemAsync(listingItemToAdd);
+                await _listingItemWriteService.AddListingItemAsync(listingItemToAdd);
 
-                if (listingItemFromCreate == null)
-                {
-                    throw new InvalidOperationException("Can't create listingItemFromUpdate");
-                }
-
-                return listingItemFromCreate;
+                return listingItemToAdd;
             }
 
             ListingItem listingItemToUpdate = new ListingItem()
@@ -62,15 +60,12 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                 CatalogId = request.CatalogId,
                 Details = request.Details,
             };
-            ListingItem? listingItemFromUpdate = await _listingItemWriteService.UpdateListingItemAsync(listingItemToUpdate);
-            if (listingItemFromUpdate == null)
-            {
-                throw new InvalidOperationException();
-            }
+            await _listingItemWriteService.UpdateListingItemAsync(listingItemToUpdate);
+
             return listingItemToUpdate;
         }
 
-        private async Task<IEnumerable<ListingItem>> UpdateListingItems(Guid listingId, IEnumerable<UpdateListingItemRequest> requests)
+        private async Task UpdateListingItems(Guid listingId, IEnumerable<UpdateListingItemRequest> requests)
         {
             Dictionary<Guid, ListingItem> listingItemsFromUpdate = new Dictionary<Guid, ListingItem>();
             foreach (UpdateListingItemRequest request in requests)
@@ -78,25 +73,22 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                 ListingItem item = await UpdateListingItem(listingId, request);
                 listingItemsFromUpdate[item.Id] = item;
             }
-            IEnumerable<ListingItem> existingListingItems = await _listingItemReadService.GetListingItemsByListingIdAsync(listingId);
+            List<ListingItem> existingListingItems = (await _listingItemReadService.GetListingItemsByListingIdAsync(listingId)).ToList();
+
+            // Delete removed listingToAdd items
             foreach (ListingItem existingListingItem in existingListingItems)
             {
                 if (!listingItemsFromUpdate.ContainsKey(existingListingItem.Id))
                 {
-                    if (!await _listingItemWriteService.DeleteListingItemAsync(existingListingItem.Id))
-                    {
-                        throw new InvalidOperationException();
-                    }
+                   await _listingItemWriteService.DeleteListingItemAsync(existingListingItem.Id);
                 }
             }
-
-            return listingItemsFromUpdate.Values;
         }
         private async Task<Listing> UpdateListing(Guid listingGroupId, UpdateListingRequest request)
         {
             if (request.Id == null)
             {
-                Listing listing = new Listing()
+                Listing listingToAdd = new Listing()
                 {
                     Id = Guid.NewGuid(),
                     ListingGroupId = listingGroupId,
@@ -107,69 +99,61 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                     Price = request.Price,
                     Status = ListingStatus.Active,
                 };
-                Listing? listingFromAdd = await _listingWriteService.AddListingAsync(listing);
-                if (listingFromAdd == null)
-                {
-                    throw new InvalidOperationException();
-                }
-                return listingFromAdd;
+                await _listingWriteService.AddListingAsync(listingToAdd);
+
+                return listingToAdd;
             }
 
-            Listing? listingFromDb = await _listingReadService.GetListingByIdAsync(request.Id.Value);
+            Listing? existingListing = await _listingReadService.GetListingByIdAsync(request.Id.Value);
 
-            if (listingFromDb == null)
+            if (existingListing == null)
             {
                 throw new InvalidOperationException();
             }
 
             Listing listingToUpdate = new Listing()
             {
-                Id = listingFromDb.Id,
+                Id = existingListing.Id,
                 ListingGroupId = listingGroupId,
-                CreatedAt = listingFromDb.CreatedAt,
+                CreatedAt = existingListing.CreatedAt,
                 ModifiedAt = DateTime.Now,
                 Title = request.Title,
                 Details = request.Details,
                 Price = request.Price,
-                Status = listingFromDb.Status,
+                Status = existingListing.Status,
             };
-            Listing? listingFromUpdate = await _listingWriteService.UpdateListingAsync(listingToUpdate);
-            if (listingFromUpdate == null)
-            {
-                throw new InvalidOperationException();
-            }
-            return listingFromUpdate;
+            await _listingWriteService.UpdateListingAsync(listingToUpdate);
+
+            return listingToUpdate;
         }
-        private async Task<IEnumerable<ListingAggregate>> UpdateListings(Guid listingGroupId, IEnumerable<UpdateListingRequest> requests)
+        private async Task UpdateListings(Guid listingGroupId, IEnumerable<UpdateListingRequest> requests)
         {
-            List<Listing> existingListings = (await _listingReadService.GetListingsByListingGroupIdAsync(listingGroupId)).ToList();
             Dictionary<Guid, Listing> listingsFromUpdate = new Dictionary<Guid, Listing>();
             List<ListingAggregate> listingAggregates = new List<ListingAggregate>();
             foreach (UpdateListingRequest request in requests)
             {
                 Listing listingFromUpdate = await UpdateListing(listingGroupId, request);
                 listingsFromUpdate[listingFromUpdate.Id] = listingFromUpdate;
-                IEnumerable<ListingItem> listingItems = await UpdateListingItems(listingFromUpdate.Id, request.ListingItems);
-                listingAggregates.Add(new ListingAggregate(listingFromUpdate, listingItems.ToList()));
+                
+                await UpdateListingItems(listingFromUpdate.Id, request.ListingItems);
             }
 
+            List<Listing> existingListings = (await _listingReadService.GetListingsByListingGroupIdAsync(listingGroupId)).ToList();
+
+            // Delete removed listings
             foreach (Listing existingListing in existingListings)
             {
                 if (!listingsFromUpdate.ContainsKey(existingListing.Id))
                 {
-                    if (!await _listingWriteService.DeleteListingAsync(existingListing.Id))
-                    {
-                        throw new InvalidOperationException();
-                    }
+                    await _listingWriteService.DeleteListingAsync(existingListing.Id);
+
+                    await _listingQueueEntryWriteService.DeleteListingQueueEntriesByListingIdAsync(existingListing.Id);
                 }
             }
-
-
-            return listingAggregates;
         }
 
 
-        public async Task<ListingGroupDetail> ExecuteAsync(UpdateListingGroupRequest request, Guid requesterUserId)
+        public async Task<Guid> ExecuteAsync(UpdateListingGroupRequest request, Guid requesterUserId)
         {
             ListingGroup? listingGroupFromDb = await _listingGroupReadService.GetListingGroupByIdAsync(request.Id);
             if (listingGroupFromDb == null)
@@ -194,17 +178,13 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                     Details = request.Details,
                     Location = request.Location,
                 };
-                ListingGroup? listingGroupFromUpdate = await _listingGroupWriteService.UpdateListingGroupAsync(listingGroupToUpdate);
-                if (listingGroupFromUpdate == null)
-                {
-                    throw new InvalidOperationException();
-                }
-                IEnumerable<ListingAggregate> listingsFromUpdate = await UpdateListings(listingGroupFromUpdate.Id, request.Listings);
+                await _listingGroupWriteService.UpdateListingGroupAsync(listingGroupToUpdate);
+
+                await UpdateListings(listingGroupToUpdate.Id, request.Listings);
 
                 await _unitOfWork.CommitTransactionAsync();
 
-                ListingGroupAggregate listingGroupAggregate = new ListingGroupAggregate(listingGroupFromUpdate, listingsFromUpdate.ToList());
-                return listingGroupAggregate.ToListingGroupDetail();
+                return listingGroupToUpdate.Id;
             }
             catch
             {

@@ -62,21 +62,22 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 			return query;
 		}
 
-		public Task<ListingGroup?> AddListingGroupAsync(ListingGroup listingGroup)
+		public Task<int> AddListingGroupAsync(ListingGroup listingGroup)
 		{
 			_listingGroups.Add(listingGroup);
-			return Task.FromResult(listingGroup);
+			return Task.FromResult(1);
 		}
 
-		public Task<bool> DeleteListingGroupAsync(Guid listingGroupId)
+		public Task<int> DeleteListingGroupAsync(Guid listingGroupId)
 		{
-			ListingGroup? listingGroup = _listingGroups.FirstOrDefault(l => l.Id == listingGroupId);
-			if (listingGroup == null)
+			int index = _listingGroups.FindIndex(lg => lg.Id == listingGroupId);
+			if (index == -1)
 			{
-				return Task.FromResult(false);
+				return Task.FromResult(0);
 			}
-			_listingGroups.Remove(listingGroup);
-			return Task.FromResult(true);
+
+			_listingGroups.RemoveAt(index);
+			return Task.FromResult(1);
 		}
 
 		public Task<ListingGroup?> GetListingGroupByIdAsync(Guid listingGroupId)
@@ -106,12 +107,15 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 			throw new NotImplementedException();
 		}
 
-		public Task<ListingGroup?> UpdateListingGroupAsync(ListingGroup listingGroup)
+		public Task<int> UpdateListingGroupAsync(ListingGroup listingGroup)
 		{
-			ListingGroup? originalListingGroup = _listingGroups.FirstOrDefault(lg => lg.Id == listingGroup.Id);
-			_listingGroups.Remove(originalListingGroup);
-			_listingGroups.Add(listingGroup);
-			return Task.FromResult(listingGroup);
+			int index = _listingGroups.FindIndex(lg => lg.Id == listingGroup.Id);
+			if (index == -1)
+			{
+				return Task.FromResult(0);
+			}
+			_listingGroups[index] = listingGroup;
+			return Task.FromResult(1);
 		}
 
 		public Task<IEnumerable<ListingGroup>> GetListingGroupsByIds(IEnumerable<Guid> listingGroupIds)

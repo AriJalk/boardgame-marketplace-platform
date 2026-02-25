@@ -13,34 +13,34 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 
 		private readonly List<Listing> _listings = new List<Listing>();
 
-		public Task<Listing?> AddListingAsync(Listing listing)
+		public Task<int> AddListingAsync(Listing listing)
 		{
 			_listings.Add(listing);
-			return Task.FromResult(listing);
+			return Task.FromResult(1);
 		}
 
-		public Task<IEnumerable<Listing>> AddListingsAsync(IEnumerable<Listing> listings)
+		public Task<int> AddListingsAsync(IEnumerable<Listing> listings)
 		{
 			_listings.AddRange(listings);
-			return Task.FromResult(listings);
+			return Task.FromResult(listings.Count());
 		}
 
 
-		public Task<bool> DeleteListingAsync(Guid listingId)
+		public Task<int> DeleteListingAsync(Guid listingId)
 		{
-			Listing? listing = _listings.FirstOrDefault(l => l.Id == listingId);
-			if (listing == null)
+			int index = _listings.FindIndex(l => l.Id == listingId);
+			if (index == -1)
 			{
-				return Task.FromResult(false);
+				return Task.FromResult(0);
 			}
-			_listings.Remove(listing);
-			return Task.FromResult(true);
+			_listings.RemoveAt(index);
+			return Task.FromResult(1);
 		}
 
-		public Task DeleteListingsByListingGroupIdAsync(Guid listingGroupId)
+		public Task<int> DeleteListingsByListingGroupIdAsync(Guid listingGroupId)
 		{
-			int removed = _listings.RemoveAll(l => l.ListingGroupId == listingGroupId);
-			return Task.CompletedTask;
+			int rows =_listings.RemoveAll(l => l.ListingGroupId == listingGroupId);
+			return Task.FromResult(rows);
 		}
 
 		public Task<Listing?> GetListingByIdAsync(Guid listingId)
@@ -63,21 +63,29 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 			return Task.FromResult(_listings.Where(l => listingIds.Contains(l.Id)));
 		}
 
-		public Task<Listing?> UpdateListingAsync(Listing listing)
+		public Task<int> UpdateListingAsync(Listing listing)
 		{
-			Listing? originalListing = _listings.FirstOrDefault(l => l.Id == listing.Id);
-			_listings.Remove(originalListing);
-			_listings.Add(listing);
-			return Task.FromResult(listing);
-		}
+            int index = _listings.FindIndex(l => l.Id == listing.Id);
+			if (index == -1)
+			{
+				return Task.FromResult(0);
+			}
+			_listings[index] = listing;
+			return Task.FromResult(1);
+        }
 
-        public Task<IEnumerable<Listing>> UpdateListingsAsync(IEnumerable<Listing> listings)
+        public Task<int> UpdateListingsAsync(IEnumerable<Listing> listings)
         {
-			HashSet<Guid> listingIds = listings.Select(listings => listings.Id).ToHashSet();
-			IEnumerable<Listing> originalListings = _listings.Where(l => listingIds.Contains(l.Id));
-			_listings.RemoveAll(l => listingIds.Contains(l.Id));
-			_listings.AddRange(listings);
-			return Task.FromResult(listings);
+			int rows = 0;
+			foreach (Listing listing in listings)
+			{
+				int index = _listings.FindIndex(l =>  l.Id == listing.Id);
+				if (index == -1)
+					continue;
+				_listings[index++] = listing;
+				rows++;
+			}
+			return Task.FromResult(rows);
         }
     }
 }

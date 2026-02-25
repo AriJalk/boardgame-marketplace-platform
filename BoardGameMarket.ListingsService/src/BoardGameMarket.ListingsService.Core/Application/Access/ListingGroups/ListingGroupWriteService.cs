@@ -15,20 +15,28 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingGroups
 			_listingGroupRepository = listingGroupRepository;
 		}
 
-		public async Task<ListingGroup?> AddListingGroup(ListingGroup listingGroupToAdd)
+		public async Task AddListingGroup(ListingGroup listingGroupToAdd)
 		{
-			return await _listingGroupRepository.AddListingGroupAsync(listingGroupToAdd);
+			int rows = await _listingGroupRepository.AddListingGroupAsync(listingGroupToAdd);
+			if (rows == 0)
+			{
+				throw new InvalidOperationException();
+			}
 		}
 
-		public async Task<bool> DeleteListingGroup(Guid listingGroupId)
+		public async Task DeleteListingGroup(Guid listingGroupId)
 		{
-			return await _listingGroupRepository.DeleteListingGroupAsync(listingGroupId);
+			await _listingGroupRepository.DeleteListingGroupAsync(listingGroupId);
 		}
 
 
-		public async Task<ListingGroup?> UpdateListingGroupAsync(ListingGroup listingGroupToUpdate)
+		public async Task UpdateListingGroupAsync(ListingGroup listingGroupToUpdate)
 		{
-			return await _listingGroupRepository.UpdateListingGroupAsync(listingGroupToUpdate);
+			int rows = await _listingGroupRepository.UpdateListingGroupAsync(listingGroupToUpdate);
+			if (rows == 0)
+			{
+				throw new InvalidOperationException();
+			}
 
 		}
 	}

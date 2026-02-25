@@ -9,10 +9,10 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEn
 {
 	public interface IListingQueueEntryWriteService
 	{
-		Task<ListingQueueEntry?> AddListingQueueEntryAsync(ListingQueueEntry listingQueueEntry);
-		Task<bool> DeleteListingQueueEntryAsync(Guid listingQueueEntryId);
+		Task AddListingQueueEntryAsync(ListingQueueEntry listingQueueEntry);
+		Task DeleteListingQueueEntryAsync(Guid listingQueueEntryId);
 		Task DeleteListingQueueEntriesByListingIdAsync(Guid listingId);
-		Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntryToUpdate);
-		Task<IEnumerable<ListingQueueEntry>> UpdateListingQueueEntriesAsync(IEnumerable<ListingQueueEntry> listingQueueEntries);
+		Task UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntryToUpdate);
+		Task UpdateListingQueueEntriesAsync(IEnumerable<ListingQueueEntry> listingQueueEntries);
 	}
 }

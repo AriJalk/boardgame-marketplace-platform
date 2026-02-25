@@ -16,9 +16,9 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.UseCases
 			_queueEntryDtoAssembler = queueEntryDtoAssembler;
 		}
 
-		public async Task<ListingQueueEntryResponseDto?> ExecuteAsync(Guid listingId, Guid userId)
+		public async Task<ListingQueueEntryResponseDto?> ExecuteAsync(Guid listingId, Guid subscriberUserId)
 		{
-			ListingQueueEntryInfo? queueEntry = await _queuesDataService.GetListingSubscriptionByUserAsync(listingId, userId);
+			ListingQueueEntryInfo? queueEntry = await _queuesDataService.GetListingSubscriptionByUserAsync(listingId, subscriberUserId);
 			if (queueEntry == null)
 			{
 				return null;

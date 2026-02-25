@@ -72,10 +72,10 @@ export class CreateListingGroupPage implements OnInit {
       ),
     };
 
-    this.listingGroupService.postListingGroup(request).subscribe({
+    this.listingGroupService.createListingGroup(request).subscribe({
       next: (data) => {
         console.log(data);
-        this.router.navigate(['/listing-groups', data.id]);
+        this.router.navigate(['/listing-groups', data]);
       },
     });
   }

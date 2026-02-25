@@ -1,6 +1,5 @@
 ﻿using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
-using Microsoft.Extensions.Logging;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingsSold
 {
@@ -13,16 +12,18 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingsSold
 			_listingSoldRepository = listingSoldRepository;
 		}
 
-		public async Task<ListingSold?> AddListingSoldAsync(ListingSold listingSoldToAdd)
+		public async Task AddListingSoldAsync(ListingSold listingSoldToAdd)
 		{
-			listingSoldToAdd.Id = Guid.NewGuid();
-			listingSoldToAdd.CompletedAt = DateTime.UtcNow;
-			return await _listingSoldRepository.AddListingSoldAsync(listingSoldToAdd);
+			int rows = await _listingSoldRepository.AddListingSoldAsync(listingSoldToAdd);
+			if (rows == 0)
+			{
+				throw new InvalidOperationException();
+			}
 		}
 
-		public async Task<bool> DeleteListingSoldAsync(Guid listingSoldId)
+		public async Task DeleteListingSoldAsync(Guid listingSoldId)
 		{
-			return await _listingSoldRepository.DeleteListingSoldAsync(listingSoldId); ;
+			int rows = await _listingSoldRepository.DeleteListingSoldAsync(listingSoldId);
 		}
 	}
 }

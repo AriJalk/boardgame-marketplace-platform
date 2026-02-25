@@ -28,7 +28,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 		}
 
 		// NOTE: not concurrency safe, need to make atomic in DB
-		public async Task<ListingQueueEntryInfo> ExecuteAsync(Guid listingId, Guid requesterUserId)
+		public async Task<Guid> ExecuteAsync(Guid listingId, Guid requesterUserId)
 		{
 
 			Guid sellerUserId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
@@ -55,10 +55,10 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 			ListingQueueEntry? queueEntryFromService = (await _listingQueueEntryReadService.GetFilteredListingQueueEntriesAsync(filter)).FirstOrDefault();
 			if (queueEntryFromService != null)
 			{
-				return queueEntryFromService.ToListingQueueEntryInfo();
+				return queueEntryFromService.Id;
 			}
 
-			ListingQueueEntry listingQueueEntry = new ListingQueueEntry()
+			ListingQueueEntry listingQueueEntryToAdd = new ListingQueueEntry()
 			{
 				Id = Guid.NewGuid(),
 				ListingId = listingId,
@@ -69,12 +69,9 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 				Priority = null,
 			};
 
-			ListingQueueEntry? queueEntryFromAdd = await _listingQueueEntryAdderService.AddListingQueueEntryAsync(listingQueueEntry);
-			if (queueEntryFromAdd == null)
-			{
-				throw new InvalidOperationException("Can't subscribe");
-			}
-			return queueEntryFromAdd.ToListingQueueEntryInfo();
+			await _listingQueueEntryAdderService.AddListingQueueEntryAsync(listingQueueEntryToAdd);
+
+			return listingQueueEntryToAdd.Id;
 		}
 	}
 }

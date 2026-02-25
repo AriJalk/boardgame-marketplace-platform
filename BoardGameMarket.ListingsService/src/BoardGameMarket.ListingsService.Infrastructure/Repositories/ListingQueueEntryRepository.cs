@@ -10,38 +10,38 @@ using System.Threading.Tasks;
 namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 {
     internal class ListingQueueEntryRepository : IListingQueueEntryRepository
-	{
-		public Task<ListingQueueEntry?> AddListingQueueEntryAsync(ListingQueueEntry listingQueueEntry)
-		{
-			throw new NotImplementedException();
-		}
+    {
+        public Task<int> AddListingQueueEntryAsync(ListingQueueEntry listingQueueEntry)
+        {
+            throw new NotImplementedException();
+        }
 
-		public Task DeleteListingQueueEntiresByListingIdAsync(Guid listingId)
-		{
-			throw new NotImplementedException();
-		}
+        public Task<int> DeleteListingQueueEntiresByListingIdAsync(Guid listingId)
+        {
+            throw new NotImplementedException();
+        }
 
-		public Task<bool> DeleteListingQueueEntryAsync(Guid listingQueueEntryId)
-		{
-			throw new NotImplementedException();
-		}
+        public Task<int> DeleteListingQueueEntryAsync(Guid listingQueueEntryId)
+        {
+            throw new NotImplementedException();
+        }
 
-		public Task<ListingQueueEntry?> GetListingQueueEntryByIdAsync(Guid listingQueueEntryId)
-		{
-			throw new NotImplementedException();
-		}
+        public Task<IEnumerable<ListingQueueEntry>> GetFilteredListingQueueEntriesAsync(ListingQueueEntryFilter filter)
+        {
+            throw new NotImplementedException();
+        }
 
-		public Task<ListingQueueEntry?> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntry)
-		{
-			throw new NotImplementedException();
-		}
+        public Task<ListingQueueEntry?> GetListingQueueEntryByIdAsync(Guid listingQueueEntryId)
+        {
+            throw new NotImplementedException();
+        }
 
-		public Task<IEnumerable<ListingQueueEntry>> GetFilteredListingQueueEntriesAsync(ListingQueueEntryFilter filter)
-		{
-			throw new NotImplementedException();
-		}
+        public Task<int> UpdateListingQueueEntriesAsync(IEnumerable<ListingQueueEntry> listingQueueEntries)
+        {
+            throw new NotImplementedException();
+        }
 
-        public Task<IEnumerable<ListingQueueEntry>> UpdateListingQueueEntriesAsync(IEnumerable<ListingQueueEntry> listingQueueEntries)
+        public Task<int> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntry)
         {
             throw new NotImplementedException();
         }

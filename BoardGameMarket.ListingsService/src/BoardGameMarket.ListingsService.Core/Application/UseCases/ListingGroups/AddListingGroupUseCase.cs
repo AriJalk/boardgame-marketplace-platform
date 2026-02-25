@@ -6,8 +6,6 @@ using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Access.ListingItems;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingItems;
-using BoardGameMarket.ListingsService.Core.Domain.Aggragates;
-using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Domain.Enums;
 
 
@@ -43,7 +41,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
             };
         }
 
-        private ListingItem CreateListingItem(CreateListingItemRequest request, Guid listingId)
+        private ListingItem CreateListingItem(Guid listingId, CreateListingItemRequest request)
         {
             return new ListingItem()
             {
@@ -54,8 +52,12 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
             };
         }
 
-        public async Task<ListingGroupDetail> ExecuteAsync(CreateListingGroupRequest listingGroupRequest)
+        public async Task<Guid> ExecuteAsync(CreateListingGroupRequest listingGroupRequest, Guid requesterUserId)
         {
+            if (listingGroupRequest.SellerUserId != requesterUserId)
+            {
+                throw new UnauthorizedAccessException();
+            }
             // Step 1: Build entities
             ListingGroup listingGroupToAdd = new ListingGroup()
             {
@@ -68,15 +70,14 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                 ModifiedAt = DateTime.Now,
             };
             List<Listing> listingsToAdd = new List<Listing>();
-            Dictionary<Guid, List<ListingItem>> listingItemsDictionary = new Dictionary<Guid, List<ListingItem>>();
+            List<ListingItem> listingItemsToAdd = new List<ListingItem>();
             foreach (CreateListingRequest listingRequest in listingGroupRequest.Listings)
             {
                 Listing listingToAdd = CreateListing(listingRequest, listingGroupToAdd.Id);
                 listingsToAdd.Add(listingToAdd);
-                listingItemsDictionary[listingToAdd.Id] = new List<ListingItem>();
                 foreach (CreateListingItemRequest listingItemRequest in listingRequest.ListingItems)
                 {
-                    listingItemsDictionary[listingToAdd.Id].Add(CreateListingItem(listingItemRequest, listingToAdd.Id));
+                    listingItemsToAdd.Add(CreateListingItem(listingToAdd.Id, listingItemRequest));
                 }
             }
             try
@@ -84,22 +85,13 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                 // Step 2: Persist entities
                 await _unitOfWork.BeginTransactionAsync();
 
-                ListingGroup? listingGroupFromAdd = await _listingGroupWriteService.AddListingGroup(listingGroupToAdd);
-                if (listingGroupFromAdd == null)
-                {
-                    throw new InvalidOperationException();
-                }
-
-                IEnumerable<Listing> listingsFromAdd = await _listingWriteService.AddListingsAsync(listingsToAdd);
-                IEnumerable<ListingItem> listingItemsFromAdd = await _listingItemWriteService.AddListingItemsAsync(listingItemsDictionary.Values.SelectMany(l => l));
+                await _listingGroupWriteService.AddListingGroup(listingGroupToAdd);
+                await _listingWriteService.AddListingsAsync(listingsToAdd);
+                await _listingItemWriteService.AddListingItemsAsync(listingItemsToAdd);
 
                 await _unitOfWork.CommitTransactionAsync();
 
-                // Step 3: Build aggregates for return
-                IEnumerable<ListingAggregate> listingAggregates = listingsFromAdd.Select(l => new ListingAggregate(l, listingItemsDictionary[l.Id]));
-                ListingGroupAggregate listingGroupAggregate = new ListingGroupAggregate(listingGroupFromAdd, listingAggregates.ToList());
-
-                return listingGroupAggregate.ToListingGroupDetail();
+                return listingGroupToAdd.Id;
             }
             catch
             {
