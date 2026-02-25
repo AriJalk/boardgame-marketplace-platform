@@ -1,11 +1,6 @@
-﻿using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Assemblers;
-using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Dtos;
-using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Mappers;
-using BoardGameMarket.MarketGateway.API.Application.ListingQueues.ServiceClients;
+﻿using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Dtos;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.UseCases;
-using BoardGameMarket.MarketGateway.API.Application.Listings.ServiceClients;
-using BoardGameMarket.MarketGateway.API.Application.Listings.Services;
 using BoardGameMarket.MarketGateway.API.Application.Users.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -20,22 +15,16 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
     {
         private readonly GetListingQueueUseCase _getListingQueueUseCase;
         private readonly GetListingQueueEntryUseCase _getListingQueueEntryUseCase;
-        private readonly ListingQueueEntryDtoAssembler _listingQueueEntryDtoAssembler;
         private readonly QueuesDataService _queuesDataService;
         private readonly LoginService _loginService;
-        private readonly ListingsDataService _listingsDataService;
 
-        public QueueController(GetListingQueueUseCase getListingQueueUseCase, GetListingQueueEntryUseCase getListingQueueEntryUseCase, ListingQueueEntryDtoAssembler listingQueueEntryDtoAssembler, QueuesDataService queuesDataService, LoginService loginService, ListingsDataService listingsDataService)
+        public QueueController(GetListingQueueUseCase getListingQueueUseCase, GetListingQueueEntryUseCase getListingQueueEntryUseCase, QueuesDataService queuesDataService, LoginService loginService)
         {
             _getListingQueueUseCase = getListingQueueUseCase;
             _getListingQueueEntryUseCase = getListingQueueEntryUseCase;
-            _listingQueueEntryDtoAssembler = listingQueueEntryDtoAssembler;
             _queuesDataService = queuesDataService;
             _loginService = loginService;
-            _listingsDataService = listingsDataService;
         }
-
-
 
 
         #region Seller
@@ -43,11 +32,6 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         [HttpGet()]
         public async Task<ActionResult<ListingQueueResponseDto>> GetQueue(Guid listingId)
         {
-            ListingOwnershipInfo ownership = await _listingsDataService.GetListingOwnershipInfo(listingId);
-            if (ownership.SellerUserId != _loginService.LoggedInUser?.UserId)
-            {
-                return Unauthorized();
-            }
             ListingQueueResponseDto response = await _getListingQueueUseCase.ExecuteAsync(listingId);
 
             return Ok(response);
@@ -57,15 +41,8 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         [HttpPost("subscription/{listingQueueEntryId:guid}/priority")]
         public async Task<ActionResult<Guid>> AddPriority(Guid listingId, Guid listingQueueEntryId)
         {
-            ListingOwnershipInfo ownership = await _listingsDataService.GetListingOwnershipInfo(listingId);
-
-            if (ownership.SellerUserId != _loginService?.LoggedInUser?.UserId)
-            {
-                return Unauthorized();
-            }
-
-            Guid queueEntryFromUpdateId = await _queuesDataService.AddPriorityToQueueEntry(listingId, listingQueueEntryId);
-            return Ok(queueEntryFromUpdateId);
+            await _queuesDataService.AddPriorityToQueueEntry(listingId, listingQueueEntryId);
+            return Ok(listingQueueEntryId);
         }
 
 
@@ -81,16 +58,17 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         [HttpDelete("subscription/{listingQueueEntryId:guid}/priority")]
         public async Task<ActionResult<Guid>> RemoveListingQueueEntryPriority(Guid listingId, Guid listingQueueEntryId)
         {
-            ListingOwnershipInfo ownership = await _listingsDataService.GetListingOwnershipInfo(listingId);
+            await _queuesDataService.RemoveListingQueueEntryPriorityAsync(listingId, listingQueueEntryId);
 
-            if (ownership.SellerUserId != _loginService.LoggedInUser?.UserId)
-            {
-                return Unauthorized();
-            }
+            return Ok(listingQueueEntryId);
+        }
 
-            Guid queueEntryFromResponse = await _queuesDataService.RemoveListingQueueEntryPriorityAsync(listingId, listingQueueEntryId);
 
-            return Ok(queueEntryFromResponse);
+        [HttpPost("subscription/{listingQueueEntryId:guid}/reserve")]
+        public async Task<ActionResult<Guid>> ReserveListingToQueueEntry(Guid listingId, Guid listingQueueEntryId)
+        {
+            Guid response = await _queuesDataService.ReserveListingToQueueEntry(listingId, listingQueueEntryId);
+            return Ok(response);
         }
 
         #endregion

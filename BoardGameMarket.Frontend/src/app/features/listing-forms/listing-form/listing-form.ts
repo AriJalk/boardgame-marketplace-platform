@@ -13,7 +13,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ListingFormsFactory } from '../services/listing-forms-factory.service';
 import { ListingItemForm } from '../listing-item-form/listing-item-form';
-import { QueueSellerPanel } from "../../queues/components/queue-seller/queue-seller-panel/queue-seller-panel";
+import { QueueSellerPanel } from '../../queues/components/queue-seller/queue-seller-panel/queue-seller-panel';
+import { ListingsService } from '../../listings/services/listings.service';
+import { ListingDetail } from '../../listings/models/listing.model';
 
 @Component({
   selector: 'bgm-listing-form',
@@ -24,16 +26,25 @@ import { QueueSellerPanel } from "../../queues/components/queue-seller/queue-sel
     ListingItemForm,
     MatFormFieldModule,
     MatInputModule,
-    QueueSellerPanel
-],
+    QueueSellerPanel,
+  ],
   templateUrl: './listing-form.html',
   styleUrl: './listing-form.css',
 })
-export class ListingForm {
+export class ListingForm implements OnInit {
   @Input({ required: true }) formGroup!: FormGroup;
   @Output() listingRemoved = new EventEmitter<number>();
 
-  constructor(private listingFormFactory: ListingFormsFactory) {}
+  isLocked: boolean = false;
+
+  constructor(
+    private listingFormFactory: ListingFormsFactory,
+    private listingsService: ListingsService,
+  ) {}
+
+  ngOnInit(): void {
+    this.updateLockState(this.formGroup.get('status')?.value != 'active');
+  }
 
   get listingItemFormGroups(): FormArray<FormGroup> {
     return this.formGroup.get('listingItems') as FormArray;
@@ -57,5 +68,34 @@ export class ListingForm {
 
   removeListingItem(index: number) {
     this.listingItemFormGroups.removeAt(index);
+  }
+
+  onListingStatusChanged() {
+    this.listingsService.getListing(this.listingId).subscribe({
+      next: (data) => {
+        this.updateFormFromModel(data);
+        this.updateLockState(data.status != 'active');
+      },
+    });
+  }
+
+  private updateFormFromModel(data: ListingDetail) {
+    this.formGroup.patchValue({
+      status: data.status,
+    });
+  }
+
+  private updateLockState(isLocked: boolean) {
+    this.isLocked = isLocked;
+    const controlsToToggle = ['title', 'details', 'price'];
+    for (const name of controlsToToggle) {
+      const control = this.formGroup.get(name);
+      if (!control) continue;
+      if (!isLocked) {
+        control.enable({ emitEvent: false });
+      } else {
+        control.disable({ emitEvent: false });
+      }
+    }
   }
 }

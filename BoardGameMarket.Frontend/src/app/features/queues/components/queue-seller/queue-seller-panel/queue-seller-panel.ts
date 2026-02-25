@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -13,7 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { TimeQueueEntryTable } from '../time-queue-entry-table/time-queue-entry-table';
 import { PriorityQueueEntryTable } from '../priority-queue-entry-table/priority-queue-entry-table';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'bgm-queue-seller-panel',
@@ -33,13 +33,19 @@ import { RouterLink } from '@angular/router';
 })
 export class QueueSellerPanel implements OnInit {
   @Input({ required: true }) listingsId!: string;
+  @Input() isLocked: boolean = false;
+
+  @Output() listingStatusChanged = new EventEmitter();
 
   private queuesBehaviorSubject = new BehaviorSubject<QueuePageResponse | null>(null);
   queues$ = this.queuesBehaviorSubject.asObservable();
 
   topPriorityEntry?: QueueEntry;
 
-  constructor(private queueService: QueueService) {}
+  constructor(
+    private queueService: QueueService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     this.loadQueues();
@@ -92,6 +98,20 @@ export class QueueSellerPanel implements OnInit {
     this.queueService.removePriority(this.listingsId, $event.id).subscribe({
       next: (data) => {
         this.loadQueues();
+      },
+    });
+  }
+
+  onEntryReserveRequested() {
+    if (!this.topPriorityEntry) {
+      return;
+    }
+    this.queueService.reserveQueueEntry(this.listingsId, this.topPriorityEntry?.id).subscribe({
+      next: (data) => {
+        this.listingStatusChanged.emit();
+      },
+      error: (err) => {
+        console.log("Can't reserve", err);
       },
     });
   }

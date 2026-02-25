@@ -5,6 +5,7 @@
   cdkDropList
   (cdkDropListDropped)="drop($event)"
   [cdkDropListData]="queue"
+  [cdkDropListDisabled]="isLocked"
 >
   <!-- Position Column -->
   <ng-container matColumnDef="position" sticky>
@@ -45,7 +46,7 @@
     <mat-header-cell *matHeaderCellDef>Options</mat-header-cell>
     <mat-cell *matCellDef="let element">
       <div class="flex-container">
-        <button type="button" matMiniFab (click)="onDeleteClicked(element)">
+        <button type="button" matMiniFab (click)="onDeleteClicked(element)" [disabled]="isLocked">
           <mat-icon>delete</mat-icon>
         </button>
       </div>

@@ -200,5 +200,21 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			return listingQueueEntryIdFromResponse ?? throw new InvalidDataException();
 		}
 
+		public async Task<Guid> ReserveListingToQueueEntry(Guid listingId, Guid listingQueueEntryId)
+		{
+			Guid requesterUserId = _loginService.GetUserIdOrThrow();
+			string uri = $"api/listings/{listingId}/queue/subscription/{listingQueueEntryId}/reserve";
+
+			HttpRequestMessage httpRequest = HttpClientHelpers.BuildRequest(HttpMethod.Post, uri, requesterUserId);
+
+			HttpResponseMessage response = await _httpClient.SendAsync(httpRequest);
+
+			response.EnsureSuccessStatusCode();
+
+			Guid? resultListingQueueEntryId = await response.Content.ReadFromJsonAsync<Guid>();
+
+			return resultListingQueueEntryId ?? throw new InvalidDataException();
+		}
+
 	}
 }

@@ -29,6 +29,7 @@ export class ListingFormsFactory {
 
   createListingItemFormGroup(value?: ListingItem, type?: 'bgg' | 'custom'): FormGroup {
     return this.fb.group({
+      __uuid: [{ value: value?.id ?? crypto.randomUUID(), disabled: true }],
       id: [value?.id ?? null],
       catalogItem: this.createCatalogItemFormGroup(value?.catalogItem, type),
       details: [value?.details ?? ''],
@@ -44,12 +45,12 @@ export class ListingFormsFactory {
     }
 
     return this.fb.group({
-      id: [value?.id ?? null],
-      title: [value?.title ?? '', [Validators.required]],
-      price: [value?.price ?? '', [Validators.required]],
-      details: [value?.details ?? ''],
+      id: [{ value: value?.id ?? null, disabled: true }],
+      title: [{ value: value?.title ?? 'New listing', disabled: false }, [Validators.required]],
+      price: [{ value: value?.price ?? '', disabled: false }, [Validators.required]],
+      details: [{ value: value?.details ?? '', disabled: false }],
       listingItems: this.fb.array(listingItemsArray, { validators: [minArrayLength(1)] }),
-      status: this.fb.control({ value: value?.status ?? 'New', disabled: true }),
+      status: [{ value: value?.status ?? 'New', disabled: true }],
     });
   }
 

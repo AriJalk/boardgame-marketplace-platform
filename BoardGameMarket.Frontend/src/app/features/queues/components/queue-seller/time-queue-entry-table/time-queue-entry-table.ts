@@ -14,6 +14,8 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class TimeQueueEntryTable {
   @Input({ required: true }) queue!: QueueEntry[];
+  @Input() isLocked: boolean = false;
+
   @Output() priorityRequested = new EventEmitter<QueueEntry>();
   @Output() deleteRequested = new EventEmitter<QueueEntry>();
 

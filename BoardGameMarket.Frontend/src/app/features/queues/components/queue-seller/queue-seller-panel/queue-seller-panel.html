@@ -9,7 +9,9 @@
             {{ topPriorityEntry.buyer.displayName }}</a
           >
         </h3>
-        <button matButton type="button">Approve entry</button>
+        <button matButton [disabled]="isLocked" type="button" (click)="onEntryReserveRequested()">
+          Reserve entry
+        </button>
       </div>
     </mat-card>
   }
@@ -20,6 +22,7 @@
       [queue]="queues.queueByTime"
       (priorityRequested)="onPriorityAddRequested($event)"
       (deleteRequested)="onDeleteRequested($event)"
+      [isLocked]="isLocked"
     >
     </bgm-time-queue-entry-table>
 
@@ -28,6 +31,7 @@
       [queue]="queues.queueByPriority"
       (updatePriorityRequested)="onPriorityUpdateRequested($event)"
       (deletePriorityRequested)="onPriorityRemoveRequested($event)"
+      [isLocked]="isLocked"
     >
     </bgm-priority-queue-entry-table>
   </div>

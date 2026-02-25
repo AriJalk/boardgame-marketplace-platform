@@ -32,7 +32,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Aggregates
 			return (await _listingQueueAggregateBuilder.GetListingQueueAggregate(listingId));
 		}
 
-		private async Task<ListingAggregate> BuildListingAggregateAsync(Listing listing, bool loadItems, bool loadQueue)
+		public async Task<ListingAggregate> BuildListingAggregateAsync(Listing listing, bool loadItems, bool loadQueue)
 		{
 			Task<IEnumerable<ListingItem>>? itemsTask = loadItems ? LoadItemsAsync(listing.Id) : null;
 

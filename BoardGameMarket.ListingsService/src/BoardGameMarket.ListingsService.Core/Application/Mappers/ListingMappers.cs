@@ -8,7 +8,7 @@ using System.Text;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 {
-	internal static class ListingMappers
+	public static class ListingMappers
 	{
 		public static ListingDetail ToListingDetail(this ListingAggregate listingAggregate)
 		{

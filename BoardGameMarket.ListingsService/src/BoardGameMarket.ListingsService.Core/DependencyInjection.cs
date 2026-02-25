@@ -24,6 +24,7 @@ namespace BoardGameMarket.ListingsService.Core
 			services.AddScoped<GetQueueUseCase>();
 			services.AddScoped<RemovePriorityFromQueueEntryUseCase>();
 			services.AddScoped<UpdateListingQueueEntryPriorityUseCase>();
+			services.AddScoped<ReserveListingToQueueEntryUseCase>();
 
 			return services;
         }

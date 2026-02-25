@@ -14,6 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class PriorityQueueEntryTable {
   @Input({ required: true }) queue!: QueueEntry[];
+  @Input() isLocked: boolean = false;
 
   @Output() deletePriorityRequested = new EventEmitter<QueueEntry>();
   @Output() updatePriorityRequested = new EventEmitter<UpdatePriorityRequest>();

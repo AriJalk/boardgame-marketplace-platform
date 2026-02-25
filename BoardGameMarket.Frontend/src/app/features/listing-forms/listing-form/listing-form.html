@@ -21,6 +21,7 @@
             class="full-width margin-1"
             matButton="elevated"
             type="button"
+            [disabled]="isLocked"
             (click)="removeListingItem(i)"
           >
             Remove Item
@@ -31,16 +32,32 @@
   </div>
 </div>
 <div class="flex">
-  <button class="flex-1" matButton="elevated" type="button" (click)="addBggListingItem()">
+  <button
+    class="flex-1"
+    [disabled]="isLocked"
+    matButton="elevated"
+    type="button"
+    (click)="addBggListingItem()"
+  >
     Add BGG Item
   </button>
-  <button class="flex-1" matButton="elevated" type="button" (click)="addCustomListingItem()">
+  <button
+    class="flex-1"
+    [disabled]="isLocked"
+    matButton="elevated"
+    type="button"
+    (click)="addCustomListingItem()"
+  >
     Add Custom Item
   </button>
 </div>
 
 @if (listingId !== null) {
   <div>
-    <bgm-queue-seller-panel [listingsId]="listingId"></bgm-queue-seller-panel>
+    <bgm-queue-seller-panel
+      [listingsId]="listingId"
+      (listingStatusChanged)="onListingStatusChanged()"
+      [isLocked]="isLocked"
+    ></bgm-queue-seller-panel>
   </div>
 }

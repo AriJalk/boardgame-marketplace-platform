@@ -47,13 +47,13 @@
           <button
             type="button"
             (click)="onPriorityClicked(element)"
-            [disabled]="element.priority"
+            [disabled]="element.priority || isLocked"
             matMiniFab
           >
             <mat-icon>star</mat-icon>
           </button>
           <!-- Delete button -->
-          <button type="button" (click)="onDeleteClicked(element)" matMiniFab>
+          <button type="button" (click)="onDeleteClicked(element)" matMiniFab [disabled]="isLocked">
             <mat-icon>delete</mat-icon>
           </button>
         </div>

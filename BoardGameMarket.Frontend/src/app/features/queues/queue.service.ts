@@ -87,4 +87,13 @@ export class QueueService {
     );
     return response;
   }
+
+  reserveQueueEntry(listingId: string, subscriptionId: string): Observable<string> {
+    const response = this.httpClient.post<string>(
+      `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription/${subscriptionId}/reserve`,
+      null,
+      { headers: this.authService.headers },
+    );
+    return response;
+  }
 }

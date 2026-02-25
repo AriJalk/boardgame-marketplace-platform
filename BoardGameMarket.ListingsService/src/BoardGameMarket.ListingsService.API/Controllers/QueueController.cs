@@ -22,8 +22,9 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		private readonly DeleteListingQueueEntryUseCase _deleteListingQueueEntryUseCase;
 		private readonly RemovePriorityFromQueueEntryUseCase _removePriorityFromQueueEntryUseCase;
 		private ILogger<QueueController> _logger;
+		private readonly ReserveListingToQueueEntryUseCase _reserveListingToQueueEntryUseCase;
 
-        public QueueController(GetQueueUseCase getQueueUseCase, AddListingQueueEntryUseCase addListingQueueEntryUseCase, GetListingQueueEntryByIdUseCase getListingQueueEntryByIdUseCase, AddListingQueueEntryPriorityUseCase addListingQueueEntryPriorityUseCase, UpdateListingQueueEntryPriorityUseCase updateListingQueueEntryPriorityUseCase, GetListingQueueEntryByUserIdUseCase getListingQueueEntryByUserIdUseCase, DeleteListingQueueEntryUseCase deleteListingQueueEntryUseCase, RemovePriorityFromQueueEntryUseCase removePriorityFromQueueEntryUseCase, ILogger<QueueController> logger)
+        public QueueController(GetQueueUseCase getQueueUseCase, AddListingQueueEntryUseCase addListingQueueEntryUseCase, GetListingQueueEntryByIdUseCase getListingQueueEntryByIdUseCase, AddListingQueueEntryPriorityUseCase addListingQueueEntryPriorityUseCase, UpdateListingQueueEntryPriorityUseCase updateListingQueueEntryPriorityUseCase, GetListingQueueEntryByUserIdUseCase getListingQueueEntryByUserIdUseCase, DeleteListingQueueEntryUseCase deleteListingQueueEntryUseCase, RemovePriorityFromQueueEntryUseCase removePriorityFromQueueEntryUseCase, ILogger<QueueController> logger, ReserveListingToQueueEntryUseCase reserveListingToQueueEntryUseCase)
         {
             _getQueueUseCase = getQueueUseCase;
             _addListingQueueEntryUseCase = addListingQueueEntryUseCase;
@@ -34,6 +35,7 @@ namespace BoardGameMarket.ListingsService.API.Controllers
             _deleteListingQueueEntryUseCase = deleteListingQueueEntryUseCase;
             _removePriorityFromQueueEntryUseCase = removePriorityFromQueueEntryUseCase;
             _logger = logger;
+            _reserveListingToQueueEntryUseCase = reserveListingToQueueEntryUseCase;
         }
 
         [HttpGet()]
@@ -101,5 +103,13 @@ namespace BoardGameMarket.ListingsService.API.Controllers
             await _updateListingQueueEntryPriorityUseCase.ExecuteAsync(listingId, listingQueueEntryId, updateRequest, requesterUserId);
             return Ok(listingQueueEntryId);
         }
+
+		[HttpPost("subscription/{listingQueueEntryId:guid}/reserve")]
+		public async Task<ActionResult<Guid>> ReserveListingToQueueEntry(Guid listingId, Guid listingQueueEntryId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
+		{
+			Guid responseId = await _reserveListingToQueueEntryUseCase.ExecuteAsync(listingId, listingQueueEntryId, requesterUserId);
+
+			return Ok(responseId);
+		}
     }
 }
