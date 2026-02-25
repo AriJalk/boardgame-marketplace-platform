@@ -1,10 +1,9 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { CdkDragDrop, CdkDropList, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { QueueService } from '../../../queue.service';
 import { BehaviorSubject, startWith, Subject, switchMap } from 'rxjs';
-import { QueueEntryCard } from '../queue-entry-card/queue-entry-card';
 import {
   QueueEntry,
   QueuePageResponse,
@@ -12,9 +11,9 @@ import {
 } from '../../../models/quque-entry.model';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { CdkAriaLive } from '@angular/cdk/a11y';
 import { TimeQueueEntryTable } from '../time-queue-entry-table/time-queue-entry-table';
 import { PriorityQueueEntryTable } from '../priority-queue-entry-table/priority-queue-entry-table';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'bgm-queue-seller-panel',
@@ -27,6 +26,7 @@ import { PriorityQueueEntryTable } from '../priority-queue-entry-table/priority-
     MatIconModule,
     TimeQueueEntryTable,
     PriorityQueueEntryTable,
+    RouterLink,
   ],
   templateUrl: './queue-seller-panel.html',
   styleUrl: './queue-seller-panel.css',
@@ -35,8 +35,9 @@ export class QueueSellerPanel implements OnInit {
   @Input({ required: true }) listingsId!: string;
 
   private queuesBehaviorSubject = new BehaviorSubject<QueuePageResponse | null>(null);
-
   queues$ = this.queuesBehaviorSubject.asObservable();
+
+  topPriorityEntry?: QueueEntry;
 
   constructor(private queueService: QueueService) {}
 
@@ -49,6 +50,11 @@ export class QueueSellerPanel implements OnInit {
       next: (data) => {
         this.queuesBehaviorSubject.next(data);
         // console.log("QUEUEDATA", data);
+        if (data.queueByPriority.length > 0) {
+          this.topPriorityEntry = data.queueByPriority[0];
+        } else if (data.queueByTime.length > 0) {
+          this.topPriorityEntry = data.queueByTime[0];
+        }
       },
     });
   }
@@ -57,6 +63,7 @@ export class QueueSellerPanel implements OnInit {
     // console.log($event);
     this.queueService.unsubscribeFromListing(this.listingsId, $event.id).subscribe({
       next: (data) => {
+        this.topPriorityEntry = undefined;
         this.loadQueues();
       },
     });

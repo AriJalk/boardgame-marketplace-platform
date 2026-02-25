@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ListingDetail } from '../../listings/models/listing.model';
 import { ListingItem } from '../../listing-items/models/listing-item.model';
 import { minArrayLength } from '../../../common/validators/min-array-length.validator';
@@ -49,6 +49,7 @@ export class ListingFormsFactory {
       price: [value?.price ?? '', [Validators.required]],
       details: [value?.details ?? ''],
       listingItems: this.fb.array(listingItemsArray, { validators: [minArrayLength(1)] }),
+      status: this.fb.control({ value: value?.status ?? 'New', disabled: true }),
     });
   }
 

@@ -79,7 +79,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         }
 
         [HttpDelete("subscription/{listingQueueEntryId:guid}/priority")]
-        public async Task<ActionResult<ListingQueueEntryResponseDto>> RemoveListingQueueEntryPriority(Guid listingId, Guid listingQueueEntryId)
+        public async Task<ActionResult<Guid>> RemoveListingQueueEntryPriority(Guid listingId, Guid listingQueueEntryId)
         {
             ListingOwnershipInfo ownership = await _listingsDataService.GetListingOwnershipInfo(listingId);
 
@@ -88,9 +88,9 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
                 return Unauthorized();
             }
 
-            ListingQueueEntryInfo queueEntry = await _queuesDataService.RemoveListingQueueEntryPriorityAsync(listingId, listingQueueEntryId);
+            Guid queueEntryFromResponse = await _queuesDataService.RemoveListingQueueEntryPriorityAsync(listingId, listingQueueEntryId);
 
-            return queueEntry.ToListingQueueEntryResponseDto(null);
+            return Ok(queueEntryFromResponse);
         }
 
         #endregion

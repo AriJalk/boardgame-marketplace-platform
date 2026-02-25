@@ -12,6 +12,7 @@ import { CreateListingItemRequest } from '../../../listing-items/models/listing-
 import { ListingForm } from '../../../listing-forms/listing-form/listing-form';
 import { CatalogItemGetterService } from '../../../catalog/services/catalog-item-getter.service';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'bgm-create-listing-group',
@@ -29,6 +30,7 @@ export class CreateListingGroupPage implements OnInit {
     private formFactory: ListingFormsFactory,
     private catalogService: CatalogItemGetterService,
     private router: Router,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit(): void {
@@ -76,6 +78,7 @@ export class CreateListingGroupPage implements OnInit {
       next: (data) => {
         console.log(data);
         this.router.navigate(['/listing-groups', data]);
+        this.snackBar.open('Creation successful', 'Close', { duration: 2000 });
       },
     });
   }

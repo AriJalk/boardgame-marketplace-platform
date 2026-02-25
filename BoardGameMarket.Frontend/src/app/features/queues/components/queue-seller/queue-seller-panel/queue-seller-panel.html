@@ -1,4 +1,19 @@
 @if (queues$ | async; as queues) {
+  @if (topPriorityEntry) {
+    <h3>Top of queue</h3>
+    <mat-card>
+      <div class="flex align-center">
+        <h3>
+          Buyer:
+          <a [routerLink]="['/users', topPriorityEntry.buyer.userId]">
+            {{ topPriorityEntry.buyer.displayName }}</a
+          >
+        </h3>
+        <button matButton type="button">Approve entry</button>
+      </div>
+    </mat-card>
+  }
+
   <div class="flex-column">
     Time-Queue
     <bgm-time-queue-entry-table

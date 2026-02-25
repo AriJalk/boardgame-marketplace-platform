@@ -78,9 +78,12 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
 		public async Task<Guid> AddListingGroup(CreateListingGroupRequest request)
 		{
+			Guid requesterUserId = _loginService.GetUserIdOrThrow();
 			string uri = $"api/listing-groups";
 
-			HttpResponseMessage response = await _httpClient.PostAsJsonAsync(uri, request);
+			HttpRequestMessage httpRequest = HttpClientHelpers.BuildRequest(HttpMethod.Post, uri, requesterUserId, request);
+
+			HttpResponseMessage response = await _httpClient.SendAsync(httpRequest);
 
 			response.EnsureSuccessStatusCode();
 

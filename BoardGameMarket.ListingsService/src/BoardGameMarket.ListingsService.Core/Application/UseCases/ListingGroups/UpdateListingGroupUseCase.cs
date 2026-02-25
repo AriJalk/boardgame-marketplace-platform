@@ -147,6 +147,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                 {
                     await _listingWriteService.DeleteListingAsync(existingListing.Id);
 
+                    // Delete queue
                     await _listingQueueEntryWriteService.DeleteListingQueueEntriesByListingIdAsync(existingListing.Id);
                 }
             }
