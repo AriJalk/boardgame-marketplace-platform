@@ -32,6 +32,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure
 			services.AddSingleton<IListingItemRepository, InMemoryListingItemRepository>();
 			services.AddSingleton<IListingQueueEntryRepository, InMemoryListingQueueEntryRepository>();
 			services.AddSingleton<IListingSoldRepository, InMemoryListingSoldRepository>();
+			services.AddSingleton<IListingReservationRepository, InMemoryListingReservationRepository>();
 
 			return services;
 		}

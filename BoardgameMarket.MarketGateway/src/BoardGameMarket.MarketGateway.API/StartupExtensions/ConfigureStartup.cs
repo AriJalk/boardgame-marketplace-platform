@@ -11,6 +11,7 @@ using BoardGameMarket.MarketGateway.API.Application.Listings.Assemblers;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Assemblers;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.UseCases;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Assemblers;
+using BoardGameMarket.MarketGateway.API.Application.ListingReservations.Services;
 
 namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 {
@@ -39,6 +40,7 @@ namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 			services.AddScoped<ListingGroupsDataService>();
 			services.AddScoped<QueuesDataService>();
 			services.AddScoped<ListingsHttpClient>();
+			services.AddScoped<ListingReservationDataService>();
 
 			// Use Cases
 			services.AddScoped<GetListingGroupDetailUseCase>();

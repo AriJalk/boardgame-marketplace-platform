@@ -1,0 +1,5 @@
+@if (reservations$ | async; as reservations) {
+  @for (reservation of reservations; track reservation.id) {
+    <bgm-reservation-card [reservation]="reservation"></bgm-reservation-card>
+  }
+}

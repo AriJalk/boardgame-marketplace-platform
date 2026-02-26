@@ -30,5 +30,12 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/users/user-details-page/user-details-page').then((m) => m.UserDetailsPage),
   },
+  {
+    path: 'my-reservations',
+    loadComponent: () =>
+      import('./features/users/my-reservations-page/my-reservations-page').then(
+        (m) => m.MyReservationsPage,
+      ),
+  },
   { path: '', redirectTo: 'listing-groups', pathMatch: 'full' },
 ];

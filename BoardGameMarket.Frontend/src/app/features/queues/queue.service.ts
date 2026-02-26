@@ -70,8 +70,8 @@ export class QueueService {
     return response;
   }
 
-  subscribeToListing(listingId: string): Observable<string> {
-    const response = this.httpClient.put<string>(
+  subscribeToListing(listingId: string): Observable<QueueEntry> {
+    const response = this.httpClient.put<QueueEntry>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue/subscription`,
       null,
       { headers: this.authService.headers },

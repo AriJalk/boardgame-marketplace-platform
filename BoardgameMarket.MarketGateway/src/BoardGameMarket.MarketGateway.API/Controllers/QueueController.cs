@@ -1,4 +1,6 @@
 ﻿using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Dtos;
+using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Mappers;
+using BoardGameMarket.MarketGateway.API.Application.ListingQueues.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.UseCases;
 using BoardGameMarket.MarketGateway.API.Application.Users.Services;
@@ -102,9 +104,9 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
                 return BadRequest("No user logged in");
             }
 
-            Guid queueEntryFromAddId = await _queuesDataService.SubscribeToListingAsync(listingId);
+            ListingQueueEntryInfo queueEntry = await _queuesDataService.SubscribeToListingAsync(listingId);
 
-            return Ok(queueEntryFromAddId);
+            return Ok(queueEntry.ToListingSubscriptionResponseDto());
         }
         #endregion
 

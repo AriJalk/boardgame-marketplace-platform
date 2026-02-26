@@ -67,11 +67,11 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		}
 
 		[HttpPost("subscription")]
-		public async Task<ActionResult<Guid>> AddListingQueueEntry(Guid listingId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
+		public async Task<ActionResult<ListingQueueEntry>> AddListingQueueEntry(Guid listingId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
 		{
 			_logger.LogInformation($"{nameof(QueueController)}/{nameof(AddListingQueueEntry)}: ListingId: {listingId}, REQUESTER_USER_ID: {requesterUserId}");
-			Guid listingQueueEntryId = await _addListingQueueEntryUseCase.ExecuteAsync(listingId, requesterUserId);
-			return Ok(listingQueueEntryId);
+			ListingQueueEntry queueEntry = await _addListingQueueEntryUseCase.ExecuteAsync(listingId, requesterUserId);
+			return Ok(queueEntry);
 		}
 
 		[HttpDelete("subscription/{listingQueueEntryId:guid}")]
@@ -105,11 +105,11 @@ namespace BoardGameMarket.ListingsService.API.Controllers
         }
 
 		[HttpPost("subscription/{listingQueueEntryId:guid}/reserve")]
-		public async Task<IActionResult> ReserveListingToQueueEntry(Guid listingId, Guid listingQueueEntryId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
+		public async Task<ActionResult<Guid>> ReserveListingToQueueEntry(Guid listingId, Guid listingQueueEntryId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
 		{
-			await _reserveListingToQueueEntryUseCase.ExecuteAsync(listingId, listingQueueEntryId, requesterUserId);
+			Guid reservationId = await _reserveListingToQueueEntryUseCase.ExecuteAsync(listingId, listingQueueEntryId, requesterUserId);
 
-			return NoContent();
+			return Ok(reservationId);
 		}
     }
 }

@@ -63,7 +63,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			return await response.Content.ReadFromJsonAsync<ListingQueueEntryInfo>();
 		}
 
-		public async Task<Guid> SubscribeToListingAsync(Guid listingId)
+		public async Task<ListingQueueEntryInfo> SubscribeToListingAsync(Guid listingId)
 		{
 
 			Guid userId = _loginService.GetUserIdOrThrow();
@@ -76,9 +76,9 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 
 			response.EnsureSuccessStatusCode();
 
-			Guid? queueEntryId = await response.Content.ReadFromJsonAsync<Guid>();
+			ListingQueueEntryInfo? queueEntry = await response.Content.ReadFromJsonAsync<ListingQueueEntryInfo>();
 
-			return queueEntryId ?? throw new InvalidDataException();
+			return queueEntry ?? throw new InvalidDataException();
 		}
 
 		public async Task UnsubscribeFromListingAsync(Guid listingId, Guid subscriptionId)
@@ -188,7 +188,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			response.EnsureSuccessStatusCode();
 		}
 
-		public async Task ReserveListingToQueueEntry(Guid listingId, Guid listingQueueEntryId)
+		public async Task<Guid> ReserveListingToQueueEntry(Guid listingId, Guid listingQueueEntryId)
 		{
 			Guid requesterUserId = _loginService.GetUserIdOrThrow();
 			string uri = $"api/listings/{listingId}/queue/subscription/{listingQueueEntryId}/reserve";
@@ -198,6 +198,10 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			HttpResponseMessage response = await _httpClient.SendAsync(httpRequest);
 
 			response.EnsureSuccessStatusCode();
+
+			Guid? reservationId = await response.Content.ReadFromJsonAsync<Guid>();
+
+			return reservationId ?? throw new InvalidDataException();
 		}
 
 	}

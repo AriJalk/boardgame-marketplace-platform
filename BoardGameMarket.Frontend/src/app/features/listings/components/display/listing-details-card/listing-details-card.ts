@@ -15,7 +15,9 @@ import { AsyncPipe } from '@angular/common';
   styleUrl: './listing-details-card.css',
 })
 export class ListingDetailsCard {
-  private listingSubscriptionSubject = new BehaviorSubject<ListingSubscription | undefined>(undefined);
+  private listingSubscriptionSubject = new BehaviorSubject<ListingSubscription | undefined>(
+    undefined,
+  );
 
   @Input({ required: true }) set listing(value: ListingDetail) {
     this._listing = value;
@@ -33,17 +35,14 @@ export class ListingDetailsCard {
   constructor(private queueService: QueueService) {}
 
   onSubscribeClicked() {
-    this.queueService
-      .subscribeToListing(this.listing.id)
-      .pipe(take(1), switchMap((subscriptionId:string) => this.queueService.getSubscription(this.listing.id)))
-      .subscribe({
-        next: (fullSubscription) => {
-          this.listingSubscriptionSubject.next(fullSubscription);
-        },
-        error: (err) =>{
-          console.log('Subscription failed', err);
-        }
-      })
+    this.queueService.subscribeToListing(this.listing.id).subscribe({
+      next: (data) => {
+        this.listingSubscriptionSubject.next(data);
+      },
+      error: (err) => {
+        console.log('Subscription failed', err);
+      },
+    });
   }
 
   onUnsubscribeClicked() {

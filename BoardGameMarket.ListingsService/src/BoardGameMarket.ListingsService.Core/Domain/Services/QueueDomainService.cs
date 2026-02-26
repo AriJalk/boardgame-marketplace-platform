@@ -44,7 +44,7 @@ namespace BoardGameMarket.ListingsService.Core.Domain.Services
             List<ListingQueueEntry> normalizedQueue = new List<ListingQueueEntry>();
             for (int i = 0; i < queue.Count(); i++)
             {
-                normalizedQueue.Add(new ListingQueueEntry(queueList[i], i * PRIORITY_GAP, DateTime.Now));
+                normalizedQueue.Add(new ListingQueueEntry(queueList[i], i * PRIORITY_GAP, DateTime.UtcNow));
             }
             return normalizedQueue;
         }

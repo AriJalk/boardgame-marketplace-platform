@@ -66,8 +66,8 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                 PickupOptions = listingGroupRequest.PickupOptions,
                 Location = listingGroupRequest.Location,
                 Details = listingGroupRequest.Details,
-                CreatedAt = DateTime.Now,
-                ModifiedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow,
+                ModifiedAt = DateTime.UtcNow,
             };
             List<Listing> listingsToAdd = new List<Listing>();
             List<ListingItem> listingItemsToAdd = new List<ListingItem>();

@@ -116,7 +116,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                 Id = existingListing.Id,
                 ListingGroupId = listingGroupId,
                 CreatedAt = existingListing.CreatedAt,
-                ModifiedAt = DateTime.Now,
+                ModifiedAt = DateTime.UtcNow,
                 Title = request.Title,
                 Details = request.Details,
                 Price = request.Price,
@@ -173,7 +173,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                 {
                     Id = request.Id,
                     CreatedAt = listingGroupFromDb.CreatedAt,
-                    ModifiedAt = DateTime.Now,
+                    ModifiedAt = DateTime.UtcNow,
                     SellerUserId = listingGroupFromDb.SellerUserId,
                     PickupOptions = request.PickupOptions,
                     Details = request.Details,
