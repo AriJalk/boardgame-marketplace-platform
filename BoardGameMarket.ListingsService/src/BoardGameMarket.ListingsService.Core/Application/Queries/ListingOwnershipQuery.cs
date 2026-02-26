@@ -19,7 +19,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Queries
 		}
 
 
-        public async Task<Guid> GetSellerUserIdByListingGroupId(Guid listingGroupId)
+        public async Task<Guid> GetSellerUserIdByListingGroupIdAsync(Guid listingGroupId)
         {
             ListingGroup? listingGroup = await _listingGroupReadService.GetListingGroupByIdAsync(listingGroupId);
             if (listingGroup == null)
@@ -36,7 +36,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Queries
 			{
 				throw new KeyNotFoundException("Listing not found");
 			}
-			return await GetSellerUserIdByListingGroupId(listing.ListingGroupId);
+			return await GetSellerUserIdByListingGroupIdAsync(listing.ListingGroupId);
 		}
 	}
 }

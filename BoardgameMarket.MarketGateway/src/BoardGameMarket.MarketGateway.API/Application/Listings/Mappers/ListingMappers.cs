@@ -1,20 +1,21 @@
 ﻿using BoardGameMarket.MarketGateway.API.Application.Listings.Dtos.ListingItems;
 using BoardGameMarket.MarketGateway.API.Application.Listings.Dtos.Listings;
 using BoardGameMarket.MarketGateway.API.Application.Listings.ServiceClients.Listings;
+using BoardGameMarket.MarketGateway.API.Application.Users.Dtos;
 
 namespace BoardGameMarket.MarketGateway.API.Application.Listings.Mappers
 {
 	public static class ListingMappers
 	{
-		public static ListingSummaryDto ToListingSummaryDto(this ListingSummary listing)
+		public static ListingSummaryDto ToListingSummaryDto(this ListingSummary listing, UserSummaryDto sellerDto)
 		{
-			return new ListingSummaryDto(listing.Id, listing.Title, listing.Price, listing.Details, listing.Status, null);
+			return new ListingSummaryDto(listing.Id, listing.Title, listing.Price, listing.Details, listing.Status, null, sellerDto);
 		}
 
 
-		public static ListingDetailDto ToListingDetailDto(this ListingDetail listing, IEnumerable<ListingItemDto> listingItems)
+		public static ListingDetailDto ToListingDetailDto(this ListingDetail listing, IEnumerable<ListingItemDto> listingItems, UserSummaryDto sellerDto)
 		{
-			return new ListingDetailDto(listing.Id, listing.Title, listing.Price, listing.Details, listingItems.ToArray(), listing.Status, null);
+			return new ListingDetailDto(listing.Id, listing.Title, listing.Price, listing.Details, listingItems.ToArray(), listing.Status, null, sellerDto);
 		}
 
 		public static CreateListingRequest ToCreateListingRequest(this CreateListingRequestDto dto)

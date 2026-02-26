@@ -30,19 +30,19 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 		// NOTE: not concurrency safe, need to make atomic in DB
 		public async Task<ListingQueueEntry> ExecuteAsync(Guid listingId, Guid requesterUserId)
 		{
-
-			Guid sellerUserId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
-			if (requesterUserId == sellerUserId)
-			{
-				throw new InvalidOperationException("Subscriber can't be seller");
-			}
 			Listing? listing = await _listingReadService.GetListingByIdAsync(listingId);
 			if (listing == null)
 			{
 				throw new KeyNotFoundException("Listing not found");
 			}
 
-			if (listing.Status != ListingStatus.Active)
+			Guid sellerUserId = await _listingOwnershipQuery.GetSellerUserIdByListingGroupIdAsync(listing.ListingGroupId);
+            if (requesterUserId == sellerUserId)
+            {
+                throw new InvalidOperationException("Subscriber can't be seller");
+            }
+
+            if (listing.Status != ListingStatus.Active)
 			{
 				throw new InvalidOperationException("Listing is not active");
 			}

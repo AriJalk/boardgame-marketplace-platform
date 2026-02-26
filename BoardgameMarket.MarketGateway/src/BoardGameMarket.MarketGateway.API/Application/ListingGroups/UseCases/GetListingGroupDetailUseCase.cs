@@ -4,6 +4,7 @@ using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services;
 using BoardGameMarket.MarketGateway.API.Application.Listings.Assemblers;
 using BoardGameMarket.MarketGateway.API.Application.Listings.Dtos.Listings;
+using BoardGameMarket.MarketGateway.API.Application.Users.Dtos;
 using BoardGameMarket.MarketGateway.API.Application.Users.Mappers;
 using BoardGameMarket.MarketGateway.API.Application.Users.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.Users.Services;
@@ -26,16 +27,16 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.UseCases
 		public async Task<ListingGroupDetailDto> Execute(Guid listingGroupId)
 		{
 			ListingGroupDetail listingGroup = await _listingGroupsService.GetListingGroupDetail(listingGroupId);
-
-			var listingTasks = listingGroup.Listings.Select(async listing => { 
-				return await _listingDtoAssembler.BuildListingDetailDto(listing);
+            UserInfo seller = await _usersService.GetUser(listingGroup.SellerUserId);
+			UserSummaryDto sellerDto = seller.ToUserSummaryDto();
+            var listingTasks = listingGroup.Listings.Select(async listing => { 
+				return await _listingDtoAssembler.BuildListingDetailDto(listing, sellerDto);
 			});
-			var sellerTask = _usersService.GetUser(listingGroup.SellerUserId);
+			
 
 			ListingDetailDto[] listings = await Task.WhenAll(listingTasks);
-			UserInfo seller = await sellerTask;
 
-			return listingGroup.ToListingGroupDetailDto(listings, seller.ToUserSummaryDto());
+			return listingGroup.ToListingGroupDetailDto(listings, sellerDto);
 		}
 	}
 }

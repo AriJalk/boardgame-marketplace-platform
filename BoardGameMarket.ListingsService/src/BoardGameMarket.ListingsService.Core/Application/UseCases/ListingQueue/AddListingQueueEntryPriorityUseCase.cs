@@ -36,11 +36,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
         // NOTE: not concurrency safe, need to make atomic in DB
         public async Task ExecuteAsync(Guid listingId, Guid requestedQueueEntryId, Guid requesterUserId)
 		{
-			Guid sellerId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
-			if (sellerId != requesterUserId)
-			{
-				throw new UnauthorizedAccessException();
-			}
 			try
 			{
 				await _unitOfWork.BeginTransactionAsync();
@@ -51,7 +46,13 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 					throw new KeyNotFoundException($"Listing {listingId} not found");
 				}
 
-				ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
+                Guid sellerId = await _listingOwnershipQuery.GetSellerUserIdByListingGroupIdAsync(listing.ListingGroupId);
+                if (sellerId != requesterUserId)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+
+                ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
 				{
 					ListingIds = [listingId],
 				};

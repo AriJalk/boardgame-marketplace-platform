@@ -77,7 +77,7 @@ namespace BoardGameMarket.ListingsService.API.Controllers
         [HttpGet("{listingGroupId:guid}/ownership")]
         public async Task<ActionResult<ListingGroupOwnershipInfo>> GetListingGroupOwnership(Guid listingGroupId)
         {
-            Guid userId = await _listingOwnershipQuery.GetSellerUserIdByListingGroupId(listingGroupId);
+            Guid userId = await _listingOwnershipQuery.GetSellerUserIdByListingGroupIdAsync(listingGroupId);
             return Ok(new ListingGroupOwnershipInfo(listingGroupId, userId));
         }
 

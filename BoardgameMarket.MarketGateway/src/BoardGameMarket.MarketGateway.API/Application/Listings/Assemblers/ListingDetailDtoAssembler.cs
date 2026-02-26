@@ -6,6 +6,7 @@ using BoardGameMarket.MarketGateway.API.Application.Listings.Dtos.Listings;
 using BoardGameMarket.MarketGateway.API.Application.Listings.Mappers;
 using BoardGameMarket.MarketGateway.API.Application.Listings.ServiceClients.ListingItems;
 using BoardGameMarket.MarketGateway.API.Application.Listings.ServiceClients.Listings;
+using BoardGameMarket.MarketGateway.API.Application.Users.Dtos;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -31,10 +32,10 @@ namespace BoardGameMarket.MarketGateway.API.Application.Listings.Assemblers
 			return await Task.WhenAll(tasks);
 		}
 
-		public async Task<ListingDetailDto> BuildListingDetailDto(ListingDetail listing)
+		public async Task<ListingDetailDto> BuildListingDetailDto(ListingDetail listing, UserSummaryDto sellerDto)
 		{
 			IEnumerable<ListingItemDto> listingItemDtos = await BuildListingItemDtos(listing.ListingItems);
-			return listing.ToListingDetailDto(listingItemDtos);
+			return listing.ToListingDetailDto(listingItemDtos, sellerDto);
 			
 		}
 	}

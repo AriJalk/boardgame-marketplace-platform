@@ -1,7 +1,9 @@
-﻿namespace BoardGameMarket.MarketGateway.API.Application.ListingReservations.Dtos
+﻿using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Dtos;
+using BoardGameMarket.MarketGateway.API.Application.Listings.Dtos.Listings;
+
+namespace BoardGameMarket.MarketGateway.API.Application.ListingReservations.Dtos
 {
-    // TODO: Aggregated structure
-    public record ListingReservationResponseDto(Guid Id, Guid ListingId, Guid ListingQueueEntryId, DateTime ReservedAt, Guid SellerId, Guid BuyerId)
+    public record ListingReservationResponseDto(Guid Id, ListingSummaryDto Listing, ListingQueueEntryResponseDto QueueEntry, DateTime ReservedAt)
     {
     }
 }

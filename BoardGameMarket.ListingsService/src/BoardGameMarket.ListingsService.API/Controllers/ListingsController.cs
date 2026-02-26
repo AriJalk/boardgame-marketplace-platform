@@ -42,7 +42,8 @@ namespace BoardGameMarket.ListingsService.API.Controllers
             }
 
             ListingAggregate listingAggregate = await _listingAggregateBuilder.BuildListingAggregateAsync(listing, true, false);
-            return Ok(listingAggregate.ToListingDetail());
+            Guid sellerId = await _listingOwnershipQuery.GetSellerUserIdByListingGroupIdAsync(listing.ListingGroupId);
+            return Ok(listingAggregate.ToListingDetail(sellerId));
         }
     }
 }

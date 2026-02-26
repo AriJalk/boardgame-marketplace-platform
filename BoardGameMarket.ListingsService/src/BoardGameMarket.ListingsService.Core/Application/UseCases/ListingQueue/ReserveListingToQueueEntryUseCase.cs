@@ -38,21 +38,10 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 
         public async Task<Guid> ExecuteAsync(Guid listingId, Guid listingQueueEntryId, Guid requesterUserId)
         {
-            Guid sellerId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
-            if (sellerId != requesterUserId)
-            {
-                throw new UnauthorizedAccessException();
-            }
-
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
 
-                ListingReservation? existingReservation = await _listingReservationReadService.GetListingReservationByListingId(listingId);
-                if (existingReservation != null)
-                {
-                    return existingReservation.Id;
-                }
 
                 Listing? listing = await _listingReadService.GetListingByIdAsync(listingId);
                 if (listing == null)
@@ -62,6 +51,16 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
                 if (listing.Status != ListingStatus.Active)
                 {
                     throw new InvalidOperationException("Listing not in active status");
+                }
+                Guid sellerId = await _listingOwnershipQuery.GetSellerUserIdByListingGroupIdAsync(listing.ListingGroupId);
+                if (sellerId != requesterUserId)
+                {
+                    throw new UnauthorizedAccessException();
+                }
+                ListingReservation? existingReservation = await _listingReservationReadService.GetListingReservationByListingId(listingId);
+                if (existingReservation != null)
+                {
+                    return existingReservation.Id;
                 }
 
                 ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
