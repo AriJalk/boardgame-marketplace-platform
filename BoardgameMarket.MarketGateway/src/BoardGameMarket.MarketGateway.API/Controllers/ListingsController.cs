@@ -29,7 +29,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         public async Task<ActionResult<ListingDetailDto>> GetListing(Guid listingId)
         {
             ListingDetail listing = await _listingsDataService.GetListing(listingId);
-            UserInfo seller = await _usersDataService.GetUser(listing.SellerId);
+            UserInfo seller = await _usersDataService.GetUser(listing.SellerUserId);
 
             ListingDetailDto dto = await _listingDetailDtoAssembler.BuildListingDetailDto(listing, seller.ToUserSummaryDto());
 

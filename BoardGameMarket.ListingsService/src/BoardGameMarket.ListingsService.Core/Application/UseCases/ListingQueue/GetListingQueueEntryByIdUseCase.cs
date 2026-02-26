@@ -29,8 +29,8 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
                 throw new KeyNotFoundException();
             }
 
-            Guid sellerId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
-            if (queueEntry.BuyerUserId != requesterUserId && sellerId != requesterUserId)
+            Guid SellerUserId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
+            if (queueEntry.BuyerUserId != requesterUserId && SellerUserId != requesterUserId)
             {
                 throw new UnauthorizedAccessException("Buyer/Seller/Requester mismatch");
             }

@@ -46,7 +46,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 
 		public Task<IEnumerable<ListingSold>> GetListingsSoldByBuyerUserIdAsync(Guid buyerUserId)
 		{
-			return Task.FromResult(_listingSolds.Where(l => l.BuyerId == buyerUserId));
+			return Task.FromResult(_listingSolds.Where(l => l.BuyerUserId == buyerUserId));
 		}
 
 		public Task<IEnumerable<ListingSold>> GetListingsSoldByDateRange(DateTime startDate, DateTime endDate)
@@ -56,7 +56,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 
 		public Task<IEnumerable<ListingSold>> GetListingsSoldBySellerUserIdAsync(Guid sellerUserId)
 		{
-			return Task.FromResult(_listingSolds.Where(l => l.SellerId == sellerUserId));
+			return Task.FromResult(_listingSolds.Where(l => l.SellerUserId == sellerUserId));
 		}
 	}
 }

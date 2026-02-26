@@ -11,6 +11,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.Contracts.Listings
         DateTime ModifiedAt,
         decimal Price,
         string? Details,
-        Guid SellerId)
+        Guid SellerUserId)
     { }
 }

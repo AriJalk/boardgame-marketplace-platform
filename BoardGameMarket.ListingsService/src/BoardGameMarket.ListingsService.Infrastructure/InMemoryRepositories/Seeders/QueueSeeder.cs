@@ -64,9 +64,9 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories.Se
 			_userIds = userIds.Select(u => u.Id);
 		}
 
-		private async Task CreateQueueForListing(Listing listing, Guid sellerId)
+		private async Task CreateQueueForListing(Listing listing, Guid SellerUserId)
 		{
-			Guid[] validBuyers = _userIds.Where(id => id != sellerId).ToArray();
+			Guid[] validBuyers = _userIds.Where(id => id != SellerUserId).ToArray();
 
 			for (int i = 0; i < validBuyers.Count(); i++)
 			{

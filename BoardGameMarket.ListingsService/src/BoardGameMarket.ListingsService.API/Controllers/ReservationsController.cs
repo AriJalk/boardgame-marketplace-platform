@@ -27,7 +27,7 @@ namespace BoardGameMarket.ListingsService.API.Controllers
         }
 
         [HttpGet("user/{userId:guid}")]
-        public async Task<ActionResult<IEnumerable<ListingReservationInfo>>> GetListingReservationsBySellerId(Guid userId)
+        public async Task<ActionResult<IEnumerable<ListingReservationInfo>>> GetListingReservationsByUserId(Guid userId)
         {
             IReadOnlyCollection<ListingReservationInfo> reservations = await _getListingResevationsUseCase.ExecuteAsync(userId);
 

@@ -13,6 +13,6 @@ namespace BoardGameMarket.MarketGateway.API.Application.Listings.ServiceClients.
 		decimal Price,
 		ListingItemInfo[] ListingItems,
 		string? Details,
-		Guid SellerId)
+		Guid SellerUserId)
 	{ }
 }

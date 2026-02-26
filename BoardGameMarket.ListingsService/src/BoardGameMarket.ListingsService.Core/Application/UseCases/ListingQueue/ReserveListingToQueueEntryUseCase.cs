@@ -52,8 +52,8 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
                 {
                     throw new InvalidOperationException("Listing not in active status");
                 }
-                Guid sellerId = await _listingOwnershipQuery.GetSellerUserIdByListingGroupIdAsync(listing.ListingGroupId);
-                if (sellerId != requesterUserId)
+                Guid SellerUserId = await _listingOwnershipQuery.GetSellerUserIdByListingGroupIdAsync(listing.ListingGroupId);
+                if (SellerUserId != requesterUserId)
                 {
                     throw new UnauthorizedAccessException();
                 }
@@ -78,8 +78,8 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
                     Id = Guid.NewGuid(),
                     ListingId = listingId,
                     ListingQueueEntryId = requestedQueueEntry.Id,
-                    BuyerId = requestedQueueEntry.BuyerUserId,
-                    SellerId = sellerId,
+                    BuyerUserId = requestedQueueEntry.BuyerUserId,
+                    SellerUserId = SellerUserId,
                     ReservedAt = DateTime.UtcNow,
                 };
 

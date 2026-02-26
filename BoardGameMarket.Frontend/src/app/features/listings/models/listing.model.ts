@@ -1,3 +1,4 @@
+import { UserSummary } from '../../../core/users/models/user.model';
 import {
   CreateListingItemRequest,
   ListingItem,
@@ -12,6 +13,7 @@ export interface ListingSummary {
   status: string;
   details?: string;
   isSubscribed?: boolean;
+  seller: UserSummary;
 }
 
 export interface ListingDetail extends ListingSummary {

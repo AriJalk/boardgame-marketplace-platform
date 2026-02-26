@@ -1,6 +1,9 @@
-﻿namespace BoardGameMarket.MarketGateway.API.Application.ListingReservations.ServiceContracts
+﻿using BoardGameMarket.MarketGateway.API.Application.ListingQueues.ServiceClients;
+using BoardGameMarket.MarketGateway.API.Application.Listings.ServiceClients.Listings;
+
+namespace BoardGameMarket.MarketGateway.API.Application.ListingReservations.ServiceContracts
 {
-    public record ListingReservationInfo(Guid Id, Guid ListingId, Guid ListingQueueEntryId, DateTime ReservedAt, Guid SellerId, Guid BuyerId)
+    public record ListingReservationInfo(Guid Id, ListingSummary Listing, ListingQueueEntryInfo ListingQueueEntry, DateTime ReservedAt)
     {
     }
 }

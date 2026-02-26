@@ -1,10 +1,12 @@
-﻿using System;
+﻿using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingQueueEntries;
+using BoardGameMarket.ListingsService.Core.Application.Contracts.Listings;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Contracts.ListingReservations
 {
-    public record ListingReservationInfo(Guid Id, Guid ListingId, Guid ListingQueueEntryId, DateTime ReservedAt, Guid SellerId, Guid BuyerId)
+    public record ListingReservationInfo(Guid Id, ListingSummary Listing, ListingQueueEntryInfo ListingQueueEntry, DateTime ReservedAt)
     {
     }
 }

@@ -18,5 +18,6 @@ export class MyReservationsPage implements OnInit {
 
   ngOnInit(): void {
     this.reservations$ = this.reservationsService.getMyReservations();
+    this.reservations$.subscribe((data) => console.log(data));
   }
 }

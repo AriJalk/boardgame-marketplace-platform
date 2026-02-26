@@ -1,1 +1,16 @@
 <h4>Id: {{ reservation.id }}</h4>
+<bgm-listing-summary-card [listing]="reservation.listing"> </bgm-listing-summary-card>
+<div>
+  Seller:
+  <span
+    ><a [routerLink]="['/users', reservation.listing.seller.userId]">{{
+      reservation.listing.seller.displayName
+    }}</a></span
+  >
+  Buyer:
+  <span
+    ><a [routerLink]="['/users', reservation.listingQueueEntry.buyer.userId]">{{
+      reservation.listingQueueEntry.buyer.displayName
+    }}</a></span
+  >
+</div>

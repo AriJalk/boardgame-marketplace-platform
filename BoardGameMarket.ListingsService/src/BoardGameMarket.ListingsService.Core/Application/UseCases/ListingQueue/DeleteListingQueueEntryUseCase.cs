@@ -28,8 +28,8 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
             {
                 return;
             }
-            Guid sellerId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
-            if (queueEntry.BuyerUserId != requesterUserId && requesterUserId != sellerId)
+            Guid SellerUserId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
+            if (queueEntry.BuyerUserId != requesterUserId && requesterUserId != SellerUserId)
             {
                 throw new UnauthorizedAccessException();
             }

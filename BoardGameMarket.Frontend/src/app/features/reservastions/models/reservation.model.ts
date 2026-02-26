@@ -1,8 +1,9 @@
+import { ListingSummary } from '../../listings/models/listing.model';
+import { QueueEntry } from '../../queues/models/quque-entry.model';
+
 export interface Reservation {
   id: string;
-  listingId: string;
-  listingQueueEntryId: string;
+  listing: ListingSummary;
+  listingQueueEntry: QueueEntry;
   reservedAt: Date;
-  sellerId: string;
-  buyerId: string;
 }

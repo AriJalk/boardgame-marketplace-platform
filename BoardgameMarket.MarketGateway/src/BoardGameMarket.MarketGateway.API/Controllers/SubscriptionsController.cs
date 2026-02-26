@@ -25,7 +25,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
             _loginService = loginService;
         }
 
-        private async Task<ListingGroupSummaryDto[]> GetFilteredListingGroupsWithSubscription(Guid subscriberUserId, Guid? sellerId = null)
+        private async Task<ListingGroupSummaryDto[]> GetFilteredListingGroupsWithSubscription(Guid subscriberUserId, Guid? SellerUserId = null)
         {
             Guid[] subscribedListingIds = await _queueService.GetSubscribedListingIdsAsync(subscriberUserId);
             HashSet<Guid> hashedSubscribedListingIds = subscribedListingIds.ToHashSet();
@@ -33,7 +33,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
             ListingGroupFilter filter = new ListingGroupFilter()
             {
                 ListingIds = subscribedListingIds,
-                SellerUserId = sellerId ?? null,
+                SellerUserId = SellerUserId ?? null,
             };
 
 

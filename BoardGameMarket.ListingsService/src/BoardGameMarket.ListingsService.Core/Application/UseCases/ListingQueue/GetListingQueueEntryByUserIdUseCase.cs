@@ -24,9 +24,9 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 
         public async Task<ListingQueueEntryInfo?> ExecuteAsync(Guid listingId, Guid subscriberUserId, Guid requesterUserId)
         {
-            Guid sellerId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
+            Guid SellerUserId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
 
-            if (requesterUserId != subscriberUserId && requesterUserId != sellerId)
+            if (requesterUserId != subscriberUserId && requesterUserId != SellerUserId)
             {
                 throw new UnauthorizedAccessException();
             }
