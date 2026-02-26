@@ -34,7 +34,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 
 
         // NOTE: not concurrency safe, need to make atomic in DB
-        public async Task<Guid> ExecuteAsync(Guid listingId, Guid requestedQueueEntryId, Guid requesterUserId)
+        public async Task ExecuteAsync(Guid listingId, Guid requestedQueueEntryId, Guid requesterUserId)
 		{
 			Guid sellerId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
 			if (sellerId != requesterUserId)
@@ -73,7 +73,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 				if (requestedPriorityEntry.Priority != null)
 				{
 					await _unitOfWork.CommitTransactionAsync();
-					return requestedPriorityEntry.Id;
+					return;
 				}
 
 				ListingQueueEntry? lastPriorityEntry = priorityQueue.FirstOrDefault();
@@ -91,8 +91,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 				await _listingQueueEntryWriteService.UpdateListingQueueEntryAsync(requestedPriorityEntry);
 
 				await _unitOfWork.CommitTransactionAsync();
-
-				return requestedPriorityEntry.Id;
 			}
 			catch
 			{

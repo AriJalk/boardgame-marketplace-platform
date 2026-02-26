@@ -22,7 +22,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
             _listingQueueEntryWriteService = listingQueueEntryWriteService;
         }
 
-        public async Task<Guid> ExecuteAsync(Guid listingId, Guid listingQueueEntryId, Guid requesterUserId)
+        public async Task ExecuteAsync(Guid listingId, Guid listingQueueEntryId, Guid requesterUserId)
         {
             ListingQueueEntry? queueEntry = await _listingQueueEntryReadService.GetListingQueueEntryByIdAsync(listingQueueEntryId);
             if (queueEntry == null)
@@ -38,9 +38,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
             queueEntry.Priority = null;
 
             await _listingQueueEntryWriteService.UpdateListingQueueEntryAsync(queueEntry);
-
-
-            return queueEntry.Id;
         }
     }
 }

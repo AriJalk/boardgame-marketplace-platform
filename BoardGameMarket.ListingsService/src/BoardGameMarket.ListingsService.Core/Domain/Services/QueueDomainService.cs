@@ -8,59 +8,29 @@ namespace BoardGameMarket.ListingsService.Core.Domain.Services
     {
         public const int INITIAL_PRIORITY = 0;
         public const int PRIORITY_GAP = 1000;
-        private static Result ValidateHeadEntry(IEnumerable<ListingQueueEntry> queueEntries, QueueStatus requiredStatus, out ListingQueueEntry? headEntry)
+
+        private static IEnumerable<ListingQueueEntry> SortQueue(IEnumerable<ListingQueueEntry> queue)
+        {
+            return queue.OrderBy(qe => qe.Priority.HasValue ? qe.Priority : int.MaxValue).ThenBy(qe => qe.CreatedAt);
+        }
+
+        public static void ValidateReserve(IEnumerable<ListingQueueEntry> queue, ListingQueueEntry requestedQueueEntry)
         {
             List<string> errors = new List<string>();
-            Queue<ListingQueueEntry> queue = new Queue<ListingQueueEntry>(SortQueue(queueEntries));
-            if (!queue.TryDequeue(out headEntry))
+            IEnumerable<ListingQueueEntry> sortedQueue = SortQueue(queue);
+            ListingQueueEntry? headQueueEntry = sortedQueue.FirstOrDefault();
+            if (headQueueEntry == null)
             {
-                errors.Add("Empty queue");
-                return Result.Failure(errors);
+                throw new KeyNotFoundException("Queue is empty");
             }
-            if (headEntry.Status != requiredStatus)
+            if (headQueueEntry.Id != requestedQueueEntry.Id)
             {
-                errors.Add($"Head entry not in {requiredStatus} status");
+                throw new InvalidOperationException("Requested queue entry not at top priority");
             }
-            if (errors.Count != 0)
+            if (headQueueEntry.Status != QueueStatus.Queued)
             {
-                return Result.Failure(errors);
+                throw new InvalidOperationException("Requesed queue entry not at Queued status");
             }
-            return Result.Success();
-        }
-
-
-        // TODO: remove
-        public static Result CanEnqueue(Guid sellerUserId, Guid buyerUserId, IEnumerable<ListingQueueEntry> queueEntries)
-        {
-            List<string> errors = new List<string>();
-            if (buyerUserId == sellerUserId)
-            {
-                errors.Add("BuyerUserId can't be same as SellerUserId");
-            }
-            if (queueEntries.Any(e => e.BuyerUserId == buyerUserId))
-            {
-                errors.Add("Buyer can't enqueue more than once for a listing");
-            }
-            if (errors.Count != 0)
-            {
-                return Result.Failure(errors);
-            }
-            return Result.Success();
-        }
-
-        public static Result CanApproveHead(IEnumerable<ListingQueueEntry> queueEntries, out ListingQueueEntry? headEntry)
-        {
-            return ValidateHeadEntry(queueEntries, QueueStatus.Queued, out headEntry);
-        }
-
-        public static Result CanSellHead(IEnumerable<ListingQueueEntry> queueEntries, out ListingQueueEntry? headEntry)
-        {
-            return ValidateHeadEntry(queueEntries, QueueStatus.Approved, out headEntry);
-        }
-
-        public static IEnumerable<ListingQueueEntry> SortQueue(IEnumerable<ListingQueueEntry> listingQueueEntries)
-        {
-            return listingQueueEntries.OrderByDescending(qe => qe.Priority).ThenBy(qe => qe.CreatedAt);
         }
 
         /// <summary>

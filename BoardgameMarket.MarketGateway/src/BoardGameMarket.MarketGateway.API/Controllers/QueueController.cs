@@ -47,12 +47,12 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 
 
         [HttpPatch("subscription/{listingQueueEntryId:guid}/priority")]
-        public async Task<ActionResult<Guid>> UpdateListingQueueEntryPriority(Guid listingId, Guid listingQueueEntryId, [FromBody] UpdateListingQueueEntryPriorityRequestDto request)
+        public async Task<IActionResult> UpdateListingQueueEntryPriority(Guid listingId, Guid listingQueueEntryId, [FromBody] UpdateListingQueueEntryPriorityRequestDto request)
         {
 
-            Guid queueEntryFromUpdateId = await _queuesDataService.UpdateListingQueueEntryPriorityAsync(listingId, listingQueueEntryId, request);
+            await _queuesDataService.UpdateListingQueueEntryPriorityAsync(listingId, listingQueueEntryId, request);
 
-            return Ok(queueEntryFromUpdateId);
+            return NoContent();
         }
 
         [HttpDelete("subscription/{listingQueueEntryId:guid}/priority")]
@@ -65,10 +65,10 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 
 
         [HttpPost("subscription/{listingQueueEntryId:guid}/reserve")]
-        public async Task<ActionResult<Guid>> ReserveListingToQueueEntry(Guid listingId, Guid listingQueueEntryId)
+        public async Task<IActionResult> ReserveListingToQueueEntry(Guid listingId, Guid listingQueueEntryId)
         {
-            Guid response = await _queuesDataService.ReserveListingToQueueEntry(listingId, listingQueueEntryId);
-            return Ok(response);
+            await _queuesDataService.ReserveListingToQueueEntry(listingId, listingQueueEntryId);
+            return NoContent();
         }
 
         #endregion

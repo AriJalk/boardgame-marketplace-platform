@@ -83,33 +83,33 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		}
 
 		[HttpPost("subscription/{listingQueueEntryId:guid}/priority")]
-		public async Task<ActionResult<Guid>> AddPriorityToListingQueueEntry(Guid listingId, Guid listingQueueEntryId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
+		public async Task<IActionResult> AddPriorityToListingQueueEntry(Guid listingId, Guid listingQueueEntryId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
 		{
 			await _addListingQueueEntryPriorityUseCase.ExecuteAsync(listingId, listingQueueEntryId, requesterUserId);
-			return Ok(listingQueueEntryId);
+			return NoContent();
 		}
 
 		[HttpDelete("subscription/{listingQueueEntryId:guid}/priority")]
-		public async Task<ActionResult<Guid>> RemovePriorityFromEntry(Guid listingId, Guid listingQueueEntryId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
+		public async Task<IActionResult> RemovePriorityFromEntry(Guid listingId, Guid listingQueueEntryId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
 		{
 			await _removePriorityFromQueueEntryUseCase.ExecuteAsync(listingId, listingQueueEntryId, requesterUserId);
-			return Ok(listingQueueEntryId);
+			return NoContent();
 		}
 
 
         [HttpPatch("subscription/{listingQueueEntryId:guid}/priority")]
-        public async Task<ActionResult<Guid>> UpdateQueueEntryPriority(Guid listingId, Guid listingQueueEntryId, [FromBody] UpdateListingQueueEntryPriorityRequest updateRequest, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
+        public async Task<IActionResult> UpdateQueueEntryPriority(Guid listingId, Guid listingQueueEntryId, [FromBody] UpdateListingQueueEntryPriorityRequest updateRequest, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
         {
             await _updateListingQueueEntryPriorityUseCase.ExecuteAsync(listingId, listingQueueEntryId, updateRequest, requesterUserId);
-            return Ok(listingQueueEntryId);
+            return NoContent();
         }
 
 		[HttpPost("subscription/{listingQueueEntryId:guid}/reserve")]
-		public async Task<ActionResult<Guid>> ReserveListingToQueueEntry(Guid listingId, Guid listingQueueEntryId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
+		public async Task<IActionResult> ReserveListingToQueueEntry(Guid listingId, Guid listingQueueEntryId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
 		{
-			Guid responseId = await _reserveListingToQueueEntryUseCase.ExecuteAsync(listingId, listingQueueEntryId, requesterUserId);
+			await _reserveListingToQueueEntryUseCase.ExecuteAsync(listingId, listingQueueEntryId, requesterUserId);
 
-			return Ok(responseId);
+			return NoContent();
 		}
     }
 }

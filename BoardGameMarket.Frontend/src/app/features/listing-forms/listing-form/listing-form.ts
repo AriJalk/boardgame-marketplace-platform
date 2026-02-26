@@ -43,7 +43,8 @@ export class ListingForm implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.updateLockState(this.formGroup.get('status')?.value != 'active');
+    const status = this.formGroup.get('status')?.value;
+    this.updateLockState(status != 'active' && status != 'new');
   }
 
   get listingItemFormGroups(): FormArray<FormGroup> {

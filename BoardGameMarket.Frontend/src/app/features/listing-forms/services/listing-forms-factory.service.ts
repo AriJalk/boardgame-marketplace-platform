@@ -50,7 +50,7 @@ export class ListingFormsFactory {
       price: [{ value: value?.price ?? '', disabled: false }, [Validators.required]],
       details: [{ value: value?.details ?? '', disabled: false }],
       listingItems: this.fb.array(listingItemsArray, { validators: [minArrayLength(1)] }),
-      status: [{ value: value?.status ?? 'New', disabled: true }],
+      status: [{ value: value?.status ?? 'new', disabled: true }],
     });
   }
 

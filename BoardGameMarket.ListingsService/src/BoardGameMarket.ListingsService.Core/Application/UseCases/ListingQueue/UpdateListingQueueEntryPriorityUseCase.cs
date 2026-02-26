@@ -27,7 +27,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
             _listingOwnershipQuery = listingOwnershipQuery;
         }
 
-        public async Task<Guid> ExecuteAsync(Guid listingId, Guid listingQueueEntryId, UpdateListingQueueEntryPriorityRequest request, Guid requesterUserId)
+        public async Task ExecuteAsync(Guid listingId, Guid listingQueueEntryId, UpdateListingQueueEntryPriorityRequest request, Guid requesterUserId)
         {
             Guid sellerId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
             if (sellerId != requesterUserId)
@@ -65,8 +65,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
                 await _listingQueueEntryWriteService.UpdateListingQueueEntriesAsync(normalizedQueue);
 
                 await _unitOfWork.CommitTransactionAsync();
-
-                return requestedEntry.Id;
             }
             catch
             {
