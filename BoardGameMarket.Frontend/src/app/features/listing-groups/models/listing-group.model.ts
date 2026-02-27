@@ -32,7 +32,17 @@ export interface CreateListingGroupRequest {
 export interface UpdateListingGroupRequest {
   id: string;
   details?: string;
-  pickupOptions?: string;
+  pickupOptions: string;
   location: string;
   listings: UpdateListingGroupRequest[];
+}
+
+export interface ListingGroupMetadata {
+  id: string;
+  seller: UserSummary;
+  createdAt: Date;
+  modifiedAt: Date;
+  details?: string;
+  pickupOptions: string;
+  location: string;
 }

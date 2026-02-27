@@ -6,29 +6,34 @@ using BoardGameMarket.MarketGateway.API.Application.Users.Dtos;
 
 namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Mappers
 {
-	public static class ListingGroupMappers
-	{
+    public static class ListingGroupMappers
+    {
 
-		public static ListingGroupSummaryDto ToListingGroupSummaryDto(this ListingGroupSummary listingGroup, ListingSummaryDto[] listings, UserSummaryDto seller)
-		{
-			return new ListingGroupSummaryDto(listingGroup.Id, seller, listingGroup.CreatedAt, listingGroup.PickupOptions, listingGroup.Location, listingGroup.Details, listings);
-	
-		}
+        public static ListingGroupSummaryDto ToListingGroupSummaryDto(this ListingGroupSummary listingGroup, ListingSummaryDto[] listings, UserSummaryDto seller)
+        {
+            return new ListingGroupSummaryDto(listingGroup.Id, seller, listingGroup.CreatedAt, listingGroup.PickupOptions, listingGroup.Location, listingGroup.Details, listings);
 
-		public static ListingGroupDetailDto ToListingGroupDetailDto(this ListingGroupDetail listingGroup, ListingDetailDto[] listings, UserSummaryDto seller)
-		{
-			return new ListingGroupDetailDto(listingGroup.Id, seller, listingGroup.CreatedAt, listingGroup.PickupOptions, listingGroup.Location, listingGroup.Details, listings);
-		}
+        }
 
-		public static CreateListingGroupRequest ToCreateListingGroupRequest(this CreateListingGroupRequestDto dto, Guid userId)
-		{
-			return new CreateListingGroupRequest(userId, dto.Details, dto.PickupOptions, dto.Location, dto.Listings.Select(l => l.ToCreateListingRequest()).ToArray());
-		}
+        public static ListingGroupDetailDto ToListingGroupDetailDto(this ListingGroupDetail listingGroup, ListingDetailDto[] listings, UserSummaryDto seller)
+        {
+            return new ListingGroupDetailDto(listingGroup.Id, seller, listingGroup.CreatedAt, listingGroup.PickupOptions, listingGroup.Location, listingGroup.Details, listings);
+        }
 
-		public static UpdateListingGroupRequest ToUpdateListingGroupRequest(this UpdateListingGroupRequestDto dto)
-		{
-			return new UpdateListingGroupRequest(dto.Id, dto.Details, dto.PickupOptions, dto.Location, dto.Listings.Select(l => l.ToUpdateListingRequest()).ToArray());
-		}
+        public static CreateListingGroupRequest ToCreateListingGroupRequest(this CreateListingGroupRequestDto dto, Guid userId)
+        {
+            return new CreateListingGroupRequest(userId, dto.Details, dto.PickupOptions, dto.Location, dto.Listings.Select(l => l.ToCreateListingRequest()).ToArray());
+        }
 
-	}
+        public static UpdateListingGroupRequest ToUpdateListingGroupRequest(this UpdateListingGroupRequestDto dto)
+        {
+            return new UpdateListingGroupRequest(dto.Id, dto.Details, dto.PickupOptions, dto.Location, dto.Listings.Select(l => l.ToUpdateListingRequest()).ToArray());
+        }
+
+        public static ListingGroupMetadataDto ToListingGroupMetadataDto(this ListingGroupMetadataInfo metadata, UserSummaryDto seller)
+        {
+            return new ListingGroupMetadataDto(metadata.Id, seller, metadata.CreatedAt, metadata.ModifiedAt, metadata.Details, metadata.PickupOptions, metadata.Location);
+        }
+
+    }
 }

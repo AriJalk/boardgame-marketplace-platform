@@ -8,7 +8,6 @@ using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Domain.Aggragates;
 using Microsoft.AspNetCore.Mvc;
 using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroups;
-using BoardGameMarket.ListingsService.Core.Application.Queries;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 
 namespace BoardGameMarket.ListingsService.API.Controllers
@@ -102,6 +101,17 @@ namespace BoardGameMarket.ListingsService.API.Controllers
             await _updateListingGroupUseCase.ExecuteAsync(request, requesterUserId);
 
             return Ok(listingGroupId);
+        }
+
+        [HttpGet("{listingGroupId:guid}/metadata")]
+        public async Task<ActionResult<ListingGroupMetadataInfo>> GetListingGroupMetadata(Guid listingGroupId)
+        {
+            ListingGroup? listingGroup = await _listingGroupReadService.GetListingGroupByIdAsync(listingGroupId);
+            if (listingGroup == null)
+            {
+                return NotFound();
+            }
+            return Ok(listingGroup.ToListingGroupMetadata());
         }
     }
 }

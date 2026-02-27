@@ -7,12 +7,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Application\Commands\**" />
 	  <Compile Remove="Application\Projections\**" />
 	  <Compile Remove="Application\UseCases\Internal\**" />
 	  <Compile Remove="Domain\ServiceContracts\**" />
+	  <EmbeddedResource Remove="Application\Commands\**" />
 	  <EmbeddedResource Remove="Application\Projections\**" />
 	  <EmbeddedResource Remove="Application\UseCases\Internal\**" />
 	  <EmbeddedResource Remove="Domain\ServiceContracts\**" />
+	  <None Remove="Application\Commands\**" />
 	  <None Remove="Application\Projections\**" />
 	  <None Remove="Application\UseCases\Internal\**" />
 	  <None Remove="Domain\ServiceContracts\**" />
@@ -40,7 +43,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Application\Commands\" />
 	  <Folder Include="Application\UseCases\Listings\" />
 	</ItemGroup>
 

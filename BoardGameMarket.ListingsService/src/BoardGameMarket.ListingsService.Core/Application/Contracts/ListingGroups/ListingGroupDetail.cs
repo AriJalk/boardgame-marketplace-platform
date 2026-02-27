@@ -8,7 +8,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Contracts.ListingGrou
 		DateTime CreatedAt,
 		DateTime ModifiedAt,
 		string? Details,
-		string? PickupOptions,
+		string PickupOptions,
 		string Location,
 		ListingDetail[] Listings)
 	{

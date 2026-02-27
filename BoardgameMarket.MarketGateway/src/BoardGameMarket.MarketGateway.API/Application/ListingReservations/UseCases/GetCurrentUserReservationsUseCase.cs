@@ -1,4 +1,7 @@
-﻿using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Mappers;
+﻿using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Dtos;
+using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Mappers;
+using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services;
+using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Mappers;
 using BoardGameMarket.MarketGateway.API.Application.ListingReservations.Dtos;
 using BoardGameMarket.MarketGateway.API.Application.ListingReservations.ServiceContracts;
 using BoardGameMarket.MarketGateway.API.Application.ListingReservations.Services;
@@ -14,12 +17,14 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingReservations.UseC
         private GetListingReservationResponseDtoUseCase _getListingReservationResponseDtoUseCase;
         private ListingReservationDataService _listingReservationDataService;
         private UsersDataService _usersDataService;
+        private ListingGroupsDataService _listingGroupsDataService;
 
-        public GetCurrentUserReservationsUseCase(GetListingReservationResponseDtoUseCase getListingReservationResponseDtoUseCase, ListingReservationDataService listingReservationDataService, UsersDataService usersDataService)
+        public GetCurrentUserReservationsUseCase(GetListingReservationResponseDtoUseCase getListingReservationResponseDtoUseCase, ListingReservationDataService listingReservationDataService, UsersDataService usersDataService, ListingGroupsDataService listingGroupsDataService)
         {
             _getListingReservationResponseDtoUseCase = getListingReservationResponseDtoUseCase;
             _listingReservationDataService = listingReservationDataService;
             _usersDataService = usersDataService;
+            _listingGroupsDataService = listingGroupsDataService;
         }
 
         public async Task<IEnumerable<ListingReservationResponseDto>> ExecuteAsync()
@@ -42,7 +47,11 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingReservations.UseC
                     existingUser = (await _usersDataService.GetUser(BuyerUserId)).ToUserSummaryDto();
                     userDtos[existingUser.UserId] = existingUser;
                 }
-                ListingReservationResponseDto dto = new ListingReservationResponseDto(reservation.Id, reservation.Listing.ToListingSummaryDto(userDtos[reservation.Listing.SellerUserId]), reservation.ListingQueueEntry.ToListingQueueEntryResponseDto(userDtos[reservation.ListingQueueEntry.BuyerUserId]), reservation.ReservedAt);
+                ListingGroupMetadataDto metadata = (await _listingGroupsDataService.GetListingGroupMetadata(reservation.Listing.ListingGroupId)).ToListingGroupMetadataDto(userDtos[SellerUserId]);
+                ListingReservationResponseDto dto = new ListingReservationResponseDto(reservation.Id,
+                    reservation.Listing.ToListingSummaryDto(userDtos[SellerUserId]),
+                    reservation.ListingQueueEntry.ToListingQueueEntryResponseDto(userDtos[BuyerUserId]),
+                    reservation.ReservedAt, metadata);
                 dtos.Add(dto);
             }
             return dtos;

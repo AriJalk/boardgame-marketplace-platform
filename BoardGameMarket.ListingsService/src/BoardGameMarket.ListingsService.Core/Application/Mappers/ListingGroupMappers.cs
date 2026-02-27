@@ -24,5 +24,10 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 			ListingSummary[] listingsInfo = listingGroupAggregate.Listings.Select(l => l.Listing.ToListingSummary()).ToArray();
 			return new ListingGroupSummary(listingGroup.Id, listingGroup.SellerUserId, listingGroup.CreatedAt, listingGroup.ModifiedAt, listingGroup.Details, listingGroup.PickupOptions, listingGroup.Location, listingsInfo);
 		}
+
+		public static ListingGroupMetadataInfo ToListingGroupMetadata(this ListingGroup listingGroup)
+		{
+			return new ListingGroupMetadataInfo(listingGroup.Id, listingGroup.SellerUserId, listingGroup.CreatedAt, listingGroup.ModifiedAt, listingGroup.Details, listingGroup.PickupOptions, listingGroup.Location);
+		}
 	}
 }

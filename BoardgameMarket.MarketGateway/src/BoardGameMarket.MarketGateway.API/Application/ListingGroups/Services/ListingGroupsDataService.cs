@@ -119,5 +119,18 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
 			return listingGroupIdFromUpdate ?? throw new InvalidDataException();
 		}
+
+		public async Task<ListingGroupMetadataInfo> GetListingGroupMetadata(Guid listingGroupId)
+		{
+			string uri = $"api/listing-groups/{listingGroupId}/metadata";
+
+			HttpResponseMessage response = await _httpClient.GetAsync(uri);
+
+			response.EnsureSuccessStatusCode();
+
+			ListingGroupMetadataInfo? metadata = await response.Content.ReadFromJsonAsync<ListingGroupMetadataInfo>();
+
+			return metadata ?? throw new InvalidDataException();
+		}
     }
 }

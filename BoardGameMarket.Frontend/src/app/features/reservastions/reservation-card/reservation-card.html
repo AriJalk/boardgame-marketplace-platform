@@ -2,15 +2,13 @@
 <bgm-listing-summary-card [listing]="reservation.listing"> </bgm-listing-summary-card>
 <div>
   Seller:
-  <span
-    ><a [routerLink]="['/users', reservation.listing.seller.userId]">{{
-      reservation.listing.seller.displayName
-    }}</a></span
-  >
+  <a [routerLink]="['/users', reservation.listing.seller.userId]">{{
+    reservation.listing.seller.displayName
+  }}</a>
   Buyer:
-  <span
-    ><a [routerLink]="['/users', reservation.listingQueueEntry.buyer.userId]">{{
-      reservation.listingQueueEntry.buyer.displayName
-    }}</a></span
-  >
+  <a [routerLink]="['/users', reservation.listingQueueEntry.buyer.userId]">{{
+    reservation.listingQueueEntry.buyer.displayName
+  }}</a>
 </div>
+
+{{ reservation.listingGroupMetadata | json }}
