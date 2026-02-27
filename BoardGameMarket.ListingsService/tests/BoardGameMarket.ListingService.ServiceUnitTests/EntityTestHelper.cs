@@ -19,7 +19,9 @@ namespace BoardGameMarket.ListingService.ServiceUnitTests
 				ListingGroupId = source.ListingGroupId,
 				ModifiedAt = source.ModifiedAt,
 				Status = source.Status,
-				Price = source.Price
+				Price = source.Price,
+				SellerUserId = source.SellerUserId,
+				Title = source.Title,
 			};
 		}
 	}

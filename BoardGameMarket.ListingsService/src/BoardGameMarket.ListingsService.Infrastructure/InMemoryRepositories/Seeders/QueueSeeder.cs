@@ -20,6 +20,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories.Se
 		private readonly JsonSerializerOptions _jsonOptions;
 
 		private IEnumerable<Guid> _userIds;
+		private Queue<Guid> _queueEntryIds;
 
 		private struct UserInfo
 		{
@@ -38,6 +39,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories.Se
 		public async Task SeedAsync(string seedPath)
 		{
 			await LoadUserIds(seedPath);
+			await LoadQueueEntryIds(seedPath);
 
 			IEnumerable<Listing> listings = await _listingRepository.GetListings();
 			foreach (Listing listing in listings)
@@ -64,6 +66,19 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories.Se
 			_userIds = userIds.Select(u => u.Id);
 		}
 
+		private async Task LoadQueueEntryIds(string seedPath)
+		{
+			string json = File.ReadAllText(Path.Combine(seedPath, "Listings", "LISTING_QUEUE_ENTRY_IDS.json"));
+			IEnumerable<Guid>? queueEntryIds = JsonSerializer.Deserialize<IEnumerable<Guid>>(json, _jsonOptions);
+
+			if (queueEntryIds == null)
+			{
+				return;
+			}
+
+			_queueEntryIds = new Queue<Guid>(queueEntryIds);
+		}
+
 		private async Task CreateQueueForListing(Listing listing, Guid SellerUserId)
 		{
 			Guid[] validBuyers = _userIds.Where(id => id != SellerUserId).ToArray();
@@ -72,7 +87,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories.Se
 			{
 				ListingQueueEntry queueEntry = new ListingQueueEntry()
 				{
-					Id = Guid.NewGuid(),
+					Id = _queueEntryIds.Dequeue(),
 					ListingId = listing.Id,
 					BuyerUserId = validBuyers[i],
 					CreatedAt = DateTime.UtcNow.AddDays(-i),

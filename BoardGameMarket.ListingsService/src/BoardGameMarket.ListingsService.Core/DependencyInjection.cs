@@ -77,7 +77,6 @@ namespace BoardGameMarket.ListingsService.Core
 			AddListingQueueUseCases(services);
 
 			// Queries
-			services.AddScoped<ListingOwnershipQuery>();
 			services.AddScoped<SubscriptionQueries>();
 
 			return services;

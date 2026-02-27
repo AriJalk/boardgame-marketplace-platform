@@ -10,16 +10,16 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 {
 	public static class ListingMappers
 	{
-		public static ListingDetail ToListingDetail(this ListingAggregate listingAggregate, Guid SellerUserId)
+		public static ListingDetail ToListingDetail(this ListingAggregate listingAggregate)
 		{
 			Listing listing = listingAggregate.Listing;
 			ListingItemInfo[] listingItemsInfo = listingAggregate.Items.Select(i => i.ToListingItemInfo()).ToArray();
-			return new ListingDetail(listing.Id, listing.Title, listing.ListingGroupId, listing.Status, listing.CreatedAt, listing.ModifiedAt, listing.Price, listingItemsInfo, listing.Details, SellerUserId);
+			return new ListingDetail(listing.Id, listing.Title, listing.ListingGroupId, listing.Status, listing.CreatedAt, listing.ModifiedAt, listing.Price, listingItemsInfo, listing.Details, listing.SellerUserId);
 		}
 
-		public static ListingSummary ToListingSummary(this Listing listing, Guid SellerUserId)
+		public static ListingSummary ToListingSummary(this Listing listing)
 		{
-			return new ListingSummary(listing.Id, listing.Title, listing.ListingGroupId, listing.Status, listing.CreatedAt, listing.ModifiedAt, listing.Price, listing.Details, SellerUserId);
+			return new ListingSummary(listing.Id, listing.Title, listing.ListingGroupId, listing.Status, listing.CreatedAt, listing.ModifiedAt, listing.Price, listing.Details, listing.SellerUserId);
 		}
 	}
 }

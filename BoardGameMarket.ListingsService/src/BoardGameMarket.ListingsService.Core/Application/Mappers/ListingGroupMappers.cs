@@ -13,7 +13,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 		public static ListingGroupDetail ToListingGroupDetail(this ListingGroupAggregate listingGroupAggregate)
 		{
 			ListingGroup listingGroup = listingGroupAggregate.ListingGroup;
-			ListingDetail[] listingsInfo = listingGroupAggregate.Listings.Select(l => l.ToListingDetail(listingGroup.SellerUserId)).ToArray();
+			ListingDetail[] listingsInfo = listingGroupAggregate.Listings.Select(l => l.ToListingDetail()).ToArray();
 			return new ListingGroupDetail(
 				listingGroup.Id, listingGroup.SellerUserId, listingGroup.CreatedAt, listingGroup.ModifiedAt, listingGroup.Details, listingGroup.PickupOptions, listingGroup.Location, listingsInfo);
 		}
@@ -21,7 +21,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
 		public static ListingGroupSummary ToListingGroupSummary(this ListingGroupAggregate listingGroupAggregate)
 		{
 			ListingGroup listingGroup = listingGroupAggregate.ListingGroup;
-			ListingSummary[] listingsInfo = listingGroupAggregate.Listings.Select(l => l.Listing.ToListingSummary(listingGroup.SellerUserId)).ToArray();
+			ListingSummary[] listingsInfo = listingGroupAggregate.Listings.Select(l => l.Listing.ToListingSummary()).ToArray();
 			return new ListingGroupSummary(listingGroup.Id, listingGroup.SellerUserId, listingGroup.CreatedAt, listingGroup.ModifiedAt, listingGroup.Details, listingGroup.PickupOptions, listingGroup.Location, listingsInfo);
 		}
 	}

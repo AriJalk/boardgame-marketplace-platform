@@ -54,7 +54,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingReser
             List<ListingReservationInfo> dtos = new List<ListingReservationInfo>();
             foreach (ListingReservation reservation in combined)
             {
-                ListingSummary listing = listings[reservation.ListingId].ToListingSummary(reservation.SellerUserId);
+                ListingSummary listing = listings[reservation.ListingId].ToListingSummary();
                 ListingQueueEntryInfo queueEntry = queueEntries[reservation.ListingQueueEntryId].ToListingQueueEntryInfo();
 
                 ListingReservationInfo reservationDto = reservation.ToListingReservationInfo(listing, queueEntry);

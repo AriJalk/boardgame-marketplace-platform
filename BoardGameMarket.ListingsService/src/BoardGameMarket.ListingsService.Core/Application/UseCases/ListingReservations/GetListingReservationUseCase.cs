@@ -2,6 +2,7 @@
 using BoardGameMarket.ListingsService.Core.Application.Access.ListingReservations;
 using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingReservations;
+using BoardGameMarket.ListingsService.Core.Application.Exceptions;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.Queries;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
@@ -16,14 +17,12 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingReser
         private readonly IListingReservationReadService _listingReservationReadService;
         private readonly IListingReadService _listingReadService;
         private readonly IListingQueueEntryReadService _listingQueueEntryReadService;
-        private readonly ListingOwnershipQuery _listingOwnershipQuery;
 
-        public GetListingReservationUseCase(IListingReservationReadService listingReservationReadService, IListingReadService listingReadService, IListingQueueEntryReadService listingQueueEntryReadService, ListingOwnershipQuery listingOwnershipQuerry)
+        public GetListingReservationUseCase(IListingReservationReadService listingReservationReadService, IListingReadService listingReadService, IListingQueueEntryReadService listingQueueEntryReadService)
         {
             _listingReservationReadService = listingReservationReadService;
             _listingReadService = listingReadService;
             _listingQueueEntryReadService = listingQueueEntryReadService;
-            _listingOwnershipQuery = listingOwnershipQuerry;
         }
 
         public async Task<ListingReservationInfo> ExecuteAsync(Guid listingReservationId, Guid requesterUserId)
@@ -41,7 +40,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingReser
             Listing? listing = await _listingReadService.GetListingByIdAsync(reservation.ListingId);
             if (listing == null)
             {
-                throw new KeyNotFoundException($"Listing {reservation.ListingId} not found");
+                throw new ListingNotFoundException(reservation.ListingId);
             }
             ListingQueueEntry? queueEntry = await _listingQueueEntryReadService.GetListingQueueEntryByIdAsync(reservation.ListingQueueEntryId);
             if (queueEntry == null)
@@ -49,8 +48,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingReser
                 throw new KeyNotFoundException($"QueueEntry {reservation.ListingQueueEntryId} not found");
             }
 
-            Guid SellerUserId = await _listingOwnershipQuery.GetSellerUserIdByListingGroupIdAsync(listing.ListingGroupId);
-            return reservation.ToListingReservationInfo(listing.ToListingSummary(SellerUserId), queueEntry.ToListingQueueEntryInfo());
+            return reservation.ToListingReservationInfo(listing.ToListingSummary(), queueEntry.ToListingQueueEntryInfo());
         }
     }
 }

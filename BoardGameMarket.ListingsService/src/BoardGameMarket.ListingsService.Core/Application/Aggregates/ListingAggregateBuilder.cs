@@ -1,6 +1,7 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingItems;
 using BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
+using BoardGameMarket.ListingsService.Core.Application.Exceptions;
 using BoardGameMarket.ListingsService.Core.Domain.Aggragates;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using System;
@@ -49,8 +50,8 @@ namespace BoardGameMarket.ListingsService.Core.Application.Aggregates
 			Listing? listing = await _listingReadService.GetListingByIdAsync(listingId);
 			if (listing == null)
 			{
-				throw new KeyNotFoundException($"Listing {listingId} not found");
-			}
+                throw new ListingNotFoundException(listingId);
+            }
 
 			return await BuildListingAggregateAsync(listing, loadItems, loadQueue);
 		}

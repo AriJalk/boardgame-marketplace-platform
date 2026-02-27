@@ -1,6 +1,7 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.Access.ListingReservations;
 using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
+using BoardGameMarket.ListingsService.Core.Application.Exceptions;
 using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Application.Queries;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
@@ -18,18 +19,16 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
         private readonly IListingQueueEntryReadService _listingQueueEntryReadService;
         private readonly IListingReadService _listingReadService;
         private readonly IListingWriteService _listingWriteService;
-        private readonly ListingOwnershipQuery _listingOwnershipQuery;
         private readonly IListingQueueEntryWriteService _listingQueueEntryWriteService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IListingReservationReadService _listingReservationReadService;
         private readonly IListingReservationWriteService _listingReservationWriteService;
 
-        public ReserveListingToQueueEntryUseCase(IListingQueueEntryReadService listingQueueEntryReadService, IListingReadService listingReadService, IListingWriteService listingWriteService, ListingOwnershipQuery listingOwnershipQuery, IListingQueueEntryWriteService listingQueueEntryWriteService, IUnitOfWork unitOfWork, IListingReservationReadService listingReservationReadService, IListingReservationWriteService listingReservationWriteService)
+        public ReserveListingToQueueEntryUseCase(IListingQueueEntryReadService listingQueueEntryReadService, IListingReadService listingReadService, IListingWriteService listingWriteService, IListingQueueEntryWriteService listingQueueEntryWriteService, IUnitOfWork unitOfWork, IListingReservationReadService listingReservationReadService, IListingReservationWriteService listingReservationWriteService)
         {
             _listingQueueEntryReadService = listingQueueEntryReadService;
             _listingReadService = listingReadService;
             _listingWriteService = listingWriteService;
-            _listingOwnershipQuery = listingOwnershipQuery;
             _listingQueueEntryWriteService = listingQueueEntryWriteService;
             _unitOfWork = unitOfWork;
             _listingReservationReadService = listingReservationReadService;
@@ -46,14 +45,13 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
                 Listing? listing = await _listingReadService.GetListingByIdAsync(listingId);
                 if (listing == null)
                 {
-                    throw new KeyNotFoundException();
+                    throw new ListingNotFoundException(listingId);
                 }
                 if (listing.Status != ListingStatus.Active)
                 {
                     throw new InvalidOperationException("Listing not in active status");
                 }
-                Guid SellerUserId = await _listingOwnershipQuery.GetSellerUserIdByListingGroupIdAsync(listing.ListingGroupId);
-                if (SellerUserId != requesterUserId)
+                if (listing.SellerUserId != requesterUserId)
                 {
                     throw new UnauthorizedAccessException();
                 }
@@ -79,7 +77,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
                     ListingId = listingId,
                     ListingQueueEntryId = requestedQueueEntry.Id,
                     BuyerUserId = requestedQueueEntry.BuyerUserId,
-                    SellerUserId = SellerUserId,
+                    SellerUserId = listing.SellerUserId,
                     ReservedAt = DateTime.UtcNow,
                 };
 

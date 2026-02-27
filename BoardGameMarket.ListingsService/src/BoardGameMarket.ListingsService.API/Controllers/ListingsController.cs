@@ -13,13 +13,11 @@ namespace BoardGameMarket.ListingsService.API.Controllers
     [ApiController]
     public class ListingsController : ControllerBase
     {
-        private readonly ListingOwnershipQuery _listingOwnershipQuery;
         private readonly IListingReadService _listingsReadService;
         private readonly ListingAggregateBuilder _listingAggregateBuilder;
 
-        public ListingsController(ListingOwnershipQuery listingOwnershipQuery, IListingReadService listingsReadService, ListingAggregateBuilder listingAggregateBuilder)
+        public ListingsController(IListingReadService listingsReadService, ListingAggregateBuilder listingAggregateBuilder)
         {
-            _listingOwnershipQuery = listingOwnershipQuery;
             _listingsReadService = listingsReadService;
             _listingAggregateBuilder = listingAggregateBuilder;
         }
@@ -27,9 +25,12 @@ namespace BoardGameMarket.ListingsService.API.Controllers
         [HttpGet("{listingId:guid}/ownership")]
         public async Task<ActionResult<ListingOwnershipInfo>> GetListingOwnershipInfo(Guid listingId)
         {
-            Guid userId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
-
-            return Ok(new ListingOwnershipInfo(listingId, userId));
+            Listing? listing = await _listingsReadService.GetListingByIdAsync(listingId);
+            if (listing == null)
+            {
+                return NotFound();
+            }
+            return Ok(new ListingOwnershipInfo(listingId, listing.SellerUserId));
         }
 
         [HttpGet("{listingId:guid}")]
@@ -42,8 +43,7 @@ namespace BoardGameMarket.ListingsService.API.Controllers
             }
 
             ListingAggregate listingAggregate = await _listingAggregateBuilder.BuildListingAggregateAsync(listing, true, false);
-            Guid SellerUserId = await _listingOwnershipQuery.GetSellerUserIdByListingGroupIdAsync(listing.ListingGroupId);
-            return Ok(listingAggregate.ToListingDetail(SellerUserId));
+            return Ok(listingAggregate.ToListingDetail());
         }
     }
 }

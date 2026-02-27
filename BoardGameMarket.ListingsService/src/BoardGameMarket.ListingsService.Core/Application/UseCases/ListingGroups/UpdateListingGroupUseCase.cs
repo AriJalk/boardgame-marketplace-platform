@@ -5,6 +5,7 @@ using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingItems;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.Listings;
+using BoardGameMarket.ListingsService.Core.Application.Exceptions;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Domain.Aggragates;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
@@ -84,7 +85,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                 }
             }
         }
-        private async Task<Listing> UpdateListing(Guid listingGroupId, UpdateListingRequest request)
+        private async Task<Listing> UpdateListing(Guid listingGroupId, UpdateListingRequest request, Guid sellerUserId)
         {
             if (request.Id == null)
             {
@@ -98,6 +99,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                     Details = request.Details,
                     Price = request.Price,
                     Status = ListingStatus.Active,
+                    SellerUserId = sellerUserId,
                 };
                 await _listingWriteService.AddListingAsync(listingToAdd);
 
@@ -108,7 +110,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
 
             if (existingListing == null)
             {
-                throw new InvalidOperationException();
+                throw new ListingNotFoundException(request.Id.Value);
             }
 
             Listing listingToUpdate = new Listing()
@@ -121,18 +123,19 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                 Details = request.Details,
                 Price = request.Price,
                 Status = existingListing.Status,
+                SellerUserId = existingListing.SellerUserId,
             };
             await _listingWriteService.UpdateListingAsync(listingToUpdate);
 
             return listingToUpdate;
         }
-        private async Task UpdateListings(Guid listingGroupId, IEnumerable<UpdateListingRequest> requests)
+        private async Task UpdateListings(Guid listingGroupId, IEnumerable<UpdateListingRequest> requests, Guid sellerUserId)
         {
             Dictionary<Guid, Listing> listingsFromUpdate = new Dictionary<Guid, Listing>();
             List<ListingAggregate> listingAggregates = new List<ListingAggregate>();
             foreach (UpdateListingRequest request in requests)
             {
-                Listing listingFromUpdate = await UpdateListing(listingGroupId, request);
+                Listing listingFromUpdate = await UpdateListing(listingGroupId, request, sellerUserId);
                 listingsFromUpdate[listingFromUpdate.Id] = listingFromUpdate;
                 
                 await UpdateListingItems(listingFromUpdate.Id, request.ListingItems);
@@ -181,7 +184,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                 };
                 await _listingGroupWriteService.UpdateListingGroupAsync(listingGroupToUpdate);
 
-                await UpdateListings(listingGroupToUpdate.Id, request.Listings);
+                await UpdateListings(listingGroupToUpdate.Id, request.Listings, listingGroupToUpdate.SellerUserId);
 
                 await _unitOfWork.CommitTransactionAsync();
 

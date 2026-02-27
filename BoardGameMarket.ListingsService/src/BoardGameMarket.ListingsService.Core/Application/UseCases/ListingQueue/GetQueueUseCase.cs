@@ -1,7 +1,10 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries;
+﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingItems;
+using BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries;
+using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Aggregates;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.Listings;
+using BoardGameMarket.ListingsService.Core.Application.Exceptions;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.Queries;
 using BoardGameMarket.ListingsService.Core.Domain.Aggragates;
@@ -15,18 +18,22 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 	public class GetQueueUseCase
 	{
 		private readonly ListingQueueAggregateBuilder _listingQueueAggregateBuilder;
-		private readonly ListingOwnershipQuery _listingOwnershipQuery;
+		private readonly IListingReadService _listingReadService;
 
-        public GetQueueUseCase(ListingQueueAggregateBuilder listingQueueAggregateBuilder, ListingOwnershipQuery listingOwnershipQuery)
+        public GetQueueUseCase(ListingQueueAggregateBuilder listingQueueAggregateBuilder, IListingReadService listingReadService)
         {
             _listingQueueAggregateBuilder = listingQueueAggregateBuilder;
-            _listingOwnershipQuery = listingOwnershipQuery;
+            _listingReadService = listingReadService;
         }
 
         public async Task<ListingQueueInfo> Execute(Guid listingId, Guid requesterUserId)
 		{
-			Guid SellerUserId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
-			if (SellerUserId != requesterUserId)
+			Listing? listing = await _listingReadService.GetListingByIdAsync(listingId);
+			if (listing == null)
+			{
+                throw new ListingNotFoundException(listingId);
+            }
+			if (listing.SellerUserId != requesterUserId)
 			{
 				throw new UnauthorizedAccessException("Seller/Requester mismatch");
 			}

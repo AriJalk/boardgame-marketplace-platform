@@ -1,6 +1,8 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries;
+using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.Listings;
+using BoardGameMarket.ListingsService.Core.Application.Exceptions;
 using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.Queries;
@@ -14,19 +16,23 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
     public class GetListingQueueEntryByUserIdUseCase
     {
         private readonly IListingQueueEntryReadService _listingQueueEntryReadService;
-        private readonly ListingOwnershipQuery _listingOwnershipQuery;
+        private readonly IListingReadService _listingReadService;
 
-        public GetListingQueueEntryByUserIdUseCase(IListingQueueEntryReadService listingQueueEntryReadService, ListingOwnershipQuery listingOwnershipQuery)
+        public GetListingQueueEntryByUserIdUseCase(IListingQueueEntryReadService listingQueueEntryReadService, IListingReadService listingReadService)
         {
             _listingQueueEntryReadService = listingQueueEntryReadService;
-            _listingOwnershipQuery = listingOwnershipQuery;
+            _listingReadService = listingReadService;
         }
 
         public async Task<ListingQueueEntryInfo?> ExecuteAsync(Guid listingId, Guid subscriberUserId, Guid requesterUserId)
         {
-            Guid SellerUserId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
+            Listing? listing = await _listingReadService.GetListingByIdAsync(listingId);
+            if (listing == null)
+            {
+                throw new ListingNotFoundException(listingId);
+            }
 
-            if (requesterUserId != subscriberUserId && requesterUserId != SellerUserId)
+            if (requesterUserId != subscriberUserId && requesterUserId != listing.SellerUserId)
             {
                 throw new UnauthorizedAccessException();
             }

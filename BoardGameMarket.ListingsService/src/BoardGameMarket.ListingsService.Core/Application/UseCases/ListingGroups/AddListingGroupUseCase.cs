@@ -26,7 +26,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
             _unitOfWork = unitOfWork;
         }
 
-        private Listing CreateListing(CreateListingRequest request, Guid listingGroupId)
+        private Listing CreateListing(CreateListingRequest request, Guid listingGroupId, Guid sellerUserId)
         {
             return new Listing()
             {
@@ -38,6 +38,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                 Status = ListingStatus.Active,
                 CreatedAt = DateTime.UtcNow,
                 ModifiedAt = DateTime.UtcNow,
+                SellerUserId = sellerUserId,
             };
         }
 
@@ -73,7 +74,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
             List<ListingItem> listingItemsToAdd = new List<ListingItem>();
             foreach (CreateListingRequest listingRequest in listingGroupRequest.Listings)
             {
-                Listing listingToAdd = CreateListing(listingRequest, listingGroupToAdd.Id);
+                Listing listingToAdd = CreateListing(listingRequest, listingGroupToAdd.Id, listingGroupRequest.SellerUserId);
                 listingsToAdd.Add(listingToAdd);
                 foreach (CreateListingItemRequest listingItemRequest in listingRequest.ListingItems)
                 {

@@ -1,5 +1,7 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries;
+using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingQueueEntries;
+using BoardGameMarket.ListingsService.Core.Application.Exceptions;
 using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.Queries;
@@ -17,20 +19,24 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
         private readonly IListingQueueEntryReadService _listingQueueEntryReadService;
         private readonly IListingQueueEntryWriteService _listingQueueEntryWriteService;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ListingOwnershipQuery _listingOwnershipQuery;
+        private readonly IListingReadService _listingReadService;
 
-        public UpdateListingQueueEntryPriorityUseCase(IListingQueueEntryReadService listingQueueEntryReadService, IListingQueueEntryWriteService listingQueueEntryWriteService, IUnitOfWork unitOfWork, ListingOwnershipQuery listingOwnershipQuery)
+        public UpdateListingQueueEntryPriorityUseCase(IListingQueueEntryReadService listingQueueEntryReadService, IListingQueueEntryWriteService listingQueueEntryWriteService, IUnitOfWork unitOfWork, IListingReadService listingReadService)
         {
             _listingQueueEntryReadService = listingQueueEntryReadService;
             _listingQueueEntryWriteService = listingQueueEntryWriteService;
             _unitOfWork = unitOfWork;
-            _listingOwnershipQuery = listingOwnershipQuery;
+            _listingReadService = listingReadService;
         }
 
         public async Task ExecuteAsync(Guid listingId, Guid listingQueueEntryId, UpdateListingQueueEntryPriorityRequest request, Guid requesterUserId)
         {
-            Guid SellerUserId = await _listingOwnershipQuery.GetSellerUserIdByListingIdAsync(listingId);
-            if (SellerUserId != requesterUserId)
+            Listing? listing = await _listingReadService.GetListingByIdAsync(listingId);
+            if (listing == null)
+            {
+                throw new ListingNotFoundException(listingId);
+            }
+            if (listing.SellerUserId != requesterUserId)
             {
                 throw new UnauthorizedAccessException();
             }
