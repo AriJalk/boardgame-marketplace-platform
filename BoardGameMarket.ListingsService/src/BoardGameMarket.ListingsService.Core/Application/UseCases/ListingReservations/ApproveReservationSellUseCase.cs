@@ -1,7 +1,7 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingReservations;
 using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
-using BoardGameMarket.ListingsService.Core.Application.Access.ListingsSold;
-using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingSold;
+using BoardGameMarket.ListingsService.Core.Application.Access.ListingSales;
+using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingSale;
 using BoardGameMarket.ListingsService.Core.Application.Exceptions;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
@@ -17,24 +17,24 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingReser
     {
         private readonly IListingReservationReadService _listingReservationReadService;
         private readonly IListingReservationWriteService _listingReservationWriteService;
-        private readonly IListingSoldReadService _listingSoldReadService;
-        private readonly IListingSoldWriteService _listingSoldWriteService;
+        private readonly IListingSaleReadService _listingSaleReadService;
+        private readonly IListingSaleWriteService _listingSaleWriteService;
         private readonly IListingReadService _listingReadService;
         private readonly IListingWriteService _listingWriteService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ApproveReservationSellUseCase(IListingReservationReadService listingReservationReadService, IListingReservationWriteService listingReservationWriteService, IListingSoldReadService listingSoldReadService, IListingSoldWriteService listingSoldWriteService, IListingReadService listingReadService, IListingWriteService listingWriteService, IUnitOfWork unitOfWork)
+        public ApproveReservationSellUseCase(IListingReservationReadService listingReservationReadService, IListingReservationWriteService listingReservationWriteService, IListingSaleReadService listingSaleReadService, IListingSaleWriteService listingSaleWriteService, IListingReadService listingReadService, IListingWriteService listingWriteService, IUnitOfWork unitOfWork)
         {
             _listingReservationReadService=listingReservationReadService;
             _listingReservationWriteService=listingReservationWriteService;
-            _listingSoldReadService=listingSoldReadService;
-            _listingSoldWriteService=listingSoldWriteService;
+            _listingSaleReadService=listingSaleReadService;
+            _listingSaleWriteService=listingSaleWriteService;
             _listingReadService=listingReadService;
             _listingWriteService=listingWriteService;
             _unitOfWork=unitOfWork;
         }
 
-        public async Task<ListingSoldInfo> ExecuteAsync(Guid reservationId, Guid requesterUserId)
+        public async Task<ListingSaleInfo> ExecuteAsync(Guid reservationId, Guid requesterUserId)
         {
             try
             {
@@ -48,10 +48,10 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingReser
                 {
                     throw new UnauthorizedAccessException();
                 }
-                ListingSold? existingListingSold = await _listingSoldReadService.GetListingSoldByListingId(reservation.ListingId);
-                if (existingListingSold != null)
+                ListingSale? existingListingSale = await _listingSaleReadService.GetListingSaleByListingId(reservation.ListingId);
+                if (existingListingSale != null)
                 {
-                    return existingListingSold.ToListingSoldInfo();
+                    return existingListingSale.ToListingSaleInfo();
                 }
                 if (reservation.Status != ReservationStatus.Reserved)
                 {
@@ -62,7 +62,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingReser
                 {
                     throw new ListingNotFoundException(reservation.ListingId);
                 }
-                ListingSold listingSold = new ListingSold()
+                ListingSale listingSale = new ListingSale()
                 {
                     Id = Guid.NewGuid(),
                     ReservationId = reservationId,
@@ -75,12 +75,12 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingReser
                 reservation.Status = ReservationStatus.Sold;
                 listing.Status = ListingStatus.Sold;
                 await _listingReservationWriteService.UpdateListingReservationAsync(reservation);
-                await _listingSoldWriteService.AddListingSoldAsync(listingSold);
+                await _listingSaleWriteService.AddListingSaleAsync(listingSale);
                 await _listingWriteService.UpdateListingAsync(listing);
 
                 await _unitOfWork.CommitTransactionAsync();
 
-                return listingSold.ToListingSoldInfo();
+                return listingSale.ToListingSaleInfo();
             }
 
             catch

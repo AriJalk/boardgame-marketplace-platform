@@ -13,7 +13,7 @@ using BoardGameMarket.MarketGateway.API.Application.ListingQueues.UseCases;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Assemblers;
 using BoardGameMarket.MarketGateway.API.Application.ListingReservations.Services;
 using BoardGameMarket.MarketGateway.API.Application.ListingReservations.UseCases;
-using BoardGameMarket.MarketGateway.API.Application.ListingsSold.Services;
+using BoardGameMarket.MarketGateway.API.Application.ListingSales.Services;
 
 namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 {
@@ -43,7 +43,7 @@ namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 			services.AddScoped<QueuesDataService>();
 			services.AddScoped<ListingsHttpClient>();
 			services.AddScoped<ListingReservationDataService>();
-			services.AddScoped<ListingsSoldDataService>();
+			services.AddScoped<ListingSalesDataService>();
 
 			// Use Cases
 			services.AddScoped<GetListingGroupDetailUseCase>();

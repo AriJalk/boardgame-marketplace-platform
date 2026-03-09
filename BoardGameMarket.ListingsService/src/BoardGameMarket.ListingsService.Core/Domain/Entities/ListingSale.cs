@@ -1,6 +1,6 @@
 ﻿namespace BoardGameMarket.ListingsService.Core.Domain.Entities
 {
-	public class ListingSold
+	public class ListingSale
 	{
 		public Guid Id { get; set; }
 		public Guid ListingId { get; set; }

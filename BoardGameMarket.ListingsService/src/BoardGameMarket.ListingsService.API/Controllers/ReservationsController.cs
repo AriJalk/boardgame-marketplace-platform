@@ -1,6 +1,6 @@
 ﻿using BoardGameMarket.ListingsService.API.Helpers;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingReservations;
-using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingSold;
+using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingSale;
 using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingReservations;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using Microsoft.AspNetCore.Http;
@@ -41,14 +41,14 @@ namespace BoardGameMarket.ListingsService.API.Controllers
         }
 
         [HttpPost("{listingReservationId:guid}/sell")]
-        public async Task<ActionResult<ListingSoldInfo>> SellToReservation(Guid listingReservationId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
+        public async Task<ActionResult<ListingSaleInfo>> SellToReservation(Guid listingReservationId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
         {
-            ListingSoldInfo listingSold = await _approveReservationSellUseCase.ExecuteAsync(listingReservationId, requesterUserId);
-            return CreatedAtAction(nameof(GetListingReservation), new { listingReservationId = listingSold.Id }, listingSold);
+            ListingSaleInfo listingSale = await _approveReservationSellUseCase.ExecuteAsync(listingReservationId, requesterUserId);
+            return CreatedAtAction(nameof(GetListingReservation), new { listingReservationId = listingSale.Id }, listingSale);
         }
 
         [HttpPost("{listingReservationId:Guid}/cancel")]
-        public async Task<ActionResult<ListingSoldInfo>> CancelReservation(Guid listingReservationId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
+        public async Task<ActionResult<ListingSaleInfo>> CancelReservation(Guid listingReservationId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
         {
             await _cancelReservationUseCase.ExecuteAsync(listingReservationId, requesterUserId);
 

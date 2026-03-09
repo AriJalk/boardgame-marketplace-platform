@@ -3,7 +3,7 @@ using BoardGameMarket.ListingsService.Core.Application.Access.ListingItems;
 using BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.Access.ListingReservations;
 using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
-using BoardGameMarket.ListingsService.Core.Application.Access.ListingsSold;
+using BoardGameMarket.ListingsService.Core.Application.Access.ListingSales;
 using BoardGameMarket.ListingsService.Core.Application.Aggregates;
 using BoardGameMarket.ListingsService.Core.Application.Identity;
 using BoardGameMarket.ListingsService.Core.Application.Queries;
@@ -50,9 +50,9 @@ namespace BoardGameMarket.ListingsService.Core
 			services.AddScoped<IListingQueueEntryReadService, ListingQueueEntryReadService>();
 
 
-			// ListingSold services
-			services.AddScoped<IListingSoldWriteService, ListingSoldWriteService>();
-			services.AddScoped<IListingSoldReadService, ListingSoldReadService>();
+			// ListingSale services
+			services.AddScoped<IListingSaleWriteService, ListingSaleWriteService>();
+			services.AddScoped<IListingSaleReadService, ListingSaleReadService>();
 
 			// ListingReservation services
 			services.AddScoped<IListingReservationReadService, ListingReservationReadService>();

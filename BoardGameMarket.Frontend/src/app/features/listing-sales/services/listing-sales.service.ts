@@ -18,7 +18,7 @@ export class ListingSalesService {
 
   getListingSale(listingSaleId: string): Observable<ListingSale> {
     return this.httpClient.get<ListingSale>(
-      `${this.apiConfig.apiEndpoint}/listings-sold/${listingSaleId}`,
+      `${this.apiConfig.apiEndpoint}/listing-sales/${listingSaleId}`,
       {
         headers: this.authService.headers,
       },
@@ -26,7 +26,7 @@ export class ListingSalesService {
   }
 
   getMyListingSales(): Observable<ListingSale[]> {
-    return this.httpClient.get<ListingSale[]>(`${this.apiConfig.apiEndpoint}/listings-sold/my`, {
+    return this.httpClient.get<ListingSale[]>(`${this.apiConfig.apiEndpoint}/listing-sales/my`, {
       headers: this.authService.headers,
     });
   }

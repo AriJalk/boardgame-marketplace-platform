@@ -2,7 +2,7 @@
 using BoardGameMarket.MarketGateway.API.Application.ListingReservations.ServiceContracts;
 using BoardGameMarket.MarketGateway.API.Application.ListingReservations.Services;
 using BoardGameMarket.MarketGateway.API.Application.ListingReservations.UseCases;
-using BoardGameMarket.MarketGateway.API.Application.ListingsSold.ServiceClients;
+using BoardGameMarket.MarketGateway.API.Application.ListingSales.ServiceClients;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -42,9 +42,9 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         [HttpPost("{listingReservationId:guid}/sell")]
         public async Task <ActionResult<Guid>> ApproveSellToReservation(Guid listingReservationId)
         {
-            ListingSoldInfo listingSoldInfo = await _listingReservationDataService.ApproveSellToReservation(listingReservationId);
+            ListingSaleInfo listingSaleInfo = await _listingReservationDataService.ApproveSellToReservation(listingReservationId);
 
-            return Ok(listingSoldInfo.Id);
+            return Ok(listingSaleInfo.Id);
         }
 
         [HttpPost("{listingReservationId:guid}/cancel")]

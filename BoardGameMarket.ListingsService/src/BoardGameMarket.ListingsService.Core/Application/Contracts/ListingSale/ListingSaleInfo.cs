@@ -1,6 +1,10 @@
-﻿namespace BoardGameMarket.MarketGateway.API.Application.ListingsSold.ServiceClients
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace BoardGameMarket.ListingsService.Core.Application.Contracts.ListingSale
 {
-    public record ListingSoldInfo(
+    public record ListingSaleInfo(
         Guid Id,
         Guid ListingId,
         DateTime CompletedAt,
