@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingsSold
 {
-	internal class ListingSoldReadService : IListingSoldReadService
+    internal class ListingSoldReadService : IListingSoldReadService
 	{
 		private readonly IListingSoldRepository _listingSoldRepository;
 
@@ -43,5 +43,10 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingsSold
 		{
 			return await _listingSoldRepository.GetListingsSoldBySellerUserIdAsync(sellerUserId);
 		}
-	}
+
+        public async Task<IEnumerable<ListingSold>> GetListingsSoldByUserIdAsync(Guid userId)
+        {
+            return await _listingSoldRepository.GetListingsSoldByUserIdAsync(userId);
+        }
+    }
 }

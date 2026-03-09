@@ -58,5 +58,10 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 		{
 			return Task.FromResult(_listingSolds.Where(l => l.SellerUserId == sellerUserId));
 		}
-	}
+
+        public Task<IEnumerable<ListingSold>> GetListingsSoldByUserIdAsync(Guid userId)
+        {
+            return Task.FromResult(_listingSolds.Where(l => l.SellerUserId == userId || l.BuyerUserId == userId));
+        }
+    }
 }

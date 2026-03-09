@@ -1,0 +1,5 @@
+@if (listingSales$ | async; as listingSales) {
+  @for (listingSale of listingSales; track listingSale.id) {
+    <bgm-listing-sale-card [listingSale]="listingSale"></bgm-listing-sale-card>
+  }
+}

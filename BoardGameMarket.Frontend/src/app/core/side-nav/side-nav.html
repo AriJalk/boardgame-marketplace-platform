@@ -1,4 +1,4 @@
-<h3 style="justify-self: center;">Boardgame Market</h3>
+<h3 style="justify-self: center">Boardgame Market</h3>
 <img src="images/powered-by-bgg.webp" style="width: 100%" />
 <div style="text-align: center">
   <button
@@ -32,5 +32,13 @@
     (click)="drawer.toggle()"
   >
     My Reservations
+  </button>
+  <button
+    class="margin-5"
+    matButton="elevated"
+    [routerLink]="['/my-listing-sales']"
+    (click)="drawer.toggle()"
+  >
+    My Sold Listings
   </button>
 </div>

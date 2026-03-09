@@ -10,5 +10,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingsSold
 		Task<IEnumerable<ListingSold>> GetListingsSoldByBuyerUserIdAsync(Guid buyerUserId);
 		Task<IEnumerable<ListingSold>> GetListingsSoldByDateRange(DateTime startDate, DateTime endDate);
 		Task<IEnumerable<ListingSold>> GetListingsSoldBySellerUserIdAsync(Guid sellerUserId);
+		Task<IEnumerable<ListingSold>> GetListingsSoldByUserIdAsync(Guid userId);
 	}
 }
