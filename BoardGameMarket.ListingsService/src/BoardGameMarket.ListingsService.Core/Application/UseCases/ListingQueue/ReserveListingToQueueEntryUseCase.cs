@@ -56,7 +56,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
                     throw new UnauthorizedAccessException();
                 }
                 ListingReservation? existingReservation = await _listingReservationReadService.GetListingReservationByListingId(listingId);
-                if (existingReservation != null)
+                if (existingReservation != null && existingReservation.Status == ReservationStatus.Reserved)
                 {
                     return existingReservation.Id;
                 }

@@ -1,4 +1,4 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.Contracts;
+﻿using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingSold;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;

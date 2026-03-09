@@ -5,10 +5,11 @@ import { QueueEntry } from '../../../models/quque-entry.model';
 import { DatePipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'bgm-time-queue-entry-table',
-  imports: [MatTableModule, ScrollingModule, DatePipe, MatIconModule, MatButtonModule],
+  imports: [MatTableModule, ScrollingModule, DatePipe, MatIconModule, MatButtonModule, RouterLink],
   templateUrl: './time-queue-entry-table.html',
   styleUrl: './time-queue-entry-table.css',
 })

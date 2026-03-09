@@ -5,10 +5,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTable, MatTableModule } from '@angular/material/table';
 import { QueueEntry, UpdatePriorityRequest } from '../../../models/quque-entry.model';
 import { MatButtonModule } from '@angular/material/button';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'bgm-priority-queue-entry-table',
-  imports: [CdkDropList, CdkDrag, MatTableModule, MatIconModule, DatePipe, MatButtonModule],
+  imports: [
+    CdkDropList,
+    CdkDrag,
+    MatTableModule,
+    MatIconModule,
+    DatePipe,
+    MatButtonModule,
+    RouterLink,
+  ],
   templateUrl: './priority-queue-entry-table.html',
   styleUrl: './priority-queue-entry-table.css',
 })

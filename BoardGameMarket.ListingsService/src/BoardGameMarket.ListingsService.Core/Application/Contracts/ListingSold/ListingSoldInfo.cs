@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BoardGameMarket.ListingsService.Core.Application.Contracts
+namespace BoardGameMarket.ListingsService.Core.Application.Contracts.ListingSold
 {
     public record ListingSoldInfo(
         Guid Id,

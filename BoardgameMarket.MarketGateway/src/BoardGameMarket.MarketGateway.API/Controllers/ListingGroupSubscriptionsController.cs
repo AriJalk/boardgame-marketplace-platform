@@ -12,26 +12,26 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
 {
-    [Route("api/subscriptions")]
+    [Route("api/listing-groups")]
     [ApiController]
-    public class SubscriptionsController : ControllerBase
+    public class ListingGroupSubscriptionsController : ControllerBase
     {
         private readonly QueuesDataService _queueService;
         private readonly GetFilteredListingGroupSummariesUseCase _getFilteredListingGroupSummariesUseCase;
         private readonly LoginService _loginService;
 
-        public SubscriptionsController(QueuesDataService queueService, GetFilteredListingGroupSummariesUseCase getFilteredListingGroupSummariesUseCase, LoginService loginService)
+        public ListingGroupSubscriptionsController(QueuesDataService queueService, GetFilteredListingGroupSummariesUseCase getFilteredListingGroupSummariesUseCase, LoginService loginService)
         {
             _queueService = queueService;
             _getFilteredListingGroupSummariesUseCase = getFilteredListingGroupSummariesUseCase;
             _loginService = loginService;
         }
 
-        private async Task<ListingGroupSummaryDto[]> GetFilteredListingGroupsWithSubscription(Guid subscribedUserId, Guid? SellerUserId = null)
+        private async Task<ListingGroupSummaryDto[]> GetFilteredListingGroupsWithSubscription(Guid subscriberUserId, Guid? SellerUserId = null)
         {
             ListingQueueEntryFilter queueEntryFilter = new ListingQueueEntryFilter()
             {
-                UserId = subscribedUserId,
+                UserId = subscriberUserId,
             };
             ListingQueueEntryInfo[] queueEntries = await _queueService.GetFilteredQueueEntriesAsync(queueEntryFilter);
             Guid[] subscribedListingIds = queueEntries.Select(qe => qe.ListingId).ToArray();
@@ -52,7 +52,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
                 ListingSummaryDto[] enrichedListings = ListingEnricher.EnrichListingDtosWithIsSubscribed(lg.Listings, subscribedListingIds.ToHashSet());
                 return (
                 Group: lg with { Listings = enrichedListings },
-                HasSubscribed: enrichedListings.Any(l => l.IsSubscribed == true && l.Status == ListingStatus.Active));
+                HasSubscribed: enrichedListings.Any(l => l.IsSubscribed == true && (l.Status == ListingStatus.Active || l.Status == ListingStatus.Reserved)));
             })
                 .Where(x => x.HasSubscribed)
                 .Select(x => x.Group)
@@ -62,7 +62,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         }
 
 
-        [HttpGet("listing-groups")]
+        [HttpGet("subscriptions")]
         public async Task<ActionResult<ListingGroupSummaryDto[]>> GetListingGroupsByLoggedUserSubscriptions()
         {
             if (_loginService.LoggedInUser == null)
@@ -77,7 +77,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         }
 
 
-        [HttpGet("my-listing-groups/subscriber/{subscribedUserId:guid}")]
+        [HttpGet("owned/subscribers/{subscriberUserId:guid}")]
         public async Task<ActionResult<ListingGroupSummaryDto[]>> GetLoggedUserListingGroupsBySubscriber(Guid subscriberUserId)
         {
             if (_loginService.LoggedInUser == null)

@@ -25,7 +25,7 @@
   <ng-container matColumnDef="buyer">
     <mat-header-cell *matHeaderCellDef>Buyer</mat-header-cell>
     <mat-cell *matCellDef="let element">
-      <a href="">{{ element.buyer.displayName }}</a>
+      <a [routerLink]="['/users', element.buyer.userId]">{{ element.buyer.displayName }}</a>
     </mat-cell>
   </ng-container>
 

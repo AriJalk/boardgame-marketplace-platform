@@ -54,10 +54,10 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 			return Ok(entry);
 		}
 
-		[HttpGet("by-user/{subscribedUserId:guid}")]
-		public async Task<ActionResult<ListingQueueEntryInfo>> GetListingQueueEntryByUserId(Guid listingId, Guid subscribedUserId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
+		[HttpGet("by-user/{subscriberUserId:guid}")]
+		public async Task<ActionResult<ListingQueueEntryInfo>> GetListingQueueEntryByUserId(Guid listingId, Guid subscriberUserId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
 		{
-			ListingQueueEntryInfo? queueEntry = await _getListingQueueEntryByUserIdUseCase.ExecuteAsync(listingId, subscribedUserId, requesterUserId);
+			ListingQueueEntryInfo? queueEntry = await _getListingQueueEntryByUserIdUseCase.ExecuteAsync(listingId, subscriberUserId, requesterUserId);
 			if (queueEntry == null)
 			{
 				return NoContent();

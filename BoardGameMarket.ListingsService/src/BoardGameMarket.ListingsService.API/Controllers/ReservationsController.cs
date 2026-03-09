@@ -1,6 +1,6 @@
 ﻿using BoardGameMarket.ListingsService.API.Helpers;
-using BoardGameMarket.ListingsService.Core.Application.Contracts;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingReservations;
+using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingSold;
 using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingReservations;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using Microsoft.AspNetCore.Http;

@@ -44,11 +44,11 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			return queue;
 		}
 
-		public async Task<ListingQueueEntryInfo?> GetListingSubscriptionByUserAsync(Guid listingId, Guid subscribedUserId)
+		public async Task<ListingQueueEntryInfo?> GetListingSubscriptionByUserAsync(Guid listingId, Guid subscriberUserId)
 		{
 
 			Guid requesterUserId = _loginService.GetUserIdOrThrow();
-            string uri = $"api/listings/{listingId}/queue-entries/by-user/{subscribedUserId}";
+            string uri = $"api/listings/{listingId}/queue-entries/by-user/{subscriberUserId}";
 			HttpRequestMessage request = HttpClientHelpers.BuildRequest(HttpMethod.Get, uri, requesterUserId);
 
 			HttpResponseMessage response = await _httpClient.SendAsync(request);

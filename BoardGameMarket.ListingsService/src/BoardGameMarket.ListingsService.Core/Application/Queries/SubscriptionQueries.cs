@@ -16,7 +16,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Queries
 			_listingQueueEntryReadService = listingQueueEntryReadService;
 		}
 
-		public async Task<IReadOnlyCollection<Guid>> GetListingsBySubscribedUser(Guid userId)
+		public async Task<IReadOnlyCollection<Guid>> GetListingsBySubscriber(Guid userId)
 		{
 			ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
 			{

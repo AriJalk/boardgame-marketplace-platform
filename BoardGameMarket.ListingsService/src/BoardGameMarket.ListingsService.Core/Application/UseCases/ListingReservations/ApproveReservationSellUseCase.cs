@@ -1,7 +1,7 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingReservations;
 using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Access.ListingsSold;
-using BoardGameMarket.ListingsService.Core.Application.Contracts;
+using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingSold;
 using BoardGameMarket.ListingsService.Core.Application.Exceptions;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;

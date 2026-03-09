@@ -62,7 +62,7 @@ export class ListingGroupService {
 
   getMySubscribedListingGroups(): Observable<ListingGroupSummary[]> {
     return this.httpClient.get<ListingGroupSummary[]>(
-      `${this.apiConfig.apiEndpoint}/subscriptions/listing-groups`,
+      `${this.apiConfig.apiEndpoint}/listing-groups/subscriptions`,
       { headers: this.authService.headers },
     );
   }
@@ -71,7 +71,7 @@ export class ListingGroupService {
     subscriberUserId: string,
   ): Observable<ListingGroupSummary[]> {
     return this.httpClient.get<ListingGroupSummary[]>(
-      `${this.apiConfig.apiEndpoint}/subscriptions/my-listing-groups/subscriber/${subscriberUserId}`,
+      `${this.apiConfig.apiEndpoint}/listing-groups/owned/subscribers/${subscriberUserId}`,
       { headers: this.authService.headers },
     );
   }

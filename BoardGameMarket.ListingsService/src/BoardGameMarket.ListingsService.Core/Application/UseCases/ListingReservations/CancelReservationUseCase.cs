@@ -1,4 +1,5 @@
-﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingReservations;
+﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries;
+using BoardGameMarket.ListingsService.Core.Application.Access.ListingReservations;
 using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Access.ListingsSold;
 using BoardGameMarket.ListingsService.Core.Application.Contracts;
@@ -20,15 +21,19 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingReser
         private readonly IListingSoldReadService _listingSoldReadService;
         private readonly IListingReadService _listingReadService;
         private readonly IListingWriteService _listingWriteService;
+        private readonly IListingQueueEntryReadService _listingQueueEntryReadService;
+        private readonly IListingQueueEntryWriteService _listingQueueEntryWriteService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CancelReservationUseCase(IListingReservationReadService listingReservationReadService, IListingReservationWriteService listingReservationWriteService, IListingSoldReadService listingSoldReadService, IListingReadService listingReadService, IListingWriteService listingWriteService, IUnitOfWork unitOfWork)
+        public CancelReservationUseCase(IListingReservationReadService listingReservationReadService, IListingReservationWriteService listingReservationWriteService, IListingSoldReadService listingSoldReadService, IListingReadService listingReadService, IListingWriteService listingWriteService, IListingQueueEntryReadService listingQueueEntryReadService, IListingQueueEntryWriteService listingQueueEntryWriteService, IUnitOfWork unitOfWork)
         {
             _listingReservationReadService=listingReservationReadService;
             _listingReservationWriteService=listingReservationWriteService;
             _listingSoldReadService=listingSoldReadService;
             _listingReadService=listingReadService;
             _listingWriteService=listingWriteService;
+            _listingQueueEntryReadService=listingQueueEntryReadService;
+            _listingQueueEntryWriteService=listingQueueEntryWriteService;
             _unitOfWork=unitOfWork;
         }
 
@@ -60,11 +65,18 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingReser
                 {
                     throw new ListingNotFoundException(reservation.ListingId);
                 }
+                ListingQueueEntry? queueEntry = await _listingQueueEntryReadService.GetListingQueueEntryByIdAsync(reservation.ListingQueueEntryId);
+                if (queueEntry == null)
+                {
+                    throw new KeyNotFoundException();
+                }
 
                 reservation.Status = ReservationStatus.Cancelled;
                 listing.Status = ListingStatus.Active;
+                queueEntry.Status = QueueStatus.Queued;
                 await _listingReservationWriteService.UpdateListingReservationAsync(reservation);
                 await _listingWriteService.UpdateListingAsync(listing);
+                await _listingQueueEntryWriteService.UpdateListingQueueEntryAsync(queueEntry);
 
                 await _unitOfWork.CommitTransactionAsync();
             }
