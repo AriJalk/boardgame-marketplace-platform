@@ -8,4 +8,5 @@ export interface Reservation {
   listingQueueEntry: QueueEntry;
   reservedAt: Date;
   listingGroupMetadata: ListingGroupMetadata;
+  status: string;
 }

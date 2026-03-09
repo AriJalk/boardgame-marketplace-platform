@@ -7,6 +7,7 @@ using BoardGameMarket.ListingsService.Core.Application.Contracts.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
+using BoardGameMarket.ListingsService.Core.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -31,7 +32,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingReser
             IEnumerable<ListingReservation> buyerReservations = await _listingReservationReadService.GetListingsReservationByBuyerUserIdAsync(userId);
             IEnumerable<ListingReservation> sellerReservations = await _listingReservationReadService.GetListingsReservationBySellerUserIdAsync(userId);
 
-            IEnumerable<ListingReservation> combined = buyerReservations.Concat(sellerReservations).OrderByDescending(lr => lr.CreatedAt);
+            IEnumerable<ListingReservation> combined = buyerReservations.Concat(sellerReservations).Where(lr => lr.Status == ReservationStatus.Reserved).OrderByDescending(lr => lr.CreatedAt);
             HashSet<Guid> listingIds = new HashSet<Guid>();
             HashSet<Guid> queueEntryIds = new HashSet<Guid>();
             foreach (ListingReservation reservation in combined)

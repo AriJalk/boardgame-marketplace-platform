@@ -21,4 +21,20 @@ export class ReservationsService {
       headers: this.authService.headers,
     });
   }
+
+  sellReservation(reservation: Reservation) {
+    return this.httpClient.post<string>(
+      `${this.apiConfig.apiEndpoint}/reservations/${reservation.id}/sell`,
+      null,
+      { headers: this.authService.headers },
+    );
+  }
+
+  cancelReservation(reservation: Reservation) {
+    return this.httpClient.post<string>(
+      `${this.apiConfig.apiEndpoint}/reservations/${reservation.id}/cancel`,
+      null,
+      { headers: this.authService.headers },
+    );
+  }
 }

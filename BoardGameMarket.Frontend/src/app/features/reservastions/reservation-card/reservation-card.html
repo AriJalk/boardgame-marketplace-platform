@@ -1,14 +1,34 @@
 <h4>Id: {{ reservation.id }}</h4>
 <bgm-listing-summary-card [listing]="reservation.listing"> </bgm-listing-summary-card>
-<div>
-  Seller:
-  <a [routerLink]="['/users', reservation.listing.seller.userId]">{{
-    reservation.listing.seller.displayName
-  }}</a>
-  Buyer:
-  <a [routerLink]="['/users', reservation.listingQueueEntry.buyer.userId]">{{
-    reservation.listingQueueEntry.buyer.displayName
-  }}</a>
-</div>
+<div class="flex-column">
+  <div>
+    Seller:
+    <a [routerLink]="['/users', reservation.listing.seller.userId]">{{
+      reservation.listing.seller.displayName
+    }}</a>
+  </div>
+  <div>
+    Buyer:
+    <a [routerLink]="['/users', reservation.listingQueueEntry.buyer.userId]">{{
+      reservation.listingQueueEntry.buyer.displayName
+    }}</a>
+  </div>
+  <div>Reserved at: {{ reservation.reservedAt }}</div>
 
-{{ reservation.listingGroupMetadata | json }}
+  <button
+    matButton
+    type="button"
+    (click)="requestSell()"
+    [disabled]="reservation.status !== 'reserved'"
+  >
+    Sell
+  </button>
+  <button
+    matButton
+    type="button"
+    (click)="requestCancel()"
+    [disabled]="reservation.status !== 'reserved'"
+  >
+    Cancel
+  </button>
+</div>

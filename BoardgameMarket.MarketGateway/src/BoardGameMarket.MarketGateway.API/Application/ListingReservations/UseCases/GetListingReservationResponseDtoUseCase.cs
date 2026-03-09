@@ -40,7 +40,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingReservations.UseC
             UserSummaryDto seller = (await _usersDataService.GetUser(reservation.Listing.SellerUserId)).ToUserSummaryDto();
             ListingGroupMetadataDto metadata = (await _listingGroupsDataService.GetListingGroupMetadata(reservation.Listing.ListingGroupId)).ToListingGroupMetadataDto(seller);
 
-            return new ListingReservationResponseDto(reservation.Id, reservation.Listing.ToListingSummaryDto(seller), reservation.ListingQueueEntry.ToListingQueueEntryResponseDto(buyer), reservation.ReservedAt, metadata);
+            return new ListingReservationResponseDto(reservation.Id, reservation.Listing.ToListingSummaryDto(seller), reservation.ListingQueueEntry.ToListingQueueEntryResponseDto(buyer), reservation.ReservedAt, metadata, reservation.Status);
         }
     }
 }

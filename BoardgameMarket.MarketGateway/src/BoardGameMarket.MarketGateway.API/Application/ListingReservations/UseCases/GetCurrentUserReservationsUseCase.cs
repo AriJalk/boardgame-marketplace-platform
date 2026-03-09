@@ -51,7 +51,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingReservations.UseC
                 ListingReservationResponseDto dto = new ListingReservationResponseDto(reservation.Id,
                     reservation.Listing.ToListingSummaryDto(userDtos[SellerUserId]),
                     reservation.ListingQueueEntry.ToListingQueueEntryResponseDto(userDtos[BuyerUserId]),
-                    reservation.ReservedAt, metadata);
+                    reservation.ReservedAt, metadata, reservation.Status);
                 dtos.Add(dto);
             }
             return dtos;

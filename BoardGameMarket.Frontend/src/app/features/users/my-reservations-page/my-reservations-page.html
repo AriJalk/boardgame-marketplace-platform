@@ -1,5 +1,9 @@
 @if (reservations$ | async; as reservations) {
   @for (reservation of reservations; track reservation.id) {
-    <bgm-reservation-card [reservation]="reservation"></bgm-reservation-card>
+    <bgm-reservation-card
+      [reservation]="reservation"
+      (sellRequested)="onSellRequested($event)"
+      (cancelRequested)="onCancelRequested($event)"
+    ></bgm-reservation-card>
   }
 }
