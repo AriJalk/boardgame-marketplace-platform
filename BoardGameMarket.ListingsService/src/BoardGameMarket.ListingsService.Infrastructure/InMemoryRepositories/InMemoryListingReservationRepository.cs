@@ -45,5 +45,16 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
         {
             return Task.FromResult(_listingReservations.Where(lr => lr.SellerUserId == sellerUserId));
         }
+
+        public Task<int> UpdateListingReservationAsync(ListingReservation listingReservation)
+        {
+            int index = _listingReservations.FindIndex(lr => lr.Id == listingReservation.Id);
+            if (index == -1)
+            {
+                return Task.FromResult(0);
+            }
+            _listingReservations[index] = listingReservation;
+            return Task.FromResult(1);
+        }
     }
 }

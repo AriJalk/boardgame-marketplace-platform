@@ -3,8 +3,7 @@
 	public enum QueueStatus
 	{
 		Queued,
-		Approved,   // transaction approved but not finalized
-		Completed,  // transaction finished
+		Reserved,   // transaction approved but not finalized
 		Cancelled
 	}
 }

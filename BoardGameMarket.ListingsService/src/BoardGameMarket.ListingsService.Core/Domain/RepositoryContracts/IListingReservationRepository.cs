@@ -13,5 +13,6 @@ namespace BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts
         Task<IEnumerable<ListingReservation>> GetListingsReservationBySellerUserIdAsync(Guid sellerUserId);
         Task<int> AddListingReservationAsync(ListingReservation listingReservation);
         Task<int> DeleteListingReservationAsync(Guid listingReservationId);
+        Task<int> UpdateListingReservationAsync(ListingReservation listingReservation);
     }
 }

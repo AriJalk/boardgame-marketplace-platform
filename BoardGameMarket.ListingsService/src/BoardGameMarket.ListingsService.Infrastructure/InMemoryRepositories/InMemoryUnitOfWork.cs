@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 {
-	internal class InMemoryUnitOfWork : IUnitOfWork
+    internal class InMemoryUnitOfWork : IUnitOfWork
 	{
 		public Task BeginTransactionAsync()
 		{
@@ -19,7 +19,12 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 			return Task.CompletedTask;
 		}
 
-		public Task RollBackTransactionAsync()
+        public void Dispose()
+        {
+			return;
+        }
+
+        public Task RollBackTransactionAsync()
 		{
 			return Task.CompletedTask;
 		}

@@ -23,7 +23,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 		public async Task<ListingQueueInfo> GetQueueForListing(Guid listingId)
 		{
 			Guid requesterUserId = _loginService.GetUserIdOrThrow();
-			string uri = $"api/listings/{listingId}/queue";
+			string uri = $"api/listings/{listingId}/queue-entries";
 			HttpRequestMessage request = HttpClientHelpers.BuildRequest(HttpMethod.Get, uri, requesterUserId);
 
 			HttpResponseMessage response = await _httpClient.SendAsync(request);
@@ -44,11 +44,11 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			return queue;
 		}
 
-		public async Task<ListingQueueEntryInfo?> GetListingSubscriptionByUserAsync(Guid listingId, Guid subscriberUserId)
+		public async Task<ListingQueueEntryInfo?> GetListingSubscriptionByUserAsync(Guid listingId, Guid subscribedUserId)
 		{
 
 			Guid requesterUserId = _loginService.GetUserIdOrThrow();
-            string uri = $"api/listings/{listingId}/queue/subscription/user/{subscriberUserId}";
+            string uri = $"api/listings/{listingId}/queue-entries/by-user/{subscribedUserId}";
 			HttpRequestMessage request = HttpClientHelpers.BuildRequest(HttpMethod.Get, uri, requesterUserId);
 
 			HttpResponseMessage response = await _httpClient.SendAsync(request);
@@ -68,7 +68,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 
 			Guid userId = _loginService.GetUserIdOrThrow();
 
-            string uri = $"api/listings/{listingId}/queue/subscription";
+            string uri = $"api/listings/{listingId}/queue-entries";
 
 			HttpRequestMessage request = HttpClientHelpers.BuildRequest(HttpMethod.Post, uri, userId);
 
@@ -81,10 +81,10 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			return queueEntry ?? throw new InvalidDataException();
 		}
 
-		public async Task UnsubscribeFromListingAsync(Guid listingId, Guid subscriptionId)
+		public async Task UnsubscribeFromListingAsync(Guid listingId, Guid queueEntryId)
 		{
 			Guid requesterUserId = _loginService.GetUserIdOrThrow();
-            string uri = $"api/listings/{listingId}/queue/subscription/{subscriptionId}";
+            string uri = $"api/listings/{listingId}/queue-entries/{queueEntryId}";
 			HttpRequestMessage request = HttpClientHelpers.BuildRequest(HttpMethod.Delete, uri, requesterUserId);
 
 			HttpResponseMessage response = await _httpClient.SendAsync(request);
@@ -92,25 +92,11 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 			response.EnsureSuccessStatusCode();
 		}
 
-		public async Task<Guid[]> GetSubscribedListingIdsAsync(Guid userId)
-		{
-			Guid requesterUserId = _loginService.GetUserIdOrThrow();
-            string uri = $"api/subscriptions/users/{userId}/listings";
-
-			HttpRequestMessage request = HttpClientHelpers.BuildRequest(HttpMethod.Get, uri, requesterUserId);
-			HttpResponseMessage response = await _httpClient.SendAsync(request);
-
-			response.EnsureSuccessStatusCode();
-
-			Guid[] listingIds = await response.Content.ReadFromJsonAsync<Guid[]>() ?? throw new InvalidOperationException("Listing Ids payload expected");
-
-			return listingIds;
-		}
 
 		public async Task<ListingQueueEntryInfo> GetListingQueueEntryByIdAsync(Guid listingId, Guid listingQueueEntryId)
 		{
 			Guid requesterUserId = _loginService.GetUserIdOrThrow();
-            string uri = $"api/listings/{listingId}/queue/subscription/{listingQueueEntryId}";
+            string uri = $"api/listings/{listingId}/queue-entries/{listingQueueEntryId}";
 
 			HttpRequestMessage request = HttpClientHelpers.BuildRequest(HttpMethod.Get, uri, requesterUserId);
 
@@ -126,7 +112,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
         public async Task DeleteListingQueueEntryAsync(Guid listingId, Guid listingQueueEntryId)
         {
 			Guid requesterUserId = _loginService.GetUserIdOrThrow();
-            string uri = $"api/listings/{listingId}/queue/subscription/{listingQueueEntryId}";
+            string uri = $"api/listings/{listingId}/queue-entries/{listingQueueEntryId}";
 			HttpRequestMessage request = HttpClientHelpers.BuildRequest(HttpMethod.Delete, uri, requesterUserId);
 
             HttpResponseMessage response = await _httpClient.DeleteAsync(uri);
@@ -134,10 +120,10 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
             response.EnsureSuccessStatusCode();
         }
 
-        public async Task<ListingQueueEntryInfo[]> GetFilteredQueueEntries(ListingQueueEntryFilter filter)
+        public async Task<ListingQueueEntryInfo[]> GetFilteredQueueEntriesAsync(ListingQueueEntryFilter filter)
 		{
             Guid requesterUserId = _loginService.GetUserIdOrThrow();
-            string uri = $"api/subscriptions/query";
+            string uri = $"api/queue-entries/filter";
 
 			HttpRequestMessage request = HttpClientHelpers.BuildRequest(HttpMethod.Post, uri, requesterUserId, filter);
 			HttpResponseMessage response = await _httpClient.SendAsync(request);
@@ -152,7 +138,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 		public async Task AddPriorityToQueueEntry(Guid listingId, Guid listingQueueEntryId)
 		{
             Guid requesterUserId = _loginService.GetUserIdOrThrow();
-            string uri = $"api/listings/{listingId}/queue/subscription/{listingQueueEntryId}/priority";
+            string uri = $"api/listings/{listingId}/queue-entries/{listingQueueEntryId}/priority";
 
 			HttpRequestMessage request = HttpClientHelpers.BuildRequest(HttpMethod.Post, uri, requesterUserId);
 
@@ -167,7 +153,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
             Guid requesterUserId = _loginService.GetUserIdOrThrow();
             UpdateListingQueueEntryPriorityRequestDto updateRequest = new UpdateListingQueueEntryPriorityRequestDto(requestDto.RequestedIndex);
 
-			string uri = $"api/listings/{listingId}/queue/subscription/{listingQueueEntryId}/priority";
+			string uri = $"api/listings/{listingId}/queue-entries/{listingQueueEntryId}/priority";
 
 			HttpRequestMessage request = HttpClientHelpers.BuildRequest(HttpMethod.Patch, uri, requesterUserId, updateRequest);
 			
@@ -179,7 +165,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 		public async Task RemoveListingQueueEntryPriorityAsync(Guid listingId, Guid listingQueueEntryId)
 		{
             Guid requesterUserId = _loginService.GetUserIdOrThrow();
-            string uri = $"api/listings/{listingId}/queue/subscription/{listingQueueEntryId}/priority";
+            string uri = $"api/listings/{listingId}/queue-entries/{listingQueueEntryId}/priority";
 
 			HttpRequestMessage request = HttpClientHelpers.BuildRequest(HttpMethod.Delete, uri, requesterUserId);
 
@@ -191,7 +177,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services
 		public async Task<Guid> ReserveListingToQueueEntry(Guid listingId, Guid listingQueueEntryId)
 		{
 			Guid requesterUserId = _loginService.GetUserIdOrThrow();
-			string uri = $"api/listings/{listingId}/queue/subscription/{listingQueueEntryId}/reserve";
+			string uri = $"api/listings/{listingId}/queue-entries/{listingQueueEntryId}/reserve";
 
 			HttpRequestMessage httpRequest = HttpClientHelpers.BuildRequest(HttpMethod.Post, uri, requesterUserId);
 

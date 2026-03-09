@@ -8,7 +8,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceCli
 		DateTime CreatedAt,
 		DateTime ModifiedAt,
 		string? Details,
-		string? PickupOptions,
+		string PickupOptions,
 		string Location,
 		ListingDetail[] Listings)
 	{

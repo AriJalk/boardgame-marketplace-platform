@@ -73,6 +73,8 @@ namespace BoardGameMarket.ListingsService.Core
 			services.AddScoped<UpdateListingGroupUseCase>();
 			services.AddScoped<GetListingReservationUseCase>();
 			services.AddScoped<GetListingReservationsUseCase>();
+			services.AddScoped<ApproveReservationSellUseCase>();
+			services.AddScoped<CancelReservationUseCase>();
 
 			AddListingQueueUseCases(services);
 

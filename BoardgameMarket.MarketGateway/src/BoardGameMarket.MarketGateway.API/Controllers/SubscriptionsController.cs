@@ -1,6 +1,8 @@
 ﻿using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Dtos;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Filters;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.UseCases;
+using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Filters;
+using BoardGameMarket.MarketGateway.API.Application.ListingQueues.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services;
 using BoardGameMarket.MarketGateway.API.Application.Listings.Dtos.Listings;
 using BoardGameMarket.MarketGateway.API.Application.Listings.Enums;
@@ -25,10 +27,16 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
             _loginService = loginService;
         }
 
-        private async Task<ListingGroupSummaryDto[]> GetFilteredListingGroupsWithSubscription(Guid subscriberUserId, Guid? SellerUserId = null)
+        private async Task<ListingGroupSummaryDto[]> GetFilteredListingGroupsWithSubscription(Guid subscribedUserId, Guid? SellerUserId = null)
         {
-            Guid[] subscribedListingIds = await _queueService.GetSubscribedListingIdsAsync(subscriberUserId);
-            HashSet<Guid> hashedSubscribedListingIds = subscribedListingIds.ToHashSet();
+            ListingQueueEntryFilter queueEntryFilter = new ListingQueueEntryFilter()
+            {
+                UserId = subscribedUserId,
+            };
+            ListingQueueEntryInfo[] queueEntries = await _queueService.GetFilteredQueueEntriesAsync(queueEntryFilter);
+            Guid[] subscribedListingIds = queueEntries.Select(qe => qe.ListingId).ToArray();
+
+            
 
             ListingGroupFilter filter = new ListingGroupFilter()
             {
@@ -41,7 +49,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 
             listingGroups = listingGroups.Select(lg =>
             {
-                ListingSummaryDto[] enrichedListings = ListingEnricher.EnrichListingDtosWithIsSubscribed(lg.Listings, hashedSubscribedListingIds);
+                ListingSummaryDto[] enrichedListings = ListingEnricher.EnrichListingDtosWithIsSubscribed(lg.Listings, subscribedListingIds.ToHashSet());
                 return (
                 Group: lg with { Listings = enrichedListings },
                 HasSubscribed: enrichedListings.Any(l => l.IsSubscribed == true && l.Status == ListingStatus.Active));
@@ -69,7 +77,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         }
 
 
-        [HttpGet("my-listing-groups/subscriber/{subscriberUserId:guid}")]
+        [HttpGet("my-listing-groups/subscriber/{subscribedUserId:guid}")]
         public async Task<ActionResult<ListingGroupSummaryDto[]>> GetLoggedUserListingGroupsBySubscriber(Guid subscriberUserId)
         {
             if (_loginService.LoggedInUser == null)

@@ -49,7 +49,12 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories.DbContext
 			return Task.CompletedTask;
 		}
 
-		public Task RollBackTransactionAsync()
+        public void Dispose()
+        {
+			_transaction?.Dispose();
+        }
+
+        public Task RollBackTransactionAsync()
 		{
 			if (_transaction == null)
 			{

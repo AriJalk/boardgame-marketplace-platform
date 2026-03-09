@@ -28,5 +28,14 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingReserva
         {
             int rows = await _listingReservationRepository.DeleteListingReservationAsync(listingReservationId);
         }
+
+        public async Task UpdateListingReservationAsync(ListingReservation listingReservationToUpdate)
+        {
+            int rows = await _listingReservationRepository.UpdateListingReservationAsync(listingReservationToUpdate);
+            if (rows == 0)
+            {
+                throw new InvalidOperationException();
+            }
+        }
     }
 }

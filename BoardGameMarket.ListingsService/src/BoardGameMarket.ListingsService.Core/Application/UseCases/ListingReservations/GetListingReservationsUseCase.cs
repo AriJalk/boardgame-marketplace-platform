@@ -26,12 +26,12 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingReser
             _listingQueueEntryReadService = listingQueueEntryReadService;
         }
 
-        public async Task<IReadOnlyCollection<ListingReservationInfo>> ExecuteAsync(Guid requesterUserId)
+        public async Task<IReadOnlyCollection<ListingReservationInfo>> ExecuteAsync(Guid userId)
         {
-            IEnumerable<ListingReservation> buyerReservations = await _listingReservationReadService.GetListingsReservationByBuyerUserIdAsync(requesterUserId);
-            IEnumerable<ListingReservation> sellerReservations = await _listingReservationReadService.GetListingsReservationBySellerUserIdAsync(requesterUserId);
+            IEnumerable<ListingReservation> buyerReservations = await _listingReservationReadService.GetListingsReservationByBuyerUserIdAsync(userId);
+            IEnumerable<ListingReservation> sellerReservations = await _listingReservationReadService.GetListingsReservationBySellerUserIdAsync(userId);
 
-            IEnumerable<ListingReservation> combined = buyerReservations.Concat(sellerReservations).OrderByDescending(lr => lr.ReservedAt);
+            IEnumerable<ListingReservation> combined = buyerReservations.Concat(sellerReservations).OrderByDescending(lr => lr.CreatedAt);
             HashSet<Guid> listingIds = new HashSet<Guid>();
             HashSet<Guid> queueEntryIds = new HashSet<Guid>();
             foreach (ListingReservation reservation in combined)

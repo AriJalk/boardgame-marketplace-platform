@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts
 {
-	public interface IUnitOfWork
+	public interface IUnitOfWork : IDisposable
 	{
 		//Task<int> SaveChangesAsync();
 		Task BeginTransactionAsync();

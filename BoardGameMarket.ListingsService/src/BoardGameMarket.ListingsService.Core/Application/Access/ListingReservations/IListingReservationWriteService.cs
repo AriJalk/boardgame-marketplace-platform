@@ -9,5 +9,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingReserva
     {
         Task AddListingReservationAsync(ListingReservation listingReservationToAdd);
         Task DeleteListingReservationAsync(Guid listingReservationId);
+        Task UpdateListingReservationAsync(ListingReservation listingReservationToUpdate);
     }
 }

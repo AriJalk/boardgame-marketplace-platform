@@ -70,7 +70,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
                 QueueDomainService.ValidateReserve(queue, requestedQueueEntry);
 
                 listing.Status = ListingStatus.Reserved;
-                requestedQueueEntry.Status = QueueStatus.Approved;
+                requestedQueueEntry.Status = QueueStatus.Reserved;
                 ListingReservation reservationToAdd = new ListingReservation()
                 {
                     Id = Guid.NewGuid(),
@@ -78,7 +78,9 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
                     ListingQueueEntryId = requestedQueueEntry.Id,
                     BuyerUserId = requestedQueueEntry.BuyerUserId,
                     SellerUserId = listing.SellerUserId,
-                    ReservedAt = DateTime.UtcNow,
+                    CreatedAt = DateTime.UtcNow,
+                    ModifiedAt = DateTime.UtcNow,
+                    Status = ReservationStatus.Reserved,
                 };
 
                 await _listingWriteService.UpdateListingAsync(listing);

@@ -24,7 +24,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
             _listingReadService = listingReadService;
         }
 
-        public async Task<ListingQueueEntryInfo?> ExecuteAsync(Guid listingId, Guid subscriberUserId, Guid requesterUserId)
+        public async Task<ListingQueueEntryInfo?> ExecuteAsync(Guid listingId, Guid subscribedUserId, Guid requesterUserId)
         {
             Listing? listing = await _listingReadService.GetListingByIdAsync(listingId);
             if (listing == null)
@@ -32,7 +32,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
                 throw new ListingNotFoundException(listingId);
             }
 
-            if (requesterUserId != subscriberUserId && requesterUserId != listing.SellerUserId)
+            if (requesterUserId != subscribedUserId && requesterUserId != listing.SellerUserId)
             {
                 throw new UnauthorizedAccessException();
             }
@@ -40,7 +40,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
             ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
             {
                 ListingIds = [listingId],
-                UserId = subscriberUserId,
+                UserId = subscribedUserId,
             };
 
             ListingQueueEntry? queueEntry = (await _listingQueueEntryReadService.GetFilteredListingQueueEntriesAsync(filter)).FirstOrDefault();

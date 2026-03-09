@@ -12,7 +12,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Mappers
     {
         public static ListingReservationInfo ToListingReservationInfo(this ListingReservation reservation, ListingSummary listing, ListingQueueEntryInfo listingQueueEntry)
         {
-            return new ListingReservationInfo(reservation.Id, listing, listingQueueEntry, reservation.ReservedAt);
+            return new ListingReservationInfo(reservation.Id, listing, listingQueueEntry, reservation.CreatedAt);
         }
     }
 }
