@@ -4,11 +4,13 @@
   <h3>Price: {{ listing.price }}</h3>
   <h3>Details: {{ listing.details }}</h3>
   <h4>Items:</h4>
-  @for (item of listing.items; track $index) {
-    <mat-card>
-      <bgm-listing-item-card [listingItem]="item"></bgm-listing-item-card>
-    </mat-card>
-  }
+  <div>
+    @for (item of listing.items; track $index) {
+      <mat-card>
+        <bgm-listing-item-card [listingItem]="item"></bgm-listing-item-card>
+      </mat-card>
+    }
+  </div>
   @let listingSubscription = listingSubscription$ | async;
   @if (listing.status === 'active') {
     <bgm-queue-buyer-panel

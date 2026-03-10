@@ -10,7 +10,7 @@
     <h3>Pickup Options: {{ listingGroup.pickupOptions }}</h3>
     <h3>Details: {{ listingGroup.details }}</h3>
   </div>
-  <div class="mat-secondary-container">
+  <div class="mat-secondary-container scrollable-container">
     @for (listing of listingGroup.listings; track $index) {
       <div class="padding-2">
         <bgm-listing-summary-card [listing]="listing"></bgm-listing-summary-card>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { PaginationControls } from '../../../../../common/pagination-controls/pagination-controls';
 import { ListingGroupService } from '../../../services/listing-group.service';
 import { ListingGroupSummary } from '../../../models/listing-group.model';
@@ -15,7 +15,8 @@ import { UserSummary } from '../../../../../core/users/models/user.model';
   templateUrl: './listing-groups-page.html',
   styleUrl: './listing-groups-page.css',
 })
-export class ListingGroupsPage implements OnInit {
+export class ListingGroupsPage implements OnInit, AfterViewInit {
+  readonly PAGE_SIZE = 8;
   private listingGroupsBehaviorSubject =
     new BehaviorSubject<PagedResult<ListingGroupSummary> | null>(null);
   listingGroups$ = this.listingGroupsBehaviorSubject.asObservable();
@@ -24,6 +25,7 @@ export class ListingGroupsPage implements OnInit {
   currentPageIndex = 0;
 
   user?: UserSummary;
+
   constructor(
     private listingGroupService: ListingGroupService,
     private authService: AuthStubService,
@@ -34,8 +36,10 @@ export class ListingGroupsPage implements OnInit {
     this.user = this.authService.loggedInUser;
   }
 
+  ngAfterViewInit(): void {}
+
   loadPage(cursor: string | null) {
-    this.listingGroupService.getListingGroupSummariesPage(5, cursor).subscribe({
+    this.listingGroupService.getListingGroupSummariesPage(this.PAGE_SIZE, cursor).subscribe({
       next: (data) => {
         this.listingGroupsBehaviorSubject.next(data);
       },

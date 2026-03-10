@@ -13,7 +13,16 @@
       <mat-accordion>
         <mat-expansion-panel>
           <mat-expansion-panel-header>
-            <mat-panel-title> {{ getListingTitle(listing) }} </mat-panel-title>
+            <mat-panel-title>
+              <div class="flex-column">
+                <div>
+                  {{ getListingTitle(listing) }}
+                </div>
+                <div>
+                  {{ getListingStatus(listing) }}
+                </div>
+              </div>
+            </mat-panel-title>
           </mat-expansion-panel-header>
           <mat-card>
             <bgm-listing-form [formGroup]="listing"></bgm-listing-form>

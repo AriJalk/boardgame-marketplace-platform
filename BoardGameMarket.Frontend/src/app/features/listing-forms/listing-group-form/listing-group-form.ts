@@ -47,4 +47,8 @@ export class ListingGroupForm {
   getListingTitle(listingFormGroup: FormGroup) {
     return listingFormGroup.get('title')?.getRawValue() ?? 'Unnamed listing';
   }
+
+  getListingStatus(listingFormGroup: FormGroup){
+    return listingFormGroup.get('status')?.getRawValue() ?? 'Status error';
+  }
 }

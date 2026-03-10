@@ -14,6 +14,17 @@
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
 }
 
+.scrollable-container {
+  height: 25vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 1px solid #ccc;
+}
+
+.height-25vh {
+  height: 25vh;
+}
+
 /* CHILD POSITION */
 
 .jc-center {
@@ -114,4 +125,10 @@
 
 .delete-button {
   background-color: crimson;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
 }
