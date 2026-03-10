@@ -24,13 +24,13 @@ export class CatalogItemGetterService {
     return this.httpClient.get<CatalogItem>('/');
   }
 
-  searchItems(searchString: string): Observable<BggItem[]> {
-    const dummy: BggItem[] = [
-      { id: '420498', bggUrl: '', name: searchString, type: 'bgg' },
-      { id: '12536', bggUrl: 'bggUrl', name: searchString + ';DUMMY', type: 'bgg' },
-    ];
-    return of(dummy).pipe(delay(400));
-  }
+  // searchItems(searchString: string): Observable<BggItem[]> {
+  //   const dummy: BggItem[] = [
+  //     { id: '420498', bggUrl: '', name: searchString, type: 'bgg' },
+  //     { id: '12536', bggUrl: 'bggUrl', name: searchString + ';DUMMY', type: 'bgg' },
+  //   ];
+  //   return of(dummy).pipe(delay(400));
+  // }
 
   private extractBggId(url: string): number | null {
     const match = url.match(/^(?:https?:\/\/)?(?:www\.)?boardgamegeek\.com\/[^/]+\/(\d+)(?:\/|$)/);

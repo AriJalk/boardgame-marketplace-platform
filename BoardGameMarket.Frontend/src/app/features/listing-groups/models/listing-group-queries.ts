@@ -8,6 +8,6 @@ export interface ListingGroupFilter {
 
 export interface PagedListingGroupQuery {
   pageSize: number;
-  cursor?: string;
+  cursor: string | null;
   filter?: ListingGroupFilter;
 }

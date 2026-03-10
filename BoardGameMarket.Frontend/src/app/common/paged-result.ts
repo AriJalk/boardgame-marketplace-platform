@@ -1,4 +1,4 @@
 export interface PagedResult<T>{
     items: T[],
-    nextCursor?: string
+    nextCursor: string | null
 }

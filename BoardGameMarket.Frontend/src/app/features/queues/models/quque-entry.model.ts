@@ -5,7 +5,7 @@ export interface QueueEntry {
   status: string;
   buyer: UserSummary;
   createdAt: Date;
-  priority?: number;
+  priority: number | null;
 }
 
 export interface QueuePageResponse {

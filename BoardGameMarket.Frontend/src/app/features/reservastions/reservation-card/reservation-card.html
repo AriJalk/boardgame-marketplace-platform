@@ -19,7 +19,7 @@
     matButton
     type="button"
     (click)="requestSell()"
-    [disabled]="reservation.status !== 'reserved'"
+    [hidden]="reservation.status !== 'reserved'"
   >
     Sell
   </button>
@@ -27,7 +27,7 @@
     matButton
     type="button"
     (click)="requestCancel()"
-    [disabled]="reservation.status !== 'reserved'"
+    [hidden]="reservation.status !== 'reserved'"
   >
     Cancel
   </button>

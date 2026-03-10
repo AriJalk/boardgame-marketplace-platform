@@ -32,10 +32,14 @@ export class ListingGroupService {
   }
 
   // TODO: actual pagination support, psize + cursor
-  getListingGroupSummariesPage(): Observable<PagedResult<ListingGroupSummary>> {
+  getListingGroupSummariesPage(
+    pageSize: number,
+    cursor: string | null = null,
+  ): Observable<PagedResult<ListingGroupSummary>> {
     const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     const query: PagedListingGroupQuery = {
-      pageSize: 10,
+      pageSize: pageSize,
+      cursor: cursor,
     };
     return this.httpClient.post<PagedResult<ListingGroupSummary>>(
       `${this.apiConfig.apiEndpoint}/listing-groups/page`,
@@ -77,11 +81,9 @@ export class ListingGroupService {
   }
 
   createListingGroup(request: CreateListingGroupRequest): Observable<string> {
-    return this.httpClient.post<string>(
-      `${this.apiConfig.apiEndpoint}/listing-groups`,
-      request,
-      { headers: this.authService.headers },
-    );
+    return this.httpClient.post<string>(`${this.apiConfig.apiEndpoint}/listing-groups`, request, {
+      headers: this.authService.headers,
+    });
   }
 
   updateListingGroup(request: UpdateListingGroupRequest): Observable<string> {

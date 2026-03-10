@@ -31,7 +31,7 @@ export interface CreateListingGroupRequest {
 
 export interface UpdateListingGroupRequest {
   id: string;
-  details?: string;
+  details: string | null;
   pickupOptions: string;
   location: string;
   listings: UpdateListingGroupRequest[];
@@ -42,7 +42,7 @@ export interface ListingGroupMetadata {
   seller: UserSummary;
   createdAt: Date;
   modifiedAt: Date;
-  details?: string;
+  details: string | null;
   pickupOptions: string;
   location: string;
 }

@@ -15,8 +15,8 @@
 </div>
 
 <bgm-pagination-controls
-  [hasNext]="hasNext"
-  [hasPrevious]="hasPrevious"
+  [hasNext]="(listingGroups$ | async)?.nextCursor !== null"
+  [hasPrevious]="currentPageIndex > 0"
   (previous)="previous_clicked()"
   (next)="next_clicked()"
 ></bgm-pagination-controls>

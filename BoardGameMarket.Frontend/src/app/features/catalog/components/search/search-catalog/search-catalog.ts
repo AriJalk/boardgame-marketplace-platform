@@ -22,7 +22,7 @@ export class SearchCatalog {
   onValueChanged(event: Event) {
     const input = event.target as HTMLInputElement;
     const value = input.value;
-    this.searchItems$ = this.catalogGetterService.searchItems(value);
+    // this.searchItems$ = this.catalogGetterService.searchItems(value);
   }
 
   selectItem(item: BggItem) {
