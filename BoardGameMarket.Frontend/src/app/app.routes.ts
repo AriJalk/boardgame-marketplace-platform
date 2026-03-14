@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { ListingGroupsPage } from './features/listing-groups/components/display/listing-groups-page/listing-groups-page';
+import { MsalGuard } from '@azure/msal-angular';
 export const routes: Routes = [
   { path: 'listing-groups', component: ListingGroupsPage },
   {
@@ -36,6 +37,7 @@ export const routes: Routes = [
       import('./features/users/my-reservations-page/my-reservations-page').then(
         (m) => m.MyReservationsPage,
       ),
+    canActivate: [MsalGuard],
   },
   {
     path: 'my-listing-sales',
@@ -43,6 +45,7 @@ export const routes: Routes = [
       import('./features/users/my-listing-sales-page/my-listing-sales-page').then(
         (m) => m.MyListingsSalesPage,
       ),
+    canActivate: [MsalGuard],
   },
   { path: '', redirectTo: 'listing-groups', pathMatch: 'full' },
 ];

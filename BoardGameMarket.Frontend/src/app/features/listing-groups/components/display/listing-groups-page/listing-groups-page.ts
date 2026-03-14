@@ -6,16 +6,18 @@ import { AsyncPipe, CommonModule } from '@angular/common';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ListingGroupSummaryCard } from '../listing-group-summary-card/listing-group-summary-card';
 import { PagedResult } from '../../../../../common/paged-result';
-import { AuthStubService } from '../../../../../core/auth/auth-stub.service';
 import { UserSummary } from '../../../../../core/users/models/user.model';
+import { AuthService } from '../../../../../core/auth/auth.service';
+import { AccountInfo } from '@azure/msal-browser';
+import { UsersService } from '../../../../users/services/users-service';
 
 @Component({
   selector: 'bgm-listing-groups-page',
-  imports: [PaginationControls, CommonModule, AsyncPipe, ListingGroupSummaryCard],
+  imports: [PaginationControls, CommonModule, AsyncPipe, ListingGroupSummaryCard, AsyncPipe],
   templateUrl: './listing-groups-page.html',
   styleUrl: './listing-groups-page.css',
 })
-export class ListingGroupsPage implements OnInit, AfterViewInit {
+export class ListingGroupsPage implements OnInit {
   readonly PAGE_SIZE = 8;
   private listingGroupsBehaviorSubject =
     new BehaviorSubject<PagedResult<ListingGroupSummary> | null>(null);
@@ -24,24 +26,31 @@ export class ListingGroupsPage implements OnInit, AfterViewInit {
   cursorStack: (string | null)[] = [null];
   currentPageIndex = 0;
 
-  user?: UserSummary;
+  user$?: Observable<UserSummary | undefined>;
+
+  private topElement: Element | null = null;
 
   constructor(
     private listingGroupService: ListingGroupService,
-    private authService: AuthStubService,
+    private usersService: UsersService,
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
+    this.user$ = this.usersService.loggedUser$;
+
     this.loadPage(null);
-    this.user = this.authService.loggedInUser;
   }
 
-  ngAfterViewInit(): void {}
+  private async loadLoggedUser() {}
 
-  loadPage(cursor: string | null) {
+  async loadPage(cursor: string | null) {
     this.listingGroupService.getListingGroupSummariesPage(this.PAGE_SIZE, cursor).subscribe({
       next: (data) => {
         this.listingGroupsBehaviorSubject.next(data);
+        if (!this.topElement) {
+          this.topElement = document.getElementById('page-top');
+        }
+        this.topElement?.scrollIntoView();
       },
     });
   }

@@ -90,7 +90,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
                 return BadRequest("No user logged in");
             }
 
-            ListingQueueEntryResponseDto? queueEntryResponse = await _getListingQueueEntryUseCase.ExecuteAsync(listingId, _loginService.LoggedInUser.UserId);
+            ListingQueueEntryResponseDto? queueEntryResponse = await _getListingQueueEntryUseCase.ExecuteAsync(listingId, _loginService.LoggedInUser.Id);
 
             if (queueEntryResponse == null)
             {

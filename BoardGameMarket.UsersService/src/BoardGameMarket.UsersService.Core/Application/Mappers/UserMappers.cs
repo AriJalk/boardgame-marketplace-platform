@@ -8,7 +8,7 @@ namespace BoardGameMarket.UsersService.Core.Application.Mappers
 	{
 		public static UserInfo ToUserInfo(this ApplicationUser user)
 		{
-			return new UserInfo(user.Id, user.Role, user.FirstName, user.LastName, user.DisplayName);
+			return new UserInfo(user.Id, user.FirstName, user.LastName, user.DisplayName);
 		}
 	}
 }

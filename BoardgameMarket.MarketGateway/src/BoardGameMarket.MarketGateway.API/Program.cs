@@ -22,6 +22,10 @@ app.UseCors(policy =>
 app.UseSwagger();
 app.UseSwaggerUI();
 
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseMiddleware<LoginMiddleware>();
 
 app.MapControllers();

@@ -1,3 +1,4 @@
+@let user = user$ | async;
 @if (listingGroup$ | async; as listingGroup) {
   @if (user?.userId === listingGroup.seller.userId) {
     <h3>Edit listing group</h3>

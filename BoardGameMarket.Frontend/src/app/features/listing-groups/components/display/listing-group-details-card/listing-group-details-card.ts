@@ -2,8 +2,7 @@ import { ChangeDetectionStrategy, Component, Input, TemplateRef } from '@angular
 import { ListingGroupDetails } from '../../../models/listing-group.model';
 import { MatCardModule } from '@angular/material/card';
 import { ListingDetailsCard } from '../../../../listings/components/display/listing-details-card/listing-details-card';
-import { QueueBuyerPanel } from '../../../../queues/components/queue-buyer/queue-buyer-panel/queue-buyer-panel';
-import { AuthStubService } from '../../../../../core/auth/auth-stub.service';
+import { AuthService } from '../../../../../core/auth/auth.service';
 
 @Component({
   selector: 'bgm-listing-group-details-card',
@@ -15,9 +14,11 @@ import { AuthStubService } from '../../../../../core/auth/auth-stub.service';
 export class ListingGroupDetailsCard {
   @Input({ required: true }) listingGroup!: ListingGroupDetails;
 
+  constructor(private authService: AuthService) {}
+
+  
   get isLoggedIn(): boolean {
-    return this.authService.loggedInUser !== undefined;
+    return this.authService.loginDisplay;
   }
 
-  constructor(private authService: AuthStubService) {}
 }

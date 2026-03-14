@@ -38,11 +38,13 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 
         private async Task<ListingGroupSummaryDto[]> WithIsSubscribedAsync(ListingGroupSummaryDto[] listingGroups)
 		{
-			if (_loginService.LoggedInUser != null)
+			string? oid = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
+
+			if (oid != null && Guid.TryParse(oid, out Guid userId))
 			{
 				ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
 				{
-					UserId = _loginService.LoggedInUser.UserId,
+					UserId = userId,
 				};
 				ListingQueueEntryInfo[] queueEntries = await _queueDataService.GetFilteredQueueEntriesAsync(filter);
 				listingGroups = listingGroups.Select(lg => lg with
@@ -57,7 +59,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		private async Task<ListingGroupDetailDto> WithSubscriptionAsync(ListingGroupDetailDto listingGroupDto)
 		{
 			UserInfo? user = _loginService.LoggedInUser;
-			if (user == null || user.UserId == listingGroupDto.Seller.UserId)
+			if (user == null || user.Id == listingGroupDto.Seller.UserId)
 			{
 				return listingGroupDto;
 			}
@@ -65,7 +67,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 			ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
 			{
 				ListingIds = listingGroupDto.Listings.Select(l => l.Id).ToArray(),
-				UserId = user.UserId,
+				UserId = user.Id,
 			};
 
 			ListingQueueEntryInfo[] subscriptions = await _queueDataService.GetFilteredQueueEntriesAsync(filter);

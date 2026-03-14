@@ -21,7 +21,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Assemblers
 
 		public async Task<ListingGroupSummaryDto> BuildListingGroupSummaryDto(ListingGroupSummary listingGroup)
 		{
-			UserInfo seller = await _usersService.GetUser(listingGroup.SellerUserId);
+			UserInfo seller = await _usersService.GetUserOrThrow(listingGroup.SellerUserId);
 			UserSummaryDto sellerDto = seller.ToUserSummaryDto();
 			ListingSummaryDto[] listings = listingGroup.Listings.Select(l => l.ToListingSummaryDto(sellerDto)).ToArray();
 			return listingGroup.ToListingGroupSummaryDto(listings, sellerDto);

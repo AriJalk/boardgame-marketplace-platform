@@ -1,11 +1,7 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { UserSummary } from '../../../core/users/models/user.model';
-import { HttpClient } from '@angular/common/http';
-import { AuthStubService } from '../../../core/auth/auth-stub.service';
-import { API_CONFIG_SERVICE } from '../../../core/api-config/api-config.service';
-import { ApiConfig } from '../../../core/api-config/api-config.interface';
 import { UsersService } from '../services/users-service';
-import { MatAnchor, MatButtonModule } from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { AsyncPipe } from '@angular/common';

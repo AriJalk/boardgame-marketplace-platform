@@ -14,6 +14,7 @@ using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Assemblers;
 using BoardGameMarket.MarketGateway.API.Application.ListingReservations.Services;
 using BoardGameMarket.MarketGateway.API.Application.ListingReservations.UseCases;
 using BoardGameMarket.MarketGateway.API.Application.ListingSales.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 {
@@ -78,7 +79,12 @@ namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 				config.BaseAddress = new Uri($"http://{configuration["USERS_SERVICE_HOST"]}:{configuration["USERS_SERVICE_PORT"]}");
 			});
 
-
+			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+				.AddJwtBearer(jwtOptions =>
+				{
+					jwtOptions.Authority = configuration["EntraAuthority"];
+					jwtOptions.Audience = configuration["EntraAudience"];
+                });
 
 			return services;
 		}

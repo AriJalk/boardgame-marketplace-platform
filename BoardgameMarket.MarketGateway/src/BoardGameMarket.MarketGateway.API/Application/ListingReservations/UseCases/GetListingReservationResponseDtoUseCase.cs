@@ -30,8 +30,8 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingReservations.UseC
         public async Task<ListingReservationResponseDto> ExecuteAsync(Guid listingReservationId)
         {
             ListingReservationInfo reservation = await _listingReservationDataService.GetListingReservation(listingReservationId);
-            var buyerTask = _usersDataService.GetUser(reservation.ListingQueueEntry.BuyerUserId);
-            var sellerTask = _usersDataService.GetUser(reservation.Listing.SellerUserId);
+            var buyerTask = _usersDataService.GetUserOrThrow(reservation.ListingQueueEntry.BuyerUserId);
+            var sellerTask = _usersDataService.GetUserOrThrow(reservation.Listing.SellerUserId);
             var metadataTask = _listingGroupsDataService.GetListingGroupMetadata(reservation.Listing.ListingGroupId);
 
             await Task.WhenAll(buyerTask, sellerTask, metadataTask);

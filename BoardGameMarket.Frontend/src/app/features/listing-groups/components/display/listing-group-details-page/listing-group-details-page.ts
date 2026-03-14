@@ -4,11 +4,12 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { ListingGroupService } from '../../../services/listing-group.service';
 import { ListingGroupDetailsCard } from '../listing-group-details-card/listing-group-details-card';
-import { AuthStubService } from '../../../../../core/auth/auth-stub.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { UserSummary } from '../../../../../core/users/models/user.model';
 import { EditListingGroupPage } from '../../edit-listing-group-page/edit-listing-group-page';
+import { AuthService } from '../../../../../core/auth/auth.service';
+import { UsersService } from '../../../../users/services/users-service';
 
 @Component({
   selector: 'bgm-listing-group-details-page',
@@ -18,16 +19,16 @@ import { EditListingGroupPage } from '../../edit-listing-group-page/edit-listing
 })
 export class ListingGroupDetailsPage implements OnInit {
   listingGroup$?: Observable<ListingGroupDetails>;
-  user?: UserSummary;
+  user$?: Observable<UserSummary | undefined>;
 
   constructor(
     private router: ActivatedRoute,
     private listingGroupService: ListingGroupService,
-    private authService: AuthStubService,
+    private usersService: UsersService,
   ) {}
 
-  ngOnInit(): void {
-    this.user = this.authService.loggedInUser;
+  ngOnInit() {
+    this.user$ = this.usersService.loggedUser$;
     this.router.paramMap.subscribe((params) => {
       const id = params.get('listingGroupId');
       if (id) {

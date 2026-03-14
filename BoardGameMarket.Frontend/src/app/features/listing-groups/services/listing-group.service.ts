@@ -10,8 +10,8 @@ import {
 } from '../models/listing-group.model';
 import { Observable } from 'rxjs';
 import { PagedResult } from '../../../common/paged-result';
-import { AuthStubService } from '../../../core/auth/auth-stub.service';
 import { ListingGroupFilter, PagedListingGroupQuery } from '../models/listing-group-queries';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,14 +20,12 @@ export class ListingGroupService {
   constructor(
     private httpClient: HttpClient,
     @Inject(API_CONFIG_SERVICE) private apiConfig: ApiConfig,
-    private authService: AuthStubService,
+    private authService: AuthService,
   ) {}
 
   getListingGroupDetails(listingGroupId: string) {
-    const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     return this.httpClient.get<ListingGroupDetails>(
       `${this.apiConfig.apiEndpoint}/listing-groups/${listingGroupId}/detail`,
-      { headers: headers },
     );
   }
 
@@ -36,7 +34,6 @@ export class ListingGroupService {
     pageSize: number,
     cursor: string | null = null,
   ): Observable<PagedResult<ListingGroupSummary>> {
-    const headers = new HttpHeaders({ Authorization: this.authService.loggedInUser?.userId ?? '' });
     const query: PagedListingGroupQuery = {
       pageSize: pageSize,
       cursor: cursor,
@@ -44,15 +41,13 @@ export class ListingGroupService {
     return this.httpClient.post<PagedResult<ListingGroupSummary>>(
       `${this.apiConfig.apiEndpoint}/listing-groups/page`,
       query,
-      { headers: headers },
     );
   }
 
   getMyListingGroups(): Observable<ListingGroupSummary[]> {
     return this.httpClient.post<ListingGroupSummary[]>(
       `${this.apiConfig.apiEndpoint}/listing-groups/filtered`,
-      { sellerUserId: this.authService.loggedInUser?.userId },
-      { headers: this.authService.headers },
+      { sellerUserId: this.authService.activeAccount?.localAccountId },
     );
   }
 
@@ -60,14 +55,12 @@ export class ListingGroupService {
     return this.httpClient.post<ListingGroupSummary[]>(
       `${this.apiConfig.apiEndpoint}/listing-groups/filtered`,
       filter,
-      { headers: this.authService.headers },
     );
   }
 
   getMySubscribedListingGroups(): Observable<ListingGroupSummary[]> {
     return this.httpClient.get<ListingGroupSummary[]>(
       `${this.apiConfig.apiEndpoint}/listing-groups/subscriptions`,
-      { headers: this.authService.headers },
     );
   }
 
@@ -76,21 +69,17 @@ export class ListingGroupService {
   ): Observable<ListingGroupSummary[]> {
     return this.httpClient.get<ListingGroupSummary[]>(
       `${this.apiConfig.apiEndpoint}/listing-groups/owned/subscribers/${subscriberUserId}`,
-      { headers: this.authService.headers },
     );
   }
 
   createListingGroup(request: CreateListingGroupRequest): Observable<string> {
-    return this.httpClient.post<string>(`${this.apiConfig.apiEndpoint}/listing-groups`, request, {
-      headers: this.authService.headers,
-    });
+    return this.httpClient.post<string>(`${this.apiConfig.apiEndpoint}/listing-groups`, request);
   }
 
   updateListingGroup(request: UpdateListingGroupRequest): Observable<string> {
     return this.httpClient.put<string>(
       `${this.apiConfig.apiEndpoint}/listing-groups/${request.id}`,
       request,
-      { headers: this.authService.headers },
     );
   }
 }

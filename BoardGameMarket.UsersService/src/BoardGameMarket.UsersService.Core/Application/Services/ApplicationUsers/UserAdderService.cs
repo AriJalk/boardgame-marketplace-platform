@@ -2,7 +2,6 @@
 using BoardGameMarket.UsersService.Core.Application.Commands;
 using BoardGameMarket.UsersService.Core.Application.ServiceContracts.ApplicationUsers;
 using BoardGameMarket.UsersService.Core.Domain.Entities;
-using BoardGameMarket.UsersService.Core.Domain.Enums;
 using BoardGameMarket.UsersService.Core.Domain.RepositoryContracts;
 using Microsoft.Extensions.Logging;
 using System;
@@ -28,8 +27,7 @@ namespace BoardGameMarket.UsersService.Core.Application.Services.ApplicationUser
 		{
 			ApplicationUser user = new ApplicationUser()
 			{
-				Id = createUserCommand.UserId,
-				Role = createUserCommand.Role,
+				Id = createUserCommand.Id,
 				FirstName = createUserCommand.FirstName,
 				LastName = createUserCommand.LastName,
 				DisplayName = createUserCommand.DisplayName,

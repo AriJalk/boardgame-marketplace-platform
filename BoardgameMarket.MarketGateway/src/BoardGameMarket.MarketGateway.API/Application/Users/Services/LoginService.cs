@@ -15,7 +15,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.Users.Services
 				throw new InvalidOperationException("User not logged in");
 			}
 
-			return LoggedInUser.UserId;
+			return LoggedInUser.Id;
 		}
 	}
 }

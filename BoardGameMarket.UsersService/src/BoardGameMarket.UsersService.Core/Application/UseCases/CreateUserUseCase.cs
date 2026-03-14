@@ -32,13 +32,13 @@ namespace BoardGameMarket.UsersService.Core.Application.UseCases
 			try
 			{
 				// Check existence
-				ApplicationUser? existingUser = await _userGetterService.GetUserByUserIdAsync(createUserRequest.UserId);
+				ApplicationUser? existingUser = await _userGetterService.GetUserByUserIdAsync(createUserRequest.Id);
 				if (existingUser != null)
 				{
 					throw new InvalidOperationException("User exists");
 				}
 				// Add user
-				CreateUserCommand command = new CreateUserCommand(createUserRequest.UserId, createUserRequest.Role, createUserRequest.FirstName, createUserRequest.LastName, createUserRequest.DisplayName, createUserRequest.Email);
+				CreateUserCommand command = new CreateUserCommand(createUserRequest.Id, createUserRequest.FirstName, createUserRequest.LastName, createUserRequest.DisplayName, createUserRequest.Email);
 				ApplicationUser? newUser = await _userAdderService.AddUserAsync(command);
 				if (newUser == null)
 				{

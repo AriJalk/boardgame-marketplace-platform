@@ -1,3 +1,4 @@
+@let user = user$ | async;
 <div class="grid gap-1">
   @for (listingGroup of (listingGroups$ | async)?.items; track listingGroup.id) {
     @if (listingGroup.seller.userId === user?.userId) {

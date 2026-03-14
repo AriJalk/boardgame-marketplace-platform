@@ -70,7 +70,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
                 return BadRequest();
             }
 
-            ListingGroupSummaryDto[] listingGroups = await GetFilteredListingGroupsWithSubscription(_loginService.LoggedInUser.UserId);
+            ListingGroupSummaryDto[] listingGroups = await GetFilteredListingGroupsWithSubscription(_loginService.LoggedInUser.Id);
 
             return Ok(listingGroups);
 
@@ -85,7 +85,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
                 return BadRequest();
             }
 
-            ListingGroupSummaryDto[] listingGroups = await GetFilteredListingGroupsWithSubscription(subscriberUserId, _loginService.LoggedInUser.UserId);
+            ListingGroupSummaryDto[] listingGroups = await GetFilteredListingGroupsWithSubscription(subscriberUserId, _loginService.LoggedInUser.Id);
 
             return Ok(listingGroups);
         }

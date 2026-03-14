@@ -1,5 +1,4 @@
 ﻿using BoardGameMarket.UsersService.Core.Domain.Entities;
-using BoardGameMarket.UsersService.Core.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 

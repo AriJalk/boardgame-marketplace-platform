@@ -1,5 +1,4 @@
 using BoardGameMarket.UsersService.Core;
-using BoardGameMarket.UsersService.Core.Domain.Enums;
 using BoardGameMarket.UsersService.Infrastructure;
 using BoardGameMarket.UsersService.Infrastructure.InMemorySeeding;
 using System.Text.Json;
