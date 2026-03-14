@@ -1,5 +1,5 @@
 export const devEnvironment = {
-  apiEndpoint: '[apiEndpoint],
+  apiEndpoint: '[apiEndpoint]',
 
   production: false,
   msalConfig: {
@@ -9,7 +9,7 @@ export const devEnvironment = {
     },
   },
   apiConfig: {
-    scopes: [Scopes],
+    scopes: [['scopes']],
     uri: '[ApiUri]',
   },
 };

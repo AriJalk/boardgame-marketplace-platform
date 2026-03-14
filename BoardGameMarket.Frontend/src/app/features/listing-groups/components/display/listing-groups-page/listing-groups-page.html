@@ -1,7 +1,7 @@
 @let user = user$ | async;
 <div class="grid gap-1">
   @for (listingGroup of (listingGroups$ | async)?.items; track listingGroup.id) {
-    @if (listingGroup.seller.userId === user?.userId) {
+    @if (listingGroup.seller.userId === user?.localAccountId) {
       <div class="border-solid padding-2 mat-tertiary-container">
         <bgm-listing-group-summary-card
           [listingGroup]="listingGroup"

@@ -60,7 +60,10 @@ namespace BoardGameMarket.MarketGateway.API.Application.Users.Services
 
 			HttpResponseMessage response = await _httpClient.PostAsJsonAsync(uri, createUserRequest);
 
-			response.EnsureSuccessStatusCode();
+			if (response.StatusCode == HttpStatusCode.InternalServerError)
+			{
+				throw new InvalidOperationException("User exists");
+			}
 
 			UserInfo? userInfo = await response.Content.ReadFromJsonAsync<UserInfo>();
 

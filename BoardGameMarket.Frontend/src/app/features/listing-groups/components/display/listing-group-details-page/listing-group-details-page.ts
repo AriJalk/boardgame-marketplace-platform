@@ -8,8 +8,9 @@ import { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { UserSummary } from '../../../../../core/users/models/user.model';
 import { EditListingGroupPage } from '../../edit-listing-group-page/edit-listing-group-page';
-import { AuthService } from '../../../../../core/auth/auth.service';
 import { UsersService } from '../../../../users/services/users-service';
+import { AuthService } from '../../../../../core/auth/auth.service';
+import { AccountInfo } from '@azure/msal-browser';
 
 @Component({
   selector: 'bgm-listing-group-details-page',
@@ -19,21 +20,21 @@ import { UsersService } from '../../../../users/services/users-service';
 })
 export class ListingGroupDetailsPage implements OnInit {
   listingGroup$?: Observable<ListingGroupDetails>;
-  user$?: Observable<UserSummary | undefined>;
+  user$?: Observable<AccountInfo | null>;
 
   constructor(
     private router: ActivatedRoute,
     private listingGroupService: ListingGroupService,
-    private usersService: UsersService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit() {
-    this.user$ = this.usersService.loggedUser$;
     this.router.paramMap.subscribe((params) => {
       const id = params.get('listingGroupId');
       if (id) {
         this.listingGroup$ = this.listingGroupService.getListingGroupDetails(id);
         // this.listingGroupService.getListingGroupDetails(id).subscribe((data) => console.log(data));
+        this.user$ = this.authService.activeAccount$;
       }
     });
   }

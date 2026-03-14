@@ -43,8 +43,21 @@ namespace BoardGameMarket.MarketGateway.API.Middleware
                     if (displayName != null && email != null && firstName != null && lastName != null)
                     {
                         CreateUserRequest request = new CreateUserRequest(userId, firstName, lastName, displayName, email);
-                        userInfo = await usersDataService.CreateUser(request);
+                        try
+                        {
+                            userInfo = await usersDataService.CreateUser(request);
+
+                        }
+                        catch
+                        {
+                            userInfo = await usersDataService.GetUser(userId);
+                            if (userInfo == null)
+                            {
+                                throw new InvalidOperationException("Can't lazy load user");
+                            }
+                        }
                     }
+
                 }
 
                 loginService.LoggedInUser = userInfo;

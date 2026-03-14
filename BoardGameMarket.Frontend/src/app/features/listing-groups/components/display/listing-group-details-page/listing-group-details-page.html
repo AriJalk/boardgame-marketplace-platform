@@ -1,6 +1,6 @@
 @let user = user$ | async;
 @if (listingGroup$ | async; as listingGroup) {
-  @if (user?.userId === listingGroup.seller.userId) {
+  @if (listingGroup.seller.userId === user?.localAccountId) {
     <h3>Edit listing group</h3>
     <bgm-edit-listing-group [listingId]="listingGroup.id"></bgm-edit-listing-group>
   } @else {

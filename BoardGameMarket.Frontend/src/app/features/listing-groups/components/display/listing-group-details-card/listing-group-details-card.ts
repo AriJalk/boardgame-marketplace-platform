@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, Input, TemplateRef } from '@angular
 import { ListingGroupDetails } from '../../../models/listing-group.model';
 import { MatCardModule } from '@angular/material/card';
 import { ListingDetailsCard } from '../../../../listings/components/display/listing-details-card/listing-details-card';
-import { AuthService } from '../../../../../core/auth/auth.service';
 
 @Component({
   selector: 'bgm-listing-group-details-card',
@@ -14,11 +13,7 @@ import { AuthService } from '../../../../../core/auth/auth.service';
 export class ListingGroupDetailsCard {
   @Input({ required: true }) listingGroup!: ListingGroupDetails;
 
-  constructor(private authService: AuthService) {}
+  constructor() {}
 
-  
-  get isLoggedIn(): boolean {
-    return this.authService.loginDisplay;
-  }
 
 }

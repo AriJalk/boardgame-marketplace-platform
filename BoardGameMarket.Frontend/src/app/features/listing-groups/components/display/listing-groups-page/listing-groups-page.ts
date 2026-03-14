@@ -7,9 +7,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { ListingGroupSummaryCard } from '../listing-group-summary-card/listing-group-summary-card';
 import { PagedResult } from '../../../../../common/paged-result';
 import { UserSummary } from '../../../../../core/users/models/user.model';
+import { UsersService } from '../../../../users/services/users-service';
 import { AuthService } from '../../../../../core/auth/auth.service';
 import { AccountInfo } from '@azure/msal-browser';
-import { UsersService } from '../../../../users/services/users-service';
 
 @Component({
   selector: 'bgm-listing-groups-page',
@@ -23,25 +23,22 @@ export class ListingGroupsPage implements OnInit {
     new BehaviorSubject<PagedResult<ListingGroupSummary> | null>(null);
   listingGroups$ = this.listingGroupsBehaviorSubject.asObservable();
 
+  user$?: Observable<AccountInfo | null>;
+
   cursorStack: (string | null)[] = [null];
   currentPageIndex = 0;
-
-  user$?: Observable<UserSummary | undefined>;
 
   private topElement: Element | null = null;
 
   constructor(
     private listingGroupService: ListingGroupService,
-    private usersService: UsersService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit() {
-    this.user$ = this.usersService.loggedUser$;
-
     this.loadPage(null);
+    this.user$ = this.authService.activeAccount$;
   }
-
-  private async loadLoggedUser() {}
 
   async loadPage(cursor: string | null) {
     this.listingGroupService.getListingGroupSummariesPage(this.PAGE_SIZE, cursor).subscribe({

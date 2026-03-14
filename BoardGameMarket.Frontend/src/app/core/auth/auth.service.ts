@@ -12,8 +12,9 @@ import {
   RedirectRequest,
   PopupRequest,
   AuthenticationResult,
+  AccountInfo,
 } from '@azure/msal-browser';
-import { Subject, filter, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, filter, takeUntil } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -22,20 +23,24 @@ export class AuthService {
   isIframe = false;
   private readonly _destroying$ = new Subject<void>();
 
+  private readonly _activeAccountSubject$ = new BehaviorSubject<AccountInfo | null>(null);
+  activeAccount$ = this._activeAccountSubject$.asObservable();
+  get activeAccountValue(): AccountInfo | null {
+    return this._activeAccountSubject$.value;
+  }
+
   constructor(
     @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
     private msalService: MsalService,
     private msalBroadcastService: MsalBroadcastService,
-  ) {
-    this.init();
-  }
-
-  get activeAccount() {
-    return this.msalService.instance.getActiveAccount();
-  }
+  ) {}
 
   get loginDisplay() {
     return this.msalService.instance.getActiveAccount() !== null;
+  }
+
+  refreshActiveUser() {
+    this._activeAccountSubject$.next(this.msalService.instance.getActiveAccount());
   }
 
   init(): void {
@@ -79,6 +84,7 @@ export class AuthService {
       let accounts = this.msalService.instance.getAllAccounts();
       this.msalService.instance.setActiveAccount(accounts[0]);
     }
+    this.refreshActiveUser();
   }
 
   loginRedirect() {

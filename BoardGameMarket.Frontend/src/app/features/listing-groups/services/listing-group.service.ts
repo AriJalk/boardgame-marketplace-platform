@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, OnInit } from '@angular/core';
 import { API_CONFIG_SERVICE } from '../../../core/api-config/api-config.service';
 import { ApiConfig } from '../../../core/api-config/api-config.interface';
 import {
@@ -8,10 +8,12 @@ import {
   ListingGroupSummary,
   UpdateListingGroupRequest,
 } from '../models/listing-group.model';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { PagedResult } from '../../../common/paged-result';
 import { ListingGroupFilter, PagedListingGroupQuery } from '../models/listing-group-queries';
 import { AuthService } from '../../../core/auth/auth.service';
+import { UsersService } from '../../users/services/users-service';
+import { UserSummary } from '../../../core/users/models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +31,6 @@ export class ListingGroupService {
     );
   }
 
-  // TODO: actual pagination support, psize + cursor
   getListingGroupSummariesPage(
     pageSize: number,
     cursor: string | null = null,
@@ -47,7 +48,7 @@ export class ListingGroupService {
   getMyListingGroups(): Observable<ListingGroupSummary[]> {
     return this.httpClient.post<ListingGroupSummary[]>(
       `${this.apiConfig.apiEndpoint}/listing-groups/filtered`,
-      { sellerUserId: this.authService.activeAccount?.localAccountId },
+      { sellerUserId: this.authService.activeAccountValue?.localAccountId },
     );
   }
 
