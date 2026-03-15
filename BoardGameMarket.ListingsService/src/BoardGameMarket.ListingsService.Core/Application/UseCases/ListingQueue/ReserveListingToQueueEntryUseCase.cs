@@ -37,66 +37,56 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 
         public async Task<Guid> ExecuteAsync(Guid listingId, Guid listingQueueEntryId, Guid requesterUserId)
         {
-            try
+            Listing? listing = await _listingReadService.GetListingByIdAsync(listingId);
+            if (listing == null)
             {
-                await _unitOfWork.BeginTransactionAsync();
+                throw new ListingNotFoundException(listingId);
+            }
+            if (listing.Status != ListingStatus.Active)
+            {
+                throw new InvalidOperationException("Listing not in active status");
+            }
+            if (listing.SellerUserId != requesterUserId)
+            {
+                throw new UnauthorizedAccessException();
+            }
+            ListingReservation? existingReservation = await _listingReservationReadService.GetListingReservationByListingId(listingId);
+            if (existingReservation != null && existingReservation.Status == ReservationStatus.Reserved)
+            {
+                return existingReservation.Id;
+            }
 
+            ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
+            {
+                ListingIds = [listingId],
+            };
+            IEnumerable<ListingQueueEntry> queue = await _listingQueueEntryReadService.GetFilteredListingQueueEntriesAsync(filter);
+            ListingQueueEntry requestedQueueEntry = queue.First(qe => qe.Id == listingQueueEntryId);
+            QueueDomainService.ValidateReserve(queue, requestedQueueEntry);
 
-                Listing? listing = await _listingReadService.GetListingByIdAsync(listingId);
-                if (listing == null)
-                {
-                    throw new ListingNotFoundException(listingId);
-                }
-                if (listing.Status != ListingStatus.Active)
-                {
-                    throw new InvalidOperationException("Listing not in active status");
-                }
-                if (listing.SellerUserId != requesterUserId)
-                {
-                    throw new UnauthorizedAccessException();
-                }
-                ListingReservation? existingReservation = await _listingReservationReadService.GetListingReservationByListingId(listingId);
-                if (existingReservation != null && existingReservation.Status == ReservationStatus.Reserved)
-                {
-                    return existingReservation.Id;
-                }
+            listing.Status = ListingStatus.Reserved;
+            requestedQueueEntry.Status = QueueStatus.Reserved;
+            ListingReservation reservationToAdd = new ListingReservation()
+            {
+                Id = Guid.NewGuid(),
+                ListingId = listingId,
+                ListingQueueEntryId = requestedQueueEntry.Id,
+                BuyerUserId = requestedQueueEntry.BuyerUserId,
+                SellerUserId = listing.SellerUserId,
+                CreatedAt = DateTime.UtcNow,
+                ModifiedAt = DateTime.UtcNow,
+                Status = ReservationStatus.Reserved,
+            };
 
-                ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
-                {
-                    ListingIds = [listingId],
-                };
-                IEnumerable<ListingQueueEntry> queue = await _listingQueueEntryReadService.GetFilteredListingQueueEntriesAsync(filter);
-                ListingQueueEntry requestedQueueEntry = queue.First(qe => qe.Id == listingQueueEntryId);
-                QueueDomainService.ValidateReserve(queue, requestedQueueEntry);
-
-                listing.Status = ListingStatus.Reserved;
-                requestedQueueEntry.Status = QueueStatus.Reserved;
-                ListingReservation reservationToAdd = new ListingReservation()
-                {
-                    Id = Guid.NewGuid(),
-                    ListingId = listingId,
-                    ListingQueueEntryId = requestedQueueEntry.Id,
-                    BuyerUserId = requestedQueueEntry.BuyerUserId,
-                    SellerUserId = listing.SellerUserId,
-                    CreatedAt = DateTime.UtcNow,
-                    ModifiedAt = DateTime.UtcNow,
-                    Status = ReservationStatus.Reserved,
-                };
-
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            {
                 await _listingWriteService.UpdateListingAsync(listing);
                 await _listingQueueEntryWriteService.UpdateListingQueueEntryAsync(requestedQueueEntry);
                 await _listingReservationWriteService.AddListingReservationAsync(reservationToAdd);
+            });
 
-                await _unitOfWork.CommitTransactionAsync();
+            return reservationToAdd.Id;
 
-                return reservationToAdd.Id;
-            }
-            catch
-            {
-                await _unitOfWork.RollBackTransactionAsync();
-                throw;
-            }
-           
         }
     }
 }

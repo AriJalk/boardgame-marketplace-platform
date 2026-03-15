@@ -44,39 +44,28 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
             {
                 ListingIds = [listingId],
             };
-            try
+
+            IEnumerable<ListingQueueEntry> queue = await _listingQueueEntryReadService.GetFilteredListingQueueEntriesAsync(filter);
+
+            // Validate index
+            if (request.RequestedIndex < 0 || request.RequestedIndex > queue.Count())
             {
-                await _unitOfWork.BeginTransactionAsync();
-
-
-                IEnumerable<ListingQueueEntry> queue = await _listingQueueEntryReadService.GetFilteredListingQueueEntriesAsync(filter);
-
-                // Validate index
-                if (request.RequestedIndex < 0 || request.RequestedIndex > queue.Count())
-                {
-                    throw new InvalidOperationException($"Index {request.RequestedIndex} not in range");
-                }
-
-
-                List<ListingQueueEntry> orderedPriorityQueue = queue.Where(qe => qe.Priority != null).OrderBy(qe => qe.Priority).ToList();
-                ListingQueueEntry requestedEntry = orderedPriorityQueue.Single(qe => qe.Id == listingQueueEntryId);
-
-                // Reorder requested entry in collection
-                orderedPriorityQueue.Remove(requestedEntry);
-                orderedPriorityQueue.Insert(request.RequestedIndex, requestedEntry);
-
-                IEnumerable<ListingQueueEntry> normalizedQueue = orderedPriorityQueue.Normalize();
-
-                // Update queue
-                await _listingQueueEntryWriteService.UpdateListingQueueEntriesAsync(normalizedQueue);
-
-                await _unitOfWork.CommitTransactionAsync();
+                throw new InvalidOperationException($"Index {request.RequestedIndex} not in range");
             }
-            catch
-            {
-                await _unitOfWork.RollBackTransactionAsync();
-                throw;
-            }
+
+
+            List<ListingQueueEntry> orderedPriorityQueue = queue.Where(qe => qe.Priority != null).OrderBy(qe => qe.Priority).ToList();
+            ListingQueueEntry requestedEntry = orderedPriorityQueue.Single(qe => qe.Id == listingQueueEntryId);
+
+            // Reorder requested entry in collection
+            orderedPriorityQueue.Remove(requestedEntry);
+            orderedPriorityQueue.Insert(request.RequestedIndex, requestedEntry);
+
+            IEnumerable<ListingQueueEntry> normalizedQueue = orderedPriorityQueue.Normalize();
+
+            // Update queue
+            await _listingQueueEntryWriteService.UpdateListingQueueEntriesAsync(normalizedQueue);
+
         }
     }
 }

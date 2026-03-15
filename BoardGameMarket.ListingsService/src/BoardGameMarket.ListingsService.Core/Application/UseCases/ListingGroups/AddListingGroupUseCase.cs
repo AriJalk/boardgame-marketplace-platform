@@ -53,6 +53,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
             };
         }
 
+
         public async Task<Guid> ExecuteAsync(CreateListingGroupRequest listingGroupRequest, Guid requesterUserId)
         {
             if (listingGroupRequest.SellerUserId != requesterUserId)
@@ -81,25 +82,15 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                     listingItemsToAdd.Add(CreateListingItem(listingToAdd.Id, listingItemRequest));
                 }
             }
-            try
-            {
-                // Step 2: Persist entities
-                await _unitOfWork.BeginTransactionAsync();
 
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            {
                 await _listingGroupWriteService.AddListingGroup(listingGroupToAdd);
                 await _listingWriteService.AddListingsAsync(listingsToAdd);
                 await _listingItemWriteService.AddListingItemsAsync(listingItemsToAdd);
 
-                await _unitOfWork.CommitTransactionAsync();
-
-                return listingGroupToAdd.Id;
-            }
-            catch
-            {
-                await _unitOfWork.RollBackTransactionAsync();
-                throw;
-            }
-
+            });
+            return listingGroupToAdd.Id;
         }
     }
 }

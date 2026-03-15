@@ -39,56 +39,47 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingReser
 
         public async Task ExecuteAsync(Guid reservationId, Guid requesterUserId)
         {
-            try
+            ListingReservation? reservation = await _listingReservationReadService.GetListingReservationByIdAsync(reservationId);
+            if (reservation == null)
             {
-                await _unitOfWork.BeginTransactionAsync();
-                ListingReservation? reservation = await _listingReservationReadService.GetListingReservationByIdAsync(reservationId);
-                if (reservation == null)
-                {
-                    throw new KeyNotFoundException($"Reservation {reservationId} not found");
-                }
-                if (reservation.SellerUserId != requesterUserId)
-                {
-                    throw new UnauthorizedAccessException();
-                }
-                ListingSale? existingListingSale = await _listingSaleReadService.GetListingSaleByListingId(reservation.ListingId);
-                if (existingListingSale != null)
-                {
-                    throw new InvalidOperationException("Listing already sold");
-                }
-                if (reservation.Status != ReservationStatus.Reserved)
-                {
-                    throw new InvalidOperationException($"Reservation state: {reservation.Status}, expected {ReservationStatus.Reserved}");
-                }
-                Listing? listing = await _listingReadService.GetListingByIdAsync(reservation.ListingId);
-                if (listing == null)
-                {
-                    throw new ListingNotFoundException(reservation.ListingId);
-                }
-                ListingQueueEntry? queueEntry = await _listingQueueEntryReadService.GetListingQueueEntryByIdAsync(reservation.ListingQueueEntryId);
-                if (queueEntry == null)
-                {
-                    throw new KeyNotFoundException();
-                }
+                throw new KeyNotFoundException($"Reservation {reservationId} not found");
+            }
+            if (reservation.SellerUserId != requesterUserId)
+            {
+                throw new UnauthorizedAccessException();
+            }
+            ListingSale? existingListingSale = await _listingSaleReadService.GetListingSaleByListingId(reservation.ListingId);
+            if (existingListingSale != null)
+            {
+                throw new InvalidOperationException("Listing already sold");
+            }
+            if (reservation.Status != ReservationStatus.Reserved)
+            {
+                throw new InvalidOperationException($"Reservation state: {reservation.Status}, expected {ReservationStatus.Reserved}");
+            }
+            Listing? listing = await _listingReadService.GetListingByIdAsync(reservation.ListingId);
+            if (listing == null)
+            {
+                throw new ListingNotFoundException(reservation.ListingId);
+            }
+            ListingQueueEntry? queueEntry = await _listingQueueEntryReadService.GetListingQueueEntryByIdAsync(reservation.ListingQueueEntryId);
+            if (queueEntry == null)
+            {
+                throw new KeyNotFoundException();
+            }
 
-                reservation.Status = ReservationStatus.Cancelled;
-                listing.Status = ListingStatus.Active;
-                queueEntry.Status = QueueStatus.Queued;
+            reservation.Status = ReservationStatus.Cancelled;
+            listing.Status = ListingStatus.Active;
+            queueEntry.Status = QueueStatus.Queued;
+
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            {
                 await _listingReservationWriteService.UpdateListingReservationAsync(reservation);
                 await _listingWriteService.UpdateListingAsync(listing);
                 await _listingQueueEntryWriteService.UpdateListingQueueEntryAsync(queueEntry);
+            });
 
-                await _unitOfWork.CommitTransactionAsync();
-            }
 
-            catch
-            {
-                throw;
-            }
-            finally
-            {
-                _unitOfWork.Dispose();
-            }
         }
     }
 }

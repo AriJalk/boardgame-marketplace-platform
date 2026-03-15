@@ -1,6 +1,7 @@
 ﻿using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,30 +9,19 @@ using System.Threading.Tasks;
 namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 {
     internal class InMemoryUnitOfWork : IUnitOfWork
-	{
-		public Task BeginTransactionAsync()
-		{
-			return Task.CompletedTask;
-		}
+    {
+        public IDbConnection Connection => throw new NotImplementedException();
 
-		public Task CommitTransactionAsync()
-		{
-			return Task.CompletedTask;
-		}
+        public IDbTransaction? Transaction => throw new NotImplementedException();
 
-        public void Dispose()
+        public async Task ExecuteInTransactionAsync(Func<Task> action)
         {
-			return;
+            await action();
         }
 
-        public Task RollBackTransactionAsync()
-		{
-			return Task.CompletedTask;
-		}
-
-		//public Task<int> SaveChangesAsync()
-		//{
-		//	return Task.FromResult(1);
-		//}
-	}
+        public async Task<T> ExecuteInTransactionAsync<T>(Func<Task<T>> action)
+        {
+            return await action();
+        }
+    }
 }

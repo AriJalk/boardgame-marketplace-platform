@@ -36,61 +36,51 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingReser
 
         public async Task<ListingSaleInfo> ExecuteAsync(Guid reservationId, Guid requesterUserId)
         {
-            try
+
+            ListingReservation? reservation = await _listingReservationReadService.GetListingReservationByIdAsync(reservationId);
+            if (reservation == null)
             {
-                await _unitOfWork.BeginTransactionAsync();
-                ListingReservation? reservation = await _listingReservationReadService.GetListingReservationByIdAsync(reservationId);
-                if (reservation == null)
-                {
-                    throw new KeyNotFoundException($"Reservation {reservationId} not found");
-                }
-                if (reservation.SellerUserId != requesterUserId)
-                {
-                    throw new UnauthorizedAccessException();
-                }
-                ListingSale? existingListingSale = await _listingSaleReadService.GetListingSaleByListingId(reservation.ListingId);
-                if (existingListingSale != null)
-                {
-                    return existingListingSale.ToListingSaleInfo();
-                }
-                if (reservation.Status != ReservationStatus.Reserved)
-                {
-                    throw new InvalidOperationException($"Reservation state: {reservation.Status}, expected {ReservationStatus.Reserved}");
-                }
-                Listing? listing = await _listingReadService.GetListingByIdAsync(reservation.ListingId);
-                if (listing == null)
-                {
-                    throw new ListingNotFoundException(reservation.ListingId);
-                }
-                ListingSale listingSale = new ListingSale()
-                {
-                    Id = Guid.NewGuid(),
-                    ReservationId = reservationId,
-                    CompletedAt = DateTime.UtcNow,
-                    ListingQueueEntryId = reservation.ListingQueueEntryId,
-                    BuyerUserId = reservation.BuyerUserId,
-                    SellerUserId = reservation.SellerUserId,
-                    ListingId = reservation.ListingId,
-                };
-                reservation.Status = ReservationStatus.Sold;
-                listing.Status = ListingStatus.Sold;
+                throw new KeyNotFoundException($"Reservation {reservationId} not found");
+            }
+            if (reservation.SellerUserId != requesterUserId)
+            {
+                throw new UnauthorizedAccessException();
+            }
+            ListingSale? existingListingSale = await _listingSaleReadService.GetListingSaleByListingId(reservation.ListingId);
+            if (existingListingSale != null)
+            {
+                return existingListingSale.ToListingSaleInfo();
+            }
+            if (reservation.Status != ReservationStatus.Reserved)
+            {
+                throw new InvalidOperationException($"Reservation state: {reservation.Status}, expected {ReservationStatus.Reserved}");
+            }
+            Listing? listing = await _listingReadService.GetListingByIdAsync(reservation.ListingId);
+            if (listing == null)
+            {
+                throw new ListingNotFoundException(reservation.ListingId);
+            }
+            ListingSale listingSale = new ListingSale()
+            {
+                Id = Guid.NewGuid(),
+                ReservationId = reservationId,
+                CompletedAt = DateTime.UtcNow,
+                ListingQueueEntryId = reservation.ListingQueueEntryId,
+                BuyerUserId = reservation.BuyerUserId,
+                SellerUserId = reservation.SellerUserId,
+                ListingId = reservation.ListingId,
+            };
+            reservation.Status = ReservationStatus.Sold;
+            listing.Status = ListingStatus.Sold;
+
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            {
                 await _listingReservationWriteService.UpdateListingReservationAsync(reservation);
                 await _listingSaleWriteService.AddListingSaleAsync(listingSale);
                 await _listingWriteService.UpdateListingAsync(listing);
+            });
 
-                await _unitOfWork.CommitTransactionAsync();
-
-                return listingSale.ToListingSaleInfo();
-            }
-
-            catch
-            {
-                throw;
-            }
-            finally
-            {
-                _unitOfWork.Dispose();
-            }
+            return listingSale.ToListingSaleInfo();
         }
     }
 }

@@ -81,7 +81,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
             {
                 if (!listingItemsFromUpdate.ContainsKey(existingListingItem.Id))
                 {
-                   await _listingItemWriteService.DeleteListingItemAsync(existingListingItem.Id);
+                    await _listingItemWriteService.DeleteListingItemAsync(existingListingItem.Id);
                 }
             }
         }
@@ -137,7 +137,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
             {
                 Listing listingFromUpdate = await UpdateListing(listingGroupId, request, sellerUserId);
                 listingsFromUpdate[listingFromUpdate.Id] = listingFromUpdate;
-                
+
                 await UpdateListingItems(listingFromUpdate.Id, request.ListingItems);
             }
 
@@ -156,7 +156,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
             }
         }
 
-
         public async Task<Guid> ExecuteAsync(UpdateListingGroupRequest request, Guid requesterUserId)
         {
             ListingGroup? listingGroupFromDb = await _listingGroupReadService.GetListingGroupByIdAsync(request.Id);
@@ -169,32 +168,24 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                 throw new UnauthorizedAccessException();
             }
 
-            try
+            ListingGroup listingGroupToUpdate = new ListingGroup()
             {
-                await _unitOfWork.BeginTransactionAsync();
-                ListingGroup listingGroupToUpdate = new ListingGroup()
-                {
-                    Id = request.Id,
-                    CreatedAt = listingGroupFromDb.CreatedAt,
-                    ModifiedAt = DateTime.UtcNow,
-                    SellerUserId = listingGroupFromDb.SellerUserId,
-                    PickupOptions = request.PickupOptions,
-                    Details = request.Details,
-                    Location = request.Location,
-                };
+                Id = request.Id,
+                CreatedAt = listingGroupFromDb.CreatedAt,
+                ModifiedAt = DateTime.UtcNow,
+                SellerUserId = listingGroupFromDb.SellerUserId,
+                PickupOptions = request.PickupOptions,
+                Details = request.Details,
+                Location = request.Location,
+            };
+
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            {
                 await _listingGroupWriteService.UpdateListingGroupAsync(listingGroupToUpdate);
-
                 await UpdateListings(listingGroupToUpdate.Id, request.Listings, listingGroupToUpdate.SellerUserId);
+            });
 
-                await _unitOfWork.CommitTransactionAsync();
-
-                return listingGroupToUpdate.Id;
-            }
-            catch
-            {
-                await _unitOfWork.RollBackTransactionAsync();
-                throw;
-            }
+            return listingGroupToUpdate.Id;
         }
     }
 }
