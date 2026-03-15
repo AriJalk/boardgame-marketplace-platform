@@ -12,9 +12,9 @@ services:
       USERS_SERVICE_HOST: users-microservice
       USERS_SERVICE_PORT: 8080
     networks:
-      - microservices-network
+    - microservices-network
     ports:
-      - 8081:8081
+    - 8081:8081
 
   listings-microservice:
     image: arieljalkiver/boardgame-market:listings
@@ -30,15 +30,22 @@ services:
   catalog-microservice:
     image: arieljalkiver/boardgame-market:catalog
     networks:
-      - microservices-network
+    - microservices-network
+    - catalog-network
     volumes:
-      - ../SeedData:/app/SeedData:ro
+    - ../SeedData:/app/SeedData:ro
+    depends_on:
+    - mongodb-catalog
     environment:
-      IN_MEMORY: true
+      IN_MEMORY: false
       IS_SEEDING: true
       LOCAL_BGG_CLIENT: true
       SEED_ROOT: /app/SeedData
       BGGCLIENT__SERVICEAPIKEY: ${BGG_API_KEY}
+      MONGODBCONFIGURATION__MONGOHOST: mongodb-catalog
+      MONGODBCONFIGURATION__MONGOPORT: 27017
+      MONGODBCONFIGURATION__MONGODATABASE: catalog_database
+      MONGODBCONFIGURATION__COLLECTIONNAME: catalog_collection
 
   users-microservice:
     image: arieljalkiver/boardgame-market:users
@@ -52,12 +59,16 @@ services:
       IN_MEMORY: false
       SEED_ROOT: /app/SeedData
     depends_on:
-      - postgres-users
+    - postgres-users
     networks: 
     - users-network
     - microservices-network
     volumes:
     - ../SeedData:/app/SeedData:ro
+
+
+
+  # Persistance
 
   postgres-users:
     image: postgres:18.3
@@ -70,10 +81,15 @@ services:
     volumes:
     - ../database-init/postgres-users-init:/docker-entrypoint-initdb.d
 
-
+  mongodb-catalog:
+    image: mongo:8.2.5
+    networks:
+    - catalog-network
 
 networks:
   microservices-network:
     driver: bridge
   users-network:
+    driver: bridge
+  catalog-network:
     driver: bridge

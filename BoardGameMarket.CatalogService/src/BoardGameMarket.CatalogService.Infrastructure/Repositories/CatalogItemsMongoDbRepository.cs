@@ -11,9 +11,9 @@ namespace BoardGameMarket.CatalogService.Infrastructure.Repositories
 	{
 		private readonly IMongoCollection<CatalogItem> _items;
 
-		public CatalogItemsMongoDbRepository(IMongoClient mongoClient, IOptions<MongoDbConfiguration> mongoDbConfiguration)
+		public CatalogItemsMongoDbRepository(IMongoDatabase database, IOptions<MongoDbConfiguration> mongoDbConfiguration)
 		{
-			_items = mongoClient.GetDatabase(mongoDbConfiguration.Value.DatabaseName).GetCollection<CatalogItem>(mongoDbConfiguration.Value.CollectionName);
+			_items = database.GetCollection<CatalogItem>(mongoDbConfiguration.Value.CollectionName);
 		}
 		public async Task<CatalogItem?> GetItemByDatabaseIdAsync(Guid id)
 		{

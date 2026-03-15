@@ -1,0 +1,28 @@
+services:
+  boardgamemarket.catalogservice.api:
+    image: ${DOCKER_REGISTRY-}boardgamemarketcatalogserviceapi
+    build:
+      context: .
+      dockerfile: src/BoardGameMarket.CatalogService.API/Dockerfile
+    networks:
+    - catalog-network
+    volumes:
+      - ../SeedData:/app/SeedData:ro
+    environment:
+      IN_MEMORY: false
+      IS_SEEDING: true
+      LOCAL_BGG_CLIENT: true
+      MONGODBCONFIGURATION__MONGOHOST: mongodb-catalog
+      MONGODBCONFIGURATION__MONGOPORT: 27017
+      MONGODBCONFIGURATION__MONGODATABASE: catalog_database
+      MONGODBCONFIGURATION__COLLECTIONNAME: catalog_collection
+      SEED_ROOT: /app/SeedData
+
+  mongodb-catalog:
+    image: mongo:8.2.5
+    networks:
+      - catalog-network
+
+networks:
+  catalog-network:
+    driver: bridge

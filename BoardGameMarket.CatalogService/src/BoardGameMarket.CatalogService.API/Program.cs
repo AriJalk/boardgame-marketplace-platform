@@ -25,14 +25,14 @@ bool isLocalBggClient = builder.Configuration.GetValue<bool>("LOCAL_BGG_CLIENT")
 if (inMemory)
 {
 	builder.Services.AddInMemoryInfrastructure(builder.Configuration);
-	if (isSeeding)
-	{
-		builder.Services.AddInMemorySeeding();
-	}
 }
 else
 {
 	builder.Services.AddInfrastructure(builder.Configuration);
+}
+if (isSeeding)
+{
+    builder.Services.AddSeeding();
 }
 
 if (isLocalBggClient)
@@ -46,11 +46,11 @@ else
 
 var app = builder.Build();
 
-if (inMemory && isSeeding)
+if (isSeeding)
 {
 	using (var scope = app.Services.CreateScope())
 	{
-		InMemorySeedRunner seeder = scope.ServiceProvider.GetRequiredService<InMemorySeedRunner>();
+		SeedRunner seeder = scope.ServiceProvider.GetRequiredService<SeedRunner>();
 		string seedPath = builder.Configuration["SEED_ROOT"] ?? throw new InvalidOperationException("Seed root not configured");
 		await seeder.SeedAsync(seedPath);
 	}

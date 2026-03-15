@@ -4,10 +4,10 @@ using System.Text;
 
 namespace BoardGameMarket.CatalogService.Infrastructure.InMemorySeeders
 {
-	public class InMemorySeedRunner
+	public class SeedRunner
 	{
 		private IEnumerable<ISeeder> _seeders;
-		public InMemorySeedRunner(IEnumerable<ISeeder> seeders)
+		public SeedRunner(IEnumerable<ISeeder> seeders)
 		{
 			_seeders = seeders;
 		}

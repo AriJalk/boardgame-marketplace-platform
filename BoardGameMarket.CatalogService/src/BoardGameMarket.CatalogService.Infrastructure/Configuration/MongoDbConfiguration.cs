@@ -4,7 +4,7 @@
 	{
 		public string? MongoHost { get; set; }
 		public string? MongoPort { get; set; }
-		public string? DatabaseName { get; set; }
+		public string? MongoDatabase { get; set; }
 		public string? CollectionName { get; set; }
 	}
 }
