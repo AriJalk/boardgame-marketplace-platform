@@ -4,6 +4,7 @@ using BoardGameMarket.MarketGateway.API.Application.ListingQueues.ServiceClients
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.UseCases;
 using BoardGameMarket.MarketGateway.API.Application.Users.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,6 +33,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         #region Seller
 
         [HttpGet()]
+        [Authorize]
         public async Task<ActionResult<ListingQueueResponseDto>> GetQueue(Guid listingId)
         {
             ListingQueueResponseDto response = await _getListingQueueUseCase.ExecuteAsync(listingId);
@@ -41,6 +43,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 
 
         [HttpPost("{listingQueueEntryId:guid}/priority")]
+        [Authorize]
         public async Task<ActionResult<Guid>> AddPriority(Guid listingId, Guid listingQueueEntryId)
         {
             await _queuesDataService.AddPriorityToQueueEntry(listingId, listingQueueEntryId);
@@ -49,6 +52,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 
 
         [HttpPatch("{listingQueueEntryId:guid}/priority")]
+        [Authorize]
         public async Task<IActionResult> UpdateListingQueueEntryPriority(Guid listingId, Guid listingQueueEntryId, [FromBody] UpdateListingQueueEntryPriorityRequestDto request)
         {
 
@@ -58,6 +62,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         }
 
         [HttpDelete("{listingQueueEntryId:guid}/priority")]
+        [Authorize]
         public async Task<ActionResult<Guid>> RemoveListingQueueEntryPriority(Guid listingId, Guid listingQueueEntryId)
         {
             await _queuesDataService.RemoveListingQueueEntryPriorityAsync(listingId, listingQueueEntryId);
@@ -67,6 +72,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 
 
         [HttpPost("{listingQueueEntryId:guid}/reserve")]
+        [Authorize]
         public async Task<ActionResult<Guid>> ReserveListingToQueueEntry(Guid listingId, Guid listingQueueEntryId)
         {
             Guid reservationId = await _queuesDataService.ReserveListingToQueueEntry(listingId, listingQueueEntryId);
@@ -83,6 +89,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 
 
         [HttpGet("my")]
+        [Authorize]
         public async Task<ActionResult<ListingQueueEntryResponseDto>> GetSubscription(Guid listingId)
         {
             if (_loginService.LoggedInUser == null)
@@ -101,6 +108,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         }
 
         [HttpPut()]
+        [Authorize]
         public async Task<ActionResult<ListingSubscriptionResponseDto>> SubscribeToListing(Guid listingId)
         {
             if (_loginService.LoggedInUser == null)
@@ -117,6 +125,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         #region Shared
 
         [HttpDelete("{subscriptionId:guid}")]
+        [Authorize]
         public async Task<IActionResult> UnsubscribeFromListing(Guid listingId, Guid subscriptionId)
         {
             await _queuesDataService.UnsubscribeFromListingAsync(listingId, subscriptionId);

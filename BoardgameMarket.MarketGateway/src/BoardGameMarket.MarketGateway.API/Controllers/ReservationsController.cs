@@ -3,6 +3,7 @@ using BoardGameMarket.MarketGateway.API.Application.ListingReservations.ServiceC
 using BoardGameMarket.MarketGateway.API.Application.ListingReservations.Services;
 using BoardGameMarket.MarketGateway.API.Application.ListingReservations.UseCases;
 using BoardGameMarket.MarketGateway.API.Application.ListingSales.ServiceClients;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +11,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 {
     [Route("api/reservations")]
     [ApiController]
+    [Authorize]
     public class ReservationsController : ControllerBase
     {
         private readonly ListingReservationDataService _listingReservationDataService;

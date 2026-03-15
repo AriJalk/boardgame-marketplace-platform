@@ -10,11 +10,9 @@ import {
   EventMessage,
   InteractionStatus,
   RedirectRequest,
-  PopupRequest,
-  AuthenticationResult,
   AccountInfo,
 } from '@azure/msal-browser';
-import { BehaviorSubject, Observable, Subject, filter, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, filter, takeUntil } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -29,17 +27,24 @@ export class AuthService {
     return this._activeAccountSubject$.value;
   }
 
+  private _ready = new BehaviorSubject<boolean>(false);
+  readonly ready$ = this._ready.asObservable();
+
+  get ready() {
+    return this._ready.value;
+  }
+
   constructor(
     @Inject(MSAL_GUARD_CONFIG) private msalGuardConfig: MsalGuardConfiguration,
     private msalService: MsalService,
     private msalBroadcastService: MsalBroadcastService,
   ) {}
 
-  get loginDisplay() {
+  get isLoggedIn(): boolean {
     return this.msalService.instance.getActiveAccount() !== null;
   }
 
-  refreshActiveUser() {
+  refreshActiveAccount() {
     this._activeAccountSubject$.next(this.msalService.instance.getActiveAccount());
   }
 
@@ -70,6 +75,7 @@ export class AuthService {
       )
       .subscribe(() => {
         this.checkAndSetActiveAccount();
+        this._ready.next(true);
       });
   }
 
@@ -84,7 +90,7 @@ export class AuthService {
       let accounts = this.msalService.instance.getAllAccounts();
       this.msalService.instance.setActiveAccount(accounts[0]);
     }
-    this.refreshActiveUser();
+    this.refreshActiveAccount();
   }
 
   loginRedirect() {
@@ -97,28 +103,8 @@ export class AuthService {
     }
   }
 
-  loginPopup() {
-    if (this.msalGuardConfig.authRequest) {
-      this.msalService
-        .loginPopup({ ...this.msalGuardConfig.authRequest } as PopupRequest)
-        .subscribe((response: AuthenticationResult) => {
-          this.msalService.instance.setActiveAccount(response.account);
-        });
-    } else {
-      this.msalService.loginPopup().subscribe((response: AuthenticationResult) => {
-        this.msalService.instance.setActiveAccount(response.account);
-      });
-    }
-  }
-
-  logout(popup?: boolean) {
-    if (popup) {
-      this.msalService.logoutPopup({
-        mainWindowRedirectUri: '/',
-      });
-    } else {
-      this.msalService.logoutRedirect();
-    }
+  logout() {
+    this.msalService.logoutRedirect();
   }
 
   destroy(): void {

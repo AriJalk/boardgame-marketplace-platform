@@ -2,7 +2,6 @@
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Dtos;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Filters;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Mappers;
-using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.UseCases;
 using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Filters;
@@ -11,6 +10,7 @@ using BoardGameMarket.MarketGateway.API.Application.ListingQueues.Services;
 using BoardGameMarket.MarketGateway.API.Application.Shared;
 using BoardGameMarket.MarketGateway.API.Application.Users.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.Users.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
@@ -38,9 +38,8 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 
         private async Task<ListingGroupSummaryDto[]> WithIsSubscribedAsync(ListingGroupSummaryDto[] listingGroups)
 		{
-			string? oid = User.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value;
-
-			if (oid != null && Guid.TryParse(oid, out Guid userId))
+			Guid? userId = _loginService.LoggedInUser?.Id;
+			if (_loginService.LoggedInUser?.Id != null)
 			{
 				ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
 				{
@@ -107,6 +106,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		}
 
 		[HttpPost()]
+		[Authorize]
 		public async Task<ActionResult<Guid>> CreateListingGroup(CreateListingGroupRequestDto request)
 		{
 			Guid requesterUserId = _loginService.GetUserIdOrThrow();
@@ -116,12 +116,9 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 		}
 
 		[HttpPut("{listingGroupId}")]
+		[Authorize]
 		public async Task<ActionResult<Guid>> UpdateListingGroup(Guid listingGroupId, [FromBody] UpdateListingGroupRequestDto request)
 		{
-			if (_loginService.LoggedInUser == null)
-			{
-				return BadRequest();
-			}
 			if (listingGroupId != request.Id)
 			{
 				return BadRequest();

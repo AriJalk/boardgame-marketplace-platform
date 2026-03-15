@@ -9,6 +9,7 @@ export const routes: Routes = [
       import('./features/listing-groups/components/create-listing-group-page/create-listing-group-page').then(
         (m) => m.CreateListingGroupPage,
       ),
+    canActivate: [MsalGuard],
   },
   {
     path: 'listing-groups/:listingGroupId',
@@ -25,6 +26,7 @@ export const routes: Routes = [
     path: 'my-listings',
     loadComponent: () =>
       import('./features/users/my-listings-page/my-listings-page').then((m) => m.MyListingsPage),
+    canActivate: [MsalGuard],
   },
   {
     path: 'users/:userId',

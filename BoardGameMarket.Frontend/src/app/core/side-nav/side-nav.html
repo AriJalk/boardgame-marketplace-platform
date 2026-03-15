@@ -14,6 +14,7 @@
     matButton="elevated"
     [routerLink]="['/listing-groups/create']"
     (click)="drawer.toggle()"
+    [disabled]="!isLoggedIn"
   >
     Add Listings
   </button>
@@ -22,6 +23,7 @@
     matButton="elevated"
     [routerLink]="['/my-listings']"
     (click)="drawer.toggle()"
+    [disabled]="!isLoggedIn"
   >
     My Listings
   </button>
@@ -30,6 +32,7 @@
     matButton="elevated"
     [routerLink]="['/my-reservations']"
     (click)="drawer.toggle()"
+    [disabled]="!isLoggedIn"
   >
     My Reservations
   </button>
@@ -38,6 +41,7 @@
     matButton="elevated"
     [routerLink]="['/my-listing-sales']"
     (click)="drawer.toggle()"
+    [disabled]="!isLoggedIn"
   >
     My Sold Listings
   </button>

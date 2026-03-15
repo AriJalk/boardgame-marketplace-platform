@@ -37,7 +37,9 @@ export function MSALInstanceFactory(): IPublicClientApplication {
 
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   const protectedResourceMap = new Map<string, Array<string>>();
-  protectedResourceMap.set(devEnvironment.apiConfig.uri, devEnvironment.apiConfig.scopes);
+  devEnvironment.apiConfig.authEndpoints.forEach((uri) => {
+    protectedResourceMap.set(uri, [devEnvironment.apiConfig.accessAsUserScope]);
+  });
 
   return {
     interactionType: InteractionType.Redirect,

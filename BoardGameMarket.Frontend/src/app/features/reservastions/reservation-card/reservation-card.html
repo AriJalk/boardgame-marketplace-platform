@@ -19,7 +19,9 @@
     matButton
     type="button"
     (click)="requestSell()"
-    [hidden]="reservation.status !== 'reserved'"
+    [hidden]="
+      reservation.status !== 'reserved' || reservation.listingGroupMetadata.seller.userId !== userId
+    "
   >
     Sell
   </button>
@@ -27,7 +29,9 @@
     matButton
     type="button"
     (click)="requestCancel()"
-    [hidden]="reservation.status !== 'reserved'"
+    [hidden]="
+      reservation.status !== 'reserved' || reservation.listingGroupMetadata.seller.userId !== userId
+    "
   >
     Cancel
   </button>

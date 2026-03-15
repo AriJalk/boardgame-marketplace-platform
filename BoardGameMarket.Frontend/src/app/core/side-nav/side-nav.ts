@@ -1,7 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDrawer } from '@angular/material/sidenav';
-import { RouterLink } from "@angular/router";
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'bgm-side-nav',
@@ -10,5 +11,11 @@ import { RouterLink } from "@angular/router";
   styleUrl: './side-nav.css',
 })
 export class SideNav {
-  @Input({ required: true }) drawer!: MatDrawer
+  @Input({ required: true }) drawer!: MatDrawer;
+
+  constructor(private authService: AuthService) {}
+
+  get isLoggedIn(): boolean {
+    return this.authService.isLoggedIn;
+  }
 }

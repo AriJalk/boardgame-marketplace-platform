@@ -4,6 +4,7 @@ using BoardGameMarket.MarketGateway.API.Application.ListingSales.Dtos;
 using BoardGameMarket.MarketGateway.API.Application.ListingSales.Mappers;
 using BoardGameMarket.MarketGateway.API.Application.ListingSales.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.ListingSales.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
@@ -22,6 +23,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         }
 
         [HttpGet("{listingSaleId:guid}")]
+        [Authorize]
         public async Task<ActionResult<ListingSaleResponseDto>> GetListingSale(Guid listingSaleId)
         {
             ListingSaleInfo listingSale = await _listingSalesDataService.GetListingSaleAsync(listingSaleId);
@@ -32,6 +34,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         }
 
         [HttpGet("my")]
+        [Authorize]
         public async Task<ActionResult<ListingSaleResponseDto[]>> GetMyListingSales()
         {
             ListingSaleInfo[] listingSales = await _listingSalesDataService.GetUserListingSalesAsync();

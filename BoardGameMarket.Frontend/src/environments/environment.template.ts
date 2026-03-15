@@ -1,15 +1,18 @@
+const apiAddress = '[API address]';
+
 export const devEnvironment = {
-  apiEndpoint: '[apiEndpoint]',
+  apiAddress: apiAddress,
 
   production: false,
   msalConfig: {
     auth: {
-      clientId: '[SpaClientId]',
-      authority: '[TenantAuthority]',
+      clientId: '[Entra SPA ClientId]',
+      authority: '[Entra Authority]',
     },
   },
   apiConfig: {
-    scopes: [['scopes']],
-    uri: '[ApiUri]',
+    accessAsUserScope: 'api://[clientId]/access_as_user',
+    authEndpoints: [`${apiAddress}/reservations/`, `${apiAddress}/listing-sales/`],
+    optionalAuthEndpoints: [`/api/listing-groups`, '/api/listings', '/api/users'],
   },
 };

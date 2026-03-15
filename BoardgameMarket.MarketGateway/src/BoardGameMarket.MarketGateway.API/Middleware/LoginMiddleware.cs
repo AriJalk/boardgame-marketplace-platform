@@ -46,7 +46,6 @@ namespace BoardGameMarket.MarketGateway.API.Middleware
                         try
                         {
                             userInfo = await usersDataService.CreateUser(request);
-
                         }
                         catch
                         {

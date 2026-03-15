@@ -3,6 +3,13 @@
     <button matMiniFab (click)="drawer.toggle()">
       <mat-icon>menu</mat-icon>
     </button>
+    <div class="toolbar-spacer"></div>
+    @let account = activeAccount | async;
+    @if (!account) {
+      <a mat-button (click)="loginRedirect()">Login</a>
+    } @else {
+      <a mat-button (click)="logout()">Logout</a>
+    }
   </mat-toolbar>
   <mat-drawer-container>
     <mat-drawer #drawer mode="side" style="width: 10%; min-width: 200px">

@@ -8,6 +8,7 @@ using BoardGameMarket.MarketGateway.API.Application.Listings.Dtos.Listings;
 using BoardGameMarket.MarketGateway.API.Application.Listings.Enums;
 using BoardGameMarket.MarketGateway.API.Application.Shared;
 using BoardGameMarket.MarketGateway.API.Application.Users.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
@@ -63,6 +64,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 
 
         [HttpGet("subscriptions")]
+        [Authorize]
         public async Task<ActionResult<ListingGroupSummaryDto[]>> GetListingGroupsByLoggedUserSubscriptions()
         {
             if (_loginService.LoggedInUser == null)
@@ -78,6 +80,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 
 
         [HttpGet("owned/subscribers/{subscriberUserId:guid}")]
+        [Authorize]
         public async Task<ActionResult<ListingGroupSummaryDto[]>> GetLoggedUserListingGroupsBySubscriber(Guid subscriberUserId)
         {
             if (_loginService.LoggedInUser == null)

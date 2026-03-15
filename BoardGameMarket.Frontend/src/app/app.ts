@@ -6,6 +6,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterOutlet } from '@angular/router';
 import { SideNav } from './core/side-nav/side-nav';
 import { AuthService } from './core/auth/auth.service';
+import { AccountInfo } from '@azure/msal-browser';
+import { Observable } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +20,7 @@ import { AuthService } from './core/auth/auth.service';
     MatIconModule,
     MatButtonModule,
     MatDrawerContent,
+    AsyncPipe,
   ],
   templateUrl: './app.html',
   styleUrl: './app.css',
@@ -24,13 +28,24 @@ import { AuthService } from './core/auth/auth.service';
 export class App implements OnInit, OnDestroy {
   protected readonly title = signal('frontend');
 
+  activeAccount?: Observable<AccountInfo | null>;
+
   constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
     this.authService.init();
+    this.activeAccount = this.authService.activeAccount$;
   }
 
   ngOnDestroy(): void {
     this.authService.destroy();
+  }
+
+  loginRedirect() {
+    this.authService.loginRedirect();
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }

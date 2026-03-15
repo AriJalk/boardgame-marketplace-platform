@@ -2,6 +2,7 @@
 using BoardGameMarket.MarketGateway.API.Application.Users.Mappers;
 using BoardGameMarket.MarketGateway.API.Application.Users.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.Users.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,6 +29,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         }
 
         [HttpGet("{userId:guid}/contact-email")]
+        [Authorize]
         public async Task<ActionResult<string>> GetContactEmail(Guid userId)
         {
             if (_loginService.LoggedInUser == null)
