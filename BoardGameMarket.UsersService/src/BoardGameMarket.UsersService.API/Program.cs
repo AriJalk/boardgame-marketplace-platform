@@ -13,21 +13,20 @@ bool isSeeding = builder.Configuration.GetValue<bool>("IS_SEEDING");
 if (inMemory)
 {
 	builder.Services.AddInMemoryInfrastructure();
-	if (isSeeding)
-	{
-		JsonSerializerOptions jsonOptions = new JsonSerializerOptions();
-		jsonOptions.PropertyNameCaseInsensitive = true;
-		jsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
-		builder.Services.AddSingleton(jsonOptions);
-
-		builder.Services.AddInMemorySeeding();
-	}
 }
 else
 {
 	builder.Services.AddPostgresInfrastructure(builder.Configuration);
 }
+if (isSeeding)
+{
+    JsonSerializerOptions jsonOptions = new JsonSerializerOptions();
+    jsonOptions.PropertyNameCaseInsensitive = true;
+    jsonOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+    builder.Services.AddSingleton(jsonOptions);
 
+    builder.Services.AddSeeding();
+}
 
 builder.Services.AddControllers();
 
@@ -37,7 +36,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-if (inMemory && isSeeding)
+if (isSeeding)
 {
 	using (var scope = app.Services.CreateScope())
 	{

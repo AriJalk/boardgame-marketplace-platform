@@ -1,12 +1,13 @@
 ﻿using BoardGameMarket.UsersService.Core.Domain.RepositoryContracts;
 using BoardGameMarket.UsersService.Infrastructure.DbContexts;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace BoardGameMarket.UsersService.Infrastructure.Repositories
 {
-	internal class InMemoryUnitOfWork : IUnitOfWork
+    internal class InMemoryUnitOfWork : IUnitOfWork
 	{
 		private readonly ApplicationDbContext _db;
 
@@ -15,22 +16,17 @@ namespace BoardGameMarket.UsersService.Infrastructure.Repositories
 			_db = db;
 		}
 
-		public async Task BeginTransactionAsync()
-		{
-			
-		}
+        public async Task ExecuteInTransactionAsync(Func<Task> action)
+        {
+			await action();
+        }
 
-		public async Task CommitTransactionAsync()
-		{
-			await _db.SaveChangesAsync();
-		}
+        public async Task<T> ExecuteInTransactionAsync<T>(Func<Task<T>> action)
+        {
+            return await action();
+        }
 
-		public async Task RollBackTransactionAsync()
-		{
-			
-		}
-
-		public async Task<int> SaveChangesAsync()
+        public async Task<int> SaveChangesAsync()
 		{
 			await _db.SaveChangesAsync();
 			return 1;

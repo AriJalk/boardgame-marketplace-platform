@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36414.22
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11605.240 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameMarket.UsersService.API", "src\BoardGameMarket.UsersService.API\BoardGameMarket.UsersService.API.csproj", "{E607F448-8FCB-5A7B-BE4B-82A7FD38F195}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameMarket.UsersService.ServiceUnitTests", "tests\BoardGameMarket.UsersService.ServiceUnitTests\BoardGameMarket.UsersService.ServiceUnitTests.csproj", "{0153D562-027E-4D55-AD54-D79F330F4689}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameMarket.UsersService.Infrastructure", "src\BoardGameMarket.UsersService.Infrastructure\BoardGameMarket.UsersService.Infrastructure.csproj", "{CA9985B2-DDCB-40E2-A248-40514FE4BD02}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{CA9985B2-DDCB-40E2-A248-40514FE4BD02}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA9985B2-DDCB-40E2-A248-40514FE4BD02}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA9985B2-DDCB-40E2-A248-40514FE4BD02}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

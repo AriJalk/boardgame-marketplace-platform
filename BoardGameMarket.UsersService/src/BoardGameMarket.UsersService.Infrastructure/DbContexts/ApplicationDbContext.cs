@@ -14,7 +14,16 @@ namespace BoardGameMarket.UsersService.Infrastructure.DbContexts
 		{
 			base.OnModelCreating(modelBuilder);
 
-			modelBuilder.Entity<ApplicationUser>().HasKey(u => u.Id);
+			modelBuilder.Entity<ApplicationUser>(entity =>
+			{
+				entity.ToTable("users", "public");
+				entity.HasKey(u => u.Id);
+				entity.Property(u => u.Id).HasColumnName("id");
+				entity.Property(u => u.FirstName).HasColumnName("first_name");
+                entity.Property(u => u.LastName).HasColumnName("last_name");
+                entity.Property(u => u.DisplayName).HasColumnName("display_name");
+                entity.Property(u => u.Email).HasColumnName("email");
+            });
 		}
 	}
 }

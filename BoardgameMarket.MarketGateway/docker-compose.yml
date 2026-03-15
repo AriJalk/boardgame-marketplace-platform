@@ -42,15 +42,38 @@ services:
 
   users-microservice:
     image: arieljalkiver/boardgame-market:users
-    networks:
-      - microservices-network
-    volumes:
-      - ../SeedData:/app/SeedData:ro
     environment:
-      IN_MEMORY: true
+      POSTGRES_HOST: postgres-users
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: boardgamemarket_users_database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
       IS_SEEDING: true
+      IN_MEMORY: false
       SEED_ROOT: /app/SeedData
+    depends_on:
+      - postgres-users
+    networks: 
+    - users-network
+    - microservices-network
+    volumes:
+    - ../SeedData:/app/SeedData:ro
+
+  postgres-users:
+    image: postgres:18.3
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: boardgamemarket_users_database
+    networks: 
+    - users-network
+    volumes:
+    - ../database-init/postgres-users-init:/docker-entrypoint-initdb.d
+
+
 
 networks:
   microservices-network:
+    driver: bridge
+  users-network:
     driver: bridge
