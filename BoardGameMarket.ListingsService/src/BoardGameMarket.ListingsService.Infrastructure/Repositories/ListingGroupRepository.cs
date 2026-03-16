@@ -114,7 +114,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
         {
             string sql = "SELECT * FROM listing_groups WHERE id = ANY(@Ids);";
 
-            return await _unitOfWork.QueryAsync<ListingGroup>(sql, DapperHelper.Param("Ids", listingGroupIds));
+            return await _unitOfWork.QueryAsync<ListingGroup>(sql, DapperHelper.Param("Ids", listingGroupIds.ToList()));
         }
 
         public async Task<IEnumerable<ListingGroup>> GetListingGroupsBySellerUserId(Guid sellerUserId)

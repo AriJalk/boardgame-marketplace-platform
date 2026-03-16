@@ -61,6 +61,7 @@ CREATE TABLE public.listing_reservations
 CREATE TABLE public.listing_sales
 (
     "id" UUID NOT NULL,
+       "listing_id" UUID NOT NULL,
     "completed_at" TIMESTAMP NOT NULL,
     "reservation_id" UUID NOT NULL,
     "listing_queue_entry_id" UUID NOT NULL,

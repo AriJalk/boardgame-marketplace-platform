@@ -43,7 +43,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
                 "ON CONFLICT (id) DO NOTHING " +
                 "RETURNING id;";
 
-            return await _unitOfWork.ExecuteAsync(sql, listings);
+            return await _unitOfWork.ExecuteAsync(sql, listings.ToList());
         }
 
         public async Task<int> DeleteListingAsync(Guid listingId)
@@ -85,7 +85,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
         {
             string sql = "SELECT * FROM listings WHERE id = ANY(@Ids);";
 
-            return await _unitOfWork.QueryAsync<Listing>(sql, DapperHelper.Param("Ids", listingIds));
+            return await _unitOfWork.QueryAsync<Listing>(sql, DapperHelper.Param("Ids", listingIds.ToList()));
         }
 
         public async Task<int> UpdateListingAsync(Listing listing)
@@ -105,7 +105,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
                 "SET title=@Title, status=@Status, modified_at=@ModifiedAt, price=@Price, details=@Details " +
                 "WHERE id=@Id";
 
-            return await _unitOfWork.ExecuteAsync(sql, listings);
+            return await _unitOfWork.ExecuteAsync(sql, listings.ToList());
         }
     }
 }

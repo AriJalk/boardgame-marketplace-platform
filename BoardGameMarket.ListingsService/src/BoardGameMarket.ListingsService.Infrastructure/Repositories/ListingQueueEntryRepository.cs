@@ -76,7 +76,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
                         filterQuery.Append("AND ");
                     }
                     filterQuery.Append("listing_id = ANY(@ListingIds) ");
-                    parameters.Add("ListingIds", filter.ListingIds);
+                    parameters.Add("ListingIds", filter.ListingIds.ToList());
                 }
             if (filter.ListingQueueEntryIds != null && filter.ListingQueueEntryIds.Any())
             {
@@ -85,7 +85,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
                     filterQuery.Append("AND ");
                 }
                 filterQuery.Append("id = ANY (@ListingQueueEntryIds) ");
-                parameters.Add("ListingQueueEntryIds", filter.ListingQueueEntryIds);
+                parameters.Add("ListingQueueEntryIds", filter.ListingQueueEntryIds.ToList());
             }
             if (filter.ListingStatus != null)
             {
@@ -118,7 +118,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
                 "SET status=@Status, modified_at=@ModifiedAt, priority=@Priority " +
                 "WHERE id=@Id;";
 
-            return _unitOfWork.ExecuteAsync(sql, listingQueueEntries);
+            return _unitOfWork.ExecuteAsync(sql, listingQueueEntries.ToList());
         }
 
         public Task<int> UpdateListingQueueEntryAsync(ListingQueueEntry listingQueueEntry)
