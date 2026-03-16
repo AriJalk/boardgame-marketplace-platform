@@ -27,7 +27,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.Listings
 
 		public async Task<IEnumerable<Listing>> GetListingsByListingGroupIdAsync(Guid listingGroupId)
 		{
-			return await _listingRepository.GetListingsByGroupIdAsync(listingGroupId);
+			return await _listingRepository.GetListingsByListingGroupIdAsync(listingGroupId);
 		}
 
 		public async Task<IEnumerable<Listing>> GetListingsByIdsAsync(IEnumerable<Guid> listingIds)

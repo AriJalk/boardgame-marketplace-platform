@@ -1,7 +1,7 @@
 using BoardGameMarket.ListingsService.API.Middleware;
 using BoardGameMarket.ListingsService.Core;
 using BoardGameMarket.ListingsService.Infrastructure;
-using BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories.Seeders;
+using BoardGameMarket.ListingsService.Infrastructure.Seeders;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -14,14 +14,14 @@ bool isSeeding = builder.Configuration.GetValue<bool>("IS_SEEDING");
 if (inMemory)
 {
 	builder.Services.AddInMemoryInfrastructure();
-	if (isSeeding)
-	{
-		builder.Services.AddInMemorySeeding();
-	}
 }
 else
 {
 	builder.Services.AddInfrastructure();
+}
+if (isSeeding)
+{
+    builder.Services.AddSeeding();
 }
 
 
@@ -38,11 +38,11 @@ var app = builder.Build();
 app.UseExceptionHandlingMiddleware();
 app.UseCurrentUserMiddleware();
 
-if (inMemory && isSeeding)
+if (isSeeding)
 {
 	using (var scope = app.Services.CreateScope())
 	{
-		InMemorySeedRunner seedRunner = scope.ServiceProvider.GetRequiredService<InMemorySeedRunner>();
+		SeedRunner seedRunner = scope.ServiceProvider.GetRequiredService<SeedRunner>();
 		string seedPath = builder.Configuration["SEED_ROOT"] ?? throw new InvalidOperationException("Seed root not configured");
 		await seedRunner.SeedAsync(seedPath);
 	}

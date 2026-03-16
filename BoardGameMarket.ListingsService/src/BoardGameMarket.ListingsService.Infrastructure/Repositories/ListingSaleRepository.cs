@@ -1,53 +1,95 @@
 ﻿using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
+using BoardGameMarket.ListingsService.Infrastructure.Helpers;
+using Dapper;
+using Npgsql;
+using System.Data;
 
 namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 {
     internal class ListingSaleRepository : IListingSaleRepository
     {
-        public Task<int> AddListingSaleAsync(ListingSale listingSale)
+        private readonly IUnitOfWork _unitOfWork;
+
+        public ListingSaleRepository(IUnitOfWork unitOfWork)
         {
-            throw new NotImplementedException();
+            _unitOfWork = unitOfWork;
+        }
+        public async Task<int> AddListingSaleAsync(ListingSale listingSale)
+        {
+            string sql =
+                "INSERT INTO listing_sales " +
+                "(id, listing_id, completed_at, reservation_id, listing_queue_entry_id, seller_user_id, buyer_user_id) " +
+                "VALUES (@Id, @ListingId, @CompletedAt, @ReservationId, @ListingQueueEntryId, @SellerUserId, @BuyerUserId) " +
+                "ON CONFLICT (id) DO NOTHING " +
+                "RETURNING id;";
+
+            return await _unitOfWork.ExecuteAsync(sql, listingSale);
         }
 
-        public Task<int> DeleteListingSaleAsync(Guid listingSaleId)
+        public async Task<int> DeleteListingSaleAsync(Guid listingSaleId)
         {
-            throw new NotImplementedException();
+            string sql = "DELETE FROM listing_sales WHERE id=@Id;";
+
+            return await _unitOfWork.ExecuteAsync(sql, DapperHelper.Param("Id", listingSaleId));
         }
 
-        public Task<ListingSale?> GetListingSaleByIdAsync(Guid listingSaleId)
+        public async Task<ListingSale?> GetListingSaleByIdAsync(Guid listingSaleId)
         {
-            throw new NotImplementedException();
+            string sql = "SELECT * FROM listing_sales WHERE id=@Id;";
+
+            return await _unitOfWork.QueryFirstOrDefaultAsync<ListingSale>(sql, DapperHelper.Param("Id", listingSaleId));
         }
 
-        public Task<ListingSale?> GetListingSaleByListingIdAsync(Guid listingId)
+        public async Task<ListingSale?> GetListingSaleByListingIdAsync(Guid listingId)
         {
-            throw new NotImplementedException();
+            string sql = "SELECT * FROM listing_sales WHERE listing_id=@ListingId;";
+
+            return await _unitOfWork.QueryFirstOrDefaultAsync<ListingSale>(sql, DapperHelper.Param("ListingId", listingId));
         }
 
-        public Task<ListingSale?> GetListingSaleByListingQueueEntryIdAsync(Guid listingQueueEntryId)
+        public async Task<ListingSale?> GetListingSaleByListingQueueEntryIdAsync(Guid listingQueueEntryId)
         {
-            throw new NotImplementedException();
+            string sql = 
+                "SELECT * FROM listing_sales WHERE listing_queue_entry=@ListingQueueEntry;";
+
+            return await _unitOfWork.QueryFirstOrDefaultAsync<ListingSale>(sql, DapperHelper.Param("ListingQueueEntry", listingQueueEntryId));
         }
 
-        public Task<IEnumerable<ListingSale>> GetListingSalesByBuyerUserIdAsync(Guid buyerUserId)
+        public async Task<IEnumerable<ListingSale>> GetListingSalesByBuyerUserIdAsync(Guid buyerUserId)
         {
-            throw new NotImplementedException();
+            string sql = "SELECT * FROM listing_sales WHERE buyer_user_id=@BuyerUserId;";
+
+            return await _unitOfWork.QueryAsync<ListingSale>(sql, DapperHelper.Param("BuyerUserId", buyerUserId));
         }
 
-        public Task<IEnumerable<ListingSale>> GetListingSalesByDateRange(DateTime startDate, DateTime endDate)
+        public async Task<IEnumerable<ListingSale>> GetListingSalesByDateRange(DateTime startDate, DateTime endDate)
         {
-            throw new NotImplementedException();
+            string sql = 
+                "SELECT * FROM listing_sales WHERE " +
+                "completed_at BETWEEN @StartDate AND @EndDate;";
+
+            return await _unitOfWork.QueryAsync<ListingSale>(sql, DapperHelper.Params(new Dictionary<string, object>{
+                { "StartDate", startDate},
+                {"EndDate", endDate  }
+                }));
         }
 
-        public Task<IEnumerable<ListingSale>> GetListingSalesBySellerUserIdAsync(Guid sellerUserId)
+        public async Task<IEnumerable<ListingSale>> GetListingSalesBySellerUserIdAsync(Guid sellerUserId)
         {
-            throw new NotImplementedException();
+            string sql = "SELECT * FROM listing_sales WHERE seller_user_id=@SellerUserId;";
+
+            return await _unitOfWork.QueryAsync<ListingSale>(sql, DapperHelper.Param("SellerUserId", sellerUserId));
         }
 
-        public Task<IEnumerable<ListingSale>> GetListingSalesByUserIdAsync(Guid userId)
+        public async Task<IEnumerable<ListingSale>> GetListingSalesByUserIdAsync(Guid userId)
         {
-            throw new NotImplementedException();
+            string sql = 
+                "SELECT * FROM listing_sales WHERE " +
+                "seller_user_id=@UserId OR " +
+                "buyer_user_id=@UserId;";
+
+            return await _unitOfWork.QueryAsync<ListingSale>(sql, DapperHelper.Param("UserId", userId));
         }
     }
 }

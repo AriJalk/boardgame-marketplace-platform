@@ -1,4 +1,6 @@
 ﻿using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
+using BoardGameMarket.ListingsService.Infrastructure.Repositories.DbContext;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,9 +12,10 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 {
     internal class InMemoryUnitOfWork : IUnitOfWork
     {
-        public IDbConnection Connection => throw new NotImplementedException();
-
-        public IDbTransaction? Transaction => throw new NotImplementedException();
+        public Task<int> ExecuteAsync(string sql, object? param)
+        {
+            throw new NotImplementedException();
+        }
 
         public async Task ExecuteInTransactionAsync(Func<Task> action)
         {
@@ -22,6 +25,16 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
         public async Task<T> ExecuteInTransactionAsync<T>(Func<Task<T>> action)
         {
             return await action();
+        }
+
+        public Task<IEnumerable<T>> QueryAsync<T>(string sql, object? param)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<T?> QueryFirstOrDefaultAsync<T>(string sql, object? param)
+        {
+            throw new NotImplementedException();
         }
     }
 }

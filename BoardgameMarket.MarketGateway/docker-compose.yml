@@ -20,12 +20,21 @@ services:
     image: arieljalkiver/boardgame-market:listings
     networks:
       - microservices-network
+      - listings-network
     volumes:
-      - ../SeedData:/app/SeedData:ro
+      - ../BoardGameMarket.Infrastructure/SeedData:/app/SeedData:ro
     environment:
-      IN_MEMORY: true
+      IN_MEMORY: false
       IS_SEEDING: true
       SEED_ROOT: /app/SeedData
+      POSTGRES_HOST: postgres-listings
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: boardgamemarket_listings_database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    depends_on:
+    - postgres-listings
+    
 
   catalog-microservice:
     image: arieljalkiver/boardgame-market:catalog
@@ -33,7 +42,7 @@ services:
     - microservices-network
     - catalog-network
     volumes:
-    - ../SeedData:/app/SeedData:ro
+    - ../BoardGameMarket.Infrastructure/SeedData:/app/SeedData:ro
     depends_on:
     - mongodb-catalog
     environment:
@@ -55,8 +64,8 @@ services:
       POSTGRES_DATABASE: boardgamemarket_users_database
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
-      IS_SEEDING: true
       IN_MEMORY: false
+      IS_SEEDING: true
       SEED_ROOT: /app/SeedData
     depends_on:
     - postgres-users
@@ -64,7 +73,7 @@ services:
     - users-network
     - microservices-network
     volumes:
-    - ../SeedData:/app/SeedData:ro
+    - ../BoardGameMarket.Infrastructure/SeedData:/app/SeedData:ro
 
 
 
@@ -79,12 +88,23 @@ services:
     networks: 
     - users-network
     volumes:
-    - ../database-init/postgres-users-init:/docker-entrypoint-initdb.d
+    - ../BoardGameMarket.Infrastructure/database-init/postgres-users-init:/docker-entrypoint-initdb.d
 
   mongodb-catalog:
     image: mongo:8.2.5
     networks:
     - catalog-network
+
+  postgres-listings:
+    image: postgres:18.3
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: boardgamemarket_listings_database
+    networks: 
+    - listings-network
+    volumes:
+    - ../BoardGameMarket.Infrastructure/database-init/postgres-listings-init:/docker-entrypoint-initdb.d
 
 networks:
   microservices-network:
@@ -92,4 +112,6 @@ networks:
   users-network:
     driver: bridge
   catalog-network:
+    driver: bridge
+  listings-network:
     driver: bridge

@@ -18,7 +18,7 @@ services:
     networks: 
     - users-network
     volumes:
-    - ../SeedData:/app/SeedData:ro
+    - ../BoardGameMarket.Infrastructure/SeedData:/app/SeedData:ro
 
   postgres-users:
     image: postgres:18.3
@@ -29,7 +29,7 @@ services:
     networks: 
     - users-network
     volumes:
-    - ../database-init/postgres-users-init:/docker-entrypoint-initdb.d
+    - ../BoardGameMarket.Infrastructure/database-init/postgres-users-init:/docker-entrypoint-initdb.d
 
 networks:
   users-network:

@@ -36,12 +36,12 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
             return Task.FromResult(_listingReservations.FirstOrDefault(lr => lr.ListingId == listingId));
         }
 
-        public Task<IEnumerable<ListingReservation>> GetListingsReservationByBuyerUserIdAsync(Guid buyerUserId)
+        public Task<IEnumerable<ListingReservation>> GetListingsReservationsByBuyerUserIdAsync(Guid buyerUserId)
         {
             return Task.FromResult(_listingReservations.Where(lr => lr.BuyerUserId == buyerUserId));
         }
 
-        public Task<IEnumerable<ListingReservation>> GetListingsReservationBySellerUserIdAsync(Guid sellerUserId)
+        public Task<IEnumerable<ListingReservation>> GetListingsReservationsBySellerUserIdAsync(Guid sellerUserId)
         {
             return Task.FromResult(_listingReservations.Where(lr => lr.SellerUserId == sellerUserId));
         }

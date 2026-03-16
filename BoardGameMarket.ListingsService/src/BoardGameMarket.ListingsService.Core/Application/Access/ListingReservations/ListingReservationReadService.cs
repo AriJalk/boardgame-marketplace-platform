@@ -27,12 +27,12 @@ namespace BoardGameMarket.ListingsService.Core.Application.Access.ListingReserva
 
         public async Task<IEnumerable<ListingReservation>> GetListingsReservationByBuyerUserIdAsync(Guid buyerUserId)
         {
-            return await _listingReservationRepository.GetListingsReservationByBuyerUserIdAsync(buyerUserId);
+            return await _listingReservationRepository.GetListingsReservationsByBuyerUserIdAsync(buyerUserId);
         }
 
         public async Task<IEnumerable<ListingReservation>> GetListingsReservationBySellerUserIdAsync(Guid sellerUserId)
         {
-            return await _listingReservationRepository.GetListingsReservationBySellerUserIdAsync (sellerUserId);
+            return await _listingReservationRepository.GetListingsReservationsBySellerUserIdAsync (sellerUserId);
         }
     }
 }

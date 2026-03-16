@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories.Seeders
+namespace BoardGameMarket.ListingsService.Infrastructure.Seeders
 {
-	public class InMemorySeedRunner
+	public class SeedRunner
 	{
 		private readonly IEnumerable<ISeeder> _rootSeeders;
 		private readonly QueueSeeder _queueSeeder; 
 
-		public InMemorySeedRunner(IEnumerable<ISeeder> rootSeeders, QueueSeeder queueSeeder)
+		public SeedRunner(IEnumerable<ISeeder> rootSeeders, QueueSeeder queueSeeder)
 		{
 			_rootSeeders = rootSeeders;
 			_queueSeeder = queueSeeder;

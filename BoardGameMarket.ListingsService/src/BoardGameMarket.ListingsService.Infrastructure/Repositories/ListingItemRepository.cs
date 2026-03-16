@@ -1,7 +1,11 @@
 ﻿using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
+using BoardGameMarket.ListingsService.Infrastructure.Helpers;
+using Dapper;
+using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,54 +14,96 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 {
     internal class ListingItemRepository : IListingItemRepository
     {
-        public Task<int> AddListingItemAsync(ListingItem listingItem)
+
+        private readonly IUnitOfWork _unitOfWork;
+
+        public ListingItemRepository(IUnitOfWork unitOfWork)
         {
-            throw new NotImplementedException();
+            _unitOfWork = unitOfWork;
         }
 
-        public Task<int> AddListingItemsAsync(IEnumerable<ListingItem> listingItems)
+        public async Task<int> AddListingItemAsync(ListingItem listingItem)
         {
-            throw new NotImplementedException();
+            string sql =
+                "INSERT INTO listing_items (id, listing_id, catalog_id, details) " +
+                "VALUES (@Id, @ListingId, @CatalogId, @Details) " +
+                "ON CONFLICT (id) DO NOTHING" +
+                "RETURNING id;";
+
+            return await _unitOfWork.ExecuteAsync(sql, listingItem);
         }
 
-        public Task<int> DeleteListingItemAsync(Guid listingItemId)
+        public async Task<int> AddListingItemsAsync(IEnumerable<ListingItem> listingItems)
         {
-            throw new NotImplementedException();
+            string sql =
+                "INSERT INTO listing_items (id, listing_id, catalog_id, details) " +
+                "VALUES (@Id, @ListingId, @CatalogId, @Details) " +
+                "ON CONFLICT (id) DO NOTHING " +
+                "RETURNING id;";
+
+            return await _unitOfWork.ExecuteAsync(sql, listingItems);
         }
 
-        public Task<int> DeleteListingItemsByListingIdAsync(Guid listingId)
+        public async Task<int> DeleteListingItemAsync(Guid listingItemId)
         {
-            throw new NotImplementedException();
+            string sql = "DELETE FROM listing_items WHERE id = @Id;";
+
+            return await _unitOfWork.ExecuteAsync(sql, DapperHelper.Param("Id", listingItemId));
         }
 
-        public Task<ListingItem?> GetListingItemByIdAsync(Guid listingItemId)
+        public async Task<int> DeleteListingItemsByListingIdAsync(Guid listingId)
         {
-            throw new NotImplementedException();
+            string sql = "DELETE FROM listing_items WHERE listing_id=@ListingId;";
+
+            return await _unitOfWork.ExecuteAsync(sql, DapperHelper.Param("ListingId", listingId));
         }
 
-        public Task<IEnumerable<ListingItem>> GetListingItemsByCatalogIdAsync(Guid catalogId)
+        public async Task<ListingItem?> GetListingItemByIdAsync(Guid listingItemId)
         {
-            throw new NotImplementedException();
+            string sql = "SELECT * FROM listing_items WHERE id=@Id;";
+
+            return await _unitOfWork.QueryFirstOrDefaultAsync<ListingItem>(sql, DapperHelper.Param("Id", listingItemId));
         }
 
-        public Task<IEnumerable<ListingItem>> GetListingItemsByListingIdsAsync(IEnumerable<Guid> listingIds)
+        public async Task<IEnumerable<ListingItem>> GetListingItemsByCatalogIdAsync(Guid catalogId)
         {
-            throw new NotImplementedException();
+            string sql = "SELECT * FROM listing_items WHERE catalog_id=@CatalogId;";
+
+            return await _unitOfWork.QueryAsync<ListingItem>(sql, DapperHelper.Param("CatalogId", catalogId));
         }
 
-        public Task<IEnumerable<ListingItem>> GetListingsItemsByListingIdAsync(Guid listingId)
+        public async Task<IEnumerable<ListingItem>> GetListingItemsByListingIdsAsync(IEnumerable<Guid> listingIds)
         {
-            throw new NotImplementedException();
+            string sql = "SELECT * FROM listing_items WHERE listing_id in @ListingIds;";
+
+            return await _unitOfWork.QueryAsync<ListingItem>(sql, DapperHelper.Param("ListingIds", listingIds));
         }
 
-        public Task<int> UpdateListingItemAsync(ListingItem listingItem)
+        public async Task<IEnumerable<ListingItem>> GetListingsItemsByListingIdAsync(Guid listingId)
         {
-            throw new NotImplementedException();
+            string sql = "SELECT * FROM listing_items WHERE listing_id=@ListingId;";
+
+            return await _unitOfWork.QueryAsync<ListingItem>(sql, DapperHelper.Param("ListingId", listingId));
         }
 
-        public Task<int> UpdateListingItemsAsync(IEnumerable<ListingItem> listingItems)
+        public async Task<int> UpdateListingItemAsync(ListingItem listingItem)
         {
-            throw new NotImplementedException();
+            string sql = 
+                "UPDATE listing_items " +
+                "SET details=@Details " +
+                "WHERE id=@Id;";
+
+            return await _unitOfWork.ExecuteAsync(sql, listingItem);
+        }
+
+        public async Task<int> UpdateListingItemsAsync(IEnumerable<ListingItem> listingItems)
+        {
+            string sql = 
+                "UPDATE listing_items " +
+                "SET details=@Details " +
+                "WHERE id=@Id;";
+
+            return await _unitOfWork.ExecuteAsync(sql, listingItems);
         }
     }
 }

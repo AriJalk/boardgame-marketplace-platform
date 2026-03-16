@@ -40,14 +40,17 @@ namespace BoardGameMarket.CatalogService.Infrastructure.Repositories
 			return await _items.Find(filter).FirstOrDefaultAsync();
 		}
 
-		public Task<IEnumerable<CatalogItem>> GetCatalogItemsAsync()
+		public async Task<IEnumerable<CatalogItem>> GetCatalogItemsAsync()
 		{
-			throw new NotImplementedException();
+			FilterDefinition<CatalogItem> filter = Builders<CatalogItem>.Filter.Empty;
+			return await _items.Find(filter).ToListAsync();
 		}
 
-        public Task<IEnumerable<CatalogItem>> GetCustomItemsByNamesAsync(IEnumerable<string> names)
+        public async Task<IEnumerable<CatalogItem>> GetCustomItemsByNamesAsync(IEnumerable<string> names)
         {
-            throw new NotImplementedException();
-        }
+			FilterDefinition<CatalogItem> filter = Builders<CatalogItem>.Filter.In(i => i.Name, names);
+
+			return await _items.Find(filter).ToListAsync();
+        }	
     }
 }

@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 
-namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories.Seeders
+namespace BoardGameMarket.ListingsService.Infrastructure.Seeders
 {
 	public class ListingsSeeder : ISeeder
 	{

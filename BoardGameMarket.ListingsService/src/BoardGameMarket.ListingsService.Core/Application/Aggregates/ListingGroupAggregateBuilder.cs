@@ -67,12 +67,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.Aggregates
 		{
 			if (filter.ListingIds != null && filter.ListingIds.Any())
 			{
-				IEnumerable<Guid> listingGroupIdsFromListings = await _listingReadService
-					.GetListingsByIdsAsync(filter.ListingIds)
-					.ContinueWith(t => t.Result.Select(l => l.ListingGroupId));
+				List<Guid> listingGroupIdsFromListings = (await _listingReadService
+					.GetListingsByIdsAsync(filter.ListingIds)).Select(l => l.ListingGroupId).ToList();
 				filter.ListingGroupIds = (filter.ListingGroupIds ?? Enumerable.Empty<Guid>())
 					.Concat(listingGroupIdsFromListings)
-					.Distinct();
+					.Distinct().ToList();
 			}
 
 			 IEnumerable<ListingGroup> filteredListingGroups = await _listingGroupReadService.GetFilteredListingGroups(filter);

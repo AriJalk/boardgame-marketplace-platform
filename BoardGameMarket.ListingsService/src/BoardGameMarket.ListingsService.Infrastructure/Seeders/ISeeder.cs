@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories.Seeders
+namespace BoardGameMarket.ListingsService.Infrastructure.Seeders
 {
 	public interface ISeeder
 	{

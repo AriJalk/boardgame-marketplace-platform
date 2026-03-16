@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 
-namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories.Seeders
+namespace BoardGameMarket.ListingsService.Infrastructure.Seeders
 {
 
 

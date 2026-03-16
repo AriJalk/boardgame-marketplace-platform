@@ -53,7 +53,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 			return _listings;
 		}
 
-		public Task<IEnumerable<Listing>> GetListingsByGroupIdAsync(Guid groupId)
+		public Task<IEnumerable<Listing>> GetListingsByListingGroupIdAsync(Guid groupId)
 		{
 			return Task.FromResult(_listings.Where(l => l.ListingGroupId == groupId));
 		}

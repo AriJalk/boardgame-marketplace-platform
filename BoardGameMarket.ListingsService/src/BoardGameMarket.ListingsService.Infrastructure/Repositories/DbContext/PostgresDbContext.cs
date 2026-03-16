@@ -8,7 +8,7 @@ using System.Text;
 
 namespace BoardGameMarket.ListingsService.Infrastructure.Repositories.DbContext
 {
-	public class PostgresDbContext
+    public class PostgresDbContext : IDisposable
 	{
 		private readonly IDbConnection _connection;
 		public IDbConnection Connection => _connection;
@@ -24,5 +24,10 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories.DbContext
 				.Replace("$POSTGRES_PASSWORD", Environment.GetEnvironmentVariable("POSTGRES_PASSWORD"));
 			_connection = new NpgsqlConnection(connectionString);
 		}
-	}
+
+        public void Dispose()
+        {
+			_connection.Close();
+        }
+    }
 }
