@@ -39,12 +39,12 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingReservations.UseC
                 Guid BuyerUserId = reservation.ListingQueueEntry.BuyerUserId;
                 if (!userDtos.TryGetValue(SellerUserId, out var existingUser))
                 {
-                    existingUser = (await _usersDataService.GetUserOrThrow(SellerUserId)).ToUserSummaryDto();
+                    existingUser = (await _usersDataService.GetUserOrThrowAsync(SellerUserId)).ToUserSummaryDto();
                     userDtos[existingUser.UserId] = existingUser;
                 }
                 if (!userDtos.TryGetValue(BuyerUserId, out existingUser))
                 {
-                    existingUser = (await _usersDataService.GetUserOrThrow(BuyerUserId)).ToUserSummaryDto();
+                    existingUser = (await _usersDataService.GetUserOrThrowAsync(BuyerUserId)).ToUserSummaryDto();
                     userDtos[existingUser.UserId] = existingUser;
                 }
                 ListingGroupMetadataDto metadata = (await _listingGroupsDataService.GetListingGroupMetadata(reservation.Listing.ListingGroupId)).ToListingGroupMetadataDto(userDtos[SellerUserId]);

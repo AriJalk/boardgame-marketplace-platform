@@ -88,7 +88,13 @@ namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 
 			services.AddHttpContextAccessor();
 
-			return services;
+			services.AddStackExchangeRedisCache(options =>
+			{
+				options.Configuration = $"{configuration["REDIS_HOST"]}:{configuration["REDIS_PORT"]}";
+			});
+
+
+            return services;
 		}
 	}
 }

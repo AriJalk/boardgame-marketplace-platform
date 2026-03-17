@@ -19,7 +19,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingQueues.Assemblers
 
 		public async Task<ListingQueueEntryResponseDto> BuildQueueEntryResponseDto(ListingQueueEntryInfo queueEntry)
 		{
-			UserInfo userInfo = await _usersService.GetUserOrThrow(queueEntry.BuyerUserId);
+			UserInfo userInfo = await _usersService.GetUserOrThrowAsync(queueEntry.BuyerUserId);
 			UserSummaryDto userSummaryDto = userInfo.ToUserSummaryDto();
 
 			return queueEntry.ToListingQueueEntryResponseDto(userSummaryDto);

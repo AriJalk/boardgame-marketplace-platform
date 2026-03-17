@@ -24,7 +24,7 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         [HttpGet("{userId:guid}")]
         public async Task<ActionResult<UserSummaryDto>> GetUser(Guid userId)
         {
-            UserInfo user = await _usersDataService.GetUserOrThrow(userId);
+            UserInfo user = await _usersDataService.GetUserOrThrowAsync(userId);
             return Ok(user.ToUserSummaryDto());
         }
 

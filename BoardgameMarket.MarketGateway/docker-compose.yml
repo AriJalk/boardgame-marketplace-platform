@@ -11,6 +11,8 @@ services:
       CATALOG_SERVICE_PORT: 8080
       USERS_SERVICE_HOST: users-microservice
       USERS_SERVICE_PORT: 8080
+      REDIS_HOST: redis-container
+      REDIS_PORT: 6379
     networks:
     - microservices-network
     ports:
@@ -85,6 +87,13 @@ services:
     image: mongo:8.2.5
     networks:
     - catalog-network
+
+  redis-container:
+    image: redis:8.2.5
+    networks:
+      - microservices-network
+    volumes:
+      - "../redis-cache:/data"
 
 networks:
   microservices-network:
