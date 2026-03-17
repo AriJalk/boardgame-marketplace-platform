@@ -14,6 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { TimeQueueEntryTable } from '../time-queue-entry-table/time-queue-entry-table';
 import { PriorityQueueEntryTable } from '../priority-queue-entry-table/priority-queue-entry-table';
 import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../../../../core/auth/auth.service';
 
 @Component({
   selector: 'bgm-queue-seller-panel',
@@ -32,7 +33,7 @@ import { Router, RouterLink } from '@angular/router';
   styleUrl: './queue-seller-panel.css',
 })
 export class QueueSellerPanel implements OnInit {
-  @Input({ required: true }) listingsId!: string;
+  @Input({ required: true }) listingId!: string;
   @Input() isLocked: boolean = false;
 
   @Output() listingStatusChanged = new EventEmitter();
@@ -45,6 +46,7 @@ export class QueueSellerPanel implements OnInit {
   constructor(
     private queueService: QueueService,
     private router: Router,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -52,32 +54,45 @@ export class QueueSellerPanel implements OnInit {
   }
 
   private loadQueues() {
-    this.queueService.getQueues(this.listingsId).subscribe({
-      next: (data) => {
-        this.queuesBehaviorSubject.next(data);
-        // console.log("QUEUEDATA", data);
-        if (data.queueByPriority.length > 0) {
-          this.topPriorityEntry = data.queueByPriority[0];
-        } else if (data.queueByTime.length > 0) {
-          this.topPriorityEntry = data.queueByTime[0];
-        }
-      },
-    });
+    this.authService
+      .withAuthCall((header) => this.queueService.getQueues(this.listingId, header))
+      .subscribe({
+        next: (data) => {
+          this.queuesBehaviorSubject.next(data);
+          // console.log("QUEUEDATA", data);
+          if (data.queueByPriority.length > 0) {
+            this.topPriorityEntry = data.queueByPriority[0];
+          } else if (data.queueByTime.length > 0) {
+            this.topPriorityEntry = data.queueByTime[0];
+          }
+        },
+      });
   }
 
   onDeleteRequested($event: QueueEntry) {
     // console.log($event);
-    this.queueService.unsubscribeFromListing(this.listingsId, $event.id).subscribe({
-      next: (data) => {
-        this.topPriorityEntry = undefined;
-        this.loadQueues();
-      },
-    });
+    this.authService
+      .withAuthCall((header) =>
+        this.queueService.unsubscribeFromListing(this.listingId, $event.id, header),
+      )
+      .subscribe({
+        next: (data) => {
+          this.topPriorityEntry = undefined;
+          this.loadQueues();
+        },
+      });
   }
 
   onPriorityUpdateRequested($event: UpdatePriorityRequest) {
-    this.queueService
-      .updatePriority(this.listingsId, $event.queueEntry.id, $event.requestedIndex)
+    this.authService
+      .withAuthCall((header) =>
+        this.queueService.updatePriority(
+          this.listingId,
+          $event.queueEntry.id,
+          $event.requestedIndex,
+          header,
+        ),
+      )
       .subscribe({
         next: (data) => {
           this.loadQueues();
@@ -86,33 +101,44 @@ export class QueueSellerPanel implements OnInit {
   }
 
   onPriorityAddRequested(queueEntry: QueueEntry) {
-    this.queueService.addPriority(this.listingsId, queueEntry.id).subscribe({
-      next: (data) => {
-        // console.log(data);
-        this.loadQueues();
-      },
-    });
+    this.authService
+      .withAuthCall((header) =>
+        this.queueService.addPriority(this.listingId, queueEntry.id, header),
+      )
+      .subscribe({
+        next: (data) => {
+          // console.log(data);
+          this.loadQueues();
+        },
+      });
   }
 
   onPriorityRemoveRequested($event: QueueEntry) {
-    this.queueService.removePriority(this.listingsId, $event.id).subscribe({
-      next: (data) => {
-        this.loadQueues();
-      },
-    });
+    this.authService
+      .withAuthCall((header) => this.queueService.removePriority(this.listingId, $event.id, header))
+      .subscribe({
+        next: (data) => {
+          this.loadQueues();
+        },
+      });
   }
 
   onEntryReserveRequested() {
-    if (!this.topPriorityEntry) {
+    const entryId = this.topPriorityEntry?.id;
+    if (!entryId) {
       return;
     }
-    this.queueService.reserveQueueEntry(this.listingsId, this.topPriorityEntry?.id).subscribe({
-      next: (data) => {
-        this.listingStatusChanged.emit();
-      },
-      error: (err) => {
-        console.log("Can't reserve", err);
-      },
-    });
+    this.authService
+      .withAuthCall((header) =>
+        this.queueService.reserveQueueEntry(this.listingId, entryId, header),
+      )
+      .subscribe({
+        next: (data) => {
+          this.listingStatusChanged.emit();
+        },
+        error: (err) => {
+          console.log("Can't reserve", err);
+        },
+      });
   }
 }

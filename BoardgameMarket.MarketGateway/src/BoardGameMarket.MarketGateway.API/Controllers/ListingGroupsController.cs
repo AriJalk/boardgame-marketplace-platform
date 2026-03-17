@@ -15,16 +15,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BoardGameMarket.MarketGateway.API.Controllers
 {
-	[Route("api/listing-groups")]
-	[ApiController]
-	public class ListingGroupsController : ControllerBase
-	{
-		private readonly GetListingGroupDetailUseCase _getListingGroupDetailUseCase;
-		private readonly GetListingGroupSummaryPageUseCase _getListingGroupSummaryPageUseCase;
-		private readonly GetFilteredListingGroupSummariesUseCase _getFilteredListingGroupSummariesUseCase;
-		private readonly QueuesDataService _queueDataService;
-		private readonly LoginService _loginService;
-		private readonly ListingGroupsDataService _listingGroupDataService;
+    [Route("api/listing-groups")]
+    [ApiController]
+    public class ListingGroupsController : ControllerBase
+    {
+        private readonly GetListingGroupDetailUseCase _getListingGroupDetailUseCase;
+        private readonly GetListingGroupSummaryPageUseCase _getListingGroupSummaryPageUseCase;
+        private readonly GetFilteredListingGroupSummariesUseCase _getFilteredListingGroupSummariesUseCase;
+        private readonly QueuesDataService _queueDataService;
+        private readonly LoginService _loginService;
+        private readonly ListingGroupsDataService _listingGroupDataService;
 
         public ListingGroupsController(GetListingGroupDetailUseCase getListingGroupDetailUseCase, GetListingGroupSummaryPageUseCase getListingGroupSummaryPageUseCase, GetFilteredListingGroupSummariesUseCase getFilteredListingGroupSummariesUseCase, QueuesDataService queueDataService, LoginService loginService, ListingGroupsDataService listingGroupDataService)
         {
@@ -37,95 +37,97 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         }
 
         private async Task<ListingGroupSummaryDto[]> WithIsSubscribedAsync(ListingGroupSummaryDto[] listingGroups)
-		{
-			Guid? userId = _loginService.LoggedInUser?.Id;
-			if (_loginService.LoggedInUser?.Id != null)
-			{
-				ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
-				{
-					UserId = userId,
-				};
-				ListingQueueEntryInfo[] queueEntries = await _queueDataService.GetFilteredQueueEntriesAsync(filter);
-				listingGroups = listingGroups.Select(lg => lg with
-				{
-					Listings = ListingEnricher.EnrichListingDtosWithIsSubscribed(lg.Listings, queueEntries.Select(qe => qe.ListingId).ToHashSet())
-				}).ToArray();
-			}
+        {
+            UserInfo? userInfo = await _loginService.GetCurrentUser();
 
-			return listingGroups;
-		}
+            if (userInfo == null)
+            {
+                return listingGroups;
+            }
 
-		private async Task<ListingGroupDetailDto> WithSubscriptionAsync(ListingGroupDetailDto listingGroupDto)
-		{
-			UserInfo? user = _loginService.LoggedInUser;
-			if (user == null || user.Id == listingGroupDto.Seller.UserId)
-			{
-				return listingGroupDto;
-			}
+            ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
+            {
+                UserId = userInfo.Id,
+            };
+            ListingQueueEntryInfo[] queueEntries = await _queueDataService.GetFilteredQueueEntriesAsync(filter);
+            listingGroups = listingGroups.Select(lg => lg with
+            {
+                Listings = ListingEnricher.EnrichListingDtosWithIsSubscribed(lg.Listings, queueEntries.Select(qe => qe.ListingId).ToHashSet())
+            }).ToArray();
+            return listingGroups;
+        }
 
-			ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
-			{
-				ListingIds = listingGroupDto.Listings.Select(l => l.Id).ToArray(),
-				UserId = user.Id,
-			};
+        private async Task<ListingGroupDetailDto> WithSubscriptionAsync(ListingGroupDetailDto listingGroupDto)
+        {
+            UserInfo? user = await _loginService.GetCurrentUser();
+            if (user == null || user.Id == listingGroupDto.Seller.UserId)
+            {
+                return listingGroupDto;
+            }
 
-			ListingQueueEntryInfo[] subscriptions = await _queueDataService.GetFilteredQueueEntriesAsync(filter);
-			return listingGroupDto with
-			{
-				Listings = ListingEnricher.EnrichListingDtosWithSubscriptions(listingGroupDto.Listings, subscriptions),
-			};
-		}
+            ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
+            {
+                ListingIds = listingGroupDto.Listings.Select(l => l.Id).ToArray(),
+                UserId = user.Id,
+            };
+
+            ListingQueueEntryInfo[] subscriptions = await _queueDataService.GetFilteredQueueEntriesAsync(filter);
+            return listingGroupDto with
+            {
+                Listings = ListingEnricher.EnrichListingDtosWithSubscriptions(listingGroupDto.Listings, subscriptions),
+            };
+        }
 
 
 
-		[HttpGet("{listingGroupId:guid}/detail")]
-		public async Task<ActionResult<ListingGroupDetailDto>> GetListingGroupDetail(Guid listingGroupId)
-		{
-			ListingGroupDetailDto listingGroupDto = await _getListingGroupDetailUseCase.Execute(listingGroupId);
+        [HttpGet("{listingGroupId:guid}/detail")]
+        public async Task<ActionResult<ListingGroupDetailDto>> GetListingGroupDetail(Guid listingGroupId)
+        {
+            ListingGroupDetailDto listingGroupDto = await _getListingGroupDetailUseCase.Execute(listingGroupId);
 
-			listingGroupDto = await WithSubscriptionAsync(listingGroupDto);
+            listingGroupDto = await WithSubscriptionAsync(listingGroupDto);
 
-			return Ok(listingGroupDto);
-		}
+            return Ok(listingGroupDto);
+        }
 
-		[HttpPost("page")]
-		public async Task<ActionResult<PagedResult<ListingGroupSummaryDto>>> GetSummaryPage([FromBody] PagedListingGroupQuery query)
-		{
-			PagedResult<ListingGroupSummaryDto> page = await _getListingGroupSummaryPageUseCase.ExecuteAsync(query);
+        [HttpPost("page")]
+        public async Task<ActionResult<PagedResult<ListingGroupSummaryDto>>> GetSummaryPage([FromBody] PagedListingGroupQuery query)
+        {
+            PagedResult<ListingGroupSummaryDto> page = await _getListingGroupSummaryPageUseCase.ExecuteAsync(query);
 
-			page.Items = await WithIsSubscribedAsync(page.Items);
-			return Ok(page);
-		}
+            page.Items = await WithIsSubscribedAsync(page.Items);
+            return Ok(page);
+        }
 
-		[HttpPost("filtered")]
-		public async Task<ActionResult<ListingGroupSummaryDto[]>> GetFilteredListingGroups([FromBody] ListingGroupFilter filter)
-		{
-			ListingGroupSummaryDto[] listingGroups = await _getFilteredListingGroupSummariesUseCase.ExecuteAsync(filter);
-			listingGroups = await WithIsSubscribedAsync(listingGroups);
-			return Ok(listingGroups);
-		}
+        [HttpPost("filtered")]
+        public async Task<ActionResult<ListingGroupSummaryDto[]>> GetFilteredListingGroups([FromBody] ListingGroupFilter filter)
+        {
+            ListingGroupSummaryDto[] listingGroups = await _getFilteredListingGroupSummariesUseCase.ExecuteAsync(filter);
+            listingGroups = await WithIsSubscribedAsync(listingGroups);
+            return Ok(listingGroups);
+        }
 
-		[HttpPost()]
-		[Authorize]
-		public async Task<ActionResult<Guid>> CreateListingGroup(CreateListingGroupRequestDto request)
-		{
-			Guid requesterUserId = _loginService.GetUserIdOrThrow();
-			Guid listingGroupFromAddId = await _listingGroupDataService.AddListingGroup(request.ToCreateListingGroupRequest(requesterUserId));
+        [HttpPost()]
+        [Authorize]
+        public async Task<ActionResult<Guid>> CreateListingGroup(CreateListingGroupRequestDto request)
+        {
+            Guid requesterUserId = await _loginService.GetUserIdOrThrow();
+            Guid listingGroupFromAddId = await _listingGroupDataService.AddListingGroup(request.ToCreateListingGroupRequest(requesterUserId));
 
-			return Ok(listingGroupFromAddId);
-		}
+            return Ok(listingGroupFromAddId);
+        }
 
-		[HttpPut("{listingGroupId}")]
-		[Authorize]
-		public async Task<ActionResult<Guid>> UpdateListingGroup(Guid listingGroupId, [FromBody] UpdateListingGroupRequestDto request)
-		{
-			if (listingGroupId != request.Id)
-			{
-				return BadRequest();
-			}
+        [HttpPut("{listingGroupId}")]
+        [Authorize]
+        public async Task<ActionResult<Guid>> UpdateListingGroup(Guid listingGroupId, [FromBody] UpdateListingGroupRequestDto request)
+        {
+            if (listingGroupId != request.Id)
+            {
+                return BadRequest();
+            }
 
-			Guid listingGroupFromUpdateId = await _listingGroupDataService.UpdateListingGroup(request.ToUpdateListingGroupRequest());
-			return Ok(listingGroupFromUpdateId);
-		}
-	}
+            Guid listingGroupFromUpdateId = await _listingGroupDataService.UpdateListingGroup(request.ToUpdateListingGroupRequest());
+            return Ok(listingGroupFromUpdateId);
+        }
+    }
 }

@@ -90,14 +90,11 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 
         [HttpGet("my")]
         [Authorize]
-        public async Task<ActionResult<ListingQueueEntryResponseDto>> GetSubscription(Guid listingId)
+        public async Task<ActionResult<ListingQueueEntryResponseDto>> GetMySubscription(Guid listingId)
         {
-            if (_loginService.LoggedInUser == null)
-            {
-                return BadRequest("No user logged in");
-            }
 
-            ListingQueueEntryResponseDto? queueEntryResponse = await _getListingQueueEntryUseCase.ExecuteAsync(listingId, _loginService.LoggedInUser.Id);
+            Guid userId = await _loginService.GetUserIdOrThrow();
+            ListingQueueEntryResponseDto? queueEntryResponse = await _getListingQueueEntryUseCase.ExecuteAsync(listingId, userId);
 
             if (queueEntryResponse == null)
             {
@@ -111,11 +108,6 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         [Authorize]
         public async Task<ActionResult<ListingSubscriptionResponseDto>> SubscribeToListing(Guid listingId)
         {
-            if (_loginService.LoggedInUser == null)
-            {
-                return BadRequest("No user logged in");
-            }
-
             ListingQueueEntryInfo queueEntry = await _queuesDataService.SubscribeToListingAsync(listingId);
 
             return Ok(queueEntry.ToListingSubscriptionResponseDto());

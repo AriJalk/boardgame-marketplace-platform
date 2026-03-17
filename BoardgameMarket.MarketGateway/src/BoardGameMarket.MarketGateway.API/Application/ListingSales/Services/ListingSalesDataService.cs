@@ -17,7 +17,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingSales.Services
 
         public async Task<ListingSaleInfo> GetListingSaleAsync(Guid listingSaleId)
         {
-            Guid requesterUserId = _loginService.GetUserIdOrThrow();
+            Guid requesterUserId = await _loginService.GetUserIdOrThrow();
 
             string uri = $"api/listing-sales/{listingSaleId}";
 
@@ -34,7 +34,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingSales.Services
 
         public async Task<ListingSaleInfo[]> GetUserListingSalesAsync()
         {
-            Guid requesterUserId = _loginService.GetUserIdOrThrow();
+            Guid requesterUserId = await _loginService.GetUserIdOrThrow();
 
             string uri = $"api/listing-sales/by-user/{requesterUserId}";
 

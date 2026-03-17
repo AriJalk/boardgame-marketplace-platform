@@ -4,9 +4,9 @@ CREATE TABLE public.listing_groups
     "seller_user_id" UUID NOT NULL,
     "created_at" TIMESTAMP NOT NULL,
     "modified_at" TIMESTAMP NOT NULL,
-    "details" VARCHAR(50),
-    "pickup_options" VARCHAR(50) NOT NULL,
-    "location" VARCHAR(50) NOT NULL,
+    "details" VARCHAR(100),
+    "pickup_options" VARCHAR(100) NOT NULL,
+    "location" VARCHAR(100) NOT NULL,
     PRIMARY KEY ("id")
 );
 
@@ -18,7 +18,7 @@ CREATE TABLE public.listings
     "status" INT NOT NULL,
     "created_at" TIMESTAMP NOT NULL,
     "modified_at" TIMESTAMP NOT NULL,
-    "price" NUMERIC(5,2) NOT NULL,
+    "price" NUMERIC(10,2) NOT NULL,
     "details" VARCHAR(100),
     "seller_user_id" UUID NOT NULL,
     PRIMARY KEY ("id")

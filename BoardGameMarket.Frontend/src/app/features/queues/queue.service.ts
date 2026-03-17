@@ -14,9 +14,11 @@ export class QueueService {
     @Inject(API_CONFIG_SERVICE) private apiConfig: ApiConfig,
   ) {}
 
-  getQueues(listingId: string): Observable<ListingQueueResponse> {
+  getQueues(listingId: string, authHeader: string): Observable<ListingQueueResponse> {
+    const headers = authHeader ? { Authorization: authHeader } : undefined;
     const response = this.httpClient.get<ListingQueueResponse>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue-entries`,
+      { headers: headers },
     );
     // console.log(headers);
     // response.subscribe(data => console.log(data));
@@ -34,56 +36,73 @@ export class QueueService {
     listingId: string,
     queueEntryId: string,
     requestedIndex: number | null,
+    authHeader: string,
   ): Observable<void> {
+    const headers = authHeader ? { Authorization: authHeader } : undefined;
     return this.httpClient.patch<void>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue-entries/${queueEntryId}/priority`,
       { requestedIndex },
+      { headers: headers },
     );
   }
 
-  addPriority(listingId: string, queueEntryId: string): Observable<void> {
+  addPriority(listingId: string, queueEntryId: string, authHeader: string): Observable<void> {
+    const headers = authHeader ? { Authorization: authHeader } : undefined;
     return this.httpClient.post<void>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue-entries/${queueEntryId}/priority`,
       null,
+      { headers: headers },
     );
   }
 
-  removePriority(listingId: string, queueEntryId: string): Observable<void> {
+  removePriority(listingId: string, queueEntryId: string, authHeader: string): Observable<void> {
+    const headers = authHeader ? { Authorization: authHeader } : undefined;
     return this.httpClient.delete<void>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue-entries/${queueEntryId}/priority`,
+      { headers: headers },
     );
   }
 
   // TODO: batch fetching
-  getSubscription(listingId: string): Observable<QueueEntry> {
-    const response = this.httpClient.get<QueueEntry>(
+  getSubscription(listingId: string, authHeader: string): Observable<QueueEntry> {
+    const headers = authHeader ? { Authorization: authHeader } : undefined;
+    return this.httpClient.get<QueueEntry>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue-entries/my`,
+      { headers: headers },
     );
-    // response.subscribe(data => console.log(data));
-    return response;
   }
 
-  subscribeToListing(listingId: string): Observable<QueueEntry> {
-    const response = this.httpClient.put<QueueEntry>(
+  subscribeToListing(listingId: string, authHeader: string): Observable<QueueEntry> {
+    const headers = authHeader ? { Authorization: authHeader } : undefined;
+    return this.httpClient.put<QueueEntry>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue-entries`,
       null,
+      { headers: headers },
     );
-    // response.subscribe(data => console.log(data));
-    return response;
   }
 
-  unsubscribeFromListing(listingId: string, subscriptionId: string): Observable<void> {
-    const response = this.httpClient.delete<void>(
+  unsubscribeFromListing(
+    listingId: string,
+    subscriptionId: string,
+    authHeader: string,
+  ): Observable<void> {
+    const headers = authHeader ? { Authorization: authHeader } : undefined;
+    return this.httpClient.delete<void>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue-entries/${subscriptionId}`,
+      { headers: headers },
     );
-    return response;
   }
 
-  reserveQueueEntry(listingId: string, subscriptionId: string): Observable<void> {
-    const response = this.httpClient.post<void>(
+  reserveQueueEntry(
+    listingId: string,
+    subscriptionId: string,
+    authHeader: string,
+  ): Observable<void> {
+    const headers = authHeader ? { Authorization: authHeader } : undefined;
+    return this.httpClient.post<void>(
       `${this.apiConfig.apiEndpoint}/listings/${listingId}/queue-entries/${subscriptionId}/reserve`,
       null,
+      { headers: headers },
     );
-    return response;
   }
 }

@@ -7,6 +7,7 @@ import { QueueService } from '../../../../queues/queue.service';
 import { ListingSubscription, QueueEntry } from '../../../../queues/models/quque-entry.model';
 import { BehaviorSubject, Observable, of, switchMap, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
+import { AuthService } from '../../../../../core/auth/auth.service';
 
 @Component({
   selector: 'bgm-listing-details-card',
@@ -32,17 +33,22 @@ export class ListingDetailsCard {
   listingSubscription$?: Observable<ListingSubscription | undefined> =
     this.listingSubscriptionSubject.asObservable();
 
-  constructor(private queueService: QueueService) {}
+  constructor(
+    private queueService: QueueService,
+    private authService: AuthService,
+  ) {}
 
   onSubscribeClicked() {
-    this.queueService.subscribeToListing(this.listing.id).subscribe({
-      next: (data) => {
-        this.listingSubscriptionSubject.next(data);
-      },
-      error: (err) => {
-        console.log('Subscription failed', err);
-      },
-    });
+    this.authService
+      .withAuthCall((header) => this.queueService.subscribeToListing(this.listing.id, header))
+      .subscribe({
+        next: (data) => {
+          this.listingSubscriptionSubject.next(data);
+        },
+        error: (err) => {
+          console.log('Subscription failed', err);
+        },
+      });
   }
 
   onUnsubscribeClicked() {
@@ -50,8 +56,11 @@ export class ListingDetailsCard {
     if (!current) {
       return;
     }
-    this.queueService
-      .unsubscribeFromListing(this.listing.id, current.id)
+
+    this.authService
+      .withAuthCall((header) =>
+        this.queueService.unsubscribeFromListing(this.listing.id, current.id, header),
+      )
       .pipe(take(1))
       .subscribe({
         next: () => {

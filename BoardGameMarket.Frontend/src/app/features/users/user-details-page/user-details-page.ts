@@ -3,11 +3,12 @@ import { UserSummary } from '../../../core/users/models/user.model';
 import { UsersService } from '../services/users-service';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable, of, switchMap, throwError } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { ListingGroupSummary } from '../../listing-groups/models/listing-group.model';
 import { ListingGroupService } from '../../listing-groups/services/listing-group.service';
 import { ListingGroupSummaryCard } from '../../listing-groups/components/display/listing-group-summary-card/listing-group-summary-card';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'bgm-user-details-page',
@@ -26,6 +27,7 @@ export class UserDetailsPage implements OnInit {
     private router: ActivatedRoute,
     private usersService: UsersService,
     private listingGroupsService: ListingGroupService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -44,6 +46,13 @@ export class UserDetailsPage implements OnInit {
   }
 
   onContactDetailsRequested() {
-    this.contactInfo$ = this.usersService.getContactInfo(this.userId);
+    this.contactInfo$ = this.authService.withAuthHeader().pipe(
+      switchMap((header) => {
+        if (!header) {
+          return throwError(() => new Error('User not authenticated'));
+        }
+        return this.usersService.getContactInfo(this.userId, header);
+      }),
+    );
   }
 }

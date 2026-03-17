@@ -78,7 +78,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
 		public async Task<Guid> AddListingGroup(CreateListingGroupRequest request)
 		{
-			Guid requesterUserId = _loginService.GetUserIdOrThrow();
+			Guid requesterUserId = await _loginService.GetUserIdOrThrow();
 			string uri = $"api/listing-groups";
 
 			HttpRequestMessage httpRequest = HttpClientHelpers.BuildRequest(HttpMethod.Post, uri, requesterUserId, request);
@@ -106,7 +106,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
 		public async Task<Guid> UpdateListingGroup(UpdateListingGroupRequest request)
 		{
-			Guid requesterUserId = _loginService.GetUserIdOrThrow();
+			Guid requesterUserId = await _loginService.GetUserIdOrThrow();
 
 			string uri = $"api/listing-groups/{request.Id}";
 			HttpRequestMessage httpRequest = HttpClientHelpers.BuildRequest(HttpMethod.Put, uri, requesterUserId, request);

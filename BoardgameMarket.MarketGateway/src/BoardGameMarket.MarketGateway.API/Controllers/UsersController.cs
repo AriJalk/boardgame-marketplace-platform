@@ -32,11 +32,6 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         [Authorize]
         public async Task<ActionResult<string>> GetContactEmail(Guid userId)
         {
-            if (_loginService.LoggedInUser == null)
-            {
-                return Unauthorized();
-            }
-
             string email = await _usersDataService.GetEmail(userId);
             return Ok(email);
         }

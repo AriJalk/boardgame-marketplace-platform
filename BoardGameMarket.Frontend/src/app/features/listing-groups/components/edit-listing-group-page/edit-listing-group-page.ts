@@ -3,7 +3,15 @@ import { ListingGroupForm } from '../../../listing-forms/listing-group-form/list
 import { ListingGroupService } from '../../services/listing-group.service';
 import { ListingFormsFactory } from '../../../listing-forms/services/listing-forms-factory.service';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { BehaviorSubject, firstValueFrom, map, Observable, take } from 'rxjs';
+import {
+  BehaviorSubject,
+  firstValueFrom,
+  map,
+  Observable,
+  switchMap,
+  take,
+  throwError,
+} from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { CatalogItemGetterService } from '../../../catalog/services/catalog-item-getter.service';
@@ -12,6 +20,7 @@ import { UpdateListingGroupRequest } from '../../models/listing-group.model';
 import { UpdateListingRequest as UpdateListingRequest } from '../../../listings/models/listing.model';
 import { UpdateListingItemRequest } from '../../../listing-items/models/listing-item.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from '../../../../core/auth/auth.service';
 
 @Component({
   selector: 'bgm-edit-listing-group',
@@ -31,6 +40,7 @@ export class EditListingGroupPage implements OnInit {
     private catalogService: CatalogItemGetterService,
     private router: Router,
     private snackBar: MatSnackBar,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -87,12 +97,25 @@ export class EditListingGroupPage implements OnInit {
       ),
     };
 
-    this.listingGroupService.updateListingGroup(request).subscribe({
-      next: (data) => {
-        // console.log(data);
-        this.router.navigate(['/listing-groups', data]);
-        this.snackBar.open('Update successful', 'Close', { duration: 2000 });
-      },
-    });
+    this.authService
+      .withAuthHeader()
+      .pipe(
+        switchMap((header) => {
+          if (!header) {
+            return throwError(() => new Error('User not authenticated'));
+          }
+          return this.listingGroupService.updateListingGroup(request, header);
+        }),
+      )
+      .subscribe({
+        next: (id) => {
+          this.router.navigate(['/listing-groups', id]);
+          this.snackBar.open('Update successful', 'Close', { duration: 2000 });
+        },
+        error: (err) => {
+          console.error(err);
+          this.snackBar.open('Update failed', 'Close', { duration: 2000 });
+        },
+      });
   }
 }

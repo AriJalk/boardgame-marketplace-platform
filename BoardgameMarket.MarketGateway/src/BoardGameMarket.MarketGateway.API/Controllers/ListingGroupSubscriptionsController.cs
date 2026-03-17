@@ -67,12 +67,8 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         [Authorize]
         public async Task<ActionResult<ListingGroupSummaryDto[]>> GetListingGroupsByLoggedUserSubscriptions()
         {
-            if (_loginService.LoggedInUser == null)
-            {
-                return BadRequest();
-            }
-
-            ListingGroupSummaryDto[] listingGroups = await GetFilteredListingGroupsWithSubscription(_loginService.LoggedInUser.Id);
+            Guid userId = await _loginService.GetUserIdOrThrow();
+            ListingGroupSummaryDto[] listingGroups = await GetFilteredListingGroupsWithSubscription(userId);
 
             return Ok(listingGroups);
 
@@ -83,12 +79,8 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
         [Authorize]
         public async Task<ActionResult<ListingGroupSummaryDto[]>> GetLoggedUserListingGroupsBySubscriber(Guid subscriberUserId)
         {
-            if (_loginService.LoggedInUser == null)
-            {
-                return BadRequest();
-            }
-
-            ListingGroupSummaryDto[] listingGroups = await GetFilteredListingGroupsWithSubscription(subscriberUserId, _loginService.LoggedInUser.Id);
+            Guid userId = await _loginService.GetUserIdOrThrow();
+            ListingGroupSummaryDto[] listingGroups = await GetFilteredListingGroupsWithSubscription(subscriberUserId, userId);
 
             return Ok(listingGroups);
         }

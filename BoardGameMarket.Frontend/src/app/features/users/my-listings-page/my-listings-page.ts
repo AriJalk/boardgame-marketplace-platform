@@ -30,7 +30,7 @@ export class MyListingsPage implements OnInit {
   constructor(private listingGroupService: ListingGroupService) {}
 
   ngOnInit(): void {
-    this.myListingGroups$ = this.listingGroupService.getMyListingGroups();
+    this.myListingGroups$ = this.listingGroupService.getOwnedListingGroups();
     this.mySubscribedListingGroups$ = this.listingGroupService.getMySubscribedListingGroups();
   }
 }

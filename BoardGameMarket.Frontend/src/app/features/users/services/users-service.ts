@@ -24,8 +24,10 @@ export class UsersService {
     @Inject(API_CONFIG_SERVICE) private apiConfig: ApiConfig,
   ) {}
 
-  getContactInfo(userId: string): Observable<string> {
+  getContactInfo(userId: string, authHeader: string): Observable<string> {
+    const headers = authHeader ? { Authorization: authHeader } : undefined;
     return this.httpClient.get(`${this.apiConfig.apiEndpoint}/users/${userId}/contact-email`, {
+      headers: headers,
       responseType: 'text',
     });
   }

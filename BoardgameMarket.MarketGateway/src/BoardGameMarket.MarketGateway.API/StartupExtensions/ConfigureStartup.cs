@@ -86,6 +86,8 @@ namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 					jwtOptions.Audience = configuration["EntraAudience"];
                 });
 
+			services.AddHttpContextAccessor();
+
 			return services;
 		}
 	}

@@ -18,7 +18,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingReservations.Serv
 
         public async Task<ListingReservationInfo> GetListingReservation(Guid listingReservationId)
         {
-            Guid requesterUserId = _loginService.GetUserIdOrThrow();
+            Guid requesterUserId = await _loginService.GetUserIdOrThrow();
 
             string uri = $"api/reservations/{listingReservationId}";
             HttpRequestMessage request = HttpClientHelpers.BuildRequest(HttpMethod.Get, uri, requesterUserId);
@@ -34,7 +34,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingReservations.Serv
 
         public async Task<IEnumerable<ListingReservationInfo>> GetCurrentUserListingReservations()
         {
-            Guid requesterUserId = _loginService.GetUserIdOrThrow();
+            Guid requesterUserId = await _loginService.GetUserIdOrThrow();
 
             string uri = $"api/reservations/user/{requesterUserId}";
 
@@ -49,7 +49,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingReservations.Serv
 
         public async Task<ListingSaleInfo> ApproveSellToReservation(Guid reservationId)
         {
-            Guid requesterUserId = _loginService.GetUserIdOrThrow();
+            Guid requesterUserId = await _loginService.GetUserIdOrThrow();
 
             string uri = $"api/reservations/{reservationId}/sell";
 
@@ -66,7 +66,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingReservations.Serv
 
         public async Task CancelReservation(Guid reservationId)
         {
-            Guid requesterUserId = _loginService.GetUserIdOrThrow();
+            Guid requesterUserId = await _loginService.GetUserIdOrThrow();
 
             string uri = $"api/reservations/{reservationId}/cancel";
 

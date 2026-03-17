@@ -22,7 +22,7 @@ namespace BoardGameMarket.CatalogService.Core.Application.UseCases
 
         public async Task<IReadOnlyCollection<CatalogItemInfo>> Execute(string[] names)
         {
-            IEnumerable<CatalogItem> catalogItems = await _catalogItemGetterService.GetCustomItemsByNamesAsync(names);
+            List<CatalogItem> catalogItems = (await _catalogItemGetterService.GetCustomItemsByNamesAsync(names)).ToList();
             IEnumerable<string> matchingNames = catalogItems.Select(i => i.Name);
 
             List<string> namesToAdd = names.Where(n => !matchingNames.Contains(n)).ToList();
@@ -31,7 +31,7 @@ namespace BoardGameMarket.CatalogService.Core.Application.UseCases
                 CatalogItem? item = await _catalogItemAdderService.AddCustomCatalogItemAsync(new AddCustomCatalogItemCommand(nameToAdd));
                 if (item != null)
                 {
-                    catalogItems.Append(item);
+                    catalogItems.Add(item);
                 }
             }
 

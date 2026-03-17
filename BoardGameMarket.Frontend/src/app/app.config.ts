@@ -22,8 +22,6 @@ import {
   MSALInstanceFactory,
   MSALInterceptorConfigFactory,
 } from './core/auth/msal-config';
-import { OptionalAuthInterceptor } from './core/interceptors/optional-auth.interceptor';
-import { AuthReadyInterceptor } from './core/interceptors/auth-ready.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -32,21 +30,21 @@ export const appConfig: ApplicationConfig = {
     // provideHttpClient(),
     { provide: API_CONFIG_SERVICE, useValue: DEV_API_CONFIG },
     provideHttpClient(withInterceptorsFromDi(), withFetch()),
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: OptionalAuthInterceptor,
-      multi: true,
-    },
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: OptionalAuthInterceptor,
+    //   multi: true,
+    // },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: MsalInterceptor,
       multi: true,
     },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthReadyInterceptor,
-      multi: true,
-    },
+    // {
+    //   provide: HTTP_INTERCEPTORS,
+    //   useClass: AuthReadyInterceptor,
+    //   multi: true,
+    // },
     {
       provide: MSAL_INSTANCE,
       useFactory: MSALInstanceFactory,
