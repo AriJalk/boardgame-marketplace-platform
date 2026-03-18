@@ -9,6 +9,7 @@ using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Aggregates
 {
@@ -19,11 +20,14 @@ namespace BoardGameMarket.ListingsService.Core.Application.Aggregates
 
 		private ListingAggregateBuilder _listingAggregateBuilder;
 
-		public ListingGroupAggregateBuilder(IListingReadService listingReadService, IListingGroupReadService listingGroupReadService, ListingAggregateBuilder listingAggregateBuilder)
+		private ILogger<ListingGroupAggregateBuilder> _logger;
+
+		public ListingGroupAggregateBuilder(IListingReadService listingReadService, IListingGroupReadService listingGroupReadService, ListingAggregateBuilder listingAggregateBuilder, ILogger<ListingGroupAggregateBuilder> logger)
 		{
 			_listingReadService = listingReadService;
 			_listingGroupReadService = listingGroupReadService;
 			_listingAggregateBuilder = listingAggregateBuilder;
+			_logger = logger;
 		}
 
 		public async Task<ListingGroupAggregate> GetListingGroupAggregateAsync(Guid listingGroupId, bool loadItems, bool loadQueues)
@@ -42,14 +46,22 @@ namespace BoardGameMarket.ListingsService.Core.Application.Aggregates
 
 		public async Task<PagedResult<ListingGroupAggregate>> GetSummaryPageAsync(Cursor? cursor, int pageSize, ListingGroupFilter? filter)
 		{
+			if (pageSize <= 0)
+			{
+				_logger.LogWarning("PageSize must be larger than 0");
+				return new PagedResult<ListingGroupAggregate>();
+			}
 			if (filter?.ListingIds != null && filter.ListingIds.Any())
 			{
-				IEnumerable<Guid> listingGroupIdsFromListings = await _listingReadService
-					.GetListingsByIdsAsync(filter.ListingIds)
-					.ContinueWith(t => t.Result.Select(l => l.ListingGroupId));
+				List<Listing> listings = (await _listingReadService.GetListingsByIdsAsync(filter.ListingIds)).ToList();
+				if (listings.Count < filter.ListingIds.Count())
+				{
+					_logger.LogInformation("ListingIds contained non-existant entries");
+					return new PagedResult<ListingGroupAggregate>();
+				}
+
 				filter.ListingGroupIds = (filter.ListingGroupIds ?? Enumerable.Empty<Guid>())
-					.Concat(listingGroupIdsFromListings)
-					.Distinct().ToList();
+					.Concat(listings.Select(l => l.ListingGroupId)).ToList();
 			}
 			PagedResult<ListingGroup> page = await _listingGroupReadService.GetListingGroupsPageAsync(cursor, pageSize, filter);
 

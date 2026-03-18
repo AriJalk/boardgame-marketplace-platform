@@ -19,22 +19,17 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
             _unitOfWork = unitOfWork;
         }
 
-        private string GetFilterQuery(ListingGroupFilter filter, DynamicParameters parameters)
+        private List<string> GetFilterQuery(ListingGroupFilter filter, DynamicParameters parameters)
         {
-            StringBuilder sb = new StringBuilder();
-            string query = string.Empty;
+            List<string> conditions = new List<string>();
             if (filter.SellerUserId != null)
             {
-                sb.Append("seller_user_id=@SellerUserId");
+                conditions.Add("seller_user_id=@SellerUserId");
                 parameters.Add("SellerUserId", filter.SellerUserId);
             }
             if (filter.CatalogId != null)
             {
-                if (sb.Length > 0)
-                {
-                    sb.Append(" AND ");
-                }
-                sb.Append(
+                conditions.Add(
                     "EXISTS (" +
                         "SELECT 1 FROM listings l " +
                         "WHERE l.listing_group_id = lg.id " +
@@ -48,23 +43,15 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
             }
             if (filter.Location != null)
             {
-                if (sb.Length > 0)
-                {
-                    sb.Append("AND ");
-                }
-                sb.Append("location=@Location ");
+                conditions.Add("location=@Location ");
                 parameters.Add("Location", filter.Location);
             }
             if (filter.ListingGroupIds != null && filter.ListingGroupIds.Any())
             {
-                if (sb.Length > 0)
-                {
-                    sb.Append("AND ");
-                }
-                sb.Append("id = ANY(@ListingGroupIds) ");
+                conditions.Add("id = ANY(@ListingGroupIds) ");
                 parameters.Add("ListingGroupIds", filter.ListingGroupIds.ToList());
             }
-            return sb.ToString();
+            return conditions;
         }
 
         public async Task<int> AddListingGroupAsync(ListingGroup listingGroup)
@@ -89,9 +76,16 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
         {
             DynamicParameters parameters = new DynamicParameters();
 
-            string sql = "SELECT * FROM listing_groups lg WHERE ";
-            sql = sql + GetFilterQuery(filter, parameters) + ";";
-            return await _unitOfWork.QueryAsync<ListingGroup>(sql, parameters);
+            List<string> conditions = GetFilterQuery(filter, parameters);
+
+            if (conditions.Count == 0)
+            {
+                return Enumerable.Empty<ListingGroup>();
+            }
+
+            StringBuilder sql = new StringBuilder("SELECT * FROM listing_groups lg WHERE ");
+            sql.Append(string.Join(" AND ", conditions)).Append(";");
+            return await _unitOfWork.QueryAsync<ListingGroup>(sql.ToString(), parameters);
         }
 
         public async Task<ListingGroup?> GetListingGroupByIdAsync(Guid listingGroupId)
@@ -132,22 +126,22 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
             parameters.Add("PageSize", pageSize + 1);
 
             sql.Append("SELECT * FROM listing_groups lg ");
+            List<string> conditions = new List<string>();
 
             if (cursor != null)
             {
-                sql.Append("WHERE (lg.created_at, lg.id)<(@LastCreatedAt,@LastId) ");
+                conditions.Add("(lg.created_at, lg.id)<(@LastCreatedAt,@LastId)");
                 parameters.Add("LastCreatedAt", cursor.LastCreatedAt);
                 parameters.Add("LastId", cursor.LastId);
             }
             if (filter != null)
             {
-                string filterQuery = GetFilterQuery(filter, parameters);
+                 conditions.AddRange(GetFilterQuery(filter, parameters));
+            }
 
-                if (!string.IsNullOrEmpty(filterQuery))
-                {
-                    sql.Append(cursor != null ? "AND " : "WHERE ");
-                    sql.Append(filterQuery + " ");
-                }
+            if (conditions.Any())
+            {
+                sql.Append("WHERE ").Append(string.Join(" AND ", conditions)).Append(' ');
             }
 
             sql.Append("ORDER BY created_at DESC, id DESC ");
