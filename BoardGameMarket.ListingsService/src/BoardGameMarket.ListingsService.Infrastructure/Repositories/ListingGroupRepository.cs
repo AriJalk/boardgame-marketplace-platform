@@ -62,7 +62,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
                     sb.Append("AND ");
                 }
                 sb.Append("id = ANY(@ListingGroupIds) ");
-                parameters.Add("ListingGroupIds", filter.ListingGroupIds);
+                parameters.Add("ListingGroupIds", filter.ListingGroupIds.ToList());
             }
             return sb.ToString();
         }

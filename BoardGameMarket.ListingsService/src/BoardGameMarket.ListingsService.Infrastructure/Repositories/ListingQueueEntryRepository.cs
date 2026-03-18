@@ -55,51 +55,43 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 
         public async Task<IEnumerable<ListingQueueEntry>> GetFilteredListingQueueEntriesAsync(ListingQueueEntryFilter filter)
         {
-            if (filter.UserId == null && filter.ListingIds == null && filter.ListingQueueEntryIds == null && filter.ListingStatus == null) {
+            if (!filter.UserId.HasValue && filter.ListingIds == null && filter.ListingQueueEntryIds == null && filter.ListingStatus == null) {
                 return Enumerable.Empty<ListingQueueEntry>();
             }
-            StringBuilder sql = new StringBuilder();
+            StringBuilder sql = new StringBuilder("SELECT * FROM listing_queue_entries lqe");
             DynamicParameters parameters = new DynamicParameters();
+            List<string> conditions = new List<string>();
 
-            sql.Append("SELECT * FROM listing_queue_entries WHERE ");
-
-            StringBuilder filterQuery = new StringBuilder();
-            if (filter.UserId != null)
+            if (filter.UserId.HasValue)
             {
-                filterQuery.Append("buyer_user_id=@UserId ");
-                parameters.Add("UserId", filter.UserId);
+                conditions.Add("buyer_user_id=@UserId");
+                parameters.Add("UserId", filter.UserId.Value);
             }
                 if (filter.ListingIds != null && filter.ListingIds.Any())
                 {
-                    if (filterQuery.Length > 0)
-                    {
-                        filterQuery.Append("AND ");
-                    }
-                    filterQuery.Append("listing_id = ANY(@ListingIds) ");
+                    conditions.Add("listing_id = ANY(@ListingIds) ");
                     parameters.Add("ListingIds", filter.ListingIds.ToList());
                 }
             if (filter.ListingQueueEntryIds != null && filter.ListingQueueEntryIds.Any())
             {
-                if (filterQuery.Length > 0)
-                {
-                    filterQuery.Append("AND ");
-                }
-                filterQuery.Append("id = ANY (@ListingQueueEntryIds) ");
+                conditions.Add("id = ANY (@ListingQueueEntryIds) ");
                 parameters.Add("ListingQueueEntryIds", filter.ListingQueueEntryIds.ToList());
             }
             if (filter.ListingStatus != null)
             {
-                if (filterQuery.Length > 0)
-                {
-                    filterQuery.Append("AND ");
-                }
-                filterQuery.Append("EXISTS (SELECT 1 FROM listings l WHERE l.status=@ListingStatus) ");
+                conditions.Add("" +
+                    "EXISTS (SELECT 1 FROM listings l " +
+                    "WHERE l.id=lqe.listing_id " +
+                    "AND l.status=@ListingStatus) ");
                 parameters.Add("ListingStatus", filter.ListingStatus);
             }
 
-            sql.Append(filterQuery.ToString());
+            if (!conditions.Any())
+            {
+                return Enumerable.Empty<ListingQueueEntry>();
+            }
 
-            sql.Append(';');
+            sql.Append(" WHERE ").Append(string.Join(" AND ", conditions)).Append(';');
 
             return await _unitOfWork.QueryAsync<ListingQueueEntry>(sql.ToString(), parameters);
         }

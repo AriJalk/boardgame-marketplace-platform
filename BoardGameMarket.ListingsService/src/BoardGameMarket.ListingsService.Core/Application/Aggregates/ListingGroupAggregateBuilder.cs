@@ -49,7 +49,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Aggregates
 					.ContinueWith(t => t.Result.Select(l => l.ListingGroupId));
 				filter.ListingGroupIds = (filter.ListingGroupIds ?? Enumerable.Empty<Guid>())
 					.Concat(listingGroupIdsFromListings)
-					.Distinct();
+					.Distinct().ToList();
 			}
 			PagedResult<ListingGroup> page = await _listingGroupReadService.GetListingGroupsPageAsync(cursor, pageSize, filter);
 

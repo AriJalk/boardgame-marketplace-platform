@@ -66,7 +66,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.Shared
             await _stackExchangeCache.SetStringAsync(key, valueJson, options);
         }
 
-        public async Task WriteToCacheAsync(string key, Dictionary<string, object> values, TimeSpan? expiration = null)
+        public async Task WriteToCacheAsync<T>(string key, Dictionary<string, T> values, TimeSpan? expiration = null)
         {
             DistributedCacheEntryOptions options = new DistributedCacheEntryOptions();
             if (expiration.HasValue)
