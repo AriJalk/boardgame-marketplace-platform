@@ -32,9 +32,14 @@ export class ListingGroupDetailsPage implements OnInit {
     this.router.paramMap.subscribe((params) => {
       const id = params.get('listingGroupId');
       if (id) {
-        this.listingGroup$ = this.listingGroupService.getListingGroupDetails(id);
         // this.listingGroupService.getListingGroupDetails(id).subscribe((data) => console.log(data));
         this.user$ = this.authService.activeAccount$;
+        this.listingGroup$ = this.authService.withOptionalAuthCall((header) => {
+          return (this.listingGroup$ = this.listingGroupService.getListingGroupDetails(
+            id,
+            header ?? undefined,
+          ));
+        });
       }
     });
   }

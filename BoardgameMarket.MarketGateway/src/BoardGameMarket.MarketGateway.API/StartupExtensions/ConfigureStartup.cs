@@ -15,6 +15,7 @@ using BoardGameMarket.MarketGateway.API.Application.ListingReservations.Services
 using BoardGameMarket.MarketGateway.API.Application.ListingReservations.UseCases;
 using BoardGameMarket.MarketGateway.API.Application.ListingSales.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using StackExchange.Redis;
 
 namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 {
@@ -93,6 +94,12 @@ namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 				options.Configuration = $"{configuration["REDIS_HOST"]}:{configuration["REDIS_PORT"]}";
 			});
 
+            services.AddSingleton<IConnectionMultiplexer>(sp =>
+            {
+                return ConnectionMultiplexer.Connect($"{configuration["REDIS_HOST"]}:{configuration["REDIS_PORT"]}");
+            });
+
+			services.AddSingleton<RedisCacheService>();
 
             return services;
 		}

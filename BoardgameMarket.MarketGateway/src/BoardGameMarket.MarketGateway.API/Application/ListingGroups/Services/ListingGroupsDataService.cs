@@ -20,13 +20,13 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
     {
         private readonly HttpClient _httpClient;
         private readonly LoginService _loginService;
-        private readonly IDistributedCache _distributedCache;
+        private readonly RedisCacheService _cacheService;
 
-        public ListingGroupsDataService(ListingsHttpClient httpClient, LoginService loginService, IDistributedCache distributedCache)
+        public ListingGroupsDataService(ListingsHttpClient httpClient, LoginService loginService, RedisCacheService redisCacheService)
         {
             _httpClient = httpClient.HttpClient;
             _loginService = loginService;
-            _distributedCache = distributedCache;
+            _cacheService = redisCacheService;
         }
 
         public async Task<PagedResult<ListingGroupSummary>> GetListingGroupsSummaryPage(PagedListingGroupQuery query)
@@ -36,7 +36,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
             string cacheKey = $"lg-page:{query.PageSize}:{query.Cursor ?? "start"}:{filterHash}";
 
-            PagedResult<ListingGroupSummary>? cachedPage = await CacheHelper.GetCached<PagedResult<ListingGroupSummary>>(_distributedCache, cacheKey);
+            PagedResult<ListingGroupSummary>? cachedPage = await _cacheService.GetCachedAsync<PagedResult<ListingGroupSummary>>(cacheKey);
 
             if (cachedPage != null)
             {
@@ -64,7 +64,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
             DistributedCacheEntryOptions options = new DistributedCacheEntryOptions()
                     .SetAbsoluteExpiration(TimeSpan.FromSeconds(30));
 
-            await CacheHelper.WriteToCache(_distributedCache, cacheKey, pagedResult, TimeSpan.FromSeconds(30));
+            await _cacheService.WriteToCacheAsync(cacheKey, pagedResult, TimeSpan.FromSeconds(15));
 
             return pagedResult;
         }
@@ -90,7 +90,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
         public async Task<ListingGroupDetail> GetListingGroupDetail(Guid listingGroupId)
         {
             string cacheKey = $"lg-detail:{listingGroupId}";
-            ListingGroupDetail? cachedListingGroup = await CacheHelper.GetCached<ListingGroupDetail>(_distributedCache, cacheKey);
+            ListingGroupDetail? cachedListingGroup = await _cacheService.GetCachedAsync<ListingGroupDetail>(cacheKey);
 
             if (cachedListingGroup != null)
             {
@@ -115,17 +115,28 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
                 throw new InvalidDataException();
             }
 
-            await CacheHelper.WriteToCache(_distributedCache, cacheKey, listingGroup, TimeSpan.FromSeconds(30));
+            await _cacheService.WriteToCacheAsync(cacheKey, listingGroup, TimeSpan.FromSeconds(30));
 
             return listingGroup;
         }
 
-        public async Task<Guid> AddListingGroup(CreateListingGroupRequest request)
+        public async Task<Guid> AddListingGroup(CreateListingGroupRequest request, Guid idempotencyKey)
         {
-            Guid requesterUserId = await _loginService.GetUserIdOrThrow();
+            string idempotencyCacheKey = $"idempotency:{idempotencyKey}";
+            var (acquired, existing) = await _cacheService.TryStartIdempotentAsync(idempotencyCacheKey);
+            if (!acquired)
+            {
+                if (existing != null && Guid.TryParse(existing, out Guid existingId))
+                {
+                    return existingId;
+                }
+
+                throw new InvalidOperationException("IdempotencyKey still processing");
+            }
+
             string uri = $"api/listing-groups";
 
-            HttpRequestMessage httpRequest = HttpClientHelpers.BuildRequest(HttpMethod.Post, uri, requesterUserId, request);
+            HttpRequestMessage httpRequest = HttpClientHelpers.BuildRequest(HttpMethod.Post, uri, request.SellerUserId, request);
 
             HttpResponseMessage response = await _httpClient.SendAsync(httpRequest);
 
@@ -133,7 +144,14 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
             Guid? listingGroupId = await response.Content.ReadFromJsonAsync<Guid>();
 
-            return listingGroupId ?? throw new InvalidDataException();
+            if (!listingGroupId.HasValue)
+            {
+                throw new InvalidDataException();
+            }
+
+            await _cacheService.CompleteIdempotentAsync(idempotencyCacheKey, listingGroupId.Value);
+
+            return listingGroupId.Value;
         }
 
         //public async Task<ListingGroupOwnershipInfo> GetListingGroupOwnershipInfo(Guid listingGroupId)
@@ -167,7 +185,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
         public async Task<ListingGroupMetadataInfo> GetListingGroupMetadata(Guid listingGroupId)
         {
             string cacheKey = $"lg-metadata:${listingGroupId}";
-            ListingGroupMetadataInfo? cachedMetadata = await  CacheHelper.GetCached<ListingGroupMetadataInfo>(_distributedCache, cacheKey);
+            ListingGroupMetadataInfo? cachedMetadata = await  _cacheService.GetCachedAsync<ListingGroupMetadataInfo>(cacheKey);
             if (cachedMetadata != null)
             {
                 return cachedMetadata;
@@ -186,7 +204,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
                 throw new InvalidDataException();
             }
 
-            await CacheHelper.WriteToCache(_distributedCache, cacheKey, metadata, TimeSpan.FromSeconds(30));
+            await _cacheService.WriteToCacheAsync(cacheKey, metadata, TimeSpan.FromSeconds(30));
 
             return metadata;
         }

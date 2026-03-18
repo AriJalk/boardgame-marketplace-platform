@@ -1,4 +1,5 @@
 ﻿using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients;
+using BoardGameMarket.MarketGateway.API.Application.Shared;
 using BoardGameMarket.MarketGateway.API.Application.Users.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Helpers;
 using Microsoft.Extensions.Caching.Distributed;
@@ -11,26 +12,19 @@ namespace BoardGameMarket.MarketGateway.API.Application.Users.Services
 {
     public class UsersDataService
     {
-        private const string CACHE_KEY = "user:{userId}";
-
         private readonly HttpClient _httpClient;
-        private readonly IDistributedCache _distributedCache;
+        private readonly RedisCacheService _cacheService;
 
-        public UsersDataService(UsersHttpClient httpClient, IDistributedCache distributedCache)
+        public UsersDataService(UsersHttpClient httpClient, RedisCacheService redisCacheService)
         {
             _httpClient = httpClient.HttpClient;
-            _distributedCache = distributedCache;
-        }
-
-        private async Task<UserInfo?> TryGetCachedUser(Guid userId)
-        {
-
-            return await CacheHelper.GetCached<UserInfo>(_distributedCache, CACHE_KEY);
+            _cacheService = redisCacheService;
         }
 
         public async Task<UserInfo?> GetUser(Guid userId)
         {
-            UserInfo? cachedUser = await TryGetCachedUser(userId);
+            string cacheKey = $"user:{userId}";
+            UserInfo? cachedUser = await _cacheService.GetCachedAsync<UserInfo>(cacheKey);
             if (cachedUser != null)
             {
                 return cachedUser;
@@ -49,7 +43,7 @@ namespace BoardGameMarket.MarketGateway.API.Application.Users.Services
 
             if (userInfo != null)
             {
-                await CacheHelper.WriteToCache(_distributedCache, CACHE_KEY, userInfo);
+                await _cacheService.WriteToCacheAsync(cacheKey, userInfo, TimeSpan.FromMinutes(5));
             }
 
             return userInfo;
@@ -57,23 +51,13 @@ namespace BoardGameMarket.MarketGateway.API.Application.Users.Services
 
         public async Task<UserInfo> GetUserOrThrowAsync(Guid userId)
         {
-            string uri = $"api/users/{userId}";
-
-            HttpResponseMessage response = await _httpClient.GetAsync(uri);
-
-            if (response.StatusCode == HttpStatusCode.NotFound)
-            {
-                throw new KeyNotFoundException();
-            }
-
-            response.EnsureSuccessStatusCode();
-
-            UserInfo? userInfo = await response.Content.ReadFromJsonAsync<UserInfo>();
+            UserInfo? userInfo = await GetUser(userId);
 
             if (userInfo == null)
             {
                 throw new InvalidDataException();
             }
+
             return userInfo;
         }
 
@@ -90,7 +74,15 @@ namespace BoardGameMarket.MarketGateway.API.Application.Users.Services
 
             UserInfo? userInfo = await response.Content.ReadFromJsonAsync<UserInfo>();
 
-            return userInfo ?? throw new InvalidDataException();
+            if (userInfo == null)
+            {
+                throw new InvalidDataException();
+            }
+
+            string cacheKey = $"user:{userInfo.Id}";
+            await _cacheService.WriteToCacheAsync(cacheKey, userInfo, TimeSpan.FromMinutes(5));
+
+            return userInfo;
         }
 
         public async Task<string> GetEmail(Guid userId)

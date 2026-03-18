@@ -80,8 +80,14 @@ export class ListingGroupService {
     );
   }
 
-  createListingGroup(request: CreateListingGroupRequest, authHeader: string): Observable<string> {
-    const headers = authHeader ? { Authorization: authHeader } : undefined;
+  createListingGroup(
+    request: CreateListingGroupRequest,
+    authHeader: string,
+    idempotencyKey: string,
+  ): Observable<string> {
+    const headers = authHeader
+      ? { Authorization: authHeader, 'Idempotency-Key': idempotencyKey }
+      : undefined;
     return this.httpClient.post<string>(`${this.apiConfig.apiEndpoint}/listing-groups`, request, {
       headers: headers,
     });

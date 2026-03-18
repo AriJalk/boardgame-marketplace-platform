@@ -5,9 +5,11 @@ import { ListingFormsFactory } from '../../../listing-forms/services/listing-for
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import {
   BehaviorSubject,
+  exhaustMap,
   firstValueFrom,
   map,
   Observable,
+  Subject,
   switchMap,
   take,
   throwError,
@@ -34,6 +36,9 @@ export class CreateListingGroupPage implements OnInit {
 
   formGroup!: FormGroup;
 
+  private idempotencyKey = crypto.randomUUID();
+  private requestSubject$ = new Subject<CreateListingGroupRequest>();
+
   constructor(
     private listingGroupService: ListingGroupService,
     private formFactory: ListingFormsFactory,
@@ -45,9 +50,28 @@ export class CreateListingGroupPage implements OnInit {
 
   ngOnInit(): void {
     this.formGroup = this.formFactory.creatingListingGroupFormGroup();
+
+    this.requestSubject$
+      .pipe(
+        exhaustMap((request) => {
+          return this.authService.withAuthCall((header) =>
+            this.listingGroupService.createListingGroup(request, header, this.idempotencyKey),
+          );
+        }),
+      )
+      .subscribe({
+        next: (id) => {
+          this.router.navigate(['/listing-groups', id]);
+          this.snackBar.open('Creation successful', 'Close', { duration: 2000 });
+        },
+        error: (err) => {
+          console.error(err);
+          this.snackBar.open('Creation failed', 'Close', { duration: 2000 });
+        },
+      });
   }
 
-  async submitForm() {
+  private async createRequest() {
     if (this.formGroup.invalid) {
       console.log('invalid');
       return;
@@ -84,17 +108,27 @@ export class CreateListingGroupPage implements OnInit {
       ),
     };
 
-    this.authService
-      .withAuthCall((header) => this.listingGroupService.createListingGroup(request, header))
-      .subscribe({
-        next: (id) => {
-          this.router.navigate(['/listing-groups', id]);
-          this.snackBar.open('Creation successful', 'Close', { duration: 2000 });
-        },
-        error: (err) => {
-          console.error(err);
-          this.snackBar.open('Creation failed', 'Close', { duration: 2000 });
-        },
-      });
+    return request;
+  }
+
+  async submitForm() {
+    const request = await this.createRequest();
+    if (request) {
+      // this.requestSubject$.next(request);
+      this.authService
+        .withAuthCall((header) =>
+          this.listingGroupService.createListingGroup(request, header, this.idempotencyKey),
+        )
+        .subscribe({
+          next: (id) => {
+            this.router.navigate(['/listing-groups', id]);
+            this.snackBar.open('Creation successful', 'Close', { duration: 2000 });
+          },
+          error: (err) => {
+            console.error(err);
+            this.snackBar.open('Creation failed', 'Close', { duration: 2000 });
+          },
+        });
+    }
   }
 }

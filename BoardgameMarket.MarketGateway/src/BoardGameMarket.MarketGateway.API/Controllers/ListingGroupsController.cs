@@ -109,10 +109,10 @@ namespace BoardGameMarket.MarketGateway.API.Controllers
 
         [HttpPost()]
         [Authorize]
-        public async Task<ActionResult<Guid>> CreateListingGroup(CreateListingGroupRequestDto request)
+        public async Task<ActionResult<Guid>> CreateListingGroup(CreateListingGroupRequestDto request, [FromHeader(Name = "Idempotency-Key")] Guid idempotencyKey)
         {
             Guid requesterUserId = await _loginService.GetUserIdOrThrow();
-            Guid listingGroupFromAddId = await _listingGroupDataService.AddListingGroup(request.ToCreateListingGroupRequest(requesterUserId));
+            Guid listingGroupFromAddId = await _listingGroupDataService.AddListingGroup(request.ToCreateListingGroupRequest(requesterUserId), idempotencyKey);
 
             return Ok(listingGroupFromAddId);
         }

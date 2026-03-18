@@ -1,6 +1,7 @@
 ﻿using BoardGameMarket.MarketGateway.API.Application.CatalogItems.Enums;
 using BoardGameMarket.MarketGateway.API.Application.CatalogItems.ServiceClients;
 using BoardGameMarket.MarketGateway.API.Application.ListingGroups.ServiceClients;
+using BoardGameMarket.MarketGateway.API.Application.Shared;
 using BoardGameMarket.MarketGateway.API.Helpers;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Hosting;
@@ -14,18 +15,18 @@ namespace BoardGameMarket.MarketGateway.API.Application.CatalogItems.Services
 	public class CatalogDataService
 	{
 		private HttpClient _httpClient;
-		private IDistributedCache _distributedCache;
+		private RedisCacheService _cacheService;
 
-		public CatalogDataService(CatalogHttpClient catalogHttpClient, IDistributedCache distributedCache)
+		public CatalogDataService(CatalogHttpClient catalogHttpClient, RedisCacheService redisCacheService)
 		{
 			_httpClient = catalogHttpClient.HttpClient;
-			_distributedCache = distributedCache;
+			_cacheService = redisCacheService;
 		}
 
 		public async Task<CatalogItemInfo> GetCatalogItemByInternalId(Guid catalogItemId)
 		{
-			string cacheKey = $"item:{catalogItemId}";
-			CatalogItemInfo? cachedItem = await CacheHelper.GetCached<CatalogItemInfo>(_distributedCache, cacheKey);
+			string cacheKey = $"catalog-item:{catalogItemId}";
+			CatalogItemInfo? cachedItem = await _cacheService.GetCachedAsync<CatalogItemInfo>(cacheKey);
 
 			string uri = $"api/catalog/{catalogItemId}";
 
@@ -44,12 +45,18 @@ namespace BoardGameMarket.MarketGateway.API.Application.CatalogItems.Services
 			{
 				throw new InvalidDataException();
 			}
+
+			await _cacheService.WriteToCacheAsync(cacheKey, catalogItemInfo, TimeSpan.FromMinutes(5));
+
 			return catalogItemInfo;
 		}
 
 		public async Task<CatalogItemInfo> GetBggCatalogItemByBggId(int bggId)
 		{
-			string uri = $"api/catalog/bgg/{bggId}";
+            string cacheKey = $"bgg-id:{bggId}";
+            CatalogItemInfo? cachedItem = await _cacheService.GetCachedAsync<CatalogItemInfo>(cacheKey);
+
+            string uri = $"api/catalog/bgg/{bggId}";
 
 			HttpResponseMessage response = await _httpClient.GetAsync(uri);
 
@@ -73,14 +80,30 @@ namespace BoardGameMarket.MarketGateway.API.Application.CatalogItems.Services
 		{
 			string cacheKey = $"catalog-item";
 
+			var (exists, missing) = await _cacheService.GetCachedAsync<CatalogItemInfo>(cacheKey, request.Names);
+			if (!missing.Any())
+			{
+				return exists.ToArray();
+			}
+
 			string uri = $"api/catalog/custom";
-			HttpResponseMessage response = await _httpClient.PostAsJsonAsync(uri, request);
+			CustomCatalogItemsRequest missingRequest = new CustomCatalogItemsRequest(missing.ToArray());
+			HttpResponseMessage response = await _httpClient.PostAsJsonAsync(uri, missingRequest);
 
 			response.EnsureSuccessStatusCode();
 
-			CatalogItemInfo[]? items = await response.Content.ReadFromJsonAsync<CatalogItemInfo[]>();
+			IEnumerable<CatalogItemInfo>? missingItems = await response.Content.ReadFromJsonAsync<IEnumerable<CatalogItemInfo>>();
 
-			return items ?? throw new InvalidDataException();
+			if (missingItems == null)
+			{
+				throw new InvalidDataException();
+            }
+
+			Dictionary<string, CatalogItemInfo> missingDict = missingItems.ToDictionary(i => i.Name);
+
+			await _cacheService.WriteToCacheAsync(cacheKey, missingDict, TimeSpan.FromMinutes(5));
+
+			return exists.Concat(missingItems).ToArray();
 		}
 	}
 }

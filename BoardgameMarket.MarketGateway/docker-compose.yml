@@ -17,17 +17,29 @@ services:
     - microservices-network
     ports:
     - 8081:8081
+    depends_on:
+    - listings-microservice
+    - users-microservice
+    - catalog-microservice
 
   listings-microservice:
     image: arieljalkiver/boardgame-market:listings
-    networks:
-      - microservices-network
     volumes:
-      - ../BoardGameMarket.Infrastructure/SeedData:/app/SeedData:ro
+    - ../BoardGameMarket.Infrastructure/SeedData:/app/SeedData:ro
     environment:
-      IN_MEMORY: true
+      IN_MEMORY: false
       IS_SEEDING: true
       SEED_ROOT: /app/SeedData
+      POSTGRES_HOST: postgres-listings
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: boardgamemarket_listings_database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    depends_on:
+    - postgres-listings
+    networks:
+    - listings-network
+    - microservices-network
 
   catalog-microservice:
     image: arieljalkiver/boardgame-market:catalog
@@ -57,8 +69,8 @@ services:
       POSTGRES_DATABASE: boardgamemarket_users_database
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
-      IS_SEEDING: true
       IN_MEMORY: false
+      IS_SEEDING: true
       SEED_ROOT: /app/SeedData
     depends_on:
     - postgres-users
@@ -93,7 +105,21 @@ services:
     networks:
       - microservices-network
     volumes:
-      - "../redis-cache:/data"
+      - redis-data:/data"
+
+  postgres-listings:
+    image: postgres:18.3
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: boardgamemarket_listings_database
+    networks: 
+    - listings-network
+    volumes:
+    - ../BoardGameMarket.Infrastructure/database-init/postgres-listings-init:/docker-entrypoint-initdb.d
+
+volumes:
+  redis-data:
 
 networks:
   microservices-network:
@@ -101,4 +127,6 @@ networks:
   users-network:
     driver: bridge
   catalog-network:
+    driver: bridge
+  listings-network:
     driver: bridge

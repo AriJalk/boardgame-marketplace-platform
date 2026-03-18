@@ -1,8 +1,7 @@
-﻿using BoardGameMarket.MarketGateway.API.Helpers;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 
-namespace BoardGameMarket.MarketGateway.API.Application.Shared
+namespace BoardGameMarket.MarketGateway.API.Helpers
 {
     public static class HttpClientHelpers
     {
