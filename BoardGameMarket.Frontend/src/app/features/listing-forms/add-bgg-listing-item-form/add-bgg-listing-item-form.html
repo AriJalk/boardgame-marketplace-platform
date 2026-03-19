@@ -1,4 +1,7 @@
 <div [formGroup]="formGroup">
+  @if (item$ | async; as item) {
+    <h3>Name: {{ item.name }}</h3>
+  }
   <bgm-retrieve-bgg-item-id (catalogItemRetrieved)="attachItem($event)"></bgm-retrieve-bgg-item-id>
   <mat-form-field>
     <mat-label>Details</mat-label>

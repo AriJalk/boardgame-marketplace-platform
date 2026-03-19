@@ -55,17 +55,14 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Repositories
 
         public async Task<IEnumerable<ListingQueueEntry>> GetFilteredListingQueueEntriesAsync(ListingQueueEntryFilter filter)
         {
-            if (!filter.UserId.HasValue && filter.ListingIds == null && filter.ListingQueueEntryIds == null && filter.ListingStatus == null) {
-                return Enumerable.Empty<ListingQueueEntry>();
-            }
             StringBuilder sql = new StringBuilder("SELECT * FROM listing_queue_entries lqe");
             DynamicParameters parameters = new DynamicParameters();
             List<string> conditions = new List<string>();
 
-            if (filter.UserId.HasValue)
+            if (filter.UserId is Guid userId)
             {
                 conditions.Add("buyer_user_id=@UserId");
-                parameters.Add("UserId", filter.UserId.Value);
+                parameters.Add("UserId", userId);
             }
                 if (filter.ListingIds != null && filter.ListingIds.Any())
                 {

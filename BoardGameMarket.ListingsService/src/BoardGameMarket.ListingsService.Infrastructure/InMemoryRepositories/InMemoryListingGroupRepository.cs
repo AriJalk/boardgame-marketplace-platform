@@ -50,9 +50,9 @@ namespace BoardGameMarket.ListingsService.Infrastructure.InMemoryRepositories
 
         private IEnumerable<ListingGroup> QueryListingGroup(IEnumerable<ListingGroup> query, ListingGroupFilter filter)
         {
-            if (filter.SellerUserId.HasValue)
+            if (filter.SellerUserId is Guid sellerUserId)
             {
-                query = query.Where(g => g.SellerUserId == filter.SellerUserId.Value);
+                query = query.Where(g => g.SellerUserId == sellerUserId);
             }
 
             if (!string.IsNullOrEmpty(filter.Location))

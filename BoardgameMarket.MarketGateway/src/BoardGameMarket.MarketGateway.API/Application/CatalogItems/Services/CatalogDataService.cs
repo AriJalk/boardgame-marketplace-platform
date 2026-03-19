@@ -80,7 +80,9 @@ namespace BoardGameMarket.MarketGateway.API.Application.CatalogItems.Services
 		{
 			string cacheKey = $"catalog-item";
 
-			var (exists, missing) = await _cacheService.GetCachedAsync<CatalogItemInfo>(cacheKey, request.Names);
+			List<string> names = request.Names.Distinct().ToList();
+
+			var (exists, missing) = await _cacheService.GetCachedAsync<CatalogItemInfo>(cacheKey, names);
 			if (!missing.Any())
 			{
 				return exists.ToArray();

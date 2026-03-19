@@ -8,6 +8,7 @@ import { ListingSubscription, QueueEntry } from '../../../../queues/models/quque
 import { BehaviorSubject, Observable, of, switchMap, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { AuthService } from '../../../../../core/auth/auth.service';
+import { AccountInfo } from '@azure/msal-browser';
 
 @Component({
   selector: 'bgm-listing-details-card',
@@ -15,7 +16,7 @@ import { AuthService } from '../../../../../core/auth/auth.service';
   templateUrl: './listing-details-card.html',
   styleUrl: './listing-details-card.css',
 })
-export class ListingDetailsCard {
+export class ListingDetailsCard implements OnInit {
   private listingSubscriptionSubject = new BehaviorSubject<ListingSubscription | undefined>(
     undefined,
   );
@@ -33,10 +34,16 @@ export class ListingDetailsCard {
   listingSubscription$?: Observable<ListingSubscription | undefined> =
     this.listingSubscriptionSubject.asObservable();
 
+  account$!: Observable<AccountInfo | null>;
+
   constructor(
     private queueService: QueueService,
     private authService: AuthService,
   ) {}
+
+  ngOnInit(): void {
+    this.account$ = this.authService.activeAccount$;
+  }
 
   onSubscribeClicked() {
     this.authService

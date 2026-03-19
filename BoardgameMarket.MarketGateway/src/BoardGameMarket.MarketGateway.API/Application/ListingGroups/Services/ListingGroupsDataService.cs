@@ -142,16 +142,16 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
             response.EnsureSuccessStatusCode();
 
-            Guid? listingGroupId = await response.Content.ReadFromJsonAsync<Guid>();
+            Guid? result = await response.Content.ReadFromJsonAsync<Guid>();
 
-            if (!listingGroupId.HasValue)
+            if (result is not Guid id)
             {
                 throw new InvalidDataException();
             }
 
-            await _cacheService.CompleteIdempotentAsync(idempotencyCacheKey, listingGroupId.Value);
+            await _cacheService.CompleteIdempotentAsync(idempotencyCacheKey, id);
 
-            return listingGroupId.Value;
+            return id;
         }
 
         //public async Task<ListingGroupOwnershipInfo> GetListingGroupOwnershipInfo(Guid listingGroupId)
@@ -177,9 +177,16 @@ namespace BoardGameMarket.MarketGateway.API.Application.ListingGroups.Services
 
             response.EnsureSuccessStatusCode();
 
-            Guid? listingGroupIdFromUpdate = await response.Content.ReadFromJsonAsync<Guid>();
+            Guid? result = await response.Content.ReadFromJsonAsync<Guid>();
 
-            return listingGroupIdFromUpdate ?? throw new InvalidDataException();
+            if (result is not Guid id)
+            {
+                throw new InvalidDataException();
+            }
+
+            await _cacheService.RemoveKey($"lg-detail:{request.Id}");
+
+            return id;
         }
 
         public async Task<ListingGroupMetadataInfo> GetListingGroupMetadata(Guid listingGroupId)

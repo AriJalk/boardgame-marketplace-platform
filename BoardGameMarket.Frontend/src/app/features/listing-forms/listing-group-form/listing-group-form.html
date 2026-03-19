@@ -26,7 +26,13 @@
           </mat-expansion-panel-header>
           <mat-card>
             <bgm-listing-form [formGroup]="listing"></bgm-listing-form>
-            <button class="margin-5" matButton="elevated" type="button" (click)="removeListing(i)">
+            <button
+              class="margin-5"
+              matButton="elevated"
+              type="button"
+              [disabled]="getListingStatus(listing) != 'active'"
+              (click)="removeListing(i)"
+            >
               Remove Listing
             </button>
           </mat-card>

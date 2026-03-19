@@ -12,7 +12,7 @@
     }
   </div>
   @let listingSubscription = listingSubscription$ | async;
-  @if (listing.status === 'active') {
+  @if (listing.status === 'active' && (account$ | async)) {
     <bgm-queue-buyer-panel
       class="snap-bottom"
       [listingSubscription]="listingSubscription"

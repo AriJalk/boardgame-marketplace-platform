@@ -11,7 +11,7 @@ namespace BoardGameMarket.ListingsService.Core.Domain.Services
 
         private static IEnumerable<ListingQueueEntry> SortQueue(IEnumerable<ListingQueueEntry> queue)
         {
-            return queue.OrderBy(qe => qe.Priority.HasValue ? qe.Priority : int.MaxValue).ThenBy(qe => qe.CreatedAt);
+            return queue.OrderBy(qe => qe.Priority ?? int.MaxValue).ThenBy(qe => qe.CreatedAt);
         }
 
         public static void ValidateReserve(IEnumerable<ListingQueueEntry> queue, ListingQueueEntry requestedQueueEntry)

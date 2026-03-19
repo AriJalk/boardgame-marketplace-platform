@@ -52,13 +52,18 @@ namespace BoardGameMarket.MarketGateway.API.Application.Shared
             return (exists, missing);
         }
 
+        public async Task RemoveKey(string key)
+        {
+            await _stackExchangeCache.RemoveAsync(key);
+        }
+
 
         public async Task WriteToCacheAsync(string key, object value, TimeSpan? expiration = null)
         {
             DistributedCacheEntryOptions options = new DistributedCacheEntryOptions();
-            if (expiration.HasValue)
+            if (expiration is TimeSpan exp)
             {
-                options.SetAbsoluteExpiration(expiration.Value);
+                options.SetAbsoluteExpiration(exp);
             }
 
             string valueJson = JsonSerializer.Serialize(value);
@@ -69,9 +74,9 @@ namespace BoardGameMarket.MarketGateway.API.Application.Shared
         public async Task WriteToCacheAsync<T>(string key, Dictionary<string, T> values, TimeSpan? expiration = null)
         {
             DistributedCacheEntryOptions options = new DistributedCacheEntryOptions();
-            if (expiration.HasValue)
+            if (expiration is TimeSpan exp)
             {
-                options.SetAbsoluteExpiration(expiration.Value);
+                options.SetAbsoluteExpiration(exp);
             }
 
             var tasks = values.Select(async kv =>

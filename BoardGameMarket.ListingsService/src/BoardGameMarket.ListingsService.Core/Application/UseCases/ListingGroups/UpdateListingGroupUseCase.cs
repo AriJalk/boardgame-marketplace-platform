@@ -40,7 +40,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
 
         private async Task<ListingItem> UpdateListingItem(Guid listingId, UpdateListingItemRequest request)
         {
-            if (request.Id == null)
+            if (request.Id is not Guid id)
             {
                 ListingItem listingItemToAdd = new ListingItem()
                 {
@@ -56,7 +56,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
 
             ListingItem listingItemToUpdate = new ListingItem()
             {
-                Id = request.Id.Value,
+                Id = id,
                 ListingId = listingId,
                 CatalogId = request.CatalogId,
                 Details = request.Details,
@@ -87,7 +87,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
         }
         private async Task<Listing> UpdateListing(Guid listingGroupId, UpdateListingRequest request, Guid sellerUserId)
         {
-            if (request.Id == null)
+            if (request.Id is not Guid id)
             {
                 Listing listingToAdd = new Listing()
                 {
@@ -106,11 +106,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                 return listingToAdd;
             }
 
-            Listing? existingListing = await _listingReadService.GetListingByIdAsync(request.Id.Value);
+            Listing? existingListing = await _listingReadService.GetListingByIdAsync(id);
 
             if (existingListing == null)
             {
-                throw new ListingNotFoundException(request.Id.Value);
+                throw new ListingNotFoundException(id);
             }
 
             Listing listingToUpdate = new Listing()
@@ -146,7 +146,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
             // Delete removed listings
             foreach (Listing existingListing in existingListings)
             {
-                if (!listingsFromUpdate.ContainsKey(existingListing.Id))
+                if (!listingsFromUpdate.ContainsKey(existingListing.Id) && existingListing.Status == ListingStatus.Active)
                 {
                     await _listingWriteService.DeleteListingAsync(existingListing.Id);
 
