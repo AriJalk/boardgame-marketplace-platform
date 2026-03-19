@@ -43,6 +43,8 @@ services:
 
   catalog-microservice:
     image: arieljalkiver/boardgame-market:catalog
+    env_file:
+    - secrets.env
     networks:
     - microservices-network
     - catalog-network
@@ -53,7 +55,7 @@ services:
     environment:
       IN_MEMORY: false
       IS_SEEDING: true
-      LOCAL_BGG_CLIENT: true
+      LOCAL_BGG_CLIENT: false
       SEED_ROOT: /app/SeedData
       BGGCLIENT__SERVICEAPIKEY: ${BGG_API_KEY}
       MONGODBCONFIGURATION__MONGOHOST: mongodb-catalog

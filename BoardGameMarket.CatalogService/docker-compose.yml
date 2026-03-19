@@ -8,16 +8,18 @@ services:
     - catalog-network
     volumes:
       - ../BoardGameMarket.Infrastructure/SeedData:/app/SeedData:ro
+    env_file:
+    - secrets.env
     environment:
       IN_MEMORY: false
       IS_SEEDING: true
-      LOCAL_BGG_CLIENT: true
+      LOCAL_BGG_CLIENT: false
       MONGODBCONFIGURATION__MONGOHOST: mongodb-catalog
       MONGODBCONFIGURATION__MONGOPORT: 27017
       MONGODBCONFIGURATION__MONGODATABASE: catalog_database
       MONGODBCONFIGURATION__COLLECTIONNAME: catalog_collection
       SEED_ROOT: /app/SeedData
-
+      BGGCLIENT__SERVICEAPIKEY: ${BGG_API_KEY}
   mongodb-catalog:
     image: mongo:8.2.5
     networks:
