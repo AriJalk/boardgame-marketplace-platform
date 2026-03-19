@@ -8,8 +8,6 @@ services:
     - catalog-network
     volumes:
       - ../BoardGameMarket.Infrastructure/SeedData:/app/SeedData:ro
-    env_file:
-    - secrets.env
     environment:
       IN_MEMORY: false
       IS_SEEDING: true

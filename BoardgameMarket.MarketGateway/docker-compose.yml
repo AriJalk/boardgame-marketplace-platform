@@ -43,8 +43,6 @@ services:
 
   catalog-microservice:
     image: arieljalkiver/boardgame-market:catalog
-    env_file:
-    - secrets.env
     networks:
     - microservices-network
     - catalog-network
