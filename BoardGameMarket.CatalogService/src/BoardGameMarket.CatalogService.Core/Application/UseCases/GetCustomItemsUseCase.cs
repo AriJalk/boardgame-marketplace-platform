@@ -11,8 +11,8 @@ namespace BoardGameMarket.CatalogService.Core.Application.UseCases
 {
     public class GetCustomItemsUseCase
     {
-        private ICatalogItemGetterService _catalogItemGetterService;
-        private ICatalogItemAdderService _catalogItemAdderService;
+        private readonly ICatalogItemGetterService _catalogItemGetterService;
+        private readonly ICatalogItemAdderService _catalogItemAdderService;
 
         public GetCustomItemsUseCase(ICatalogItemGetterService catalogItemGetterService, ICatalogItemAdderService catalogItemAdderService)
         {

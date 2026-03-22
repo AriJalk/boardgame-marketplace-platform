@@ -10,8 +10,8 @@ namespace BoardGameMarket.CatalogService.Core.Application.UseCases
 {
 	public class GetCustomItemUseCase
 	{
-		private ICatalogItemGetterService _catalogItemGetterService;
-		private ICatalogItemAdderService _catalogItemAdderService;
+		private readonly ICatalogItemGetterService _catalogItemGetterService;
+		private readonly ICatalogItemAdderService _catalogItemAdderService;
 
 		public GetCustomItemUseCase(ICatalogItemGetterService catalogItemGetterService, ICatalogItemAdderService catalogItemAdderService)
 		{
@@ -19,7 +19,7 @@ namespace BoardGameMarket.CatalogService.Core.Application.UseCases
 			_catalogItemAdderService = catalogItemAdderService;
 		}
 
-		public async Task<CatalogItemInfo> Execute(string name)
+		public async Task<CatalogItemInfo> ExecuteAsync(string name)
 		{
 			CatalogItem? catalogItem = await _catalogItemGetterService.GetCustomItemByNameAsync(name);
 			if (catalogItem == null)

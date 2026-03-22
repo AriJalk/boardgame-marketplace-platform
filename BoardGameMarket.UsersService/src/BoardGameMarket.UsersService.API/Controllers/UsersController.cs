@@ -13,21 +13,20 @@ namespace BoardGameMarket.UsersService.API.Controllers
 	{
 		private readonly ILogger<UsersController> _logger;
 		private readonly IUserGetterService _userGetterService;
-		private readonly IUserAdderService _userAdderService;
 		private readonly CreateUserUseCase _createUserUseCase;
 
-		public UsersController(ILogger<UsersController> logger, IUserGetterService userGetterService, IUserAdderService userAdderService, CreateUserUseCase createUserUseCase
+		public UsersController(ILogger<UsersController> logger, IUserGetterService userGetterService, CreateUserUseCase createUserUseCase
 			)
 		{
 			_logger = logger;
 			_userGetterService = userGetterService;
-			_userAdderService = userAdderService;
 			_createUserUseCase = createUserUseCase;
 		}
 
 		[HttpGet("{userId:guid}")]
 		public async Task<ActionResult<UserInfo>> GetUser(Guid userId)
 		{
+			_logger.LogInformation("{Controller}/{ControllerMethod}: Get user {userId}", nameof(UsersController), nameof(GetUser), userId);
 			ApplicationUser? user = await _userGetterService.GetUserByUserIdAsync(userId);
 			if (user == null)
 			{
@@ -39,7 +38,8 @@ namespace BoardGameMarket.UsersService.API.Controllers
 		[HttpPost()]
 		public async Task<ActionResult<UserInfo>> CreateUser(CreateUserRequest createUserRequest)
 		{
-			UserInfo user = await _createUserUseCase.ExecuteAsync(createUserRequest);
+            _logger.LogInformation("{Controller}/{ControllerMethod}: Create user {userId}", nameof(UsersController), nameof(CreateUser), createUserRequest.Id);
+            UserInfo user = await _createUserUseCase.ExecuteAsync(createUserRequest);
 
 			return Ok(user);
 		}
@@ -47,7 +47,8 @@ namespace BoardGameMarket.UsersService.API.Controllers
 		[HttpGet("{userId:guid}/contact-email")]
 		public async Task<ActionResult<string>> GetEmail(Guid userId)
 		{
-			ApplicationUser? user = await _userGetterService.GetUserByUserIdAsync(userId);
+            _logger.LogInformation("{Controller}/{ControllerMethod}: Get email for user {userId}", nameof(UsersController), nameof(GetEmail), userId);
+            ApplicationUser? user = await _userGetterService.GetUserByUserIdAsync(userId);
 
 			if (user == null)
 			{

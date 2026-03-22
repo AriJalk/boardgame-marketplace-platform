@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameMarket.CatalogServ
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{81DDED9D-158B-E303-5F62-77A2896D2A5A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameMarket.CatalogService.UnitTests", "tests\BoardGameMarket.CatalogService.UnitTests\BoardGameMarket.CatalogService.UnitTests.csproj", "{4FD12A7A-C940-4698-ACC4-7EC865E37007}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81DDED9D-158B-E303-5F62-77A2896D2A5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4FD12A7A-C940-4698-ACC4-7EC865E37007}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FD12A7A-C940-4698-ACC4-7EC865E37007}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FD12A7A-C940-4698-ACC4-7EC865E37007}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FD12A7A-C940-4698-ACC4-7EC865E37007}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -45,6 +51,7 @@ Global
 		{90BDDFFC-B406-7B5C-5FDD-EA813FD578BF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{552CBBFA-D08D-2758-8C8D-D72A188E851D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{68B81A7A-B015-8075-DFB0-BCFDCD95FBA3} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{4FD12A7A-C940-4698-ACC4-7EC865E37007} = {3CDBA8B1-9136-404A-8573-781C8C1E0530}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {01B3D38B-0135-40F3-BC28-17535B9BDFAC}

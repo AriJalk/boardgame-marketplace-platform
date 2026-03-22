@@ -23,7 +23,8 @@ namespace BoardGameMarket.UsersService.Core.Application.Services.ApplicationUser
 			_unitOfWork = unitOfWork;
 		}
 
-		public async Task<ApplicationUser> AddUserAsync(CreateUserCommand createUserCommand)
+        // Commit immediately if no transaction, or participate in a transaction if used under UnitOfWork.
+        public async Task<ApplicationUser> AddUserAsync(CreateUserCommand createUserCommand)
 		{
 			ApplicationUser user = new ApplicationUser()
 			{
