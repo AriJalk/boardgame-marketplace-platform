@@ -90,6 +90,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                 await _listingItemWriteService.AddListingItemsAsync(listingItemsToAdd);
 
             });
+
             return listingGroupToAdd.Id;
         }
     }

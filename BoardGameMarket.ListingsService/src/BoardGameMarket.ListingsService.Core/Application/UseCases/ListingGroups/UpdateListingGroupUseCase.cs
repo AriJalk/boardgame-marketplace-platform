@@ -11,6 +11,7 @@ using BoardGameMarket.ListingsService.Core.Domain.Aggragates;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.Enums;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
+using Microsoft.Extensions.Logging;
 
 
 namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroups
@@ -26,7 +27,9 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
         private readonly IUnitOfWork _unitOfWork;
         private readonly IListingQueueEntryWriteService _listingQueueEntryWriteService;
 
-        public UpdateListingGroupUseCase(IListingGroupReadService listingGroupReadService, IListingGroupWriteService listingGroupWriteService, IListingReadService listingReadService, IListingWriteService listingWriteService, IListingItemReadService listingItemReadService, IListingItemWriteService listingItemWriteService, IUnitOfWork unitOfWork, IListingQueueEntryWriteService listingQueueEntryWriteService)
+        private readonly ILogger<UpdateListingGroupUseCase> _logger;
+
+        public UpdateListingGroupUseCase(IListingGroupReadService listingGroupReadService, IListingGroupWriteService listingGroupWriteService, IListingReadService listingReadService, IListingWriteService listingWriteService, IListingItemReadService listingItemReadService, IListingItemWriteService listingItemWriteService, IUnitOfWork unitOfWork, IListingQueueEntryWriteService listingQueueEntryWriteService, ILogger<UpdateListingGroupUseCase> logger)
         {
             _listingGroupReadService = listingGroupReadService;
             _listingGroupWriteService = listingGroupWriteService;
@@ -36,6 +39,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
             _listingItemWriteService = listingItemWriteService;
             _unitOfWork = unitOfWork;
             _listingQueueEntryWriteService = listingQueueEntryWriteService;
+            _logger = logger;
         }
 
         private async Task<ListingItem> UpdateListingItem(Guid listingId, UpdateListingItemRequest request)
@@ -85,9 +89,10 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                 }
             }
         }
+
         private async Task<Listing> UpdateListing(Guid listingGroupId, UpdateListingRequest request, Guid sellerUserId)
         {
-            if (request.Id is not Guid id)
+            if (!request.Id.HasValue)
             {
                 Listing listingToAdd = new Listing()
                 {
@@ -106,11 +111,17 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
                 return listingToAdd;
             }
 
-            Listing? existingListing = await _listingReadService.GetListingByIdAsync(id);
+            Listing? existingListing = await _listingReadService.GetListingByIdAsync(request.Id.Value);
 
             if (existingListing == null)
             {
-                throw new ListingNotFoundException(id);
+                throw new ListingNotFoundException(request.Id.Value);
+            }
+
+            if (existingListing.Status != ListingStatus.Active)
+            {
+                _logger.LogInformation("{Class}/{Method}: Skipped update for non-active listing {ListingId}", nameof(UpdateListingGroupUseCase), nameof(UpdateListing), existingListing.Id);
+                return existingListing;
             }
 
             Listing listingToUpdate = new Listing()
