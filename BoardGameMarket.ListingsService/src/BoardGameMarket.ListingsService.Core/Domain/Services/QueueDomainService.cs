@@ -21,7 +21,7 @@ namespace BoardGameMarket.ListingsService.Core.Domain.Services
             ListingQueueEntry? headQueueEntry = sortedQueue.FirstOrDefault();
             if (headQueueEntry == null)
             {
-                throw new KeyNotFoundException("Queue is empty");
+                throw new InvalidOperationException("Queue is empty");
             }
             if (headQueueEntry.Id != requestedQueueEntry.Id)
             {
@@ -29,7 +29,7 @@ namespace BoardGameMarket.ListingsService.Core.Domain.Services
             }
             if (headQueueEntry.Status != QueueStatus.Queued)
             {
-                throw new InvalidOperationException("Requesed queue entry not at Queued status");
+                throw new InvalidOperationException("Requested queue entry not at Queued status");
             }
         }
 

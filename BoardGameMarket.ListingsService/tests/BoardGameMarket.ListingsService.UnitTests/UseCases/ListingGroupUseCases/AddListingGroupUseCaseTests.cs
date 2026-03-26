@@ -13,16 +13,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace BoardGameMarket.ListingsService.UnitTests.UseCases
+namespace BoardGameMarket.ListingsService.UnitTests.UseCases.ListingGroupUseCases
 {
     public class AddListingGroupUseCaseTests
     {
         private readonly AddListingGroupUseCase _addListingGroupUseCase;
-
-        private readonly IListingGroupWriteService _listingGroupWriteService;
-        private readonly IListingWriteService _listingWriteService;
-        private readonly IListingItemWriteService _listingItemWriteService;
-        private readonly IUnitOfWork _unitOfWork;
 
         private readonly Mock<IListingGroupWriteService> _listingGroupWriteServiceMock;
         private readonly Mock<IListingWriteService> _listingWriteServiceMock;
@@ -34,40 +29,36 @@ namespace BoardGameMarket.ListingsService.UnitTests.UseCases
         public AddListingGroupUseCaseTests()
         {
             _listingGroupWriteServiceMock = new Mock<IListingGroupWriteService>();
-            _listingGroupWriteService = _listingGroupWriteServiceMock.Object;
 
             _listingWriteServiceMock = new Mock<IListingWriteService>();
-            _listingWriteService = _listingWriteServiceMock.Object;
 
             _listingItemWriteServiceMock = new Mock<IListingItemWriteService>();
-            _listingItemWriteService = _listingItemWriteServiceMock.Object;
 
             _unitOfWorkMock = new Mock<IUnitOfWork>();
-            _unitOfWork = _unitOfWorkMock.Object;
 
             _unitOfWorkMock.Setup(uow => uow.ExecuteInTransactionAsync(It.IsAny<Func<Task>>())).Returns((Func<Task> action) => action());
 
-            _addListingGroupUseCase = new AddListingGroupUseCase(_listingGroupWriteService, _listingWriteService, _listingItemWriteService, _unitOfWork);
+            _addListingGroupUseCase = new AddListingGroupUseCase(_listingGroupWriteServiceMock.Object, _listingWriteServiceMock.Object, _listingItemWriteServiceMock.Object, _unitOfWorkMock.Object);
 
             _fixture = new Fixture();
         }
 
         [Fact]
-        public async Task AddListingGroupUseCase_MismatchRequesterId_ThrowsUnauthorizedAccessException()
+        public async Task ExecuteAsync_InvalidUser_ThrowsUnauthorizedAccessException()
         {
             // Arrange
             CreateListingGroupRequest request = _fixture.Create<CreateListingGroupRequest>();
             Guid requesterId = Guid.NewGuid();
 
             // Act
-           Func<Task> action = async () => await _addListingGroupUseCase.ExecuteAsync(request, requesterId);
+            Func<Task> action = async () => await _addListingGroupUseCase.ExecuteAsync(request, requesterId);
 
             // Assert
             await action.Should().ThrowAsync<UnauthorizedAccessException>();
         }
 
         [Fact]
-        public async Task AddListingGroupUseCase_Valid_AddFailure_Throws()
+        public async Task ExecuteAsync_Valid_AddFailure_ThrowsInvalidOperationException()
         {
             // Arrange
             CreateListingGroupRequest request = _fixture.Create<CreateListingGroupRequest>();
@@ -81,15 +72,32 @@ namespace BoardGameMarket.ListingsService.UnitTests.UseCases
         }
 
         [Fact]
-        public async Task AddListingGroupUseCase_Valid_AddSuccessful_ReturnListingGroupId()
+        public async Task ExecuteAsync_Valid_AddSuccessful_ReturnListingGroupId()
         {
             // Arrange
             CreateListingGroupRequest request = _fixture.Create<CreateListingGroupRequest>();
 
+            ListingGroup? capturedListingGroup = null;
+            IEnumerable<Listing>? capturedListings = null;
+            IEnumerable<ListingItem>? capturedListingItems = null;
+
+            _listingGroupWriteServiceMock.Setup(s => s.AddListingGroup(It.IsAny<ListingGroup>())).Callback<ListingGroup>(c => capturedListingGroup = c).Returns(Task.CompletedTask);
+            _listingWriteServiceMock.Setup(s => s.AddListingsAsync(It.IsAny<IEnumerable<Listing>>())).Callback<IEnumerable<Listing>>(c => capturedListings = c).Returns(Task.CompletedTask);
+            _listingItemWriteServiceMock.Setup(s => s.AddListingItemsAsync(It.IsAny<IEnumerable<ListingItem>>())).Callback<IEnumerable<ListingItem>>(c => capturedListingItems = c).Returns(Task.CompletedTask);
+
+
             // Act
             Guid actualIdFromUseCase = await _addListingGroupUseCase.ExecuteAsync(request, request.SellerUserId);
 
+            // Assert
             actualIdFromUseCase.Should().NotBe(Guid.Empty);
+            capturedListingGroup.Should().NotBeNull();
+            capturedListingGroup.Id.Should().Be(actualIdFromUseCase);
+            capturedListings.Should().NotBeNull().And.NotBeEmpty();
+            capturedListingItems.Should().NotBeNull().And.NotBeEmpty();
+
+            capturedListings!.All(l => l.ListingGroupId == capturedListingGroup!.Id).Should().BeTrue();
+            capturedListingItems!.All(li => capturedListings.Select(l => l.Id).Contains(li.ListingId)).Should().BeTrue();
         }
     }
 }

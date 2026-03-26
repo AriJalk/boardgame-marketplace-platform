@@ -15,22 +15,22 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingReser
 {
     public class ApproveReservationSellUseCase
     {
+        private readonly IListingReadService _listingReadService;
+        private readonly IListingWriteService _listingWriteService;
         private readonly IListingReservationReadService _listingReservationReadService;
         private readonly IListingReservationWriteService _listingReservationWriteService;
         private readonly IListingSaleReadService _listingSaleReadService;
         private readonly IListingSaleWriteService _listingSaleWriteService;
-        private readonly IListingReadService _listingReadService;
-        private readonly IListingWriteService _listingWriteService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ApproveReservationSellUseCase(IListingReservationReadService listingReservationReadService, IListingReservationWriteService listingReservationWriteService, IListingSaleReadService listingSaleReadService, IListingSaleWriteService listingSaleWriteService, IListingReadService listingReadService, IListingWriteService listingWriteService, IUnitOfWork unitOfWork)
+        public ApproveReservationSellUseCase(IListingReadService listingReadService, IListingWriteService listingWriteService, IListingReservationReadService listingReservationReadService, IListingReservationWriteService listingReservationWriteService, IListingSaleReadService listingSaleReadService, IListingSaleWriteService listingSaleWriteService, IUnitOfWork unitOfWork)
         {
+            _listingReadService=listingReadService;
+            _listingWriteService=listingWriteService;
             _listingReservationReadService=listingReservationReadService;
             _listingReservationWriteService=listingReservationWriteService;
             _listingSaleReadService=listingSaleReadService;
             _listingSaleWriteService=listingSaleWriteService;
-            _listingReadService=listingReadService;
-            _listingWriteService=listingWriteService;
             _unitOfWork=unitOfWork;
         }
 
@@ -49,7 +49,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingReser
             ListingSale? existingListingSale = await _listingSaleReadService.GetListingSaleByListingId(reservation.ListingId);
             if (existingListingSale != null)
             {
-                return existingListingSale.ToListingSaleInfo();
+                if (existingListingSale.ReservationId == reservationId)
+                {
+                    return existingListingSale.ToListingSaleInfo();
+                }
+                throw new InvalidOperationException("Sale approved for another reservation");
             }
             if (reservation.Status != ReservationStatus.Reserved)
             {
@@ -59,6 +63,10 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingReser
             if (listing == null)
             {
                 throw new ListingNotFoundException(reservation.ListingId);
+            }
+            if (listing.Status != ListingStatus.Reserved)
+            {
+                throw new InvalidOperationException("Listing is not in reserverd status");
             }
             ListingSale listingSale = new ListingSale()
             {

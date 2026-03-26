@@ -10,16 +10,14 @@ using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.Enums;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
-using Castle.Core.Logging;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace BoardGameMarket.ListingsService.UnitTests.UseCases
+namespace BoardGameMarket.ListingsService.UnitTests.UseCases.ListingGroupUseCases
 {
     public class UpdateListingGroupUseCaseTests
     {
@@ -56,7 +54,7 @@ namespace BoardGameMarket.ListingsService.UnitTests.UseCases
 
 
         [Fact]
-        public async Task UpdateListingGroupUseCase_MissingListingGroup_ThrowsKeyNotFoundException()
+        public async Task ExecuteAsync_MissingListingGroup_ThrowsKeyNotFoundException()
         {
             // Arrange
             Guid requesterId = Guid.NewGuid();
@@ -70,7 +68,7 @@ namespace BoardGameMarket.ListingsService.UnitTests.UseCases
         }
 
         [Fact]
-        public async Task UpdateListingGroupUseCase_RequesterMismatch_ThrowsUnauthorizedAccessException()
+        public async Task ExecuteAsync_InvalidUser_ThrowsUnauthorizedAccessException()
         {
             // Arrange
             ListingGroup listingGroup = _fixture.Create<ListingGroup>();
@@ -85,7 +83,7 @@ namespace BoardGameMarket.ListingsService.UnitTests.UseCases
         }
 
         [Fact]
-        public async Task UpdateListingGroupUseCase_ValidRequest_UpdateFailed_ThrowsInvalidOperationException()
+        public async Task ExecuteAsync_ValidRequest_UpdateFailed_ThrowsInvalidOperationException()
         {
             // Arrange
             ListingGroup listingGroup = _fixture.Create<ListingGroup>();
@@ -100,7 +98,7 @@ namespace BoardGameMarket.ListingsService.UnitTests.UseCases
         }
 
         [Fact]
-        public async Task UpdateListingGroupUseCase_ValidRequest_UpdateSuccessful_ReturnsId()
+        public async Task ExecuteAsync_ValidRequest_UpdateSuccessful_ReturnsId()
         {
             // Arrange
             Guid listingGroupId = Guid.NewGuid();
@@ -144,11 +142,24 @@ namespace BoardGameMarket.ListingsService.UnitTests.UseCases
             _listingReadServiceMock.Setup(s => s.GetListingByIdAsync(It.IsAny<Guid>())).ReturnsAsync((Guid listingId) => listings[listingId]);
             _listingItemReadServiceMock.Setup(s => s.GetListingItemsByListingIdAsync(It.IsAny<Guid>())).ReturnsAsync((Guid listingId) => listingItemsByListings.TryGetValue(listingId, out var items) ? items : new List<ListingItem>());
 
+            ListingGroup? capturedListingGroup = null;
+            List<Listing>? capturedListings = new List<Listing>();
+            List<ListingItem>? capturedListingItems = new List<ListingItem>();
+
+            _listingGroupWriteServiceMock.Setup(s => s.UpdateListingGroupAsync(It.IsAny<ListingGroup>())).Callback<ListingGroup>(c => capturedListingGroup = c);
+            _listingWriteServiceMock.Setup(s => s.UpdateListingAsync(It.IsAny<Listing>())).Callback<Listing>(c => capturedListings.Add(c)).Returns(Task.CompletedTask);
+            _listingItemWriteServiceMock.Setup(s => s.UpdateListingItemAsync(It.IsAny<ListingItem>())).Callback<ListingItem>(c => capturedListingItems.Add(c)).Returns(Task
+                .CompletedTask);
+
+
             // Act
             Guid actualListingGroupIdFromUseCase = await _updateListingGroupUseCase.ExecuteAsync(listingGroupRequest, listingGroup.SellerUserId);
 
             // Assert 
             actualListingGroupIdFromUseCase.Should().Be(listingGroupId);
+            capturedListingGroup.Should().NotBeNull();
+            capturedListings.Should().NotBeEmpty();
+            capturedListingItems.Should().NotBeEmpty();
         }
     }
 }

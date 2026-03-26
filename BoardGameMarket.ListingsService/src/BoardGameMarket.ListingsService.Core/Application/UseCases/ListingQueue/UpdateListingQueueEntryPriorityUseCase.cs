@@ -47,15 +47,15 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 
             IEnumerable<ListingQueueEntry> queue = await _listingQueueEntryReadService.GetFilteredListingQueueEntriesAsync(filter);
 
+            List<ListingQueueEntry> orderedPriorityQueue = queue.Where(qe => qe.Priority != null).OrderBy(qe => qe.Priority).ToList();
+            ListingQueueEntry requestedEntry = orderedPriorityQueue.Single(qe => qe.Id == listingQueueEntryId);
+
             // Validate index
-            if (request.RequestedIndex < 0 || request.RequestedIndex > queue.Count())
+            if (request.RequestedIndex < 0 || request.RequestedIndex >= orderedPriorityQueue.Count)
             {
                 throw new InvalidOperationException($"Index {request.RequestedIndex} not in range");
             }
 
-
-            List<ListingQueueEntry> orderedPriorityQueue = queue.Where(qe => qe.Priority != null).OrderBy(qe => qe.Priority).ToList();
-            ListingQueueEntry requestedEntry = orderedPriorityQueue.Single(qe => qe.Id == listingQueueEntryId);
 
             // Reorder requested entry in collection
             orderedPriorityQueue.Remove(requestedEntry);
@@ -64,7 +64,10 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
             IEnumerable<ListingQueueEntry> normalizedQueue = orderedPriorityQueue.Normalize();
 
             // Update queue
-            await _listingQueueEntryWriteService.UpdateListingQueueEntriesAsync(normalizedQueue);
+            await _unitOfWork.ExecuteInTransactionAsync(async () =>
+            {
+                await _listingQueueEntryWriteService.UpdateListingQueueEntriesAsync(normalizedQueue);
+            });
 
         }
     }

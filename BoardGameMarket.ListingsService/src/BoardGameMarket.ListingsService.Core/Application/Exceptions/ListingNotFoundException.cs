@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BoardGameMarket.ListingsService.Core.Application.Exceptions
 {
-    internal class ListingNotFoundException : Exception
+    public class ListingNotFoundException : Exception
     {
         public Guid ListingId { get; init; }
         public ListingNotFoundException(Guid listingId) : base($"Listing {listingId} not found")

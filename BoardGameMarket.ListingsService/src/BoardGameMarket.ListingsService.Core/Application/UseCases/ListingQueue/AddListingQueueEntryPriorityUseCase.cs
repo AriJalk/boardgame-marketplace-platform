@@ -1,11 +1,7 @@
 ﻿using BoardGameMarket.ListingsService.Core.Application.Access.ListingQueueEntries;
 using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
-using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingQueueEntries;
-using BoardGameMarket.ListingsService.Core.Application.Contracts.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Exceptions;
 using BoardGameMarket.ListingsService.Core.Application.Filters;
-using BoardGameMarket.ListingsService.Core.Application.Mappers;
-using BoardGameMarket.ListingsService.Core.Application.Queries;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.RepositoryContracts;
 using BoardGameMarket.ListingsService.Core.Domain.Services;
@@ -20,14 +16,12 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
         private readonly IListingReadService _listingReadService;
         private readonly IListingQueueEntryReadService _listingQueueEntryReadService;
         private readonly IListingQueueEntryWriteService _listingQueueEntryWriteService;
-        private readonly IUnitOfWork _unitOfWork;
 
-        public AddListingQueueEntryPriorityUseCase(IListingReadService listingReadService, IListingQueueEntryReadService listingQueueEntryReadService, IListingQueueEntryWriteService listingQueueEntryWriteService, IUnitOfWork unitOfWork)
+        public AddListingQueueEntryPriorityUseCase(IListingReadService listingReadService, IListingQueueEntryReadService listingQueueEntryReadService, IListingQueueEntryWriteService listingQueueEntryWriteService)
         {
             _listingReadService = listingReadService;
             _listingQueueEntryReadService = listingQueueEntryReadService;
             _listingQueueEntryWriteService = listingQueueEntryWriteService;
-            _unitOfWork = unitOfWork;
         }
 
 

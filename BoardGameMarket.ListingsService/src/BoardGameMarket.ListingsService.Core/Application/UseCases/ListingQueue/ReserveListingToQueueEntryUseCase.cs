@@ -3,6 +3,7 @@ using BoardGameMarket.ListingsService.Core.Application.Access.ListingReservation
 using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Exceptions;
 using BoardGameMarket.ListingsService.Core.Application.Filters;
+using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.Queries;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using BoardGameMarket.ListingsService.Core.Domain.Enums;
@@ -16,23 +17,23 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
 {
     public class ReserveListingToQueueEntryUseCase
     {
-        private readonly IListingQueueEntryReadService _listingQueueEntryReadService;
         private readonly IListingReadService _listingReadService;
         private readonly IListingWriteService _listingWriteService;
+        private readonly IListingQueueEntryReadService _listingQueueEntryReadService;
         private readonly IListingQueueEntryWriteService _listingQueueEntryWriteService;
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IListingReservationReadService _listingReservationReadService;
         private readonly IListingReservationWriteService _listingReservationWriteService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ReserveListingToQueueEntryUseCase(IListingQueueEntryReadService listingQueueEntryReadService, IListingReadService listingReadService, IListingWriteService listingWriteService, IListingQueueEntryWriteService listingQueueEntryWriteService, IUnitOfWork unitOfWork, IListingReservationReadService listingReservationReadService, IListingReservationWriteService listingReservationWriteService)
+        public ReserveListingToQueueEntryUseCase(IListingReadService listingReadService, IListingWriteService listingWriteService, IListingQueueEntryReadService listingQueueEntryReadService, IListingQueueEntryWriteService listingQueueEntryWriteService, IListingReservationReadService listingReservationReadService, IListingReservationWriteService listingReservationWriteService, IUnitOfWork unitOfWork)
         {
-            _listingQueueEntryReadService = listingQueueEntryReadService;
-            _listingReadService = listingReadService;
-            _listingWriteService = listingWriteService;
-            _listingQueueEntryWriteService = listingQueueEntryWriteService;
-            _unitOfWork = unitOfWork;
-            _listingReservationReadService = listingReservationReadService;
-            _listingReservationWriteService = listingReservationWriteService;
+            _listingReadService=listingReadService;
+            _listingWriteService=listingWriteService;
+            _listingQueueEntryReadService=listingQueueEntryReadService;
+            _listingQueueEntryWriteService=listingQueueEntryWriteService;
+            _listingReservationReadService=listingReservationReadService;
+            _listingReservationWriteService=listingReservationWriteService;
+            _unitOfWork=unitOfWork;
         }
 
         public async Task<Guid> ExecuteAsync(Guid listingId, Guid listingQueueEntryId, Guid requesterUserId)
@@ -53,7 +54,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
             ListingReservation? existingReservation = await _listingReservationReadService.GetListingReservationByListingId(listingId);
             if (existingReservation != null && existingReservation.Status == ReservationStatus.Reserved)
             {
-                return existingReservation.Id;
+                if (existingReservation.ListingQueueEntryId == listingQueueEntryId)
+                {
+                    return existingReservation.Id;
+                }
+                throw new InvalidOperationException("Reservation approved for another queue entry");
             }
 
             ListingQueueEntryFilter filter = new ListingQueueEntryFilter()
