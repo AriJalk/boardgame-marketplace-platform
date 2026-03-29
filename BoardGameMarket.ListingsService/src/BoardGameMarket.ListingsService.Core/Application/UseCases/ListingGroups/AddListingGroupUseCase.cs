@@ -60,6 +60,12 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
             {
                 throw new UnauthorizedAccessException();
             }
+            // TODO: test coverage
+            if (!listingGroupRequest.Listings.Any())
+            {
+                throw new InvalidOperationException($"{nameof(AddListingGroupUseCase)}/{nameof(ExecuteAsync)}: ListingGroup can't have 0 Listing");
+            }
+
             // Step 1: Build entities
             ListingGroup listingGroupToAdd = new ListingGroup()
             {
@@ -75,6 +81,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
             List<ListingItem> listingItemsToAdd = new List<ListingItem>();
             foreach (CreateListingRequest listingRequest in listingGroupRequest.Listings)
             {
+                // TODO: Test coverage
+                if (!listingRequest.ListingItems.Any())
+                {
+                    throw new InvalidOperationException($"{nameof(AddListingGroupUseCase)}/{nameof(ExecuteAsync)}: Listing can't have 0 ListingItems");
+                }
                 Listing listingToAdd = CreateListing(listingRequest, listingGroupToAdd.Id, listingGroupRequest.SellerUserId);
                 listingsToAdd.Add(listingToAdd);
                 foreach (CreateListingItemRequest listingItemRequest in listingRequest.ListingItems)

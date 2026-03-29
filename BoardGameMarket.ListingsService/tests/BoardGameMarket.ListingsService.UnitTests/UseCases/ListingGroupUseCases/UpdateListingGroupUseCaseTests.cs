@@ -54,7 +54,7 @@ namespace BoardGameMarket.ListingsService.UnitTests.UseCases.ListingGroupUseCase
 
 
         [Fact]
-        public async Task ExecuteAsync_MissingListingGroup_ThrowsKeyNotFoundException()
+        public async Task ExecuteAsync_ListingMissingGroup_ThrowsKeyNotFoundException()
         {
             // Arrange
             Guid requesterId = Guid.NewGuid();
@@ -90,6 +90,49 @@ namespace BoardGameMarket.ListingsService.UnitTests.UseCases.ListingGroupUseCase
             UpdateListingGroupRequest request = _fixture.Build<UpdateListingGroupRequest>().With(r => r.Id, listingGroup.Id).Create();
             _listingGroupReadServiceMock.Setup(s => s.GetListingGroupByIdAsync(It.Is<Guid>(id => id == listingGroup.Id))).ReturnsAsync(listingGroup);
             _unitOfWorkMock.Setup(uow => uow.ExecuteInTransactionAsync(It.IsAny<Func<Task>>())).ThrowsAsync(new InvalidOperationException());
+            // Act
+            Func<Task> action = async () => await _updateListingGroupUseCase.ExecuteAsync(request, listingGroup.SellerUserId);
+
+            // Assert
+            await action.Should().ThrowAsync<InvalidOperationException>();
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_NoListings_ThrowsInvalidOperationException()
+        {
+            // Arrange
+            ListingGroup listingGroup = _fixture.Create<ListingGroup>();
+            _listingGroupReadServiceMock.Setup(s => s.GetListingGroupByIdAsync(It.IsAny<Guid>())).ReturnsAsync(listingGroup);
+
+
+            UpdateListingGroupRequest request = _fixture.Build<UpdateListingGroupRequest>()
+                .With(r => r.Listings, Array.Empty<UpdateListingRequest>())
+                .Create();
+
+            // Act
+            Func<Task> action = async () => await _updateListingGroupUseCase.ExecuteAsync(request, listingGroup.SellerUserId);
+
+            // Assert
+            await action.Should().ThrowAsync<InvalidOperationException>();
+        }
+
+        [Fact]
+        public async Task ExecuteAsync_NoListingItems_ThrowsInvalidOperationException()
+        {
+            // Arrange
+            ListingGroup listingGroup = _fixture.Create<ListingGroup>();
+            _listingGroupReadServiceMock.Setup(s => s.GetListingGroupByIdAsync(It.IsAny<Guid>())).ReturnsAsync(listingGroup);
+
+            List<UpdateListingRequest> listingRequests = _fixture.CreateMany<UpdateListingRequest>(5).ToList();
+            UpdateListingRequest emptyListingRequest = _fixture.Build<UpdateListingRequest>()
+                .With(r => r.ListingItems, Array.Empty<UpdateListingItemRequest>())
+                .Create();
+            listingRequests.Insert(0, emptyListingRequest);
+
+            UpdateListingGroupRequest request = _fixture.Build<UpdateListingGroupRequest>()
+                .With(r => r.Listings, listingRequests.ToArray())
+                .Create();
+
             // Act
             Func<Task> action = async () => await _updateListingGroupUseCase.ExecuteAsync(request, listingGroup.SellerUserId);
 

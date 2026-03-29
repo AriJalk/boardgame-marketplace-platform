@@ -26,7 +26,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingQueue
             _listingReadService = listingReadService;
         }
 
-        public async Task<ListingQueueInfo> Execute(Guid listingId, Guid requesterUserId)
+        public async Task<ListingQueueInfo> ExecuteAsync(Guid listingId, Guid requesterUserId)
 		{
 			Listing? listing = await _listingReadService.GetListingByIdAsync(listingId);
 			if (listing == null)

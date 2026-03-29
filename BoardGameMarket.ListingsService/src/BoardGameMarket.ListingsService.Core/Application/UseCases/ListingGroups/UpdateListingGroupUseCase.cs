@@ -146,6 +146,10 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
             List<ListingAggregate> listingAggregates = new List<ListingAggregate>();
             foreach (UpdateListingRequest request in requests)
             {
+                if (!request.ListingItems.Any())
+                {
+                    throw new InvalidOperationException($"{nameof(UpdateListingGroupUseCase)}/{nameof(UpdateListing)}: Listing can't have 0 ListingItems");
+                }
                 Listing listingFromUpdate = await UpdateListing(listingGroupId, request, sellerUserId);
                 listingsFromUpdate[listingFromUpdate.Id] = listingFromUpdate;
 
@@ -177,6 +181,11 @@ namespace BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroup
             if (listingGroupFromDb.SellerUserId != requesterUserId)
             {
                 throw new UnauthorizedAccessException();
+            }
+
+            if (!request.Listings.Any())
+            {
+                throw new InvalidOperationException($"{nameof(UpdateListingGroupUseCase)}/{nameof(ExecuteAsync)}: ListingGroup can't have 0 listings");
             }
 
             ListingGroup listingGroupToUpdate = new ListingGroup()

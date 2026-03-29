@@ -12,9 +12,9 @@ namespace BoardGameMarket.ListingsService.Core.Application.Aggregates
 {
 	public class ListingAggregateBuilder
 	{
-		private IListingReadService _listingReadService;
-		private IListingItemReadService _listingItemReadService;
-		private ListingQueueAggregateBuilder _listingQueueAggregateBuilder;
+		private readonly IListingReadService _listingReadService;
+		private readonly IListingItemReadService _listingItemReadService;
+		private readonly ListingQueueAggregateBuilder _listingQueueAggregateBuilder;
 
 		public ListingAggregateBuilder(IListingReadService listingReadService, IListingItemReadService listingItemReadService, ListingQueueAggregateBuilder listingQueueAggregateBuilder)
 		{
@@ -23,12 +23,12 @@ namespace BoardGameMarket.ListingsService.Core.Application.Aggregates
 			_listingQueueAggregateBuilder = listingQueueAggregateBuilder;
 		}
 
-		async Task<IEnumerable<ListingItem>> LoadItemsAsync(Guid listingId)
+		private async Task<IEnumerable<ListingItem>> LoadItemsAsync(Guid listingId)
 		{
 			return await _listingItemReadService.GetListingItemsByListingIdAsync(listingId);
 		}
 
-		async Task<ListingQueueAggregate> LoadQueueAsync(Guid listingId)
+		private async Task<ListingQueueAggregate> LoadQueueAsync(Guid listingId)
 		{
 			return (await _listingQueueAggregateBuilder.GetListingQueueAggregate(listingId));
 		}
@@ -42,49 +42,6 @@ namespace BoardGameMarket.ListingsService.Core.Application.Aggregates
 			await Task.WhenAll(itemsTask ?? Task.CompletedTask, queueTask ?? Task.CompletedTask);
 
 			return new ListingAggregate(listing, itemsTask?.Result.ToList().AsReadOnly(), queueTask?.Result);
-		}
-
-
-		public async Task<ListingAggregate> GetListingAggregateByIdAsync(Guid listingId, bool loadItems, bool loadQueue)
-		{
-			Listing? listing = await _listingReadService.GetListingByIdAsync(listingId);
-			if (listing == null)
-			{
-                throw new ListingNotFoundException(listingId);
-            }
-
-			return await BuildListingAggregateAsync(listing, loadItems, loadQueue);
-		}
-
-		public async Task<IEnumerable<ListingAggregate>> GetListingAggregatesByIdsAsync(IEnumerable<Guid> listingIds, bool loadItems, bool loadQueue)
-		{
-			IEnumerable<Listing> listings = await _listingReadService.GetListingsByIdsAsync(listingIds);
-			List<ListingAggregate> results = new List<ListingAggregate>();
-
-			int maxConcurrency = 10;
-			using SemaphoreSlim semaphore = new SemaphoreSlim(maxConcurrency);
-
-			IEnumerable<Task>? tasks = listings.Select(async listing =>
-			{
-				await semaphore.WaitAsync();
-				try
-				{
-					ListingAggregate listingAggregate = await BuildListingAggregateAsync(listing, loadItems, loadQueue);
-					lock (results)
-					{
-						results.Add(listingAggregate);
-					}
-				}
-				finally
-				{
-					semaphore.Release();
-				}
-			});
-
-			await Task.WhenAll(tasks);
-
-			return results;
-
 		}
 
 		public async Task<IEnumerable<ListingAggregate>> GetListingAggregatesByListingGroupIdAsync(Guid listingGroupId, bool loadItems, bool loadQueue)

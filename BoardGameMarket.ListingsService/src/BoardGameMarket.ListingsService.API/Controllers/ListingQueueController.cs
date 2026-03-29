@@ -42,7 +42,7 @@ namespace BoardGameMarket.ListingsService.API.Controllers
 		public async Task<ActionResult<ListingQueueInfo>> GetQueue(Guid listingId, [FromHeader(Name = Headers.REQUESTER_USER_ID)] Guid requesterUserId)
 
         {
-			ListingQueueInfo queue = await _getQueueUseCase.Execute(listingId, requesterUserId);
+			ListingQueueInfo queue = await _getQueueUseCase.ExecuteAsync(listingId, requesterUserId);
 
 			return Ok(queue);
 		}

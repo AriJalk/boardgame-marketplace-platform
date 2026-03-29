@@ -66,5 +66,23 @@ namespace BoardGameMarket.ListingsService.UnitTests.DomainServices
 
             action.Should().NotThrow();
         }
+
+        [Fact]
+        public void Normalize_ReturnsOrderedByGap()
+        {
+            // Arrange
+            List<ListingQueueEntry> queue = _fixture.Build<ListingQueueEntry>()
+                .CreateMany(10).ToList();
+
+            // Act
+            List<ListingQueueEntry> normalizedQueue = QueueDomainService.Normalize(queue).ToList();
+
+            // Assert
+            for (int i = 0; i< normalizedQueue.Count(); i++)
+            {
+                normalizedQueue[i].Id.Should().Be(queue[i].Id);
+                normalizedQueue[i].Priority.Should().Be(QueueDomainService.INITIAL_PRIORITY + i * QueueDomainService.PRIORITY_GAP);
+            }
+        }
     }
 }
