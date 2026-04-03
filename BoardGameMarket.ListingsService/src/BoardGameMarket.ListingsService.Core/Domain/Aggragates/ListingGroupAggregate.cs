@@ -12,7 +12,7 @@ namespace BoardGameMarket.ListingsService.Core.Domain.Aggragates
 		private readonly IReadOnlyCollection<ListingAggregate>? _listings;
 		public IReadOnlyCollection<ListingAggregate> Listings => _listings ?? throw new InvalidOperationException("Listings not loaded");
 
-		internal ListingGroupAggregate(ListingGroup listingGroup, IReadOnlyCollection<ListingAggregate>? listings = null)
+		public ListingGroupAggregate(ListingGroup listingGroup, IReadOnlyCollection<ListingAggregate>? listings = null)
 		{
 			ListingGroup = listingGroup;
 			_listings = listings;

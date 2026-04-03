@@ -50,14 +50,11 @@ namespace BoardGameMarket.ListingsService.UnitTests.AggregateBuilders
         {
             // Arrange
             Guid listingId = Guid.NewGuid();
-            IEnumerable<ListingQueueEntry> queue = _fixture.Build<ListingQueueEntry>()
-                .With(qe => qe.ListingId, listingId)
-                .CreateMany(10);
+            IEnumerable<ListingQueueEntry> queue = AggregateBuildersHelpers.BuildQueue(listingId, _fixture);
 
             _listingQueueEntryReadServiceMock.Setup(s => s.GetFilteredListingQueueEntriesAsync(It.IsAny<ListingQueueEntryFilter>())).ReturnsAsync(queue);
 
-            ListingQueueAggregate expectedListingQueueAggregate = new ListingQueueAggregate(
-                queue.OrderBy(qe => qe.CreatedAt).ToArray(), queue.Where(qe => qe.Priority != null).OrderBy(qe => qe.Priority).ToArray());
+            ListingQueueAggregate expectedListingQueueAggregate = AggregateBuildersHelpers.BuildQueueAggregate(queue);
 
             // Act
             ListingQueueAggregate actualListingQueueInfoFromBuilder = await _listingQueueAggregateBuilder.GetListingQueueAggregate(listingId);

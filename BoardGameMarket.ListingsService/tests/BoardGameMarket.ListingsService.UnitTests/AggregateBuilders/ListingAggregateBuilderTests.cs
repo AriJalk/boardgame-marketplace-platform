@@ -48,25 +48,56 @@ namespace BoardGameMarket.ListingsService.UnitTests.AggregateBuilders
         {
             // Arrange
             Listing listing = _fixture.Create<Listing>();
-
-            IEnumerable<ListingItem> listingItems = _fixture.Build<ListingItem>()
-                .With(i => i.ListingId, listing.Id)
-                .CreateMany(5);
-            _listingItemReadServiceMock.Setup(s => s.GetListingItemsByListingIdAsync(It.IsAny<Guid>())).ReturnsAsync(listingItems);
-
-            IEnumerable<ListingQueueEntry> queue = _fixture.Build<ListingQueueEntry>()
-                .With(qe => qe.ListingId, listing.Id)
-                .CreateMany(5);
+            IEnumerable<ListingItem> items = AggregateBuildersHelpers.BuildListingItems(listing.Id, _fixture);
+            _listingItemReadServiceMock.Setup(s => s.GetListingItemsByListingIdAsync(It.IsAny<Guid>())).ReturnsAsync(items);
+            IEnumerable<ListingQueueEntry> queue = AggregateBuildersHelpers.BuildQueue(listing.Id, _fixture);
             _listingQueueEntryReadServiceMock.Setup(s => s.GetFilteredListingQueueEntriesAsync(It.IsAny<ListingQueueEntryFilter>())).ReturnsAsync(queue);
-            ListingQueueAggregate listingQueueAggregate = new ListingQueueAggregate(queue.OrderBy(qe => qe.CreatedAt).ToList(), queue.Where(qe => qe.Priority != null).OrderBy(qe => qe.Priority).ToList());
 
-            ListingAggregate expectedListingAggregate = new ListingAggregate(listing, listingItems.ToList().AsReadOnly(), listingQueueAggregate);
+            ListingAggregate expectedListingAggregate = new ListingAggregate(listing, items.ToList(), AggregateBuildersHelpers.BuildQueueAggregate(queue));
 
             // Act
             ListingAggregate actualListingAggregateFromBuilder = await _listingAggregateBuilder.BuildListingAggregateAsync(listing, true, true);
 
             // Assert
             actualListingAggregateFromBuilder.Should().BeEquivalentTo(expectedListingAggregate);
+        }
+
+        [Fact]
+        public async Task GetListingAggregatesByListingGroupIdAsync_ListingsExist_ReturnsAggregate()
+        {
+            // Arrange
+            Guid listingGroupId = Guid.NewGuid();
+            
+            IEnumerable<Listing> listings = _fixture.Build<Listing>()
+                .With(l => l.ListingGroupId, listingGroupId)
+                .CreateMany(3);
+
+            _listingReadServiceMock.Setup(s => s.GetListingsByListingGroupIdAsync(It.IsAny<Guid>())).ReturnsAsync(listings);
+
+            Dictionary<Guid, IEnumerable<ListingQueueEntry>> queues = new Dictionary<Guid, IEnumerable<ListingQueueEntry>>();
+            Dictionary<Guid, IEnumerable<ListingItem>> items = new Dictionary<Guid, IEnumerable<ListingItem>>();
+            List<ListingAggregate> expectedListingAggregates = new List<ListingAggregate>();
+            foreach(Listing listing in listings)
+            {
+                IEnumerable<ListingItem> listingItems = AggregateBuildersHelpers.BuildListingItems(listing.Id, _fixture);
+                items[listing.Id] = listingItems; 
+                IEnumerable<ListingQueueEntry> queue = AggregateBuildersHelpers.BuildQueue(listing.Id, _fixture);
+                queues[listing.Id] = queue;
+                expectedListingAggregates.Add(new ListingAggregate(listing, listingItems.ToList(), AggregateBuildersHelpers.BuildQueueAggregate(queue)));
+            }
+            _listingQueueEntryReadServiceMock.Setup(s => s.GetFilteredListingQueueEntriesAsync(It.IsAny<ListingQueueEntryFilter>())).ReturnsAsync((ListingQueueEntryFilter filter) =>
+            {
+                Guid listingId = filter.ListingIds!.First();
+                return queues[listingId];
+            });
+            _listingItemReadServiceMock.Setup(s => s.GetListingItemsByListingIdAsync(It.IsAny<Guid>())).ReturnsAsync((Guid listingId) => items[listingId]);
+
+
+            // Act
+            IEnumerable<ListingAggregate> actualListingAggregatesFromBuilder = await _listingAggregateBuilder.GetListingAggregatesByListingGroupIdAsync(listingGroupId, true, true);
+
+            // Assert
+            actualListingAggregatesFromBuilder.Should().BeEquivalentTo(expectedListingAggregates);
         }
     }
 }
