@@ -24,7 +24,7 @@ namespace BoardGameMarket.ListingsService.UnitTests.UseCases.ListingQueueUseCase
 
 
         [Fact]
-        public async Task ExecuteAsync_ListingMissing_ThrowsListingNotFoundException()
+        public async Task ExecuteAsync_ListingNotFound_ThrowsListingNotFoundException()
         {
             // Arrange
             ListingQueueEntry queueEntry = _fixture.Create<ListingQueueEntry>();

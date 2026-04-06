@@ -49,7 +49,7 @@ namespace BoardGameMarket.ListingsService.UnitTests.UseCases.ListingReservations
         }
 
         [Fact]
-        public async Task ExecuteAsync_MissingReservation_ThrowsKeyNotFoundException()
+        public async Task ExecuteAsync_ReservationNotFound_ThrowsKeyNotFoundException()
         {
             // Arrange
             _listingReservationReadServiceMock.Setup(s => s.GetListingReservationByIdAsync(It.IsAny<Guid>())).ReturnsAsync(null as ListingReservation);
@@ -141,7 +141,7 @@ namespace BoardGameMarket.ListingsService.UnitTests.UseCases.ListingReservations
         }
 
         [Fact]
-        public async Task ExecuteAsync_ListingMissing_ThrowsListingNotFoundException()
+        public async Task ExecuteAsync_ListingNotFound_ThrowsListingNotFoundException()
         {
             // Arrange
             ListingReservation reservation = _fixture.Build<ListingReservation>()

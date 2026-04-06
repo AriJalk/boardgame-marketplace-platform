@@ -54,7 +54,7 @@ namespace BoardGameMarket.ListingsService.UnitTests.UseCases.ListingGroupUseCase
 
 
         [Fact]
-        public async Task ExecuteAsync_ListingMissingGroup_ThrowsKeyNotFoundException()
+        public async Task ExecuteAsync_ListingGroupNotFound_ThrowsKeyNotFoundException()
         {
             // Arrange
             Guid requesterId = Guid.NewGuid();

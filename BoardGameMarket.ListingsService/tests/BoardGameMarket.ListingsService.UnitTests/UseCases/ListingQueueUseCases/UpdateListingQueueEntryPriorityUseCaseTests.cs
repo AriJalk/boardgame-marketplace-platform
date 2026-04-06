@@ -43,7 +43,7 @@ namespace BoardGameMarket.ListingsService.UnitTests.UseCases.ListingQueueUseCase
         }
 
         [Fact]
-        public async Task ExecuteAsync_ListingMissing_ThrowsListingNotFoundException()
+        public async Task ExecuteAsync_ListingNotFound_ThrowsListingNotFoundException()
         {
             // Arrange
             _listingReadServiceMock.Setup(s => s.GetListingByIdAsync(It.IsAny<Guid>())).ReturnsAsync(null as Listing);
@@ -82,7 +82,7 @@ namespace BoardGameMarket.ListingsService.UnitTests.UseCases.ListingQueueUseCase
         }
 
         [Fact]
-        public async Task ExecuteAsync_QueueEntryMissing_ThrowsInvalidOperationException()
+        public async Task ExecuteAsync_QueueEntryNotFound_ThrowsInvalidOperationException()
         {
             // Arrange
             Listing listing = _fixture.Create<Listing>();

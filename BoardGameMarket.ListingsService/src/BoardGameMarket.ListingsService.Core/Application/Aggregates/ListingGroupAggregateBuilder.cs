@@ -44,17 +44,16 @@ namespace BoardGameMarket.ListingsService.Core.Application.Aggregates
 
 		public async Task<PagedResult<ListingGroupAggregate>> GetSummaryPageAsync(Cursor? cursor, int pageSize, ListingGroupFilter? filter)
 		{
-			if (pageSize <= 0)
+			if (pageSize <= 0 || pageSize > 100)
 			{
-				_logger.LogWarning("PageSize must be larger than 0");
-				return new PagedResult<ListingGroupAggregate>();
+				throw new ArgumentOutOfRangeException("PageSize must be between 0-100");
 			}
 			if (filter?.ListingIds != null && filter.ListingIds.Any())
 			{
 				List<Listing> listings = (await _listingReadService.GetListingsByIdsAsync(filter.ListingIds)).ToList();
 				if (listings.Count < filter.ListingIds.Count())
 				{
-					_logger.LogInformation("ListingIds contained non-existant entries");
+					_logger.LogInformation("ListingIds contained non-existant entries, returning empty result");
 					return new PagedResult<ListingGroupAggregate>();
 				}
 
