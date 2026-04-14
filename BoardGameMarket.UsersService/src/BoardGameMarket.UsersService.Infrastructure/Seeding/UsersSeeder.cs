@@ -3,7 +3,7 @@ using BoardGameMarket.UsersService.Core.Domain.Entities;
 using BoardGameMarket.UsersService.Core.Domain.RepositoryContracts;
 using System.Text.Json;
 
-namespace BoardGameMarket.UsersService.Infrastructure.InMemorySeeding
+namespace BoardGameMarket.UsersService.Infrastructure.Seeding
 {
 	public class UsersSeeder : ISeeder
 	{

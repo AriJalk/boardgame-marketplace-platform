@@ -1,8 +1,8 @@
 ﻿using BoardGameMarket.UsersMicroservice.Core.Domain.RepositoryContracts;
 using BoardGameMarket.UsersService.Core.Domain.RepositoryContracts;
 using BoardGameMarket.UsersService.Infrastructure.DbContexts;
-using BoardGameMarket.UsersService.Infrastructure.InMemorySeeding;
 using BoardGameMarket.UsersService.Infrastructure.Repositories;
+using BoardGameMarket.UsersService.Infrastructure.Seeding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

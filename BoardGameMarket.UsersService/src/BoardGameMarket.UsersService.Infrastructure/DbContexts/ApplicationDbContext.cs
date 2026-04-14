@@ -4,9 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BoardGameMarket.UsersService.Infrastructure.DbContexts
 {
-	internal class ApplicationDbContext : DbContext
+	public class ApplicationDbContext : DbContext
 	{
 		public DbSet<ApplicationUser> Users { get; set; }
+		public DbSet<SeedMarker> SeedMarkers { get; set; }
 
 		public ApplicationDbContext(DbContextOptions options) : base(options) { }
 
@@ -23,6 +24,14 @@ namespace BoardGameMarket.UsersService.Infrastructure.DbContexts
                 entity.Property(u => u.LastName).HasColumnName("last_name");
                 entity.Property(u => u.DisplayName).HasColumnName("display_name");
                 entity.Property(u => u.Email).HasColumnName("email");
+            });
+
+			modelBuilder.Entity<SeedMarker>(entity =>
+			{
+				entity.ToTable("seed_markers", "internal");
+				entity.HasKey(u => u.Name);
+				entity.Property(u => u.Name).HasColumnName("name");
+                entity.Property(u => u.SeededAt).HasColumnName("seededAt");
             });
 		}
 	}

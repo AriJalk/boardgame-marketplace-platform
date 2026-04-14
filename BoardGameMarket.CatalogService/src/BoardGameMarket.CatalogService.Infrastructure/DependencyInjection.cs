@@ -5,6 +5,7 @@ using BoardGameMarket.CatalogService.Infrastructure.Adapters;
 using BoardGameMarket.CatalogService.Infrastructure.Configuration;
 using BoardGameMarket.CatalogService.Infrastructure.InMemorySeeders;
 using BoardGameMarket.CatalogService.Infrastructure.Repositories;
+using BoardGameMarket.CatalogService.Infrastructure.Seeders;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -22,8 +23,9 @@ namespace BoardGameMarket.CatalogService.Infrastructure
 			services.AddSingleton<ICatalogItemsRepository, CatalogItemsInMemoryRepository>();
 			//services.AddSingleton<IBggClient, BggClientInMemory>();
 			ConfigureBggClient(services, configuration);
+			services.AddTransient<ISeedValidator, InMemorySeedValidator>();
 
-			return services;
+            return services;
 		}
 
 		public static IServiceCollection AddSeeding(this IServiceCollection services)
@@ -64,7 +66,9 @@ namespace BoardGameMarket.CatalogService.Infrastructure
 				return client.GetDatabase(config.MongoDatabase);
             });
 
-			return services;
+            services.AddTransient<ISeedValidator, MongoDbSeedValidator>();
+
+            return services;
         }
 
 		public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)

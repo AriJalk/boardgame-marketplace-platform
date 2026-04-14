@@ -1,6 +1,6 @@
 using BoardGameMarket.UsersService.Core;
 using BoardGameMarket.UsersService.Infrastructure;
-using BoardGameMarket.UsersService.Infrastructure.InMemorySeeding;
+using BoardGameMarket.UsersService.Infrastructure.Seeding;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 

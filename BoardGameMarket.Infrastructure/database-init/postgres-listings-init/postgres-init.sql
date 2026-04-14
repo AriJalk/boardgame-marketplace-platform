@@ -70,3 +70,9 @@ CREATE TABLE public.listing_sales
     PRIMARY KEY ("id")
 );
 
+CREATE SCHEMA IF NOT EXISTS internal;
+
+CREATE TABLE IF NOT EXISTS internal.seed_markers (
+    name TEXT PRIMARY KEY,
+    seeded_at TIMESTAMP NOT NULL DEFAULT NOW()
+);
