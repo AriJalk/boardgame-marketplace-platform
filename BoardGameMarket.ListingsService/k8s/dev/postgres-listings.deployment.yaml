@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-listings-deployment
+  labels:
+    app: postgres-listings
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-listings
+  template:
+    metadata:
+      labels:
+        app: postgres-listings
+    spec:
+      containers:
+        - name: postgres-listings
+          image: postgres:18.3
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: db-init
+              mountPath: /docker-entrypoint-initdb.d
+            - name: db-data
+              mountPath: /var/lib/postgresql
+          envFrom:
+            - secretRef:
+                name: postgres-listings-credentials
+            - configMapRef:
+                name: postgres-listings-config
+      volumes:
+        - name: db-init
+          configMap:
+            name: postgres-listings-init-sql
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: postgres-listings-pvc

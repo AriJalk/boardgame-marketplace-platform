@@ -83,8 +83,8 @@ namespace BoardGameMarket.MarketGateway.API.StartupExtensions
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 				.AddJwtBearer(jwtOptions =>
 				{
-					jwtOptions.Authority = configuration["EntraAuthority"];
-					jwtOptions.Audience = configuration["EntraAudience"];
+					jwtOptions.Authority = configuration["Entra:Authority"];
+					jwtOptions.Audience = configuration["Entra:Audience"];
                 });
 
 			services.AddHttpContextAccessor();

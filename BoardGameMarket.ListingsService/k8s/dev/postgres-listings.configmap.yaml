@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-listings-config
+data:
+  POSTGRES_DB: boardgamemarket_listings_database

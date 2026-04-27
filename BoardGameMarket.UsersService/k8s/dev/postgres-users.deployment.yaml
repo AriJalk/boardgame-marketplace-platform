@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-users-deployment
+  labels:
+    app: postgres-users
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-users
+  template:
+    metadata:
+      labels:
+        app: postgres-users
+    spec:
+      containers:
+        - name: postgres-users
+          image: postgres:18.3
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: db-init
+              mountPath: /docker-entrypoint-initdb.d
+            - name: db-data
+              mountPath: /var/lib/postgresql
+          envFrom:
+            - secretRef:
+                name: postgres-users-credentials
+            - configMapRef:
+                name: postgres-users-config
+      volumes:
+        - name: db-init
+          configMap:
+            name: postgres-users-init-sql
+        - name: db-data
+          persistentVolumeClaim:
+            claimName: postgres-users-pvc

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: market-gateway-deployment
+  labels:
+    app: market-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: market-gateway
+  template:
+    metadata:
+      labels:
+        app: market-gateway
+    spec:
+      containers:
+      - name: market-gateway
+        image: arieljalkiver/boardgame-market:gateway
+        ports:
+        - containerPort: 8080
+        envFrom:
+          - secretRef:
+              name: jwt-secret
+        env:
+          - name: LISTINGS_SERVICE_HOST
+            value: listings-microservice
+          - name: LISTINGS_SERVICE_PORT
+            value: "8080"
+          - name: CATALOG_SERVICE_HOST
+            value: catalog-microservice
+          - name: CATALOG_SERVICE_PORT
+            value: "8080"
+          - name: USERS_SERVICE_HOST
+            value: users-microservice
+          - name: USERS_SERVICE_PORT
+            value: "8080"
+          - name: REDIS_HOST
+            value: redis
+          - name: REDIS_PORT
+            value: "6379"
+          

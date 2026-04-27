@@ -31,7 +31,7 @@ namespace BoardGameMarket.UsersService.Infrastructure.DbContexts
 				entity.ToTable("seed_markers", "internal");
 				entity.HasKey(u => u.Name);
 				entity.Property(u => u.Name).HasColumnName("name");
-                entity.Property(u => u.SeededAt).HasColumnName("seededAt");
+                entity.Property(u => u.SeededAt).HasColumnName("seeded_at");
             });
 		}
 	}

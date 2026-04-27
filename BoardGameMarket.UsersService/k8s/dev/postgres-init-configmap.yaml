@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  postgres-init.sql: "CREATE TABLE IF NOT EXISTS public.users\r\n(\r\n    id UUID
+    PRIMARY KEY DEFAULT gen_random_uuid(),\r\n    first_name VARCHAR(50) NOT NULL,\r\n
+    \   last_name VARCHAR(50) NOT NULL,\r\n    display_name VARCHAR(50) NOT NULL,\r\n
+    \   email VARCHAR(255) NOT NULL UNIQUE\r\n);\r\n\r\nCREATE SCHEMA IF NOT EXISTS
+    internal;\r\n\r\nCREATE TABLE IF NOT EXISTS internal.seed_markers (\r\n    name
+    TEXT PRIMARY KEY,\r\n    seeded_at TIMESTAMP NOT NULL DEFAULT NOW()\r\n);"
+kind: ConfigMap
+metadata:
+  name: postgres-users-init-sql

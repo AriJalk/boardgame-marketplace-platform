@@ -23,7 +23,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Seeders
 
         public async Task SeedAsync(string seedPath)
 		{
-			string json = File.ReadAllText(Path.Combine(seedPath, "Listings", "LISTINGS_MOCK_DATA.json"));
+			string json = File.ReadAllText(Path.Combine(seedPath, "LISTINGS_MOCK_DATA.json"));
 
 			IEnumerable<Listing>? listings = JsonSerializer.Deserialize<IEnumerable<Listing>>(json, _jsonOptions);
 

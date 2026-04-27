@@ -1,0 +1,26 @@
+apiVersion: v1
+data:
+  CATALOG_ITEMS_MOCK_DATA.json: |-
+    [{"id":"e82a78cc-c989-4143-b324-97eb1c83b546","name":"Brass: Birmingham","type":"bgg", "bggId": 224517},
+    {"id":"9b3d17bf-1020-46f9-a76d-6aae1a59d5d5","name":"Ark Nova","type":"bgg", "bggId": 342942},
+    {"id":"55400627-a154-4273-adf7-d2aca5fb1b3f","name":"Pandemic Legacy: Season 1","type":"bgg", "bggId": 161936},
+    {"id":"89d647f1-085c-4ad9-a9cd-4bb42d999fcb","name":"Frozen Berry Medley","type":"custom"},
+    {"id":"afabada0-7de6-4cb7-ab51-de52a9ffa1d2","name":"Hummus Trio Pack","type":"custom"},
+    {"id":"ca49ec2b-c724-4b7e-95c4-a5af6f73c642","name":"Garlic Herb Cream Cheese","type":"custom"},
+    {"id":"f8325408-fdbf-401a-ab8c-f400f9087e3a","name":"Multi-Purpose Plant Care Tool","type":"custom"},
+    {"id":"382f80bd-23e6-485a-8934-b52d1f0a9cdb","name":"Mini Cordless Vacuum Cleaner","type":"custom"},
+    {"id":"80f3cba2-a9f0-41f9-af1d-39bdc78b2282","name":"V-Neck Sweater","type":"custom"},
+    {"id":"709f76ce-0451-413c-b8b3-8bb49432f760","name":"Creamy Garlic Dressing","type":"custom"},
+    {"id":"96f7fd18-82a1-436d-954b-cbb7dd78f1fe","name":"Thermostatic Shower Valve Kit","type":"custom"},
+    {"id":"1004aabe-eb96-436e-99a3-ca76146b2164","name":"Kids' Outdoor Explorer Kit","type":"custom"},
+    {"id":"239c307b-27a7-4154-ae73-1078cd1cf1d5","name":"Spicy Thai Noodles","type":"custom"},
+    {"id":"b2168769-aac8-42f3-92f3-2ae66ac3bf49","name":"Wireless Earbud Silicone Covers","type":"custom"},
+    {"id":"7cb6438a-0482-4ed0-b59a-651010ad99e8","name":"Cinnamon Sugar Donuts","type":"custom"},
+    {"id":"6a85da27-5160-4421-b27f-cc82fc88147a","name":"Chocolate Raspberry Tart","type":"custom"},
+    {"id":"381cf3a0-ea24-4900-8c1d-03100c52b189","name":"Scent Diffuser Oil","type":"custom"},
+    {"id":"f406600d-448a-4520-8ab5-e348b1d39f16","name":"Mini Meatballs","type":"custom"},
+    {"id":"f640d879-cebc-4d6c-8370-856d96ec5155","name":"Nut Mix","type":"custom"},
+    {"id":"12907c5c-9652-453f-a86f-71273d0d44b2","name":"Sun-Dried Tomato Pesto","type":"custom"}]
+kind: ConfigMap
+metadata:
+  name: catalog-seed-data

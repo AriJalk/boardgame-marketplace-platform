@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: catalog-mongo-config
+data:
+  MONGODBCONFIGURATION__MONGOHOST: mongodb-catalog
+  MONGODBCONFIGURATION__MONGOPORT: "27017"
+  MONGODBCONFIGURATION__MONGODATABASE: catalog_database
+  MONGODBCONFIGURATION__COLLECTIONNAME: catalog_collection

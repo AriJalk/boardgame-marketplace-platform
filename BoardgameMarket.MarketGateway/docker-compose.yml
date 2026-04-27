@@ -25,7 +25,7 @@ services:
   listings-microservice:
     image: arieljalkiver/boardgame-market:listings
     volumes:
-    - ../BoardGameMarket.Infrastructure/SeedData:/app/SeedData:ro
+    - ../BoardGameMarket.Infrastructure/seed-data:/app/SeedData:ro
     environment:
       IN_MEMORY: false
       IS_SEEDING: true
@@ -47,7 +47,7 @@ services:
     - microservices-network
     - catalog-network
     volumes:
-    - ../BoardGameMarket.Infrastructure/SeedData:/app/SeedData:ro
+    - ../BoardGameMarket.Infrastructure/seed-data:/app/SeedData:ro
     depends_on:
     - mongodb-catalog
     environment:
@@ -78,7 +78,7 @@ services:
     - users-network
     - microservices-network
     volumes:
-    - ../BoardGameMarket.Infrastructure/SeedData:/app/SeedData:ro
+    - ../BoardGameMarket.Infrastructure/seed-data:/app/SeedData:ro
 
 
 
@@ -105,7 +105,7 @@ services:
     networks:
       - microservices-network
     volumes:
-      - redis-data:/data"
+      - redis-data:/data
 
   postgres-listings:
     image: postgres:18.3

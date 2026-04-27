@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-microservice-deployment
+  labels:
+    app: users-microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users-microservice
+  template:
+    metadata:
+      labels:
+        app: users-microservice
+    spec:
+      containers:
+      - name: users-microservice
+        image: arieljalkiver/boardgame-market:users
+        ports:
+        - containerPort: 8080
+        envFrom:
+          - configMapRef:
+              name: users-postgres-config
+          - secretRef:
+              name: postgres-users-credentials
+        env:
+          - name: IS_SEEDING 
+            value: "true"
+          - name: IN_MEMORY
+            value: "false"
+          - name: SEED_ROOT
+            value: /app/SeedData
+        volumeMounts:
+          - name: seed-volume
+            mountPath: /app/SeedData
+            readOnly: true
+      volumes:
+        - name: seed-volume
+          configMap:
+            name: users-seed-data

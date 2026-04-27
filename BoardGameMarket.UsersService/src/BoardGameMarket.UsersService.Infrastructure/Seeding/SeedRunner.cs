@@ -26,8 +26,9 @@ namespace BoardGameMarket.UsersService.Infrastructure.Seeding
 			{
 				await seeder.SeedAsync(seedPath);
 			}
-			SeedMarker seedMarker = new SeedMarker() { Name = "catalog", SeededAt = DateTime.Now };
+			SeedMarker seedMarker = new SeedMarker() { Name = "catalog", SeededAt = DateTime.UtcNow };
 			await _dbContext.SeedMarkers.AddAsync(seedMarker);
+			await _dbContext.SaveChangesAsync();
 		}
 	}
 }

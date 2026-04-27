@@ -7,7 +7,7 @@ services:
     networks:
     - catalog-network
     volumes:
-      - ../BoardGameMarket.Infrastructure/SeedData:/app/SeedData:ro
+      - ./infrastructure/seed-data:/app/SeedData:ro
     environment:
       IN_MEMORY: false
       IS_SEEDING: true

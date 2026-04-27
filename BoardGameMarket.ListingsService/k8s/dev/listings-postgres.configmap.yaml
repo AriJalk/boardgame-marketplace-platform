@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: listings-postgres-config
+data:
+  POSTGRES_HOST: postgres-listings
+  POSTGRES_PORT: "5432"
+  POSTGRES_DATABASE: boardgamemarket_listings_database

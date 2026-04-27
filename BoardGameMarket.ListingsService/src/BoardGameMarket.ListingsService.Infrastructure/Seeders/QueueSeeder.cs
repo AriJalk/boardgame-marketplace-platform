@@ -61,7 +61,7 @@ namespace BoardGameMarket.ListingsService.Infrastructure.Seeders
 
         private async Task LoadUserIds(string seedPath)
         {
-            string json = File.ReadAllText(Path.Combine(seedPath, "_Shared", "USER_IDS.json"));
+            string json = File.ReadAllText(Path.Combine(seedPath, "USER_IDS.json"));
             IEnumerable<UserInfo>? userIds = JsonSerializer.Deserialize<IEnumerable<UserInfo>>(json, _jsonOptions);
 
             if (userIds == null)

@@ -1,0 +1,1 @@
+kubectl create configmap catalog-seed-data --from-file=./infrastructure/seed-data --dry-run=client -o yaml > k8s/dev/catalog-seed.configmap.yaml

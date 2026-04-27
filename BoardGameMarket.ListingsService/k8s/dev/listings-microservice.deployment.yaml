@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: listings-microservice-deployment
+  labels:
+    app: listings-microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: listings-microservice
+  template:
+    metadata:
+      labels:
+        app: listings-microservice
+    spec:
+      containers:
+      - name: listings-microservice
+        image: arieljalkiver/boardgame-market:listings
+        ports:
+        - containerPort: 8080
+        envFrom:
+          - configMapRef:
+              name: listings-postgres-config
+          - secretRef:
+              name: postgres-listings-credentials
+        env:
+          - name: IS_SEEDING 
+            value: "true"
+          - name: IN_MEMORY
+            value: "false"
+          - name: SEED_ROOT
+            value: /app/SeedData
+        volumeMounts:
+          - name: seed-volume
+            mountPath: /app/SeedData
+            readOnly: true
+      volumes:
+        - name: seed-volume
+          configMap:
+            name: listings-seed-data

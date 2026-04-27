@@ -20,7 +20,7 @@ namespace BoardGameMarket.UsersService.Infrastructure.Seeding
 
 		public async Task SeedAsync(string seedPath)
 		{
-			string json = File.ReadAllText(Path.Combine(seedPath, "Users", "USERS_MOCK_DATA.json"));
+			string json = File.ReadAllText(Path.Combine(seedPath, "USERS_MOCK_DATA.json"));
 
 			IEnumerable<ApplicationUser>? users = JsonSerializer.Deserialize<IEnumerable<ApplicationUser>>(json, _jsonOptions);
 
