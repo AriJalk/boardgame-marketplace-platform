@@ -36,6 +36,6 @@ spec:
             - name: SEED_ROOT
               value: /app/SeedData
       volumes:
-      - name: seed-volume
-        configMap:
-          name: catalog-seed-data
+        - name: seed-volume
+          configMap:
+            name: catalog-seed-data

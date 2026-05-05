@@ -3,6 +3,6 @@ kind: ConfigMap
 metadata:
   name: listings-postgres-config
 data:
-  POSTGRES_HOST: postgres-listings
+  POSTGRES_HOST: postgres-listings.infra-dev
   POSTGRES_PORT: "5432"
   POSTGRES_DATABASE: boardgamemarket_listings_database

@@ -1,0 +1,31 @@
+trigger:
+  branches:
+    include:
+    - dev
+
+pool:
+  name: SelfHosted
+
+variables:
+
+stages:
+
+- stage: DeployToDev
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
+  jobs:
+  - deployment: DeploymentToDev
+    displayName: Deployment to Dev Environment
+    environment: dev
+    strategy:
+     runOnce:
+       deploy:
+         steps:
+         - checkout: self
+           displayName: Checkout source folder
+         - script: |
+                echo "Listing contents of k8s"
+                ls -l $(Build.SourcesDirectory)/k8s/dev
+           displayName:  'List Files in k8s/dev Directory'
+         - script: | 
+             kubectl apply -f $(Build.SourcesDirectory)/k8s/dev/. -n $(DevInfraK8sNamespace)
+           displayName: 'Apply deployment'

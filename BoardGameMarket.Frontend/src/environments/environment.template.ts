@@ -11,8 +11,13 @@ export const devEnvironment = {
     },
   },
   apiConfig: {
-    accessAsUserScope: 'api://[clientId]/access_as_user',
-    authEndpoints: [`${apiAddress}/reservations/`, `${apiAddress}/listing-sales/`],
-    optionalAuthEndpoints: [`/api/listing-groups`, '/api/listings', '/api/users'],
+    accessAsUserScope: 'api://51babae2-66f3-4fe3-bb4e-ab617cd56141/access_as_user',
+    authEndpoints: [
+      `${apiAddress}/reservations/`,
+      `${apiAddress}/listing-sales/`,
+      `${apiAddress}/listing-groups/owned/subscribers`,
+      `${apiAddress}/listing-groups/subscriptions`,
+    ],
+    // optionalAuthEndpoints: [`/api/listing-groups`, '/api/listings', '/api/users'],
   },
 };

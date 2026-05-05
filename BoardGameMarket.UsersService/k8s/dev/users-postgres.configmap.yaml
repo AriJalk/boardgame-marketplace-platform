@@ -3,6 +3,6 @@ kind: ConfigMap
 metadata:
   name: users-postgres-config
 data:
-  POSTGRES_HOST: postgres-users
+  POSTGRES_HOST: postgres-users.infra-dev
   POSTGRES_PORT: "5432"
   POSTGRES_DATABASE: boardgamemarket_users_database
