@@ -36,6 +36,11 @@ kubectl create configmap entra-jwt-config ^
     --from-literal=ENTRA__AUDIENCE=[APP_AUDIENCE_ID] ^
     -n dev-apps
 
+kubectl create secret generic bgg-api-secret ^
+    --from-literal=BGGCLIENT__SERVICEAPIKEY=[BGG_API_KEY] ^
+    -n dev-apps ^
+    --dry-run=client -o yaml | kubectl apply -f -
+
 kubectl apply -f BoardGameMarket.CatalogService/k8s/dev --namespace=dev-apps
 kubectl apply -f BoardGameMarket.UsersService/k8s/dev --namespace=dev-apps
 kubectl apply -f BoardGameMarket.ListingsService/k8s/dev --namespace=dev-apps

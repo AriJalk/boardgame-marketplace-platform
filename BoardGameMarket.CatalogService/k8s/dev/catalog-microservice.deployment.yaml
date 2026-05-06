@@ -16,12 +16,14 @@ spec:
     spec:
       containers:
         - name: catalog-microservice
-          image: arieljalkiver/boardgame-market:catalog
+          image: boardgamemarket-catalog:__TAG__
           ports:
             - containerPort: 8080
           envFrom:
             - configMapRef:
                 name: catalog-mongo-config
+            - secretRef:
+                name: bgg-api-secret
           volumeMounts:
             - name: seed-volume
               mountPath: /app/SeedData
@@ -32,7 +34,7 @@ spec:
             - name: IS_SEEDING
               value: "true"
             - name: LOCAL_BGG_CLIENT
-              value: "true"
+              value: "false"
             - name: SEED_ROOT
               value: /app/SeedData
       volumes:
