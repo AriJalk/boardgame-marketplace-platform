@@ -64,7 +64,7 @@ stages:
   jobs:
   - deployment: DeploymentToDev
     displayName: Deployment to Dev Environment
-    environment: dev
+    environment: dev-apps
     strategy:
      runOnce:
        deploy:

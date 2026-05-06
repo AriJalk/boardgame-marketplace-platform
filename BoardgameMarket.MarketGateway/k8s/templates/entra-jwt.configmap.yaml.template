@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: entra-jwt-config
+data:
+  ENTRA__AUTHORITY: https://[TENANT_DOMAIN].ciamlogin.com/[TENTANT_ID]/v2.0
+  ENTRA__AUDIENCE: [APP_AUDIENCE_ID]

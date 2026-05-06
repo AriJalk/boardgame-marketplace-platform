@@ -1,31 +1,61 @@
 trigger:
   branches:
     include:
-    - dev
+      - dev
 
 pool:
   name: SelfHosted
 
 variables:
+  group: dev-variables
 
 stages:
+  - stage: CreateSecrets
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
+    variables:
+    - group: dev-secrets
+    jobs:
+      - deployment: CreateSecrets
+        displayName: Create secrets
+        environment: dev-infra
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                  displayName: Checkout source folder
+                - script: |
+                    kubectl create secret generic postgres-users-credentials \
+                      --from-literal=POSTGRES_USER=$(POSTGRES_USERS_USERNAME) \
+                      --from-literal=POSTGRES_PASSWORD=$(POSTGRES_USERS_PASSWORD) \
+                      -n $(DEV_INFRA_APPS_K8S_NAMESPACE) \
+                      --dry-run=client -o yaml | kubectl apply -f -
+                  displayName: "Create Users secrets"
 
-- stage: DeployToDev
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
-  jobs:
-  - deployment: DeploymentToDev
-    displayName: Deployment to Dev Environment
-    environment: dev
-    strategy:
-     runOnce:
-       deploy:
-         steps:
-         - checkout: self
-           displayName: Checkout source folder
-         - script: |
-                echo "Listing contents of k8s"
-                ls -l $(Build.SourcesDirectory)/k8s/dev
-           displayName:  'List Files in k8s/dev Directory'
-         - script: | 
-             kubectl apply -f $(Build.SourcesDirectory)/k8s/dev/. -n $(DevInfraK8sNamespace)
-           displayName: 'Apply deployment'
+                - script: |
+                    kubectl create secret generic postgres-listings-credentials \
+                      --from-literal=POSTGRES_USER=$(POSTGRES_LISTINGS_USERNAME) \
+                      --from-literal=POSTGRES_PASSWORD=$(POSTGRES_LISTINGS_PASSWORD) \
+                      -n $(DEV_INFRA_APPS_K8S_NAMESPACE) \
+                      --dry-run=client -o yaml | kubectl apply -f -
+                  displayName: "Create Listings secrets"
+
+  - stage: DeployToDev
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
+    jobs:
+      - deployment: DeploymentToDev
+        displayName: Deployment to Dev Environment
+        environment: dev-infra
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                  displayName: Checkout source folder
+                - script: |
+                    echo "Listing contents of k8s"
+                    ls -l $(Build.SourcesDirectory)/k8s/dev
+                  displayName: "List Files in k8s/dev Directory"
+                - script: |
+                    kubectl apply -f $(Build.SourcesDirectory)/k8s/dev/. -n $(DEV_INFRA_APPS_K8S_NAMESPACE)
+                  displayName: "Apply deployment"

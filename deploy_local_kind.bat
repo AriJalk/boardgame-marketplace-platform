@@ -1,0 +1,42 @@
+kind delete cluster
+kind create cluster
+
+kubectl apply -f BoardGameMarket.Infrastructure/k8s/dev-namespaces
+
+kubectl create secret generic postgres-users-credentials ^
+    --from-literal=POSTGRES_USER=dev ^
+    --from-literal=POSTGRES_PASSWORD=dev ^
+    -n dev-infra
+
+kubectl create secret generic postgres-users-credentials ^
+    --from-literal=POSTGRES_USER=dev ^
+    --from-literal=POSTGRES_PASSWORD=dev ^
+    -n dev-apps
+
+kubectl create secret generic postgres-listings-credentials ^
+    --from-literal=POSTGRES_USER=dev ^
+    --from-literal=POSTGRES_PASSWORD=dev ^
+    -n dev-infra
+
+kubectl create secret generic postgres-listings-credentials ^
+    --from-literal=POSTGRES_USER=dev ^
+    --from-literal=POSTGRES_PASSWORD=dev ^
+    -n dev-apps
+
+kubectl apply -f BoardGameMarket.Infrastructure/k8s/dev --recursive --namespace=dev-infra
+kubectl wait --for=condition=available deployment --all -n dev-infra --timeout=120s
+
+kind load docker-image arieljalkiver/boardgame-market:catalog
+kind load docker-image arieljalkiver/boardgame-market:users
+kind load docker-image arieljalkiver/boardgame-market:listings
+kind load docker-image arieljalkiver/boardgame-market:gateway
+
+kubectl create configmap entra-jwt-config ^
+    --from-literal=ENTRA__AUTHORITY=https://[TENANT_DOMAIN].ciamlogin.com/[TENANT_ID]/v2.0 ^
+    --from-literal=ENTRA__AUDIENCE=[APP_AUDIENCE_ID] ^
+    -n dev-apps
+
+kubectl apply -f BoardGameMarket.CatalogService/k8s/dev --namespace=dev-apps
+kubectl apply -f BoardGameMarket.UsersService/k8s/dev --namespace=dev-apps
+kubectl apply -f BoardGameMarket.ListingsService/k8s/dev --namespace=dev-apps
+kubectl apply -f BoardGameMarket.MarketGateway/k8s/dev --namespace=dev-apps
