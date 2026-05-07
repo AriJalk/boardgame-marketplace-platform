@@ -3,10 +3,9 @@ kind: Service
 metadata:
   name: mongodb-catalog
 spec:
+  clusterIP: None
   selector:
     app: mongodb-catalog
   ports:
-    - protocol: TCP
-      port: 27017
+    - port: 27017
       targetPort: 27017
-  type: ClusterIP

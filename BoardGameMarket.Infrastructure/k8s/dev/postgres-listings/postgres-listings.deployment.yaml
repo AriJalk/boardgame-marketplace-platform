@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: postgres-listings-deployment
   labels:
@@ -33,6 +33,11 @@ spec:
         - name: db-init
           configMap:
             name: postgres-listings-init-sql
-        - name: db-data
-          persistentVolumeClaim:
-            claimName: postgres-listings-pvc
+  volumeClaimTemplates:
+    - metadata:
+        name: db-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi

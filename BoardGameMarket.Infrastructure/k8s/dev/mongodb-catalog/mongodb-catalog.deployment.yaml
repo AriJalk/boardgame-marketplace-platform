@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: mongodb-catalog-deployment
   labels:
@@ -15,10 +15,21 @@ spec:
         app: mongodb-catalog
     spec:
       containers:
-      - name: mongodb-orders
-        image: mongo:8.2.7
-        ports:
-        - containerPort: 27017
-        env:
-          - name: MONGO_INITDB_DATABASE
-            value: catalog_database
+        - name: mongodb-orders
+          image: mongo:8.2.7
+          ports:
+            - containerPort: 27017
+          env:
+            - name: MONGO_INITDB_DATABASE
+              value: catalog_database
+          volumeMounts:
+            - name: db-data
+              mountPath: /data/db
+  volumeClaimTemplates:
+    - metadata:
+        name: db-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi

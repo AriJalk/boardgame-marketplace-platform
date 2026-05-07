@@ -8,7 +8,7 @@ namespace BoardGameMarket.ListingsService.Core.Application.Contracts.ListingGrou
 {
     public class PagedListingGroupQuery
     {
-        [Range(1, 100, MaximumIsExclusive = true)]
+        [Range(1, 100, MaximumIsExclusive = false)]
         public int PageSize { get; set; } = 10;
         public string? Cursor { get; set; }
         public ListingGroupFilter? Filter { get; set; }
