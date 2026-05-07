@@ -1,0 +1,112 @@
+trigger:
+  branches:
+    include:
+      - dev
+
+pool:
+  name: SelfHosted
+
+variables:
+  - group: dev-variables
+
+  - name: solution
+    value: "**/*.sln"
+
+  - name: buildPlatform
+    value: "Any CPU"
+
+  - name: buildConfiguration
+    value: "Release"
+
+  - name: tag
+    value: "$(Build.BuildId)"
+
+  - name: imageRepository
+    value: boardgamemarket-gateway
+
+stages:
+  - stage: CreateEntraJwtConfig
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
+    jobs:
+      - deployment: CreateEntraJwtConfig
+        displayName: Create Entra Jwt config
+        environment: dev-apps
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                  displayName: Checkout source folder
+                - script: |
+                    kubectl create configmap entra-jwt-config \
+                    --from-literal=ENTRA__AUTHORITY="$(ENTRA_AUTHORITY)" \
+                    --from-literal=ENTRA__AUDIENCE="$(ENTRA_AUDIENCE)" \
+                    -n $(DEV_APPS_K8S_NAMESPACE) \
+                    --dry-run=client -o yaml > jwtconfig.yaml
+
+                    kubectl apply -f jwtconfig.yaml
+
+                  displayName: "Create entra jwt config"
+
+  - stage: BuildAndTest
+    jobs:
+      - job: Build
+        steps:
+          # Restore dependencies
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: "restore"
+              projects: "**/*.csproj"
+
+          # Build project
+          - task: DotNetCoreCLI@2
+            inputs:
+              command: "build"
+              projects: "**/*.csproj"
+              arguments: "--configuration $(buildConfiguration)"
+
+          # # Run tests
+          # - task: DotNetCoreCLI@2
+          #   inputs:
+          #     command: "test"
+          #     projects: "**/*tests/*.csproj"
+          #     arguments: "--configuration $(buildConfiguration) --no-build"
+
+  # Build and load Docker image to kind
+  - stage: DockerBuildAndPush
+    jobs:
+      - job: Build
+        displayName: Build Docker Image
+        steps:
+          - task: Docker@2
+            inputs:
+              command: "build"
+              repository: $(imageRepository)
+              Dockerfile: "src/BoardGameMarket.MarketGateway.API/Dockerfile"
+              arguments: "-t $(imageRepository):$(tag)"
+              buildContext: $(Build.SourcesDirectory)
+          - script: |
+              kind load docker-image $(imageRepository):$(tag)
+
+  - stage: DeployToDev
+    dependsOn: DockerBuildAndPush
+    condition: and(succeeded('BuildAndTest'), eq(variables['Build.SourceBranch'], 'refs/heads/dev'), succeeded('DockerBuildAndPush'))
+    jobs:
+      - deployment: DeploymentToDev
+        displayName: Deployment to Dev Environment
+        environment: dev-apps
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - checkout: self
+                  displayName: Checkout source folder
+                - script: |
+                    echo "Listing contents of k8s"
+                    ls -l $(Build.SourcesDirectory)/k8s/dev
+                  displayName: "List Files in k8s/dev Directory"
+                - script: |
+                    find $(Build.SourcesDirectory)/k8s/dev -type f \( -name "*.yaml" -o -name "*.yml" \) -exec sed -i 's/__TAG__/$(tag)/g' {} +
+                  displayName: "Replace image tag in all deployment files"
+                - script: |
+                    kubectl apply -f $(Build.SourcesDirectory)/k8s/dev/. -n $(DEV_APPS_K8S_NAMESPACE)

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: listings-microservice
-        image: arieljalkiver/boardgame-market:listings
+        image: boardgamemarket-listings:__TAG__
         ports:
         - containerPort: 8080
         envFrom:

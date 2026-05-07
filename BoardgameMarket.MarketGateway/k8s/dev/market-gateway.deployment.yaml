@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: market-gateway
-        image: arieljalkiver/boardgame-market:gateway
+        image: boardgamemarket-gateway:__TAG__
         ports:
         - containerPort: 8080
         envFrom:
@@ -39,4 +39,8 @@ spec:
             value: redis.dev-infra
           - name: REDIS_PORT
             value: "6379"
+          - name: CORS__ALLOWEDORIGINS__0
+            value: http://localhost:4200
+          - name: CORS__ALLOWEDORIGINS__1
+            value: https://localhost:4200
           

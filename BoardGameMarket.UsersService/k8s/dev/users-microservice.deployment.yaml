@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: users-microservice
-        image: arieljalkiver/boardgame-market:users
+        image: boardgamemarket-users:__TAG__
         ports:
         - containerPort: 8080
         envFrom:

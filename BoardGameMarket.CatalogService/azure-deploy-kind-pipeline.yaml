@@ -46,7 +46,7 @@ stages:
           - task: DotNetCoreCLI@2
             inputs:
               command: "test"
-              projects: "**/*tests/*.csproj"
+              projects: "**/*tests/**/*.csproj"
               arguments: "--configuration $(buildConfiguration) --no-build"
 
   # Build and load Docker image to kind

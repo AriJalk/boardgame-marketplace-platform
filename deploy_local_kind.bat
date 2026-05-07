@@ -1,5 +1,5 @@
 kind delete cluster
-kind create cluster
+kind create cluster --config kind-config.yaml
 
 kubectl apply -f BoardGameMarket.Infrastructure/k8s/dev-namespaces
 
@@ -26,10 +26,10 @@ kubectl create secret generic postgres-listings-credentials ^
 kubectl apply -f BoardGameMarket.Infrastructure/k8s/dev --recursive --namespace=dev-infra
 kubectl wait --for=condition=available deployment --all -n dev-infra --timeout=120s
 
-kind load docker-image arieljalkiver/boardgame-market:catalog
-kind load docker-image arieljalkiver/boardgame-market:users
-kind load docker-image arieljalkiver/boardgame-market:listings
-kind load docker-image arieljalkiver/boardgame-market:gateway
+kind load docker-image boardgamemarket-catalog:__TAG__
+kind load docker-image boardgamemarket-users:__TAG__
+kind load docker-image boardgamemarket-listings:__TAG__
+kind load docker-image boardgamemarket-gateway:__TAG__
 
 kubectl create configmap entra-jwt-config ^
     --from-literal=ENTRA__AUTHORITY=https://[TENANT_DOMAIN].ciamlogin.com/[TENANT_ID]/v2.0 ^
