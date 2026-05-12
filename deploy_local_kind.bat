@@ -1,6 +1,16 @@
 kind delete cluster
 kind create cluster --config kind-config.yaml
 
+docker build -t boardgamemarket-catalog:__TAG__ -f ./BoardGameMarket.CatalogService/src/BoardGameMarket.CatalogService.API/Dockerfile ^
+    ./BoardGameMarket.CatalogService
+docker build -t boardgamemarket-users:__TAG__ -f ./BoardGameMarket.UsersService/src/BoardGameMarket.UsersService.API/Dockerfile ^
+    ./BoardGameMarket.UsersService
+docker build -t boardgamemarket-listings:__TAG__ -f ./BoardGameMarket.ListingsService/src/BoardGameMarket.ListingsService.API/Dockerfile ^
+    ./BoardGameMarket.ListingsService
+docker build -t boardgamemarket-gateway:__TAG__ -f ./BoardGameMarket.MarketGateway/src/BoardGameMarket.MarketGateway.API/Dockerfile ^
+    ./BoardGameMarket.MarketGateway
+
+
 kubectl apply -f BoardGameMarket.Infrastructure/k8s/dev-namespaces
 
 kubectl create secret generic postgres-users-credentials ^
