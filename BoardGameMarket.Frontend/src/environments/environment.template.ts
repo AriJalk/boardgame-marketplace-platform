@@ -11,7 +11,7 @@ export const devEnvironment = {
     },
   },
   apiConfig: {
-    accessAsUserScope: 'api://51babae2-66f3-4fe3-bb4e-ab617cd56141/access_as_user',
+    accessAsUserScope: 'api://[Entra API client Id]/access_as_user',
     authEndpoints: [
       `${apiAddress}/reservations/`,
       `${apiAddress}/listing-sales/`,

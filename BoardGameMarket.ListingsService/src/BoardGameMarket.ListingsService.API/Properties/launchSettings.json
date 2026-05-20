@@ -6,8 +6,8 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "IN_MEMORY": "true",
-        "IS_SEEDING": "true",
-        "SEED_ROOT": "../../../SeedData"
+        "IS_SEEDING": "false",
+        "SEED_ROOT": "../../../BoardGameMarket.Infrastructure/seed-data"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5054"

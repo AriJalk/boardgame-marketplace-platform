@@ -8,7 +8,7 @@
         "IN_MEMORY": "true",
         "IS_SEEDING": "true",
         "LOCAL_BGG_CLIENT": "true",
-        "SEED_ROOT": "../../../SeedData"
+        "SEED_ROOT": "../../../BoardGameMarket.Infrastructure/seed-data"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5127"
