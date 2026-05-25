@@ -1,4 +1,4 @@
-import { Inject, Injectable, OnDestroy, OnInit } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import {
   MSAL_GUARD_CONFIG,
   MsalGuardConfiguration,
@@ -27,7 +27,7 @@ import {
   takeUntil,
   throwError,
 } from 'rxjs';
-import { devEnvironment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment.development';
 
 @Injectable({
   providedIn: 'root',
@@ -142,7 +142,7 @@ export class AuthService {
     return this.msalService
       .acquireTokenSilent({
         account: account,
-        scopes: [devEnvironment.apiConfig.accessAsUserScope],
+        scopes: [environment.apiConfig.accessAsUserScope],
       })
       .pipe(
         map((data) => {

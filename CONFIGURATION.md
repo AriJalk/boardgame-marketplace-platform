@@ -1,5 +1,6 @@
 
 
+
 # CONFIGURATION
 
 ## Overview
@@ -244,7 +245,14 @@ and configure API gateway URL and Entra ID details accordingly.
 - Production-like deployment model
 - Gateway acts as entry point
 - Requires full environment configuration in manifests
+### Local kind client
 - Start via `deploy-local-kind.bat`, adjusting secrets placeholders if needed
+
+### Remote kind client (full CI/CD environment)
+- This is the main method used to validate deployment in a simulated full cloud environment, using Azure DevOps and seperate repositories for each service
+- An ubuntu machine running kind + Azure Self Hosted Pipeline Agent serves as the simulated cloud host
+- Each repo defines it's pipeline YAML, and Azure DevOps library is used for deployment specific environment variables and secrets in addition to the contained manifests.
+- Once the environment is configured, full system deployment is achieved by triggering each repository’s pipeline in sequence, starting with Infrastructure followed by all services.
 
 ---
 

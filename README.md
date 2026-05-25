@@ -48,6 +48,7 @@ Service configuration is documented per repository:
 - Catalog Service → `BoardGameMarket.CatalogService/`  
 - Listings Service → `BoardGameMarket.ListingsService/`  
 - Gateway → `BoardGameMarket.MarketGateway/`  
+- Infrastructure / Platform Layer → `BoardGameMarket.Infrastructure/`
   
 ### Core Services  
   
@@ -73,6 +74,8 @@ All orchestration is handled via the gateway.
 - Orchestrates operations across services
 - Aggregates backend services into unified responses  
 
+### Infrastructure deployment
+The Infrastructure layer is deployed via CI/CD to provision Kubernetes namespaces and required databases.
   
 ### API Testing  
   
@@ -181,8 +184,8 @@ Image naming:
 - `boardgamemarket-<service>:<build-tag>`  
   
 Deployment methods:  
-- Manual: `deploy-local-kind.bat`  
-- CI/CD: Azure DevOps pipelines (`azure-deploy-kind-pipeline.yaml`)  
+- Manual locally: `deploy-local-kind.bat`  
+- CI/CD: End-to-end deployment simulation using a remote host machine and Azure DevOps pipelines (`azure-deploy-kind-pipeline.yaml`), emulating a production Kubernetes environment
   
 ---  
   
@@ -295,7 +298,7 @@ This separation allows:
 ---
   
 ## Quick Start  
-    > NOTE:
+   > NOTE:
   > Refer to CONFIGURATION.md for specific configuration details.
   
 ### Docker Compose  
@@ -310,4 +313,4 @@ This separation allows:
 - Run `deploy-local-kind.bat`  
 - Access:  
 	- Swagger: http://localhost:30080/swagger  
-	- Or Angular frontend (see frontend setup instructions)
+	- Or Angular frontend (see frontend documentation in `BoardGameMarket.Frontend/`)

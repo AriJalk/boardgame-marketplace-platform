@@ -7,7 +7,7 @@ import {
 } from '@azure/msal-browser';
 
 import { MsalGuardConfiguration, MsalInterceptorConfiguration } from '@azure/msal-angular';
-import { devEnvironment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment.development';
 
 export function loggerCallback(logLevel: LogLevel, message: string) {
   console.log(message);
@@ -16,8 +16,8 @@ export function loggerCallback(logLevel: LogLevel, message: string) {
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
     auth: {
-      clientId: devEnvironment.msalConfig.auth.clientId,
-      authority: devEnvironment.msalConfig.auth.authority,
+      clientId: environment.msalConfig.auth.clientId,
+      authority: environment.msalConfig.auth.authority,
       redirectUri: '/',
       postLogoutRedirectUri: '/',
     },
@@ -37,8 +37,8 @@ export function MSALInstanceFactory(): IPublicClientApplication {
 
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   const protectedResourceMap = new Map<string, Array<string>>();
-  devEnvironment.apiConfig.authEndpoints.forEach((uri) => {
-    protectedResourceMap.set(uri, [devEnvironment.apiConfig.accessAsUserScope]);
+  environment.apiConfig.authEndpoints.forEach((uri) => {
+    protectedResourceMap.set(uri, [environment.apiConfig.accessAsUserScope]);
   });
 
   return {

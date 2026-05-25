@@ -1,23 +1,25 @@
-const apiAddress = '[API address]';
+const API_BASE_URL = 'http://[API_ADDRESS]:[API_PORT]/api';
+const API_APPLICATION_ID = '[API_APPLICATION_ID]';
+const CLIENT_APPLICATION_ID = '[CLIENT_APPLICATION_ID]';
+const MSAL_AUTHORITY = 'https://[TENANT_NAME].ciamlogin.com/';
 
-export const devEnvironment = {
-  apiAddress: apiAddress,
+export const environment = {
+  apiAddress: API_BASE_URL,
 
   production: false,
   msalConfig: {
     auth: {
-      clientId: '[Entra SPA ClientId]',
-      authority: '[Entra Authority]',
+      clientId: CLIENT_APPLICATION_ID,
+      authority: MSAL_AUTHORITY,
     },
   },
   apiConfig: {
-    accessAsUserScope: 'api://[Entra API client Id]/access_as_user',
+    accessAsUserScope: `api://${API_APPLICATION_ID}/access_as_user`,
     authEndpoints: [
-      `${apiAddress}/reservations/`,
-      `${apiAddress}/listing-sales/`,
-      `${apiAddress}/listing-groups/owned/subscribers`,
-      `${apiAddress}/listing-groups/subscriptions`,
+      `${API_BASE_URL}/reservations/`,
+      `${API_BASE_URL}/listing-sales/`,
+      `${API_BASE_URL}/listing-groups/owned/subscribers`,
+      `${API_BASE_URL}/listing-groups/subscriptions`,
     ],
-    // optionalAuthEndpoints: [`/api/listing-groups`, '/api/listings', '/api/users'],
   },
 };
