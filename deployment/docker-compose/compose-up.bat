@@ -1,0 +1,1 @@
+docker compose -f docker-compose.demo.yaml -f docker-compose.demo.override.yaml up

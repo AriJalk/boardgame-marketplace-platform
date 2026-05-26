@@ -1,0 +1,5 @@
+services:
+  market-gateway-microservice:
+    environment:
+      ENTRA__AUTHORITY: "https://[TENANT_NAME].ciamlogin.com/[TENANT_ID]/v2.0"
+      ENTRA__AUDIENCE: "[ENTRA_APP_ID]"

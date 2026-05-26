@@ -1,3 +1,5 @@
+
+cd /d ../../
 docker build -t arieljalkiver/boardgame-market:catalog -f ./BoardGameMarket.CatalogService/src/BoardGameMarket.CatalogService.API/Dockerfile ^
     ./BoardGameMarket.CatalogService
 docker build -t arieljalkiver/boardgame-market:users -f ./BoardGameMarket.UsersService/src/BoardGameMarket.UsersService.API/Dockerfile ^

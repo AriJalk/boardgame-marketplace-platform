@@ -1,6 +1,4 @@
 
-
-
 # CONFIGURATION
 
 ## Overview
@@ -229,14 +227,21 @@ and configure API gateway URL and Entra ID details accordingly.
 - All services connected with required infrastructure
 - Production-like environment for local development
 - Includes authentication via Microsoft Entra ID
+- Frontend configuration is optional and not required for backend validation
 
 ### Services
 - Users, Catalog, Listings: fully supported
 - Gateway: entry point to system
 
-### Setup
-- Run `build-for-compose.bat` before startup if images are missing
-- Start via `docker-compose up`
+### Deployment
+Compose can be used in two ways:
+- System-wide quick start
+	- Run `deployment/docker-compose/build-images.bat` to build essential image
+	- Start via `deployment/docker-compose/compose-up.bat`
+	- Authentication (Microsoft Entra ID) is enabled by default in full system mode. Optional override configuration can be provided via `docker-compose.demo.override.yaml`
+
+- Development environment compose
+	- Each service may include a standalone Docker Compose profile used for isolated debugging and integration testing in development environments..
 
 ---
 
@@ -246,9 +251,9 @@ and configure API gateway URL and Entra ID details accordingly.
 - Gateway acts as entry point
 - Requires full environment configuration in manifests
 ### Local kind client
-- Start via `deploy-local-kind.bat`, adjusting secrets placeholders if needed
+- Start via `deployment/kind/deploy-local-kind.bat`, adjusting secrets placeholders if needed
 
-### Remote kind client (full CI/CD environment)
+### Remote CI/CD-driven Kubernetes simulation
 - This is the main method used to validate deployment in a simulated full cloud environment, using Azure DevOps and seperate repositories for each service
 - An ubuntu machine running kind + Azure Self Hosted Pipeline Agent serves as the simulated cloud host
 - Each repo defines it's pipeline YAML, and Azure DevOps library is used for deployment specific environment variables and secrets in addition to the contained manifests.
@@ -277,3 +282,11 @@ Used by Gateway for authentication:
   - Environment variables or `.env`
 - Kubernetes:
   - Kubernetes Secrets or ConfigMaps (depending on deployment setup)
+
+## Quick Start (TLDR)  
+
+  ### Docker Compose Deployment
+1. Run `deployment/docker-compose/build-images.bat`  
+2. Run `deployment/docker-compose/compose-up.bat`  
+3. Once all services are healthy, open http://localhost:8080/swagger
+4. **Optional**: Configure frontend to use the gateway and serve (refer to `BoardGameMarket.Frontend/`)

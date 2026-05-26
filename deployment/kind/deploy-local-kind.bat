@@ -1,6 +1,8 @@
 kind delete cluster
 kind create cluster --config kind-config.yaml
 
+cd /d ../../
+
 docker build -t boardgamemarket-catalog:__TAG__ -f ./BoardGameMarket.CatalogService/src/BoardGameMarket.CatalogService.API/Dockerfile ^
     ./BoardGameMarket.CatalogService
 docker build -t boardgamemarket-users:__TAG__ -f ./BoardGameMarket.UsersService/src/BoardGameMarket.UsersService.API/Dockerfile ^

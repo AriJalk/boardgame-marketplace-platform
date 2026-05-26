@@ -1,0 +1,132 @@
+services:
+  market-gateway-microservice:
+    image: arieljalkiver/boardgame-market:gateway
+    environment:
+      LISTINGS_SERVICE_HOST: listings-microservice
+      LISTINGS_SERVICE_PORT: 8080
+      CATALOG_SERVICE_HOST: catalog-microservice
+      CATALOG_SERVICE_PORT: 8080
+      USERS_SERVICE_HOST: users-microservice
+      USERS_SERVICE_PORT: 8080
+      REDIS_HOST: redis-container
+      REDIS_PORT: 6379
+      CORS__ALLOWEDORIGINS__0: http://localhost:4200
+      CORS__ALLOWEDORIGINS__1: https://localhost:4200
+    networks:
+    - microservices-network
+    ports:
+    - 8080:8080
+    - 8081:8081
+    depends_on:
+    - listings-microservice
+    - users-microservice
+    - catalog-microservice
+
+  listings-microservice:
+    image: arieljalkiver/boardgame-market:listings
+    volumes:
+    - ../../BoardGameMarket.Infrastructure/seed-data:/app/SeedData:ro
+    environment:
+      IN_MEMORY: false
+      IS_SEEDING: true
+      SEED_ROOT: /app/SeedData
+      POSTGRES_HOST: postgres-listings
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: boardgamemarket_listings_database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    depends_on:
+    - postgres-listings
+    networks:
+    - listings-network
+    - microservices-network
+
+  catalog-microservice:
+    image: arieljalkiver/boardgame-market:catalog
+    networks:
+    - microservices-network
+    - catalog-network
+    volumes:
+    - ../../BoardGameMarket.Infrastructure/seed-data:/app/SeedData:ro
+    depends_on:
+    - mongodb-catalog
+    environment:
+      IN_MEMORY: false
+      IS_SEEDING: true
+      LOCAL_BGG_CLIENT: true
+      SEED_ROOT: /app/SeedData
+      BGGCLIENT__SERVICEAPIKEY: ${BGG_API_KEY}
+      MONGODBCONFIGURATION__MONGOHOST: mongodb-catalog
+      MONGODBCONFIGURATION__MONGOPORT: 27017
+      MONGODBCONFIGURATION__MONGODATABASE: catalog_database
+      MONGODBCONFIGURATION__COLLECTIONNAME: catalog_collection
+
+  users-microservice:
+    image: arieljalkiver/boardgame-market:users
+    environment:
+      POSTGRES_HOST: postgres-users
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: boardgamemarket_users_database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      IN_MEMORY: false
+      IS_SEEDING: true
+      SEED_ROOT: /app/SeedData
+    depends_on:
+    - postgres-users
+    networks: 
+    - users-network
+    - microservices-network
+    volumes:
+    - ../../BoardGameMarket.Infrastructure/seed-data:/app/SeedData:ro
+
+
+
+  # Persistance
+
+  postgres-users:
+    image: postgres:18.3
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: boardgamemarket_users_database
+    networks: 
+    - users-network
+    volumes:
+    - ../../BoardGameMarket.Infrastructure/database-init/postgres-users-init:/docker-entrypoint-initdb.d
+
+  mongodb-catalog:
+    image: mongo:8.2.5
+    networks:
+    - catalog-network
+
+  redis-container:
+    image: redis:8.2.5
+    networks:
+      - microservices-network
+    volumes:
+      - redis-data:/data
+
+  postgres-listings:
+    image: postgres:18.3
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: boardgamemarket_listings_database
+    networks: 
+    - listings-network
+    volumes:
+    - ../../BoardGameMarket.Infrastructure/database-init/postgres-listings-init:/docker-entrypoint-initdb.d
+
+volumes:
+  redis-data:
+
+networks:
+  microservices-network:
+    driver: bridge
+  users-network:
+    driver: bridge
+  catalog-network:
+    driver: bridge
+  listings-network:
+    driver: bridge

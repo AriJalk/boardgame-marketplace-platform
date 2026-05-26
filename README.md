@@ -1,3 +1,4 @@
+
 # Boardgame Market  
   
 ## Overview  
@@ -169,7 +170,7 @@ Image naming:
 - `arieljalkiver/boardgame-market:<service>`  
   
 Compose relies on images built via:  
-- `build-for-compose.bat`  
+- `deployment/docker-compose/build-images.bat`  
   
 ---  
   
@@ -184,7 +185,7 @@ Image naming:
 - `boardgamemarket-<service>:<build-tag>`  
   
 Deployment methods:  
-- Manual locally: `deploy-local-kind.bat`  
+- Manual locally (see Quick Start section)
 - CI/CD: End-to-end deployment simulation using a remote host machine and Azure DevOps pipelines (`azure-deploy-kind-pipeline.yaml`), emulating a production Kubernetes environment
   
 ---  
@@ -299,18 +300,18 @@ This separation allows:
   
 ## Quick Start  
    > NOTE:
-  > Refer to CONFIGURATION.md for specific configuration details.
+  > Refer to `CONFIGURATION.md` for extra configuration details and `BoardGameMarket.Frontend/` for optional frontend configuration.
+  > Frontend configuration is optional and not required for backend validation.
   
-### Docker Compose  
-- Run services via `docker-compose`  
-- Run `build-for-compose.bat` if images are not available  
+### Docker Compose  (Recommended, no external configuration required for basic local execution)
+- Run `deployment/docker-compose/build-images.bat` to build essential images
+- Run `deployment/docker-compose/compose-up.bat` to deploy the system
 - Access:  
-	- Gateway Swagger: http://localhost:8080/swagger  
+	- Gateway Swagger: http://localhost:8080/swagger
   
-### Kubernetes (kind)  
+### Kubernetes (kind, requires cluster + manifests configuration)
 
 - Install kind  
-- Run `deploy-local-kind.bat`  
+- Run `deployment/deploy-local-kind.bat`  (modify placeholders before to match deployment environment)
 - Access:  
-	- Swagger: http://localhost:30080/swagger  
-	- Or Angular frontend (see frontend documentation in `BoardGameMarket.Frontend/`)
+	- Gateway Swagger: http://localhost:30080/swagger
