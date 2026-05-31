@@ -182,3 +182,25 @@ All endpoints are intended to be consumed via the Gateway in production-like env
 ```bash
 docker build -t arieljalkiver/boardgame-market:users -f ./BoardGameMarket.UsersService/src/BoardGameMarket.UsersService.API/Dockerfile ./BoardGameMarket.UsersService
 ```
+
+## Swagger screenshots
+### Endpoints and schema
+![Users swagger page](screenshots/users-swagger.png)
+
+<br/>
+
+### Schemas
+![Schemas](screenshots/users-schemas.png)
+
+<br/>
+
+### POST - register entra user
+![Register](screenshots/POST-user.png)
+
+### GET - retrieve user
+![Retrieve](screenshots/GET-user.png)
+
+<br/>
+
+### GET - email
+![Email](screenshots/GET-email.png)

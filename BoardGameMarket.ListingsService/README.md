@@ -212,3 +212,37 @@ All endpoints are intended to be consumed via the Gateway in production-like env
 ```bash
 docker build -t arieljalkiver/boardgame-market:listings -f ./BoardGameMarket.ListingsService/src/BoardGameMarket.ListingsService.API/Dockerfile ./BoardGameMarket.ListingsService
 ```
+
+## Swagger screenshots
+### Endpoints
+![Listings endpoints](screenshots/listings-endpoints.png)
+
+<br/>
+
+### Schemas
+![Listings schemas](screenshots/listings-schemas.png)
+#### Example schema: Listing Groups summary response
+![LG summary](screenshots/listings-schemas-lg-summary.png)
+
+---
+
+## Swagger workflows demonstration
+### Create Group
+#### POST
+![Create LG](screenshots/workflows/1.create-group/1.listing-group-POST.png)
+#### GET
+![Get LG](screenshots/workflows/1.create-group/2.listing-group-GET.png)
+
+---
+### Subscription and queue
+#### Subscribe (as buyer)
+![Subscribe](screenshots/workflows/2.queue-subscription/1.subscription-POST.png)
+#### Get subscription queue (as seller)
+![Get queue](screenshots/workflows/2.queue-subscription/2.subscription-GET.png)
+
+---
+### Reservation
+#### POST - reserve listing (as seller)
+![Reserve](screenshots/workflows/3.reservation/1.reservation-POST.png)
+#### GET - get reservation (as seller or buyer)
+![Reserve](screenshots/workflows/3.reservation/2.reservation-GET.png)

@@ -178,3 +178,69 @@ All endpoints are intended to be consumed through the client application.
 ### Build
 
 docker build -t arieljalkiver/boardgame-market:gateway -f ./BoardGameMarket.MarketGateway/src/BoardGameMarket.MarketGateway.API/Dockerfile ./BoardGameMarket.MarketGateway
+
+## Swagger screenshots
+### All endpoints
+
+<br/>
+
+![Endpoints](screenshots/gateway-endpoints.png)
+
+---
+
+### All scehams
+
+<br/>
+
+![All schemas](screenshots/gateway-schemas.png)
+
+---
+
+### Listing group schemas
+Listing Group Paged Query
+
+<br/>
+
+![Paged query](screenshots/listing-groups/schema-lg-paged-query.png)
+
+<br/>
+
+Listing Group Paged Result
+
+<br/>
+
+![Paged result](screenshots/listing-groups/schema-lg-paged-result.png)
+
+---
+
+### Endpoints examples
+#### Listing groups Page
+Page input
+
+<br/>
+
+![Page input](screenshots/listing-groups/page-input.png)
+
+<br/>
+
+Page response
+
+<br/>
+
+![Page response top](screenshots/listing-groups/page-response-top.png)
+![Page response bottom](screenshots/listing-groups/page-response-bottom.png)
+
+---
+
+#### Listing group details
+Details input
+![Details input](screenshots/listing-groups/details-input.png)
+
+<br/>
+
+Page response
+
+<br/>
+
+![Details response top](screenshots/listing-groups/details-response-top.png)
+![Details response bottom](screenshots/listing-groups/details-response-bottom.png)
