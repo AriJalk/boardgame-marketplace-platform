@@ -204,19 +204,15 @@ docker build -t arieljalkiver/boardgame-market:catalog -f ./BoardGameMarket.Cata
 
 ![Catalog-Swagger](screenshots/catalog-swagger.png)
 
-<br/>
 
 ### Expanded schemas
 
 ![Expanded schemas](screenshots/catalog-schemas.png)
 
-<br/>
 
 ### BoardGameGeek item search
 
 ![BGG item search](screenshots/item-bgg-search.png)
-
-<br/>
 
 ### Custom item names search
 

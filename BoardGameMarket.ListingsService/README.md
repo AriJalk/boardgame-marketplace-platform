@@ -217,8 +217,6 @@ docker build -t arieljalkiver/boardgame-market:listings -f ./BoardGameMarket.Lis
 ### Endpoints
 ![Listings endpoints](screenshots/listings-endpoints.png)
 
-<br/>
-
 ### Schemas
 ![Listings schemas](screenshots/listings-schemas.png)
 #### Example schema: Listing Groups summary response

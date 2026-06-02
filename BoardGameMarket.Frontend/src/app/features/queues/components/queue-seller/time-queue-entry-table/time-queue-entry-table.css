@@ -1,6 +1,6 @@
 /* Make the container scrollable */
 .example-container {
-  height: 600px;
+  height: 400px;
   overflow: auto;
 }
 

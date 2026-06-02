@@ -182,15 +182,11 @@ docker build -t arieljalkiver/boardgame-market:gateway -f ./BoardGameMarket.Mark
 ## Swagger screenshots
 ### All endpoints
 
-<br/>
-
 ![Endpoints](screenshots/gateway-endpoints.png)
 
 ---
 
 ### All scehams
-
-<br/>
 
 ![All schemas](screenshots/gateway-schemas.png)
 

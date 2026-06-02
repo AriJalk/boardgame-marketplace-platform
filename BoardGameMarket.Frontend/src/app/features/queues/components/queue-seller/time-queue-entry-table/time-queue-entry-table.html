@@ -5,7 +5,7 @@
   class="example-container"
   [itemSize]="52"
   [maxBufferPx]="1200"
-  [minBufferPx]="400"
+  [minBufferPx]="100"
 >
   <table mat-table [dataSource]="queue" [trackBy]="trackBy">
     <!-- CreatedAt Column -->
@@ -47,7 +47,7 @@
           <button
             type="button"
             (click)="onPriorityClicked(element)"
-            [disabled]="element.priority || isLocked"
+            [disabled]="element.priority != null || isLocked"
             matMiniFab
           >
             <mat-icon>star</mat-icon>

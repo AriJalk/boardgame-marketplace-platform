@@ -163,4 +163,41 @@ All backend communication is routed exclusively through the Market Gateway, whic
 
 ---
 
+## Workflow example (listing group creation and sell)
+This workflow demonstrates listing lifecycle from creation → subscription → queue prioritization → reservation → sale.
 
+### Home screen - listing group page
+![listing-group-page](screenshots/1.listing-group-page.png)
+
+### Seller - create listing group
+![seller-create-listing-group](screenshots/2.seller-create-listing-group.png)
+
+### Buyer - view listing group page with newly created listing group
+![buyer-listing-group-page](screenshots/3.buyer-listing-group-page.png)
+
+### Buyer - view listing group details
+![buyer-view-listing-group](screenshots/4.buyer-view-listing-group.png)
+
+### Buyer - subscribes to listing
+![buyer-view-subscribe-listing-group](screenshots/5.buyer-view-subscribe-listing-group.png)
+
+### Seller - manage listing queue
+In this example showing the queue portion of a listing from seller perspective, 2 queue entries (for users test2 and test3) were added to priority list and reordered so user test3 queue entry is at top priority despite being last in time based queue.
+
+If priority queue was empty, user test1 queue entry (first chronological entry) would've been assigned to top of queue
+![seller-manage-queue](screenshots/6.seller-manage-queue.png)
+
+### Seller - listing view after reserving to top of queue
+This is the listing view after reserving the listing to user test3
+![seller-listing-group-view-reserved](screenshots/7.seller-listing-group-view-reserved.png)
+
+### Seller - view newly created reservation
+![seller-reservation](screenshots/8.seller-reservation.png)
+
+### Seller - view listing sold
+Sell confirmation to reservation
+![seller-sold](screenshots/9.seller-sold.png)
+
+
+### (Extra) Seller - My listings view
+![my-listings](screenshots/10.seller-my-listings.png)
