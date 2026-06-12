@@ -1,3 +1,5 @@
+<h1 class="page-title">Reservations</h1>
+
 @if (reservations$ | async; as reservations) {
   @for (reservation of reservations; track reservation.id) {
     <bgm-reservation-card

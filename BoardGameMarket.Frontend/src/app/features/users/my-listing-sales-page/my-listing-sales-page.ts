@@ -4,6 +4,7 @@ import { ListingSale } from '../../listing-sales/models/listing-sale.model';
 import { AsyncPipe } from '@angular/common';
 import { ListingSaleCard } from '../../listing-sales/components/listing-sale-card/listing-sale-card';
 import { ListingSalesService } from '../../listing-sales/services/listing-sales.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'bgm-my-listing-sales-page',

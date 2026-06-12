@@ -1,6 +1,6 @@
-<h2>Name: {{ catalogItem.name }}</h2>
+<h3>Name: {{ catalogItem.name }}</h3>
 @if (catalogItem.type === 'bgg') {
-  <h2><a [href]="catalogItem.bggUrl">Bgg Link</a></h2>
+  <h3><a [href]="catalogItem.bggUrl">Bgg Link</a></h3>
   @if (catalogItem.imageUrl !== null) {
     <img [src]="catalogItem.imageUrl" />
   }

@@ -14,6 +14,7 @@
     }}</a>
   </div>
   <div>Reserved at: {{ reservation.reservedAt }}</div>
+  <a [routerLink]="['/listing-groups', reservation.listingGroupMetadata.id]"> Listing group </a>
 
   <button
     matButton

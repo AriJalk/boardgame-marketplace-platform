@@ -3,10 +3,10 @@
   <h3>Listing title: {{ listing.title }}</h3>
   <h3>Price: {{ listing.price }}</h3>
   <h3>Details: {{ listing.details }}</h3>
-  <h4>Items:</h4>
-  <div>
+  <h3>Items:</h3>
+  <div class="mat-secondary-container scrollable-container">
     @for (item of listing.items; track $index) {
-      <mat-card>
+      <mat-card class="inner-card">
         <bgm-listing-item-card [listingItem]="item"></bgm-listing-item-card>
       </mat-card>
     }

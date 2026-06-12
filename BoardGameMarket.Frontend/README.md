@@ -182,8 +182,7 @@ This workflow demonstrates listing lifecycle from creation → subscription → 
 ![buyer-view-subscribe-listing-group](screenshots/5.buyer-view-subscribe-listing-group.png)
 
 ### Seller - manage listing queue
-In this example showing the queue portion of a listing from seller perspective, 2 queue entries (for users test2 and test3) were added to priority list and reordered so user test3 queue entry is at top priority despite being last in time based queue.
-
+In this example 2 queue entries (for users test2 and test3) were added to priority list and reordered so user test3 queue entry is at top priority despite being last in time based queue
 If priority queue was empty, user test1 queue entry (first chronological entry) would've been assigned to top of queue
 ![seller-manage-queue](screenshots/6.seller-manage-queue.png)
 
@@ -195,9 +194,5 @@ This is the listing view after reserving the listing to user test3
 ![seller-reservation](screenshots/8.seller-reservation.png)
 
 ### Seller - view listing sold
-Sell confirmation to reservation
+This is the sell confirmation after confirming sell on the reservation
 ![seller-sold](screenshots/9.seller-sold.png)
-
-
-### (Extra) Seller - My listings view
-![my-listings](screenshots/10.seller-my-listings.png)

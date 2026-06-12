@@ -26,11 +26,12 @@
           </mat-expansion-panel-header>
           <mat-card>
             <bgm-listing-form [formGroup]="listing"></bgm-listing-form>
+            @let listingStatus = getListingStatus(listing);
             <button
               class="margin-5"
               matButton="elevated"
               type="button"
-              [disabled]="getListingStatus(listing) != 'active'"
+              [disabled]="listingStatus != 'active' && listingStatus != 'new'"
               (click)="removeListing(i)"
             >
               Remove Listing

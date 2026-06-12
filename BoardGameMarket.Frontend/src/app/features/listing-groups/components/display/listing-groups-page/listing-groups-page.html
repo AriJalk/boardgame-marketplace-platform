@@ -1,3 +1,5 @@
+<h1 class="page-title">Listing Groups</h1>
+
 @let user = user$ | async;
 <div class="grid gap-1">
   @for (listingGroup of (listingGroups$ | async)?.items; track listingGroup.id) {

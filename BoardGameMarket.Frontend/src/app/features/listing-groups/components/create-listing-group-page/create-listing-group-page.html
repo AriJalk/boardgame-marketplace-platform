@@ -1,3 +1,5 @@
+<h1 class="page-title">Create Listing Group</h1>
+
 <form [formGroup]="formGroup" (submit)="submitForm()">
   <bgm-listing-group-form [formGroup]="formGroup"> </bgm-listing-group-form>
   <button matButton type="submit" [disabled]="!formGroup.valid">Submit</button>
