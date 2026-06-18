@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ReservationsService } from '../../reservastions/services/reservations.service';
+import { ReservationsService } from '../../reservations/services/reservations.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Reservation } from '../../reservastions/models/reservation.model';
+import { Reservation } from '../../reservations/models/reservation.model';
 import { AsyncPipe } from '@angular/common';
-import { ReservationCard } from '../../reservastions/reservation-card/reservation-card';
+import { ReservationCard } from '../../reservations/reservation-card/reservation-card';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({

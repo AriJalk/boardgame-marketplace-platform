@@ -6,7 +6,7 @@ using BoardGameMarket.ListingsService.Core.Application.Access.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Aggregates;
 using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Application.Pagination;
-using BoardGameMarket.ListingsService.Core.Domain.Aggragates;
+using BoardGameMarket.ListingsService.Core.Domain.Aggregates;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;

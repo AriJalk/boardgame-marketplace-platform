@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ListingSale } from '../../models/listing-sale.model';
-import { ReservationCard } from '../../../reservastions/reservation-card/reservation-card';
+import { ReservationCard } from '../../../reservations/reservation-card/reservation-card';
 
 @Component({
   selector: 'bgm-listing-sale-card',

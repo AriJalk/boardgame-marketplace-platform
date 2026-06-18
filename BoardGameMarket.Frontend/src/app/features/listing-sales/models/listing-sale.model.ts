@@ -1,4 +1,4 @@
-import { Reservation } from '../../reservastions/models/reservation.model';
+import { Reservation } from '../../reservations/models/reservation.model';
 
 export interface ListingSale {
   id: string;

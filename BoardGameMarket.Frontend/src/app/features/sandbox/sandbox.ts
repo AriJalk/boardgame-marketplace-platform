@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { QueueEntryCard } from '../queues/components/queue-seller/queue-entry-card/queue-entry-card';
-import { QueueEntry } from '../queues/models/quque-entry.model';
+import { QueueEntry } from '../queues/models/queue-entry.model';
 
 @Component({
   selector: 'bgm-sandbox',

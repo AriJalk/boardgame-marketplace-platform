@@ -8,7 +8,7 @@ import {
   QueueEntry,
   QueuePageResponse,
   UpdatePriorityRequest,
-} from '../../../models/quque-entry.model';
+} from '../../../models/queue-entry.model';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { TimeQueueEntryTable } from '../time-queue-entry-table/time-queue-entry-table';

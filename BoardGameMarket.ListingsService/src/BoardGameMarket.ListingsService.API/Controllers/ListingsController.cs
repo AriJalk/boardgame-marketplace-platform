@@ -3,7 +3,7 @@ using BoardGameMarket.ListingsService.Core.Application.Aggregates;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.Listings;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
 using BoardGameMarket.ListingsService.Core.Application.Queries;
-using BoardGameMarket.ListingsService.Core.Domain.Aggragates;
+using BoardGameMarket.ListingsService.Core.Domain.Aggregates;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 

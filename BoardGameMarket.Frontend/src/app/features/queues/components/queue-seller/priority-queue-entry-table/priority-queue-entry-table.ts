@@ -3,7 +3,7 @@ import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTable, MatTableModule } from '@angular/material/table';
-import { QueueEntry, UpdatePriorityRequest } from '../../../models/quque-entry.model';
+import { QueueEntry, UpdatePriorityRequest } from '../../../models/queue-entry.model';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
 

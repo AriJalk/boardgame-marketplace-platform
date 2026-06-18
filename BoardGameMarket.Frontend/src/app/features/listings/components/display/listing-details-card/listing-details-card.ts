@@ -4,7 +4,7 @@ import { ListingItemCard } from '../../../../listing-items/components/display/li
 import { MatCardModule } from '@angular/material/card';
 import { QueueBuyerPanel } from '../../../../queues/components/queue-buyer/queue-buyer-panel/queue-buyer-panel';
 import { QueueService } from '../../../../queues/queue.service';
-import { ListingSubscription, QueueEntry } from '../../../../queues/models/quque-entry.model';
+import { ListingSubscription, QueueEntry } from '../../../../queues/models/queue-entry.model';
 import { BehaviorSubject, Observable, of, switchMap, take } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { AuthService } from '../../../../../core/auth/auth.service';

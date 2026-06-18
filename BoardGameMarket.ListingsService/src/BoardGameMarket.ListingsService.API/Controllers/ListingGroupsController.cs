@@ -5,7 +5,7 @@ using BoardGameMarket.ListingsService.Core.Application.Pagination;
 using BoardGameMarket.ListingsService.Core.Application.Contracts.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Application.Filters;
 using BoardGameMarket.ListingsService.Core.Application.Mappers;
-using BoardGameMarket.ListingsService.Core.Domain.Aggragates;
+using BoardGameMarket.ListingsService.Core.Domain.Aggregates;
 using Microsoft.AspNetCore.Mvc;
 using BoardGameMarket.ListingsService.Core.Application.UseCases.ListingGroups;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;

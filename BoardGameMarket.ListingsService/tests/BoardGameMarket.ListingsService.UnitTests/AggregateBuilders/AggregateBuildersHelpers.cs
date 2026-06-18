@@ -1,5 +1,5 @@
 ﻿using AutoFixture;
-using BoardGameMarket.ListingsService.Core.Domain.Aggragates;
+using BoardGameMarket.ListingsService.Core.Domain.Aggregates;
 using BoardGameMarket.ListingsService.Core.Domain.Entities;
 using System;
 using System.Collections.Generic;

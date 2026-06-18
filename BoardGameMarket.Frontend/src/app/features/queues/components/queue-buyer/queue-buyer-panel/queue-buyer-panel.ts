@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { QueueService } from '../../../queue.service';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { ListingSubscription, QueueEntry } from '../../../models/quque-entry.model';
+import { ListingSubscription, QueueEntry } from '../../../models/queue-entry.model';
 import { AsyncPipe, DatePipe } from '@angular/common';
 
 @Component({

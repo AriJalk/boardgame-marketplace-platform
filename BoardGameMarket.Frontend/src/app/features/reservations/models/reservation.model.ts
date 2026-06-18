@@ -1,6 +1,6 @@
 import { ListingGroupMetadata } from '../../listing-groups/models/listing-group.model';
 import { ListingSummary } from '../../listings/models/listing.model';
-import { QueueEntry } from '../../queues/models/quque-entry.model';
+import { QueueEntry } from '../../queues/models/queue-entry.model';
 
 export interface Reservation {
   id: string;

@@ -4,7 +4,7 @@ import {
   ListingItem,
   UpdateListingItemRequest,
 } from '../../listing-items/models/listing-item.model';
-import { ListingSubscription, QueueEntry } from '../../queues/models/quque-entry.model';
+import { ListingSubscription, QueueEntry } from '../../queues/models/queue-entry.model';
 
 export interface ListingSummary {
   id: string;

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { Inject, Injectable } from '@angular/core';
-import { QueuePageResponse as ListingQueueResponse, QueueEntry } from './models/quque-entry.model';
+import { QueuePageResponse as ListingQueueResponse, QueueEntry } from './models/queue-entry.model';
 import { API_CONFIG_SERVICE } from '../../core/api-config/api-config.service';
 import { ApiConfig } from '../../core/api-config/api-config.interface';
 
