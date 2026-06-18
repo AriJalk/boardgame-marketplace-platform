@@ -23,7 +23,7 @@ Video walktrough showing:
 - Buyer subscription workflow
 - Reservation and sale process
 
-[![Boardgame Market Demo](https://img.youtube.com/vi/DZZiDzf-6TA/hqdefault.jpg)](https://www.youtube.com/watch?v=DZZiDzf-6TA)
+[![Boardgame Market Demo](https://img.youtube.com/vi/JqYn-75iU_A/hqdefault.jpg)](https://www.youtube.com/watch?v=JqYn-75iU_A)
 
 ---
 
