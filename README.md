@@ -7,23 +7,26 @@ Boardgame Market is a second-hand marketplace platform for board-game related it
 The project was created as a personal project, to design and implement a complete end-to-end distributed backend system with realistic workflows, infrastructure, and deployment orchestration.
 
 > NOTE:  
-> This repository is a snapshot-style monorepo for navigation and demonstration purposes.  
-> The actual development workflow uses separate private Azure DevOps repositories per service with CI/CD pipelines.  
-> Commits here represent periodic system snapshots rather than the primary version control history.
+> This repository is a snapshot-style monorepo for navigation and demonstration purposes.  <br>
+> The actual development workflow uses separate private Azure DevOps repositories per service with CI/CD pipelines. <br>
+> Each module has its own README.md with additional details, so check the individual module folders for more information. <br>
+> Commits here represent periodic system snapshots rather than the primary version control history. <br>
 
 ---
 
-## Demonstration
+## Video Demonstration
 
-Video walktrough showing:
+[![Boardgame Market Demo](https://img.youtube.com/vi/JqYn-75iU_A/hqdefault.jpg)](https://www.youtube.com/watch?v=JqYn-75iU_A)
+
+*Click the thumbnail to watch the demo.*
+
+Video walkthrough showing:
 
 - Local kind Kubernetes deployment
 - Authentication flow
 - Listing group creation
 - Buyer subscription workflow
 - Reservation and sale process
-
-[![Boardgame Market Demo](https://img.youtube.com/vi/JqYn-75iU_A/hqdefault.jpg)](https://www.youtube.com/watch?v=JqYn-75iU_A)
 
 ---
 
